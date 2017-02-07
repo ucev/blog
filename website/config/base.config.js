@@ -1,8 +1,8 @@
 const mysql_database_config = {
-  host: "",
-  user: "",
-  password: "",
-  database: ""
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: "blog_node"
 };
 
 exports.database_config = mysql_database_config;
