@@ -1,0 +1,9 @@
+extends base_layout
+
+block body-block
+  mixin article_item(itemData)
+    li.article_item
+      a(href='/articles/view/' + itemData.id) #{itemData.title}
+  div#articles-list
+    each data in datas
+      +article_item(data)

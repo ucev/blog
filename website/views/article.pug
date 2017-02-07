@@ -1,0 +1,7 @@
+extends base_layout
+
+block append jsscript-block
+  script(src='/markdown-it.min.js')
+
+block body-block
+  div.markdown-display#display-area !{md}

@@ -1,0 +1,64 @@
+extends base_layout
+
+block append jsscript-block
+  script(src='/dist/simplemde.min.js')
+  script(src='/markdown-it.min.js')
+
+block append stylesheet-block
+  link(rel='stylesheet' href='/dist/simplemde.min.css')
+
+block body-block
+  div#edit-body
+    div#edit-area
+      textarea#md-editor
+    div.markdown-display#display-area
+  input#submit(type="submit")
+  script.
+    var simplemde = new SimpleMDE({ element: document.getElementById("md-editor"),
+      toolbar: false,
+      status: false
+    });
+    var markdown = markdownit();
+    simplemde.codemirror.on("change", (e) => {
+      var mdt = markdown.render(simplemde.value());
+      $("#display-area").html(mdt);
+    });
+    $("#submit").click((e) => {
+      content = simplemde.value();
+      $.ajax({
+        url: 'http://localhost:3000/admin/add',
+        data: {md: content},
+        type: "post",
+        dataType: "text",
+        success: (res) => {
+          console.log(res);
+        }
+      });
+    });
+  style.
+    * {
+      -moz-box-sizing: border-box;
+    }
+    #edit-body {
+        display: -moz-box;
+        display: -webkit-box;
+        -moz-box-orient: horizontal;
+        width: 80%;
+        margin-left: 10%;
+        height: 500px;
+    }
+    #edit-area,
+    #display-area {
+      -moz-box-flex: 1;
+      width: 50%;
+      height: 100%;
+      /*background: yellow;*/
+      overflow: scroll;
+    }
+    #md-editor {
+      display: block;
+    }
+    .CodeMirror {
+      height: 100%;
+      background: green;
+    }
