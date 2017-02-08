@@ -16,7 +16,10 @@ router.get('/view/:id', (req, res, next) => {
   conn.query("select * from articles where id = ?", [id], (err, results, fields) => {
     if (err) throw err;
     const result = results[0];
-    res.render('article', {title: result.title, md: md.render(result.content)});
+    res.render('article', {title: result.title, 
+      websiteInfo: configs.website_info,
+      md: md.render(result.content)}
+    );
   });
 });
 
@@ -28,7 +31,7 @@ router.get('/', (req, res, next) => {
     if (err) throw err;
     conn.end((err) => {
     });
-    res.render('article_list', {title: "文章列表", datas: results});
+    res.render('article_list', {title: "文章列表", websiteInfo:configs.website_info, datas: results});
   });
 });
 
