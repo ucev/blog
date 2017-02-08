@@ -9,7 +9,8 @@ const path = require('path');
 const env = require('jsdom').env;
 
 const targetPath = path.join(__dirname, "images.json");
-// 链接可修改
+// 链接要修改
+// 我要找更大的图😊 
 const baseUrl = 'http://www.gratisography.com/';
 
 function parse_url(url_addr) {

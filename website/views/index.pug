@@ -1,5 +1,6 @@
 doctype html
 html
   include base_head
-  body(style={'background-image': "url(" + backgroundImg + ")"})
-    include base_foot
+  body(style={'background-image': 'url(' + backgroundImg + ')', 'background-attachment': 'fixed'})
+    div#front-intro-div
+      a(href='/articles') 欢迎进入张帅的博客
