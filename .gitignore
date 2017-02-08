@@ -64,3 +64,6 @@ typings/
 
 # express app config files
 *.config.js
+
+# tools
+tools/*
