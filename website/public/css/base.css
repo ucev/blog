@@ -87,6 +87,8 @@ body {
 
 .main {
   margin-top: 100px;
+  min-height: 600px;
+  padding: 50px 100px;
 }
 
 #display-area {
@@ -223,4 +225,23 @@ body {
   color: #4183C4;
   background-color: inherit;
   text-decoration: none;
+}
+
+
+footer {
+  width: 100%;
+  height: 100px;
+  background-color: #795548;
+  position: relative;
+}
+
+#contact-me {
+  position: absolute;
+  top: 25px;
+  right: 50px;
+  line-height: 25px;
+}
+
+#personnal-addr a{
+  color: white;
 }

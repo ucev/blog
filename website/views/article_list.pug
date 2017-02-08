@@ -1,9 +1,10 @@
 extends base_layout
 
 block body-block
+  include website_banner
   mixin article_item(itemData)
     li.article_item
       a(href='/articles/view/' + itemData.id) #{itemData.title}
-  div#articles-list
+  div.main#articles-list
     each data in datas
       +article_item(data)

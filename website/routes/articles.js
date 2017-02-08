@@ -31,7 +31,9 @@ router.get('/', (req, res, next) => {
     if (err) throw err;
     conn.end((err) => {
     });
-    res.render('article_list', {title: "文章列表", websiteInfo:configs.website_info, datas: results});
+    res.render('article_list', {title: "文章列表", 
+      websiteInfo:configs.website_info,
+      datas: results});
   });
 });
 
