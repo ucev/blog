@@ -4,6 +4,7 @@ $(document).ready(function(){
     const hideInputImg = $('#website-hide-input-img');
     const showInputImg = $('#website-search-img');
     function hideSearchInput() {
+      $(searchInput).val('');
       $(searchInput).width(0);
       $(hideInputImg).hide("slow");
     }
@@ -19,9 +20,9 @@ $(document).ready(function(){
     $(hideInputImg).click((e) => {
       hideSearchInput();
     });
-    $(searchInput).keydown(function(e) {
+    $(searchInput).keydown((e) => {
       if (e.which == 13) {
-        alert($(this).val());
+        alert($(searchInput).val());
       }
     });
   })();
