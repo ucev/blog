@@ -28,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'node_modules/simplemde')));
 app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/markdown-it/dist')));
+app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
 
 app.use('/', index);
 app.use('/admin', admin);

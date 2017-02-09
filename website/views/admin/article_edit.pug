@@ -1,0 +1,105 @@
+extends base_layout
+
+block append jsscript-block
+  script(src='/dist/simplemde.min.js')
+  script(src='/markdown-it.min.js')
+  script(src='/template.js')
+
+block append stylesheet-block
+  link(rel='stylesheet' href='/dist/simplemde.min.css')
+  link(rel='stylesheet' href='/css/article_edit.css?' + new Date().getTime())
+
+block body-block
+  div.main
+    div#edit-body
+      div#edit-area
+        textarea#md-editor
+      div.markdown-display#display-area
+    div#op-div
+      div#article-labels.op-bar
+        label#label-label 标签
+        input#label-input-area(maxlength=10)
+        div#labels-area
+      div.op-bar
+        div#save 保存文章
+        div#submit 发布文章
+  script#label-tpl(type='text/html').
+    <div id="label-div-<%= ord %>" class='label-div'>
+      <span><%= label %></span>
+      <img id='label-div-delete-img-<%= ord %>' src='/images/icons/ic_clear_white_24dp_2x.png' onclick='deleteLabel(<%= ord %>)'></img>
+    </div>
+  script.
+    var labels = [];
+    (() => {
+      const labelTpl = $("#label-tpl").html();
+      var labelCount = 0;
+      $('#label-input-area').keydown((e) => {
+        if (e.which == 13) {
+          let l = $('#label-input-area').val();
+          if (labels.indexOf(l) == -1) {
+            $(template(labelTpl, {label: l, ord: labelCount++})).appendTo($('#labels-area'));
+            labels.push(l);
+          }
+          $('#label-input-area').val('');
+        }
+      });
+    })();
+    function deleteLabel(i) {
+      $('#label-div-' + i).remove();
+    }
+  script.
+    var simplemde = new SimpleMDE({ element: document.getElementById("md-editor"),
+      status: false,
+      spellChecker: false,
+      initialValue: `# CodeMirror
+        [![Build Status](https://travis-ci.org/codemirror/CodeMirror.svg)](https://travis-ci.org/codemirror/CodeMirror)
+        [![NPM version](https://img.shields.io/npm/v/codemirror.svg)](https://www.npmjs.org/package/codemirror)
+        [![Join the chat at https://gitter.im/codemirror/CodeMirror](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/codemirror/CodeMirror)  
+        [Funding status: ![maintainer happiness](https://marijnhaverbeke.nl/fund/status_s.png?again)](https://marijnhaverbeke.nl/fund/)
+
+        CodeMirror is a versatile text editor implemented in JavaScript for
+        the browser. It is specialized for editing code, and comes with over
+        100 language modes and various addons that implement more advanced
+        editing functionality.
+
+        A rich programming API and a CSS theming system are available for
+        customizing CodeMirror to fit your application, and extending it with
+        new functionality.
+
+        You can find more information (and the
+        [manual](http://codemirror.net/doc/manual.html)) on the [project
+        page](http://codemirror.net). For questions and discussion, use the
+        [discussion forum](https://discuss.codemirror.net/).
+
+        See
+        [CONTRIBUTING.md](https://github.com/codemirror/CodeMirror/blob/master/CONTRIBUTING.md)
+        for contributing guidelines.`
+    });
+    var markdown = markdownit();
+    simplemde.codemirror.on("change", (instance, changeObj) => {
+      console.log(instance);
+      console.log(changeObj);
+      var mdt = markdown.render(simplemde.value());
+      $("#display-area").html(mdt);
+      $("#display-area").scrollTop($('#display-area')[0].scrollHeight);
+    });
+    function submitArticle(e) {
+      $('#submit').unbind('click');
+      content = simplemde.value();
+      //console.log(JSON.stringify(labels));
+      $.ajax({
+        url: 'http://localhost:3000/admin/add',
+        data: {md: content, label: labels.join(',')},
+        type: "post",
+        dataType: "text",
+        success: (res) => {
+          console.log(res);
+        },
+        error: () => {
+          $('#submit').click(submitArticle);
+        }
+      });
+    }
+    $("#submit").click(submitArticle);
+    $('#display-area').html(markdown.render(simplemde.value()));
+  style.

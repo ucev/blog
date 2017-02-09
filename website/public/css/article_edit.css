@@ -1,0 +1,94 @@
+@charset "utf8";
+
+* {
+  -moz-box-sizing: border-box;
+}
+
+#edit-body, 
+#op-div {
+  width: 80%;
+  margin-left: 10%;
+}
+
+#edit-body {
+  display: -moz-box;
+  display: -webkit-box;
+  -moz-box-orient: horizontal;
+  height: 500px;
+  border: 1px solid black;
+}
+
+#op-div {
+  background-color: #5D4037CC;;
+  padding: 20px 0;
+  margin-top: 20px;
+}
+
+#edit-area,
+#display-area {
+  -moz-box-flex: 1;
+  width: 50%;
+  height: 100%;
+  overflow: scroll;
+}
+
+#md-editor {
+  display: block;
+}
+
+.CodeMirror {
+  height: 100%;
+}
+
+.op-bar {
+  margin-top: 20px;
+}
+
+#label-label,
+#label-input-area,
+#labels-area {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#label-label {
+  width: 100px;
+  text-align: center;
+  color: white;
+}
+
+#label-input-area {
+  height: 25px;
+  outline: none;
+  border: 1px solid #5D4037CC;
+}
+
+.label-div {
+  background-color: #5D4037CC;
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 10px;
+  margin-left: 20px;
+}
+
+.label-div > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.label-div span {
+  color: white;
+  font-size: 18px;
+}
+
+.label-div img {
+  height: 20px;
+}
+
+div#save,
+div#submit {
+  display: inline-block;
+  background-color: #009688;
+  padding: 5px 20px;
+  margin-left: 100px;
+}

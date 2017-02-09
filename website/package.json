@@ -19,6 +19,7 @@
     "mysql": "^2.13.0",
     "pug": "^2.0.0-beta11",
     "serve-favicon": "~2.3.2",
-    "simplemde": "^1.11.2"
+    "simplemde": "^1.11.2",
+    "template_js": "^0.7.1"
   }
 }
