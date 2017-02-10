@@ -1,9 +1,10 @@
 head
     meta(charset='utf-8')/
     title #{title}
-    - var pug_cur_time = new Date();
+    - var pug_cur_time = new Date().getTime();
     block jsscript-block
       script(src='/jquery.min.js')
-      script(src='/js/base.js?' + new Date().getTime())
+      script(src='/js/base.js?#{pug_cur_time}')
     block stylesheet-block
-      link(rel='stylesheet' href='/css/base.css?' + new Date().getTime())
+      link(rel='stylesheet' href='/css/base.css?#{pug_cur_time}')
+      link(rel='stylesheet' href='/css/admin.css?#{pug_cur_time}')

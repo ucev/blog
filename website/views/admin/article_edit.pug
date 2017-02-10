@@ -4,13 +4,14 @@ block append jsscript-block
   script(src='/dist/simplemde.min.js')
   script(src='/markdown-it.min.js')
   script(src='/template.js')
-  script const labels_exists = JSON.parse( '!{labels}' );
+  script const labels_exists = JSON.parse( '!{labels}' )
 
 block append stylesheet-block
   link(rel='stylesheet' href='/dist/simplemde.min.css')
   link(rel='stylesheet' href='/css/article_edit.css?' + new Date().getTime())
 
 block body-block
+  include website_banner
   div.main
     div#edit-body
       div#edit-area
@@ -22,8 +23,8 @@ block body-block
         input#label-input-area(placeholder='输入标签' maxlength=10)
         div#labels-area
       div.op-bar
-        div#save 保存文章
         div#submit 发布文章
+        div#save 保存文章
   script#label-tpl(type='text/html').
     <div id="label-div-<%= ord %>" class='label-div label-div-label-<%= nclass %>'>
       <span><%= label %></span>
