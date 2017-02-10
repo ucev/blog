@@ -91,7 +91,7 @@ router.get('/categories', (req, res, next) => {
   })
 });
 
-router.get('/add', (req, res, next) => {
+router.get('/articles/add', (req, res, next) => {
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
   conn.connect();
@@ -107,7 +107,7 @@ router.get('/add', (req, res, next) => {
   });
 });
 
-router.post('/add', (req, res, next) => {
+router.post('/articles/add', (req, res, next) => {
   var content = req.body.md.trim();
   var label = req.body.label;
   var h1 = content.substring(0, content.indexOf('\n')).trim();

@@ -10,8 +10,7 @@ block append stylesheet-block
   link(rel='stylesheet' href='/dist/simplemde.min.css')
   link(rel='stylesheet' href='/css/article_edit.css?' + new Date().getTime())
 
-block body-block
-  include website_banner
+block main-body-block
   div.main
     div#edit-body
       div#edit-area
