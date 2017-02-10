@@ -7,6 +7,38 @@ const md = require('markdown-it')({
 });
 const configs = require('../config/base.config');
 
+function updateLabels(conn, labels, ord = 0) {
+  if (ord >= labels.length) {
+    conn.end((err) => {
+
+    });
+    return;
+  }
+  let label = labels[ord];
+  conn.query('select * from labels where ? ', {name: label}, (err, results, fields) => {
+    if (results.length > 0) {
+      let hotmark = results[0].hotmark + configs.label_hotmark_rule;
+      let articles = results[0].articles + 1;
+      conn.query('update labels set hotmark = ? where name = ?', 
+        [homark, articles],
+        (err, results, fields) => {
+          updateLabels(conn, labels, ord + 1);
+        }
+      );
+    } else {
+      let hotmark = configs.label_hotmark_rule.add;
+      let articles = 1;
+      let addtime = Math.floor(new Date().getTime() / 1000);
+      conn.query('insert into labels set ?', 
+        {name: label, articles: articles, hotmark: hotmark, addtime: addtime},
+        (err, results, fields) => {
+          updateLabels(conn, labels, ord + 1);
+        }
+      );
+    }
+  });
+}
+
 router.get('/add', (req, res, next) => {
   res.render('admin/article_edit', { title: '添加文章'});
 });
@@ -27,9 +59,8 @@ router.post('/add', (req, res, next) => {
     label: label,
     addtime: addtime
   }, (err, results, fields) => {
-    conn.end((err) => {
-
-    });
+    // 此处没有transaction，因为我对何种负荷下会出现更新错误不清楚
+    updateLabels(conn, label.split(','));
     res.send("succ");
   });
 });
