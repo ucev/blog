@@ -4,6 +4,7 @@ block append jsscript-block
   script(src='/dist/simplemde.min.js')
   script(src='/markdown-it.min.js')
   script(src='/template.js')
+  script const labels_exists = JSON.parse( '!{labels}' );
 
 block append stylesheet-block
   link(rel='stylesheet' href='/dist/simplemde.min.css')
@@ -18,13 +19,13 @@ block body-block
     div#op-div
       div#article-labels.op-bar
         label#label-label 标签
-        input#label-input-area(maxlength=10)
+        input#label-input-area(placeholder='输入标签' maxlength=10)
         div#labels-area
       div.op-bar
         div#save 保存文章
         div#submit 发布文章
   script#label-tpl(type='text/html').
-    <div id="label-div-<%= ord %>" class='label-div'>
+    <div id="label-div-<%= ord %>" class='label-div label-div-label-<%= nclass %>'>
       <span><%= label %></span>
       <img id='label-div-delete-img-<%= ord %>' src='/images/icons/ic_clear_white_24dp_2x.png' onclick='deleteLabel(<%= ord %>)'></img>
     </div>
@@ -37,7 +38,8 @@ block body-block
         if (e.which == 13) {
           let l = $('#label-input-area').val();
           if (labels.indexOf(l) == -1) {
-            $(template(labelTpl, {label: l, ord: labelCount++})).appendTo($('#labels-area'));
+            var params = {label: l, ord: labelCount++, nclass: labels_exists.indexOf(l) == -1 ? 'new' : 'existed'};
+            $(template(labelTpl, params)).appendTo($('#labels-area'));
             labels.push(l);
           }
           $('#label-input-area').val('');
@@ -45,7 +47,10 @@ block body-block
       });
     })();
     function deleteLabel(i) {
-      $('#label-div-' + i).remove();
+      let id = '#label-div-' + i;
+      let label = $(id).children('span').text();
+      labels.splice(labels.indexOf(label), 1);
+      $(id).remove();
     }
   script.
     var simplemde = new SimpleMDE({ element: document.getElementById("md-editor"),
@@ -86,14 +91,18 @@ block body-block
     function submitArticle(e) {
       $('#submit').unbind('click');
       content = simplemde.value();
-      //console.log(JSON.stringify(labels));
       $.ajax({
         url: 'http://localhost:3000/admin/add',
         data: {md: content, label: labels.join(',')},
         type: "post",
-        dataType: "text",
+        dataType: "json",
         success: (res) => {
-          console.log(res);
+          if (res.code == 0) {
+            location.href = '/articles';
+          } else {
+            alert(res.msg);
+            $('#submit').click(submitArticle);
+          }
         },
         error: () => {
           $('#submit').click(submitArticle);

@@ -7,8 +7,24 @@ const md = require('markdown-it')({
 });
 const configs = require('../config/base.config');
 
-function updateLabels(conn, labels, ord = 0) {
+function errorResponde(res, conn) {
+    conn.rollback(() => {
+      res.json({code: 1, msg: '添加失败'});
+      conn.end((err) => {
+
+      });
+    });
+}
+
+function updateLabels(res, conn, addval, labels, ord = 0) {
   if (ord >= labels.length) {
+    conn.commit((err) => {
+      if (err) {
+        errorResponde(res, conn);
+        return;
+      }
+      res.json({code: 0, msg: '添加成功'});
+    });
     conn.end((err) => {
 
     });
@@ -16,23 +32,35 @@ function updateLabels(conn, labels, ord = 0) {
   }
   let label = labels[ord];
   conn.query('select * from labels where ? ', {name: label}, (err, results, fields) => {
+    if (err) {
+      errorResponde(res, conn);
+      return;
+    }
     if (results.length > 0) {
-      let hotmark = results[0].hotmark + configs.label_hotmark_rule;
+      let hotmark = results[0].hotmark + addval;
       let articles = results[0].articles + 1;
-      conn.query('update labels set hotmark = ? where name = ?', 
-        [homark, articles],
+      conn.query('update labels set hotmark = ?, articles = ? where name = ?', 
+        [hotmark, articles, label],
         (err, results, fields) => {
-          updateLabels(conn, labels, ord + 1);
+          if (err) {
+            errorResponde(res, conn);
+            return;
+          }
+          updateLabels(res, conn, addval, labels, ord + 1);
         }
       );
     } else {
-      let hotmark = configs.label_hotmark_rule.add;
+      let hotmark = addval;
       let articles = 1;
       let addtime = Math.floor(new Date().getTime() / 1000);
       conn.query('insert into labels set ?', 
         {name: label, articles: articles, hotmark: hotmark, addtime: addtime},
         (err, results, fields) => {
-          updateLabels(conn, labels, ord + 1);
+          if (err) {
+            errorResponde(res, conn);
+            return;
+          }
+          updateLabels(res, conn, addval, labels, ord + 1);
         }
       );
     }
@@ -40,7 +68,19 @@ function updateLabels(conn, labels, ord = 0) {
 }
 
 router.get('/add', (req, res, next) => {
-  res.render('admin/article_edit', { title: '添加文章'});
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.connect();
+  conn.query('select name from labels', (err, results, fields) => {
+    var labels = results.map((row) => (row.name));
+    res.render('admin/article_edit', {
+      title: '添加文章',
+      labels: JSON.stringify(labels)
+    });
+    conn.end((err) => {
+
+    });
+  });
 });
 
 router.post('/add', (req, res, next) => {
@@ -52,16 +92,17 @@ router.post('/add', (req, res, next) => {
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
   conn.connect();
-  conn.query("insert into articles set ?", {
-    title: title,
-    content: content,
-    category: 0,
-    label: label,
-    addtime: addtime
-  }, (err, results, fields) => {
-    // 此处没有transaction，因为我对何种负荷下会出现更新错误不清楚
-    updateLabels(conn, label.split(','));
-    res.send("succ");
+  conn.beginTransaction((err) => {
+    conn.query("insert into articles set ?", {
+      title: title,
+      content: content,
+      category: 0,
+      label: label,
+      addtime: addtime
+    }, (err, results, fields) => {
+      if (err) return;
+      updateLabels(res, conn, configs.label_hotmark_rule.add, label.split(','));
+    });
   });
 });
 

@@ -60,15 +60,24 @@
 #label-input-area {
   height: 25px;
   outline: none;
-  border: 1px solid #5D4037CC;
+  border: none;
+  background-color: inherit;
+  color: white;
 }
 
 .label-div {
-  background-color: #5D4037CC;
   display: inline-block;
   padding: 5px 15px;
   border-radius: 10px;
   margin-left: 20px;
+}
+
+.label-div-label-existed {
+  background-color: #5D4037CC;
+}
+
+.label-div-label-new {
+  background-color: #00E676CC;
 }
 
 .label-div > * {
@@ -91,4 +100,5 @@ div#submit {
   background-color: #009688;
   padding: 5px 20px;
   margin-left: 100px;
+  color: white;
 }
