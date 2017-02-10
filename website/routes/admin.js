@@ -67,6 +67,30 @@ function updateLabels(res, conn, addval, labels, ord = 0) {
   });
 }
 
+router.get('/articles', (req, res, next) => {
+  res.render('admin/articles', {
+    title: '文章管理'
+  });
+});
+
+router.get('/photos', (req, res, next) => {
+  res.render('admin/photos', {
+    title: '照片管理'
+  });
+});
+
+router.get('/labels', (req, res, next) => {
+  res.render('admin/labels', {
+    title: '标签管理'
+  });
+});
+
+router.get('/categories', (req, res, next) => {
+  res.render('admin/categories', {
+    title: '类别管理'
+  })
+});
+
 router.get('/add', (req, res, next) => {
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
@@ -114,7 +138,7 @@ router.get('/login', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
   res.render('admin/index', {
-    title: '后台首页'
+    title: '首页'
   });
 });
 

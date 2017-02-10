@@ -1,4 +1,7 @@
 body
-  block body-block
-    h1 #{title}
+  include website_banner
+  include left_nav_bar
+  block main-body-block
+    div.main
+      h1 #{title}
   = '\n'

@@ -1,2 +1,11 @@
 block left-nav-block
   div#left-nav-div
+    mixin nav(img, addr)
+      div.left-nav-item
+        a(href= addr)
+          img(src='/images/icons/' + img)
+    +nav('ic_home_white_36dp_2x.png', '/admin/')
+    +nav('ic_note_white_36dp_2x.png', '/admin/articles')
+    +nav('ic_photo_white_36dp_2x.png', '/admin/photos')
+    +nav('ic_label_white_36dp_2x.png', '/admin/labels')
+    +nav('ic_apps_white_36dp_2x.png', '/admin/categories')
