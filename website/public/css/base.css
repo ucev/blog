@@ -15,9 +15,9 @@ body {
   width: 250px;
   height: 100px;
   margin: 300px auto;
+  text-align: center;
   background-color: #263238BB;
   border-radius: 10px;
-  text-align: center;
 }
 
 #front-intro-div a {
@@ -26,20 +26,20 @@ body {
 }
 
 #website-intro-div {
-  width: 100%;
-  height: 100px;
-  background-color: #795548;
   position: fixed;
   top: 0;
   left: 0;
-  box-shadow: 0px 5px 5px #4E342E;
   z-index: 100;
+  width: 100%;
+  height: 100px;
+  background-color: #795548;
+  box-shadow: 0px 5px 5px #4E342E;
 }
 
 #website-intro-div > div {
-  display: inline-block;
   position: absolute;
   top: 30px;
+  display: inline-block;
   height: 30px;
 }
 
@@ -50,8 +50,8 @@ body {
 
 #website-front-div a {
   display: inline-block;
-  color: white;
   font-size: 30px;
+  color: white;
 }
 
 #website-search-div {
@@ -68,13 +68,14 @@ body {
   width: 0px;
   padding: 0;
   margin: 0;
-  transition: width 1s;
-  -moz-transition: width 1s;
   outline: none;
   border: none;
-  border-bottom: 2px solid white;
-  background: none;
   color: white;
+  background: none;
+  border-bottom: 2px solid white;
+  transition: width 1s linear;
+  -moz-transition: width 1s linear;
+  -webkit-transition: width 1s linear;
 }
 
 #website-search-img {
@@ -82,14 +83,14 @@ body {
 }
 
 #website-hide-input-img {
-  height: 25px;
   position: relative;
   left: -25px;
+  height: 25px;
 }
 
 .main {
-  margin-top: 100px;
   min-height: 800px;
+  margin-top: 100px;
   padding: 50px 100px;
 }
 
@@ -107,17 +108,17 @@ body {
 }
 
 .markdown-display h1 {
-  border-bottom: 1px solid #BDBDBD;
-  color: #000000;
   font-size: 40px;
+  color: #000000;
+  border-bottom: 1px solid #BDBDBD;
   padding-bottom: 10px;
 }
 
 .markdown-display h2 {
-  border-bottom: 1px solid #BDBDBD;
-  color: #000000;
   font-size: 30px;
+  color: #000000;
   padding-bottom: 10px;
+  border-bottom: 1px solid #BDBDBD;
 }
 
 .markdown-display h3 {
@@ -132,10 +133,10 @@ body {
   font-size: 16px;
 }
 
-.markdown-display h6 {  
+.markdown-display h6 {
+  font-size: 14px;
   color: #777777;
   background-color: inherit;
-  font-size: 14px;
 }
 
 .markdown-display hr {
@@ -152,9 +153,9 @@ body {
 .markdown-display ul,
 .markdown-display table,
 .markdown-display pre {
-  margin: 20px 0;
-  line-height: 30px;
   font-size: 20px;
+  line-height: 30px;
+  margin: 20px 0;
 }
 
 .markdown-display table {
@@ -231,10 +232,10 @@ body {
 
 
 footer {
+  position: relative;
   width: 100%;
   height: 100px;
   background-color: #795548;
-  position: relative;
 }
 
 #contact-me {

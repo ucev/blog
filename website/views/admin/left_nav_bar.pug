@@ -3,7 +3,7 @@ block left-nav-block
     mixin nav(_img, _addr, _label)
       div.left-nav-item
         a(href= _addr)
-          img.left-nav-item-img(src='/images/icons/' + _img)
+          img.left-nav-item-img.operation-bar-icon(src='/images/icons/' + _img)
           span.left-nav-item-label #{_label}
     +nav('ic_home_white_36dp_2x.png', '/admin/', '首页')
     +nav('ic_note_white_36dp_2x.png', '/admin/articles', '文章管理')

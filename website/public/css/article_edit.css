@@ -1,7 +1,9 @@
 @charset "utf8";
 
 * {
+  box-sizing: border-box;
   -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
 #edit-body, 
@@ -19,9 +21,9 @@
 }
 
 #op-div {
-  background-color: #5D4037CC;;
-  padding: 20px 0;
   margin-top: 20px;
+  padding: 20px 0;
+  background-color: #5D4037CC;
 }
 
 #edit-area,
@@ -59,17 +61,17 @@
 
 #label-input-area {
   height: 25px;
+  color: white;
+  background-color: inherit;
   outline: none;
   border: none;
-  background-color: inherit;
-  color: white;
 }
 
 .label-div {
   display: inline-block;
+  margin-left: 20px;
   padding: 5px 15px;
   border-radius: 10px;
-  margin-left: 20px;
 }
 
 .label-div-label-existed {
@@ -97,8 +99,8 @@
 div#save,
 div#submit {
   display: inline-block;
-  background-color: #009688;
-  padding: 5px 20px;
   margin-left: 100px;
+  padding: 5px 20px;
   color: white;
+  background-color: #009688;
 }
