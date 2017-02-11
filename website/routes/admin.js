@@ -136,6 +136,9 @@ router.get('/login', (req, res, next) => {
   });
 });
 
+const ajax_request = require('./ajax_admin');
+router.use('/datas', ajax_request);
+
 router.get('/', (req, res, next) => {
   res.render('admin/index', {
     title: '首页'

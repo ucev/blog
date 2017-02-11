@@ -1,6 +1,5 @@
 $(document).ready(() => {
   (() => {
-
     function f() {
       var w = $("#left-nav-div").width();
       if (w < 80) {
@@ -12,6 +11,8 @@ $(document).ready(() => {
       }
     }
     $('#expand-side-bar-img').click(f);
-
+    $('#add-article-img').click(() => {
+      location.href = '/admin/articles/add';
+    });
   })();
 });

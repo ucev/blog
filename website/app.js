@@ -25,9 +25,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // nodejs modules
-app.use(express.static(path.join(__dirname, 'node_modules/simplemde')));
 app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/markdown-it/dist')));
+app.use(express.static(path.join(__dirname, 'node_modules/react/dist')));
+app.use(express.static(path.join(__dirname, 'node_modules/react-dom/dist')));
+app.use(express.static(path.join(__dirname, 'node_modules/simplemde')));
 app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
 
 app.use('/', index);

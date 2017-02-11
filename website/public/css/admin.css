@@ -32,6 +32,13 @@ body {
   left: 10px;
 }
 
+#banner-left-div {
+  position: absolute;
+  right: 30px;
+  top: 10px;
+  height: 30px;
+}
+
 #left-nav-div {
   position: fixed;
   top: 40px;
@@ -73,4 +80,120 @@ body {
   transition: margin-left 0.2s linear;
   -moz-transition: margin-left 0.2s linear;
   -webkit-transition: margin-left 0.2s linear;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table,
+th,
+td {
+  border: 1px solid #BCAAA4;
+}
+
+td {
+  color: #424242;
+}
+
+.content-table {
+  width: 80%;
+  margin-left: 10%;
+}
+
+.content-row-label {
+  height: 50px;
+  color: white;
+  background-color: #795548;
+}
+
+.content-row-data {
+  height: 40px;
+  text-align: center;
+}
+
+.content-row-data:nth-of-type(even) {
+  background-color: #EFEBE9;
+}
+
+.content-row-check-label {
+  width: 30px;
+}
+
+.content-row-index-label {
+  width: 30px;
+}
+
+.content-row-title-label {
+  width: 100px;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.content-row-category-label {
+  width: 60px;
+}
+
+.content-row-label-label {
+  width: 100px;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.content-row-status-label {
+  width: 50px;
+}
+
+.content-row-pageview-label {
+  width: 50px;
+}
+
+.content-row-operation-label {
+  width: 100px;
+}
+
+.content-row-checkbox-data {
+  
+}
+
+.content-row-index-data {
+  
+}
+
+.content-row-title-data {
+
+}
+
+.content-row-title-data a {
+  display: table-cell;
+  width: 100%;
+  height: 100%;
+  padding-left: 20px;
+  font-size: 14px;
+  text-decoration: none;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.content-row-category-data {
+  
+}
+
+.content-row-label-data {
+  padding-left: 20px;
+  text-align: left;
+}
+
+.content-row-status-data {
+  
+}
+
+.content-row-pageview-data {
+  
+}
+
+.content-row-operation-data {
+  
 }

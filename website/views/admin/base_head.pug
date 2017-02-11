@@ -4,7 +4,10 @@ head
     - var pug_cur_time = new Date().getTime();
     block jsscript-block
       script(src='/jquery.min.js')
-      script(src='/js/base.js?#{pug_cur_time}')
-      script(src='/js/admin.js?#{pug_cur_time}')
+      script(src='/react.min.js')
+      script(src='/react-dom.min.js')
+      script(src='/js/babel.min.js')
+      script(src='/js/base.js?pug_cur_time' + pug_cur_time)
+      script(src='/js/admin.js?' + pug_cur_time)
     block stylesheet-block
-      link(rel='stylesheet' href='/css/admin.css?#{pug_cur_time}')
+      link(rel='stylesheet' href='/css/admin.css?' + pug_cur_time)
