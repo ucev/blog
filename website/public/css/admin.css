@@ -35,20 +35,43 @@ body {
   background-color: #795548;
   position: fixed;
   z-index: 50;
-  text-align: center;
-  padding-top: 20px;
-  top: 50px;
+  padding: 20px 10px;
+  top: 40px;
+  overflow: hidden;
+  box-shadow: 5px 0 5px #795548;
+  transition: width 0.2s linear;
+  -moz-transition: width 0.2s linear;
+  -webkit-transition: width 0.2s linear;
 }
 
 .left-nav-item {
   margin-top: 10px;
+  width: 150px;
 }
 
-.left-nav-item img {
+.left-nav-item-img,
+.left-nav-item-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.left-nav-item-img {
   width: 30px;
+}
+
+.left-nav-item-label {
+  width: 80px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 14px;
+  color: #BCAAA4;
 }
 
 .main {
   margin-left: 50px;
   margin-top: 50px;
+  padding: 20px;
+  transition: margin-left 0.2s linear;
+  -moz-transition: margin-left 0.2s linear;
+  -webkit-transition: margin-left 0.2s linear;
 }

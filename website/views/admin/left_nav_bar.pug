@@ -1,11 +1,12 @@
 block left-nav-block
   div#left-nav-div
-    mixin nav(img, addr)
+    mixin nav(_img, _addr, _label)
       div.left-nav-item
-        a(href= addr)
-          img(src='/images/icons/' + img)
-    +nav('ic_home_white_36dp_2x.png', '/admin/')
-    +nav('ic_note_white_36dp_2x.png', '/admin/articles')
-    +nav('ic_photo_white_36dp_2x.png', '/admin/photos')
-    +nav('ic_label_white_36dp_2x.png', '/admin/labels')
-    +nav('ic_apps_white_36dp_2x.png', '/admin/categories')
+        a(href= _addr)
+          img.left-nav-item-img(src='/images/icons/' + _img)
+          span.left-nav-item-label #{_label}
+    +nav('ic_home_white_36dp_2x.png', '/admin/', '首页')
+    +nav('ic_note_white_36dp_2x.png', '/admin/articles', '文章管理')
+    +nav('ic_photo_white_36dp_2x.png', '/admin/photos', '图片管理')
+    +nav('ic_label_white_36dp_2x.png', '/admin/labels', '标签管理')
+    +nav('ic_apps_white_36dp_2x.png', '/admin/categories', '类别管理')
