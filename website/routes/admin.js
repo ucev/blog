@@ -111,7 +111,7 @@ router.post('/articles/add', (req, res, next) => {
   var content = req.body.md.trim();
   var label = req.body.label;
   var h1 = content.substring(0, content.indexOf('\n')).trim();
-  var title = h1.split(/\s+/)[1];
+  var title = h1.split(/\s+/).slice(1).join(' ');
   var addtime = Math.floor(new Date().getTime() / 1000);
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
@@ -122,7 +122,8 @@ router.post('/articles/add', (req, res, next) => {
       content: content,
       category: 0,
       label: label,
-      addtime: addtime
+      addtime: addtime,
+      modtime: addtime
     }, (err, results, fields) => {
       if (err) return;
       updateLabels(res, conn, configs.label_hotmark_rule.add, label.split(','));
@@ -131,8 +132,8 @@ router.post('/articles/add', (req, res, next) => {
 });
 
 router.get('/articles/modify', (req, res, next) => {
-  var i = Number(req.query.id);
-  if (isNaN(i)) {
+  var id = Number(req.query.id);
+  if (isNaN(id)) {
     res.redirect('/admin');
   } else {
     const mysql = require('mysql');
@@ -141,10 +142,20 @@ router.get('/articles/modify', (req, res, next) => {
       (err, results, fields) => {
         if (results.length > 0) {
           const row = results[0];
-          res.render('admin/article_edit', {
-            title: '修改文章',
-            type: 'edit',
-            content: row.content
+          const content = row.content;
+          const current_labels = row.label;   
+          conn.query('select name from labels', (err, results, fields) => {
+            var labels = results.map((r) => (r.name));
+            res.render('admin/article_edit', {
+              title: '修改文章',
+              type: 'edit',
+              id: id,
+              content: encodeURIComponent(content),
+              labels: JSON.stringify(labels),
+              current_labels: current_labels
+            });
+            conn.end((err) => {
+            });
           });
         } else {
           res.redirect('/admin');
@@ -155,7 +166,24 @@ router.get('/articles/modify', (req, res, next) => {
 });
 
 router.post('/articles/modify', (req, res, next) => {
-
+  var content = req.body.md.trim();
+  var label = req.body.label;
+  var id = req.body.id;
+  var h1 = content.substring(0, content.indexOf('\n')).trim();
+  var title = h1.split(/\s+/).slice(1).join(' ');
+  var modtime = Math.floor(new Date().getTime() / 1000);
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.connect();
+  conn.beginTransaction((err) => {
+    conn.query('update articles set title = ?, content = ?, label = ?, modtime = ? where id = ?', 
+      [title, content, label, modtime, id],
+      (err, results, fields) => {
+        if (err) return;
+        updateLabels(res, conn, configs.label_hotmark_rule.add, label.split(','));
+      }
+    );
+  });
 });
 
 router.get('/login', (req, res, next) => {

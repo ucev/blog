@@ -24,6 +24,7 @@ body {
 
 .operation-bar-icon {
   width: 30px;
+  cursor: pointer;
 }
 
 #expand-side-bar-img {
@@ -208,4 +209,8 @@ td {
   padding: 0px 5px;
   color: #4CAF50;
   cursor: pointer;
+}
+
+#display-area {
+  padding: 30px;
 }

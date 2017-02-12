@@ -4,7 +4,7 @@ block append jsscript-block
   script(src='/dist/simplemde.min.js')
   script(src='/markdown-it.min.js')
   script(src='/template.js')
-  script const labels_exists = JSON.parse( '!{labels}' )
+  script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;
 
 block append stylesheet-block
   link(rel='stylesheet' href='/dist/simplemde.min.css')
@@ -31,87 +31,104 @@ block main-body-block
     </div>
   script.
     var labels = [];
-    (() => {
-      const labelTpl = $("#label-tpl").html();
-      var labelCount = 0;
-      $('#label-input-area').keydown((e) => {
-        if (e.which == 13) {
-          let l = $('#label-input-area').val();
-          if (labels.indexOf(l) == -1) {
-            var params = {label: l, ord: labelCount++, nclass: labels_exists.indexOf(l) == -1 ? 'new' : 'existed'};
-            $(template(labelTpl, params)).appendTo($('#labels-area'));
-            labels.push(l);
-          }
-          $('#label-input-area').val('');
-        }
-      });
-    })();
+    var labelCount = 0;
+    const labelTpl = $("#label-tpl").html();
     function deleteLabel(i) {
       let id = '#label-div-' + i;
       let label = $(id).children('span').text();
       labels.splice(labels.indexOf(label), 1);
       $(id).remove();
     }
+    function addLabel(lbs) {
+      if (typeof lbs == 'string') lbs = [lbs];
+      for (let i in lbs) {
+        let l = lbs[i];
+        if (l === undefined || l === null || l === '') continue;
+        if (labels.indexOf(l) == -1) {
+          var params = {label: l, ord: labelCount++, nclass: labels_exists.indexOf(l) == -1 ? 'new' : 'existed'};
+          $(template(labelTpl, params)).appendTo($('#labels-area'));
+          labels.push(l);
+        }
+      }
+    }
+    (() => {
+      $('#label-input-area').keydown((e) => {
+        if (e.which == 13) {
+          let l = $('#label-input-area').val();
+          addLabel(l);
+          $('#label-input-area').val('');
+        }
+      });
+    })();
+  if type == 'edit'
+    script.
+      const markdown_editor_config = {
+        element: document.getElementById("md-editor"),
+        status: false,
+        spellChecker: false,
+        initialValue: decodeURIComponent('#{content}')
+      };
+      function submitArticle(e) {
+        console.log('submit');
+        $('#submit').unbind('click');
+        content = simplemde.value();
+        $.ajax({
+          url: 'http://localhost:3000/admin/articles/modify',
+          data: {md: content, label: labels.join(','), id: this_article_id},
+          type: "post",
+          dataType: "json",
+          success: (res) => {
+            if (res.code == 0) {
+              location.href = '/articles';
+            } else {
+              alert(res.msg);
+              $('#submit').click(submitArticle);
+            }
+          },
+          error: () => {
+            console.log('error');
+            $('#submit').click(submitArticle);
+          }
+        });
+      }
+  else
+    script.
+      const markdown_editor_config = {
+        element: document.getElementById("md-editor"),
+        status: false,
+        spellChecker: false
+      };
+      function submitArticle(e) {
+        $('#submit').unbind('click');
+        content = simplemde.value();
+        $.ajax({
+          url: 'http://localhost:3000/admin/add',
+          data: {md: content, label: labels.join(',')},
+          type: "post",
+          dataType: "json",
+          success: (res) => {
+            if (res.code == 0) {
+              location.href = '/articles';
+            } else {
+              alert(res.msg);
+              $('#submit').click(submitArticle);
+            }
+          },
+          error: () => {
+            $('#submit').click(submitArticle);
+          }
+        });
+      }
   script.
-    var simplemde = new SimpleMDE({ element: document.getElementById("md-editor"),
-      status: false,
-      spellChecker: false
-    });
+    var simplemde = new SimpleMDE(markdown_editor_config);
     var markdown = markdownit();
     simplemde.codemirror.on("change", (instance, changeObj) => {
-      console.log(instance);
-      console.log(changeObj);
+      //console.log(instance);
+      //console.log(changeObj);
       var mdt = markdown.render(simplemde.value());
       $("#display-area").html(mdt);
       $("#display-area").scrollTop($('#display-area')[0].scrollHeight);
     });
-  if type == 'edit':
-    script.
-      function submitArticle(e) {
-        $('#submit').unbind('click');
-        content = simplemde.value();
-        $.ajax({
-          url: 'http://localhost:3000/admin/add',
-          data: {md: content, label: labels.join(',')},
-          type: "post",
-          dataType: "json",
-          success: (res) => {
-            if (res.code == 0) {
-              location.href = '/articles';
-            } else {
-              alert(res.msg);
-              $('#submit').click(submitArticle);
-            }
-          },
-          error: () => {
-            $('#submit').click(submitArticle);
-          }
-        });
-      }
-      $("#submit").click(submitArticle);
-  else
-    script.
-      function submitArticle(e) {
-        $('#submit').unbind('click');
-        content = simplemde.value();
-        $.ajax({
-          url: 'http://localhost:3000/admin/add',
-          data: {md: content, label: labels.join(',')},
-          type: "post",
-          dataType: "json",
-          success: (res) => {
-            if (res.code == 0) {
-              location.href = '/articles';
-            } else {
-              alert(res.msg);
-              $('#submit').click(submitArticle);
-            }
-          },
-          error: () => {
-            $('#submit').click(submitArticle);
-          }
-        });
-      }
-      $("#submit").click(submitArticle);
-  script.
     $('#display-area').html(markdown.render(simplemde.value()));
+    $("#submit").click(submitArticle);
+    addLabel(current_labels.split(','));

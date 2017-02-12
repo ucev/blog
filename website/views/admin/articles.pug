@@ -29,8 +29,8 @@ block main-body-block
           super(props);
           this.state = this.props.article;
           this.article_state_label = {
-            on: '上线',
-            off: '下线',
+            on: '已上线',
+            off: '已下线',
             check: '待核查'
           };
           this.handleStateClick = this.handleStateClick.bind(this);
@@ -62,7 +62,7 @@ block main-body-block
           } else if (type == 'del') {
             alert(del);
           } else if (type == 'check') {
-            location.href = '/admin/articles/add';
+            location.href = `/admin/articles/modify?id=${id}`;
           }
         }
         render() {
