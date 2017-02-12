@@ -149,7 +149,7 @@ td {
 }
 
 .content-row-operation-label {
-  width: 100px;
+  width: 60px;
 }
 
 .content-row-checkbox-data {
@@ -195,5 +195,17 @@ td {
 }
 
 .content-row-operation-data {
-  
+  padding-left: 0;
+  text-align: left;
+}
+
+.article-operation-ul {
+  list-style-type: none;
+}
+
+.article-operation-ul li {
+  display: inline-block;
+  padding: 0px 5px;
+  color: #4CAF50;
+  cursor: pointer;
 }

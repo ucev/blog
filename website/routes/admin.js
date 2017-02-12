@@ -130,6 +130,34 @@ router.post('/articles/add', (req, res, next) => {
   });
 });
 
+router.get('/articles/modify', (req, res, next) => {
+  var i = Number(req.query.id);
+  if (isNaN(i)) {
+    res.redirect('/admin');
+  } else {
+    const mysql = require('mysql');
+    const conn = mysql.createConnection(configs.database_config);
+    conn.query('select * from articles where id = ?', [id],
+      (err, results, fields) => {
+        if (results.length > 0) {
+          const row = results[0];
+          res.render('admin/article_edit', {
+            title: '修改文章',
+            type: 'edit',
+            content: row.content
+          });
+        } else {
+          res.redirect('/admin');
+        }
+      }
+    );
+  }
+});
+
+router.post('/articles/modify', (req, res, next) => {
+
+});
+
 router.get('/login', (req, res, next) => {
   res.render('admin/login', {
     title: '登陆'

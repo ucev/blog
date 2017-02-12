@@ -27,37 +27,58 @@ block main-body-block
       class ArticleRow extends React.Component {
         constructor(props) {
           super(props);
-          this.id = this.props.article.id;
-          this.state = {
-            top: this.props.article.top,
-            state: this.props.article.state
-          };
+          this.state = this.props.article;
           this.article_state_label = {
             on: '上线',
             off: '下线',
             check: '待核查'
           };
+          this.handleStateClick = this.handleStateClick.bind(this);
           this.article_operation = {
-            on: <ul className='article-operation-ul'><li><a href='#'>下线</a></li><li><a href='#'>核查</a></li></ul>,
-            off: <ul className='article-operation-ul'><li><a href='#'>上线</a></li><li><a href='#'>核查</a></li></ul>,
-            check: <ul className='article-operation-ul'><li><a href='#'>上线</a></li><li><a href='#'>删除</a></li></ul>
+            on: <ul className='article-operation-ul'><li data-type='off' onClick = {this.handleStateClick}>下线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
+            off: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
+            check: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
+          }
+        }
+        handleStateClick(e) {
+          var type = e.target.getAttribute('data-type');
+          var id = this.state.id;
+          var that = this;
+          if (type == 'on' || type == 'off') {
+            fetch('/admin/datas/articles/modify',
+              {
+                data: {id: id, state: type},
+                type: 'get',
+                dataType: 'json',
+                success: function(dt) {
+                  console.log(JSON.stringify(dt));
+                  that.setState(dt);
+                },
+                error: function() {
+                  console.log(error);
+                }
+              }
+            );
+          } else if (type == 'del') {
+            alert(del);
+          } else if (type == 'check') {
+            location.href = '/admin/articles/add';
           }
         }
         render() {
-          const article = this.props.article;
-          const url = '/articles/view/' + article.id;
+          const url = '/articles/view/' + this.state.id;
           const topStatus = this.state.top == 0 ? {} : {color: '#EF5350'};
           const articleState = this.article_state_label[this.state.state];
           const operation = this.article_operation[this.state.state];
           return (
             <tr className='content-row-data'>
               <td className='content-row-checkbox-data'><input type='checkbox' /></td>
-              <td className='content-row-index-data'>{this.props.index + 1}</td>
-              <td className='content-row-title-data' style={topStatus}><a href={url}>{article.title}</a></td>
-              <td className='content-row-category-data'>{article.category}</td>
-              <td className='content-row-label-data'>{article.label}</td>
+              <td className='content-row-index-data' onClick = {this.handleIndexClick}>{this.props.index + 1}</td>
+              <td className='content-row-title-data' style={topStatus}><a href={url}>{this.state.title}</a></td>
+              <td className='content-row-category-data'>{this.state.category}</td>
+              <td className='content-row-label-data'>{this.state.label}</td>
               <td className='content-row-status-data'>{articleState}</td>
-              <td className='content-row-pageview-data'>{article.pageview}</td>
+              <td className='content-row-pageview-data'>{this.state.pageview}</td>
               <td className='content-row-operation-data'>{operation}</td>
             </tr>
           );
@@ -101,7 +122,7 @@ block main-body-block
        */
       function urlParamsEncode(obj) {
         var param = '';
-        for (key in obj) {
+        for (let key in obj) {
           param += (encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]) + '&');
         }
         return param.substring(0, param.length - 1);

@@ -65,26 +65,53 @@ block main-body-block
       $("#display-area").html(mdt);
       $("#display-area").scrollTop($('#display-area')[0].scrollHeight);
     });
-    function submitArticle(e) {
-      $('#submit').unbind('click');
-      content = simplemde.value();
-      $.ajax({
-        url: 'http://localhost:3000/admin/add',
-        data: {md: content, label: labels.join(',')},
-        type: "post",
-        dataType: "json",
-        success: (res) => {
-          if (res.code == 0) {
-            location.href = '/articles';
-          } else {
-            alert(res.msg);
+  if type == 'edit':
+    script.
+      function submitArticle(e) {
+        $('#submit').unbind('click');
+        content = simplemde.value();
+        $.ajax({
+          url: 'http://localhost:3000/admin/add',
+          data: {md: content, label: labels.join(',')},
+          type: "post",
+          dataType: "json",
+          success: (res) => {
+            if (res.code == 0) {
+              location.href = '/articles';
+            } else {
+              alert(res.msg);
+              $('#submit').click(submitArticle);
+            }
+          },
+          error: () => {
             $('#submit').click(submitArticle);
           }
-        },
-        error: () => {
-          $('#submit').click(submitArticle);
-        }
-      });
-    }
-    $("#submit").click(submitArticle);
+        });
+      }
+      $("#submit").click(submitArticle);
+  else
+    script.
+      function submitArticle(e) {
+        $('#submit').unbind('click');
+        content = simplemde.value();
+        $.ajax({
+          url: 'http://localhost:3000/admin/add',
+          data: {md: content, label: labels.join(',')},
+          type: "post",
+          dataType: "json",
+          success: (res) => {
+            if (res.code == 0) {
+              location.href = '/articles';
+            } else {
+              alert(res.msg);
+              $('#submit').click(submitArticle);
+            }
+          },
+          error: () => {
+            $('#submit').click(submitArticle);
+          }
+        });
+      }
+      $("#submit").click(submitArticle);
+  script.
     $('#display-area').html(markdown.render(simplemde.value()));
