@@ -3,6 +3,8 @@ extends base_layout
 block main-body-block
   div.main
     div#target-div
+      div#table-div
+      div#table-nav-div
     script(type='text/babel').
       class TableLabel extends React.Component {
         constructor(props) {
@@ -51,8 +53,7 @@ block main-body-block
                 type: 'get',
                 dataType: 'json',
                 success: function(dt) {
-                  console.log(JSON.stringify(dt));
-                  that.setState(dt);
+                  that.setState(dt.data);
                 },
                 error: function() {
                   console.log(error);
@@ -109,10 +110,63 @@ block main-body-block
           );
         }
       };
+      class TableNavLinkLi extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            page: this.props.page,
+            title: this.props.title
+          }
+        }
+        render() {
+          return (
+            <li className = 'table-nav-ul-li'>{this.state.title}</li>
+          );
+        }
+      }
+      class TableNavLink extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            page: this.props.page,
+            total: this.props.total
+          }
+          this.getRenderData = this.getRenderData.bind(this);
+        }
+        getRenderData() {
+          const page = this.state.page;
+          const total = this.state.total;
+          var start = page < 5 ? 0 : page - 5;
+          var len;
+          if (start + 10 <= total) {
+            len = 10;
+          } else if (total - 10 > 0) {
+            start = total - 10;
+            len = 10;
+          } else {
+            start = 0;
+            len = total;
+          }
+          var lis = [];
+          if (start != 0) lis.push(<TableNavLinkLi page = {start - 1} title='上一页' />);
+          for (let i = 1; i <= len; i++)
+            lis.push(<TableNavLinkLi page = {start + i - 1} title= {start + i} />);
+          if (start + len < total) lis.push(<TableNavLinkLi page = {start + len} title = '下一页' />);
+          return lis;
+        }
+        render() {
+          const lis = this.getRenderData();
+          return (
+            <ul id = 'table-nav-ul'>
+              {lis}
+            </ul>
+          );
+        }
+      }
       function addData(data) {
         ReactDOM.render(
           <ArticleTable articleDatas = {data} />,
-          document.getElementById('target-div')
+          document.getElementById('table-div')
          );
       }
 
@@ -170,10 +224,18 @@ block main-body-block
           xhr.send();
         }
       }
-      fetch('/admin/datas/articles/get', {
-        type: 'get', 
-        dataType: 'json', 
-        success: function(dt) {
-          addData(dt.data);
-        }
-      });
+      function getData(start = 0) {
+        fetch('/admin/datas/articles/get', {
+          type: 'get', 
+          data: {start: start},
+          dataType: 'json', 
+          success: function(dt) {
+            addData(dt.data.data);
+            ReactDOM.render(
+              <TableNavLink page = {6} total = {25} />,
+              document.getElementById('table-nav-div')
+            );
+          }
+        });
+      }
+      getData();

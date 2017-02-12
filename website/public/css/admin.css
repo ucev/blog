@@ -214,3 +214,25 @@ td {
 #display-area {
   padding: 30px;
 }
+
+#table-nav-ul {
+  width: 80%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 10%;
+  line-height: 20px;
+  font-size: 16px;
+  color: #757575;
+  padding-left: 0;
+}
+
+.table-nav-ul-li {
+  display: inline-block;
+  margin-left: 20px;
+  vertical-align: middle;
+}
+
+.table-nav-ul-li-current {
+  color: #4CAF50;
+  text-decoration: underline;
+}
