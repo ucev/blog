@@ -4,7 +4,6 @@ block main-body-block
   div.main
     div#target-div
       div#table-div
-      div#table-nav-div
     script(type='text/babel').
       class TableLabel extends React.Component {
         constructor(props) {
@@ -89,9 +88,12 @@ block main-body-block
       class ArticleTable extends React.Component {
         constructor(props) {
           super(props);
+          this.state = {
+            articleDatas: this.props.articleDatas
+          };
         }
         render() {
-          const articleRows = this.props.articleDatas.map((article, index, arr) => {
+          const articleRows = this.state.articleDatas.map((article, index, arr) => {
             return (
               <ArticleRow key = {index} index = {index} article = {article} />
             );
@@ -115,12 +117,19 @@ block main-body-block
           super(props);
           this.state = {
             page: this.props.page,
-            title: this.props.title
+            title: this.props.title,
+            current: this.props.current
           }
+          this.handleClick = this.handleClick.bind(this);
+        }
+        handleClick() {
+          this.props.click(this.state.page);
         }
         render() {
+          var classes = 'table-nav-ul-li';
+          if (this.state.current == this.state.page) classes += ' table-nav-ul-li-current';
           return (
-            <li className = 'table-nav-ul-li'>{this.state.title}</li>
+            <li className = {classes} onClick = {this.handleClick}>{this.state.title}</li>
           );
         }
       }
@@ -132,6 +141,10 @@ block main-body-block
             total: this.props.total
           }
           this.getRenderData = this.getRenderData.bind(this);
+          this.handleClick = this.handleClick.bind(this);
+        }
+        handleClick(pg) {
+          this.props.pagechange(pg);
         }
         getRenderData() {
           const page = this.state.page;
@@ -148,10 +161,10 @@ block main-body-block
             len = total;
           }
           var lis = [];
-          if (start != 0) lis.push(<TableNavLinkLi page = {start - 1} title='上一页' />);
+          if (start != 0) lis.push(<TableNavLinkLi page = {start - 1} current = {page} title='上一页' click = {this.handleClick} />);
           for (let i = 1; i <= len; i++)
-            lis.push(<TableNavLinkLi page = {start + i - 1} title= {start + i} />);
-          if (start + len < total) lis.push(<TableNavLinkLi page = {start + len} title = '下一页' />);
+            lis.push(<TableNavLinkLi page = {start + i - 1} current = {page} title= {start + i} click = {this.handleClick} />);
+          if (start + len < total) lis.push(<TableNavLinkLi page = {start + len} current = {page} title = '下一页' click = {this.handleClick} />);
           return lis;
         }
         render() {
@@ -163,13 +176,48 @@ block main-body-block
           );
         }
       }
-      function addData(data) {
-        ReactDOM.render(
-          <ArticleTable articleDatas = {data} />,
-          document.getElementById('table-div')
-         );
+      class ArticleLayout extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            data: this.props.data,
+            current: this.props.current,
+            total: this.props.total
+          }
+          this.handlePageChange = this.handlePageChange.bind(this);
+        }
+        handlePageChange(i) {
+          var that = this;
+          fetch('/admin/datas/articles/get', {
+            type: 'get', 
+            data: {start: i},
+            dataType: 'json', 
+            success: function(dt) {
+              if (dt.code == 0) {
+                that.setState({
+                  data: dt.data.data,
+                  current: dt.data.current,
+                  total: dt.data.total
+                });
+              }
+            }
+          });
+        }
+        render() {
+          /**
+           * 可能有更好的更新方法
+           * 以后再看看能不能修改😊 
+           * 因为我感觉这个没有重用，而是重新渲染了
+           */
+          const ky = new Date().getTime();
+          return (
+            <div>
+              <ArticleTable key = {ky} articleDatas = {this.state.data} />;
+              <TableNavLink key = {ky + 1} page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
+            </div>
+          );
+        }
       }
-
       /**
        * 以后再修改下面的函数
        * 权当学习
@@ -230,10 +278,9 @@ block main-body-block
           data: {start: start},
           dataType: 'json', 
           success: function(dt) {
-            addData(dt.data.data);
             ReactDOM.render(
-              <TableNavLink page = {6} total = {25} />,
-              document.getElementById('table-nav-div')
+              <ArticleLayout data = {dt.data.data} current = {dt.data.current} total = {dt.data.total} />,
+              document.getElementById('table-div')
             );
           }
         });

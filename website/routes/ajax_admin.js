@@ -29,12 +29,12 @@ router.get('/articles/modify', (req, res, next) => {
 });
 
 router.get('/articles/get', (req, res, next) => {
-  const start = strToNum(req.query.start);
+  const current = strToNum(req.query.start);
+  const start = current * configs.query_config.step;
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
   conn.query('select count(*) as total from articles', (err, results, fields) => {
-    const total = results[0]['total'] / configs.query_config.step;
-    const current = start / configs.query_config.step;
+    const total = Math.ceil((results[0]['total'] + 1)/ configs.query_config.step);
     conn.query('select id, title, category, label, state, top, pageview from articles limit ?, ?',
       [start, configs.query_config.step],  
       (err, results, fields) => {
