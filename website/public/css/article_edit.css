@@ -96,11 +96,7 @@
   height: 20px;
 }
 
-div#save,
-div#submit {
-  display: inline-block;
+button#save,
+button#submit {
   margin-left: 100px;
-  padding: 5px 20px;
-  color: white;
-  background-color: #009688;
 }

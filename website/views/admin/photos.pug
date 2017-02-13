@@ -1,1 +1,233 @@
 extends base_layout
+
+block main-body-block
+  div.main
+    div#main-div
+    script(type='text/babel').
+      /**
+       * 这个决定修改成类
+       */
+      class AddInputDialog extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleConfirmClick = this.handleConfirmClick.bind(this);
+          this.handleCancelClick = this.handleCancelClick.bind(this);
+        }
+        handleConfirmClick() {
+          var val = this.textInput.value;
+          this.props.handleConfirm(val);
+          this.textInput.value = "";
+        }
+        handleCancelClick() {
+          this.props.handleCancel();
+        }
+        render() {
+          var componentStyle = {};
+          if (!this.props.componentIsVisible)
+            componentStyle.display = 'none';
+          return (
+              <div id = 'add-new-group-div' style = {componentStyle}>
+                <div id = 'add-new-group-title'>{this.props.title}</div>
+                <input id = 'add-new-group-input' ref = {(input) => (this.textInput = input)}/>
+                <div id = 'add-new-group-button-div'>
+                  <button id = 'add-new-group-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
+                  <button id = 'add-new-group-cancel-button' onClick = {this.handleCancelClick}>取消</button>
+                </div>
+              </div>
+          );
+        }
+      }
+      class PhotoItem extends React.Component {
+        constructor(props) {
+          super(props);
+        }
+        render() {
+          return (
+            <li className = 'photo-flow-item-li'>
+              <img className = 'photo-flow-item-li-img' src="/images/rabbit.gif"></img>
+              <div className = 'photo-flow-item-li-ope-bar'>
+              </div>
+            </li>
+          );
+        }
+      }
+      class PhotoFlow extends React.Component {
+        constructor(props) {
+          super(props);
+        }
+        render() {
+          const items = [];
+          for (let i = 0; i < this.props.count; i++) {
+            items.push(<PhotoItem />);
+          }
+          return (
+            <div id = 'photo-flow-div'>
+              <div id = 'photo-operation-bar'>
+                <button id = 'upload-image-button' className='operation-button'>上传图片</button>
+              </div>
+              <ul id = 'photo-flow-items-ul'>
+                {items}
+              </ul>
+            </div>
+          );
+        }
+      }
+      class PhotoGroupBar extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            groups: this.props.groups,
+            componentIsVisible: false
+          }
+          this.handleConfirm = this.handleConfirm.bind(this);
+          this.handleCancel = this.handleCancel.bind(this);
+          this.handleGroupItemClick = this.handleGroupItemClick.bind(this);
+          this.showAddDialog = this.showAddDialog.bind(this);
+          this.fetchGroupData = this.fetchGroupData.bind(this);
+          this.fetchGroupData();
+        }
+        showAddDialog() {
+          this.setState({
+            componentIsVisible: true
+          });
+        }
+        fetchGroupData() {
+          var that = this;
+          fetch('/admin/datas/photogroup/get', {
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              if (dt.code == 0) {
+                that.setState({
+                  groups: dt.data
+                });
+              }
+            }
+          });
+        }
+        handleConfirm(groupname) {
+          this.setState({
+            componentIsVisible: false
+          });
+          var that = this;
+          fetch('/admin/datas/photogroup/modify',{
+            data: {groupname: groupname},
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              that.fetchGroupData();
+            },
+            error: function() {
+              console.log('error');
+            }
+          });
+        }
+        handleCancel() {
+          this.setState({
+            componentIsVisible: false
+          });
+        }
+        handleGroupItemClick (e) {
+          alert('click');
+          var gid = e.target.getAttribute('data-gid');
+          this.props.groupChange(gid);
+        }
+        render() {
+          var groupItems = this.state.groups.map((group) => {
+            var gid = group.id;
+            var classes = 'photo-group-item-li';
+            if (gid == this.props.gid) classes += ' photo-group-item-li-current';
+            return <li className = {classes} data-gid = {group.id} onClick = {this.handleGroupItemClick}>{group.name}({group.count})</li>
+          });
+          var componentIsVisible = this.state.componentIsVisible;
+          console.log('photo group bar: ' + componentIsVisible);
+          var key = new Date().getTime();
+          return (
+            <div id = 'photo-group-div'>
+              <ul id = 'photo-group-items-ul'>
+                {groupItems}
+                <li id = 'add-new-photo-group-item' className = 'photo-group-item-li' onClick = {this.showAddDialog}>新建分组</li>
+              </ul>
+              <AddInputDialog title = '新建分组' handleConfirm = {this.handleConfirm} handleCancel = {this.handleCancel} componentIsVisible = {componentIsVisible}/>
+            </div>
+          );
+        }
+      }
+      class PhotoArea extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            gid: 1
+          }
+          this.handlePhotoGroupChange = this.handlePhotoGroupChange.bind(this);
+        }
+        handlePhotoGroupChange(gid) {
+          alert("group change. new id: " + gid);
+          this.setState({
+            gid: gid
+          });
+        }
+        render() {
+          var groups = [];
+          return (
+            <div id='photo-div'>
+              <PhotoFlow count = '200' />
+              <PhotoGroupBar gid = {this.state.gid} groups = {groups} groupChange = {this.handlePhotoGroupChange}/>
+            </div>
+          );
+        }
+      }
+      ReactDOM.render(
+        <PhotoArea />,
+        document.getElementById('main-div')
+      );
+      function urlParamsEncode(obj) {
+        var param = '';
+        for (let key in obj) {
+          param += (encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]) + '&');
+        }
+        return param.substring(0, param.length - 1);
+      }
+      function fetch(url, {
+          data = {}, 
+          type = 'get', 
+          dataType = 'text', 
+          success = function(){}, 
+          error = function(){}, 
+          complete = function(){}}) {
+        var xhr = new XMLHttpRequest();
+        if (xhr == null) return;
+        var params = urlParamsEncode(data);
+        if (type == 'get') {
+          if (!url.endsWith('?')) url += '?';
+          url += params;
+        }
+        xhr.open(type, url);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4) {
+            complete();
+            if (xhr.status == 200) {
+              switch (dataType) {
+                case 'json':
+                  success(JSON.parse(xhr.responseText));
+                  break;
+                case 'xml':
+                  success(xhr.responseXML);
+                  break;
+                case 'text':
+                default:
+                  success(xhr.responseText);
+                  break;
+              }
+            } else {
+              // 此处没有参数
+              error();
+            }
+          }
+        };
+        if (type == 'post') {
+          xhr.send(params)
+        } else {
+          xhr.send();
+        }
+      }

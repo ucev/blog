@@ -1,7 +1,7 @@
 extends base_layout
 
 block append jsscript-block
-  script(src='/dist/simplemde.min.js')
+  script(src='/dist/simplemde.min.js?' + new Date().getTime())
   script(src='/markdown-it.min.js')
   script(src='/template.js')
   script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;
@@ -22,8 +22,8 @@ block main-body-block
         input#label-input-area(placeholder='输入标签' maxlength=10)
         div#labels-area
       div.op-bar
-        div#submit 发布文章
-        div#save 保存文章
+        button.operation-button#submit 发布文章
+        button.operation-button#save 保存文章
   script#label-tpl(type='text/html').
     <div id="label-div-<%= ord %>" class='label-div label-div-label-<%= nclass %>'>
       <span><%= label %></span>
@@ -66,6 +66,7 @@ block main-body-block
         element: document.getElementById("md-editor"),
         status: false,
         spellChecker: false,
+        promptURLs: true,
         initialValue: decodeURIComponent('#{content}')
       };
       function submitArticle(e) {
@@ -96,7 +97,8 @@ block main-body-block
       const markdown_editor_config = {
         element: document.getElementById("md-editor"),
         status: false,
-        spellChecker: false
+        spellChecker: false,
+        promptURLs: true
       };
       function submitArticle(e) {
         $('#submit').unbind('click');

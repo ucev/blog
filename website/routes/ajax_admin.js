@@ -37,9 +37,6 @@ router.get('/articles/modify', (req, res, next) => {
 });
 
 router.get('/articles/get', (req, res, next) => {
-  console.log('------------------');
-  console.log(req.query);
-  console.log('------------------');
   const current = strToNum(req.query.start);
   const start = current * configs.query_config.step;
   const state = emptyString(req.query.state);
@@ -79,6 +76,40 @@ router.get('/articles/get', (req, res, next) => {
         });
       }
     );
+  });
+});
+
+router.get('/photogroup/get', (req, res, next) => {
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('select id, name, count from photogroups order by id asc', (err, results, fields) => {
+    res.json({
+      code: 0,
+      msg: '获取成功',
+      data: results
+    });
+    conn.end((err) => {
+
+    });
+  });
+});
+
+router.get('/photogroup/modify', (req, res, next) => {
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  const groupname = req.query.groupname;
+  const addtime = Math.floor((new Date().getTime()) / 1000);
+  conn.query('insert into photogroups set ?', {
+    name: groupname,
+    addtime: addtime
+  }, (err, results, fields) => {
+    res.json({
+      code: 0,
+      msg: '更新成功'
+    });
+    conn.end((err) => {
+
+    });
   });
 });
 

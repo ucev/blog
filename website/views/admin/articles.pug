@@ -128,7 +128,6 @@ block main-body-block
           );
         }
       }
-
       class ArticleTable extends React.Component {
         constructor(props) {
           super(props);
@@ -259,7 +258,6 @@ block main-body-block
           this.fetchData();
         }
         handleFilterChange(label, value) {
-          alert('label: ' + label + '  value: ' + value);
           if (this.filter[label] == value) return;
           this.filter[label] = value;
           this.filter.start = 0;
@@ -276,16 +274,22 @@ block main-body-block
             {value: '-1', title: '全部'},
             {value: 'on', title: '已上线'},
             {value: 'off', title: '已下线'},
-            {value: 'check', title: '代核查'}
+            {value: 'check', title: '待核查'}
+          ];
+          const opeOptions = [
+            {value: '-1', title: '--选择操作--'}
           ];
           return (
             <div>
-              <div className = 'table-filter-bar'>
+              <div className = 'table-filter-bar table-filter-bar-top'>
                 <FilterSelect title = 'state' label = '状态' options = {stateOptions} change = {this.handleFilterChange} />
                 <FilterInput title = 'category' label = '类别' change = {this.handleFilterChange} />
                 <FilterInput title = 'label' label = '标签' change = {this.handleFilterChange} />
               </div>
               <ArticleTable key = {ky} articleDatas = {this.state.data} />;
+              <div className = 'table-filter-bar table-filter-bar-bottom'>
+                <FilterSelect options = {opeOptions} />
+              </div>
               <TableNavLink key = {ky + 1000} page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
             </div>
           );

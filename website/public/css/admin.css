@@ -11,6 +11,17 @@ body {
   padding: 0;
 }
 
+.operation-button {
+  display: inline-block;
+  padding: 5px 20px;
+  color: white;
+  font-size: 14px;
+  border: none;
+  background: none;
+  background-color: #009688;
+  cursor: pointer;
+}
+
 #admin-banner {
   position: fixed;
   top: 0;
@@ -272,4 +283,142 @@ td {
 .table-filter-item-input:focus {
   outline: none;
   border: 1px solid #BDBDBD;
+}
+
+#photo-div {
+  display: -moz-box;
+  display: -webkit-box;
+  -moz-box-orient: horizontal;
+  width: 80%;
+  min-height: 800px;
+  margin-left: 10%;
+}
+
+#photo-flow-div {
+  width: 200px;
+  box-flex: 1;
+  -moz-box-flex: 1;
+  background: green;
+}
+
+#photo-group-div {
+  width: 150px;
+  background-color: lavender;
+  border: 1px solid #BDBDBD;
+  overflow: visible;
+}
+
+#photo-operation-bar {
+  width: 100%;
+  height: 60px;
+  text-align: right;
+  background-color: yellow;
+}
+
+#upload-image-button {
+  margin-right: 30px;
+  margin-top: 15px;
+}
+
+#photo-flow-items-ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.photo-flow-item-li {
+  position: relative;
+  display: inline-block;
+  width: 25%;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  background-color: #4CAF5099;
+}
+
+.photo-flow-item-li-img {
+  width: 100%;
+}
+
+.photo-flow-item-li-ope-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #FFAB9199;
+}
+
+#photo-group-items-ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.photo-group-item-li {
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  background-color: white;
+  border-bottom: 1px solid #BDBDBD;
+  cursor: pointer;
+}
+
+.photo-group-item-li-current {
+  background-color: yellow;
+}
+
+#add-new-photo-group-item {
+  padding-left: 20px;
+  background-image: url(/images/icons/ic_add_black_24dp_2x.png);
+  background-repeat: no-repeat;
+  background-size: 20px 20px;
+  background-position: 0px;
+}
+
+#add-new-group-div {
+  position: relative;
+  left: -80px;
+  z-index: 10;
+  width: 300px;
+  padding: 30px;
+  background: yellow;
+}
+
+#add-new-group-title {
+  line-height: 40px;
+  font-size: 14px;
+}
+
+#add-new-group-input,
+#add-new-group-input:focus {
+  display: block;
+  width: 100%;
+  height: 30px;
+  font-size: 16px;
+  outline: none;
+  border: 1px solid #BDBDBD;
+}
+
+#add-new-group-button-div {
+  margin-top: 10px;
+}
+
+#add-new-group-confirm-button,
+#add-new-group-cancel-button {
+  width: 40%;
+  height: 30px;
+  font-size: 14px;
+  border: 1px solid #BDBDBD;
+  outline: none;
+}
+
+#add-new-group-confirm-button {
+  color: white;
+  background-color: #009688;
+}
+
+#add-new-group-cancel-button {
+  margin-left: 20%;
+  background-color: #E0E0E0;
 }
