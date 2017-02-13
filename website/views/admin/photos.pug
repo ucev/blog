@@ -74,6 +74,7 @@ block main-body-block
           var fd = new FormData();
           fd.append('file', file);
           fd.append('gid', this.state.gid);
+          console.log(fd.get('gid'));
           fetch('/admin/datas/photos/add', {
             data: fd,
             type: 'post',
@@ -302,7 +303,7 @@ block main-body-block
         };
         if (type == 'post') {
           if (data instanceof FormData) {
-            xhr.setRequestHeader('content-type', 'multipart/form-data');
+            //xhr.setRequestHeader('content-type', 'multipart/form-data');
             xhr.send(data);
           } else {
             var params = urlParamsEncode(data);

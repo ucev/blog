@@ -105,6 +105,7 @@ router.get('/photos/get', (req, res, next) => {
 router.post('/photos/add', (req, res, next) => {
   var form = new multiparty.Form();
   form.parse(req, (err, fields, files) => {
+    console.log(fields);
     console.log(files);
     console.log('---------gid: ' + fields.gid);
     const gid = fields.gid;
