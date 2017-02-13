@@ -5,6 +5,51 @@ block main-body-block
     div#target-div
       div#table-div
     script(type='text/babel').
+      class FilterInput extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleChange = this.handleChange.bind(this);
+        }
+        handleChange(e) {
+          if (e.which == 13) {
+            var title = this.props.title;
+            var value = e.target.value;
+            this.props.change(title, value);
+          }
+        }
+        render() {
+          return (
+            <div className = 'table-filter-item'>
+              <label className = 'table-filter-item-label'>{this.props.label}</label>
+              <input className = 'table-filter-item-input' onKeyDown = {this.handleChange} />
+            </div>
+          );
+        }
+      }
+      class FilterSelect extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleChange = this.handleChange.bind(this);
+        }
+        handleChange(e) {
+          var title = this.props.title;
+          var value = e.target.value;
+          this.props.change(title, value);
+        }
+        render() {
+          const options = this.props.options.map((opt) => (
+            <option value={opt.value}>{opt.title}</option>
+          ));
+          return (
+            <div className = 'table-filter-item'>
+              <label className = 'table-filter-item-label'>{this.props.label}</label>
+              <select className = 'table-filter-item-select' onChange = {this.handleChange} >
+                {options}
+              </select>
+            </div>
+          );
+        }
+      }
       class TableLabel extends React.Component {
         constructor(props) {
           super(props);
@@ -24,7 +69,6 @@ block main-body-block
           );
         }
       }
-
       class ArticleRow extends React.Component {
         constructor(props) {
           super(props);
@@ -169,6 +213,7 @@ block main-body-block
         }
         render() {
           const lis = this.getRenderData();
+          console.log('render nav link');
           return (
             <ul id = 'table-nav-ul'>
               {lis}
@@ -185,23 +230,40 @@ block main-body-block
             total: this.props.total
           }
           this.handlePageChange = this.handlePageChange.bind(this);
+          this.handleFilterChange = this.handleFilterChange.bind(this);
+          this.fetchSuccess = this.fetchSuccess.bind(this);
+          this.fetchData = this.fetchData.bind(this);
+          this.filter = {start : 0};
         }
-        handlePageChange(i) {
+        fetchSuccess(dt) {
+          var that = this;
+          if (dt.code == 0) {
+            that.setState({
+              data: dt.data.data,
+              current: dt.data.current,
+              total: dt.data.total
+            });
+          }
+        }
+        fetchData() {
           var that = this;
           fetch('/admin/datas/articles/get', {
-            type: 'get', 
-            data: {start: i},
-            dataType: 'json', 
-            success: function(dt) {
-              if (dt.code == 0) {
-                that.setState({
-                  data: dt.data.data,
-                  current: dt.data.current,
-                  total: dt.data.total
-                });
-              }
-            }
+            type: 'get',
+            data: that.filter,
+            dataType: 'json',
+            success: that.fetchSuccess
           });
+        }
+        handlePageChange(i) {
+          this.filter.start = i;
+          this.fetchData();
+        }
+        handleFilterChange(label, value) {
+          alert('label: ' + label + '  value: ' + value);
+          if (this.filter[label] == value) return;
+          this.filter[label] = value;
+          this.filter.start = 0;
+          this.fetchData();
         }
         render() {
           /**
@@ -210,10 +272,21 @@ block main-body-block
            * 因为我感觉这个没有重用，而是重新渲染了
            */
           const ky = new Date().getTime();
+          const stateOptions = [
+            {value: '-1', title: '全部'},
+            {value: 'on', title: '已上线'},
+            {value: 'off', title: '已下线'},
+            {value: 'check', title: '代核查'}
+          ];
           return (
             <div>
+              <div className = 'table-filter-bar'>
+                <FilterSelect title = 'state' label = '状态' options = {stateOptions} change = {this.handleFilterChange} />
+                <FilterInput title = 'category' label = '类别' change = {this.handleFilterChange} />
+                <FilterInput title = 'label' label = '标签' change = {this.handleFilterChange} />
+              </div>
               <ArticleTable key = {ky} articleDatas = {this.state.data} />;
-              <TableNavLink key = {ky + 1} page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
+              <TableNavLink key = {ky + 1000} page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
             </div>
           );
         }
