@@ -54,16 +54,77 @@ block main-body-block
       class PhotoFlow extends React.Component {
         constructor(props) {
           super(props);
+          this.state = {
+            gid: this.props.gid,
+            photos: [],
+            start: 0, //暂时没用到，做个标记😊 
+          }
+          this.handleUploadButtonClick = this.handleUploadButtonClick.bind(this);
+          this.handleUploadInputChange = this.handleUploadInputChange.bind(this);
+          this.getGroupPhotos = this.getGroupPhotos.bind(this);
+          this.getGroupPhotos();
+        }
+        handleUploadButtonClick(e) {
+          var input = this.uploadInput;
+          input.click();
+        }
+        handleUploadInputChange(e) {
+          var input = e.target;
+          var file = input.files[0];
+          var fd = new FormData();
+          fd.append('file', file);
+          fd.append('gid', this.state.gid);
+          fetch('/admin/datas/photos/add', {
+            data: fd,
+            type: 'post',
+            dataType: 'json',
+            success: function(dt) {
+              console.log(dt);
+            },
+            error: function(err) {
+              console.log('error');
+            }
+          });
+        }
+        getGroupPhotos() {
+          var that = this;
+          fetch('/admin/datas/photos/get', {
+            data: {gid: this.state.gid},
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              console.log(dt);
+              /*
+              if (dt.code == 0) {
+                that.setState({
+                  photos: dt.data
+                });
+              }
+              */
+            }
+          })
         }
         render() {
+          console.log('rerender');
+          
           const items = [];
           for (let i = 0; i < this.props.count; i++) {
             items.push(<PhotoItem />);
           }
+
+          var uploadInputStyles = {
+            display: 'none'
+          };
           return (
             <div id = 'photo-flow-div'>
-              <div id = 'photo-operation-bar'>
-                <button id = 'upload-image-button' className='operation-button'>上传图片</button>
+              <div className = 'photo-operation-bar' id = 'photo-operation-bar-first'>
+                <button id = 'upload-image-button' className='operation-button' onClick = {this.handleUploadButtonClick} >上传图片</button>
+                <input ref = {(input) => {this.uploadInput = input;}} id = 'upload-image-input' type = 'file' accept="image/*" style = {uploadInputStyles} onChange = {this.handleUploadInputChange} />
+              </div>
+              <div className = 'photo-operation-bar' id = 'photo-operation-bar-second'>
+                <input type='checkbox' /><label>全选</label>
+                <button className = 'operation-button'>移动分组</button>
+                <button className = 'operation-button'>删除</button>
               </div>
               <ul id = 'photo-flow-items-ul'>
                 {items}
@@ -167,12 +228,26 @@ block main-body-block
             gid: gid
           });
         }
+        /**
+         * 原本想把这个函数封进PhotoFlow 中
+         * 但没有找到合适的更新方法
+         * 暂且用 key 来更新
+         * 以后再看一看有没有更好的方法
+         * 现在这个做个记号😊 
+         * 以示可以在这里拉取数据
+         * 然后作为 PhotoFlow 的 props 传入
+         * 这样封装性不太好
+         */
+        getGroupPhotos() {
+
+        }
         render() {
           var groups = [];
+          var key = new Date().getTime();
           return (
             <div id='photo-div'>
-              <PhotoFlow count = '200' />
-              <PhotoGroupBar gid = {this.state.gid} groups = {groups} groupChange = {this.handlePhotoGroupChange}/>
+              <PhotoFlow gid = {this.state.gid} count = '200' />
+              <PhotoGroupBar key = {key} gid = {this.state.gid} groups = {groups} groupChange = {this.handlePhotoGroupChange}/>
             </div>
           );
         }
@@ -181,13 +256,6 @@ block main-body-block
         <PhotoArea />,
         document.getElementById('main-div')
       );
-      function urlParamsEncode(obj) {
-        var param = '';
-        for (let key in obj) {
-          param += (encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]) + '&');
-        }
-        return param.substring(0, param.length - 1);
-      }
       function fetch(url, {
           data = {}, 
           type = 'get', 
@@ -195,10 +263,17 @@ block main-body-block
           success = function(){}, 
           error = function(){}, 
           complete = function(){}}) {
+        function urlParamsEncode(obj) {
+          var param = '';
+          for (let key in obj) {
+            param += (encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]) + '&');
+          }
+          return param.substring(0, param.length - 1);
+        }
         var xhr = new XMLHttpRequest();
         if (xhr == null) return;
-        var params = urlParamsEncode(data);
         if (type == 'get') {
+          var params = urlParamsEncode(data);
           if (!url.endsWith('?')) url += '?';
           url += params;
         }
@@ -226,7 +301,14 @@ block main-body-block
           }
         };
         if (type == 'post') {
-          xhr.send(params)
+          if (data instanceof FormData) {
+            xhr.setRequestHeader('content-type', 'multipart/form-data');
+            xhr.send(data);
+          } else {
+            var params = urlParamsEncode(data);
+            xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+            xhr.send(params)
+          }
         } else {
           xhr.send();
         }

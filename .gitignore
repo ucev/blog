@@ -72,4 +72,4 @@ tools/*
 test/*
 
 # blogs upload images
-images/blogs/*
+website/public/images/blog/*

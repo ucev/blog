@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const multiparty = require('multiparty');
+const fs = require('fs');
+const path = require('path');
 const configs = require('../config/base.config');
+const uploadPhotoDir = path.join(__dirname, '../public/images/blog');
 
 function strToNum(str) {
   var a = Number(str);
@@ -76,6 +80,72 @@ router.get('/articles/get', (req, res, next) => {
         });
       }
     );
+  });
+});
+
+router.get('/photos/get', (req, res, next) => {
+  var gid = strToNum(req.query.gid);
+  console.log('----------gid: ', gid);
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('select id, name, title from photos where photogroup = ? order by id asc',
+    [gid], (err, results, fields) => {
+      res.json({
+        code: 0,
+        msg: '请求成功',
+        data: results
+      });
+      conn.end((err) => {
+
+      });
+    }
+  );
+});
+
+router.post('/photos/add', (req, res, next) => {
+  var form = new multiparty.Form();
+  form.parse(req, (err, fields, files) => {
+    console.log(files);
+    console.log('---------gid: ' + fields.gid);
+    const gid = fields.gid;
+    const tempfile = files.file[0].path;
+    var dt = new Date();
+    const addtime = Math.floor((dt.getTime() / 1000));
+    const newname = dt.getFullYear() + dt.getTime() + path.extname(tempfile);
+    const newpath = path.join(uploadPhotoDir, newname);
+    console.log('------------new name: ' + newpath);
+    fs.rename(tempfile, newpath, (err) => {
+      if (err) {
+        res.json({
+          code: 1,
+          msg: '添加失败'
+        });
+        return;
+      }
+      const mysql = require('mysql');
+      const conn = mysql.createConnection(configs.database_config);
+      conn.query('insert into photos set ?', {
+        name: newname,
+        title: newname,
+        photogroup: gid,
+        addtime: addtime
+      }, (err, results, fields) => {
+        if (err) {
+          fs.unlink(newpath, (err) => {
+
+          });
+          res.json({
+            code: 1,
+            msg: '添加失败'
+          });
+        } else {
+          res.json({
+            code: 0,
+            msg: '添加成功'
+          });
+        }
+      });
+    });
   });
 });
 
