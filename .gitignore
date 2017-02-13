@@ -70,3 +70,6 @@ tools/*
 
 # tests
 test/*
+
+# blogs upload images
+images/blogs/*
