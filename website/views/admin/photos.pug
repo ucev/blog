@@ -120,6 +120,95 @@ block main-body-block
           );
         }
       }
+      class PhotoFlowOperationBar extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            moveVisible: false,
+            delVisible: false
+          }
+          this.handleUploadButtonClick = this.handleUploadButtonClick.bind(this);
+          this.handleUploadInputChange = this.handleUploadInputChange.bind(this);
+
+          // Dialog Visibility
+          this.hideMoveDialog = this.hideMoveDialog.bind(this);
+          this.hideDelDialog = this.hideDelDialog.bind(this);
+          // MoveDialog
+          this.handleMoveConfirm = this.handleMoveConfirm.bind(this);
+          this.handleMoveCancel = this.handleMoveCancel.bind(this);
+          // DeleteDialog
+          this.handleDelConfirm = this.handleDelConfirm.bind(this);
+          this.handleDelCancel = this.handleDelCancel.bind(this);
+          // button action
+          this.moveButtonClick = this.moveButtonClick.bind(this);
+          this.delButtonClick = this.delButtonClick.bind(this);
+        }
+        handleUploadButtonClick(e) {
+          var input = this.uploadInput;
+          input.click();
+        }
+        handleUploadInputChange(e) {
+          this.props.handleUploadInputChange(e);
+        }
+        hideMoveDialog() {
+          this.setState({
+            moveVisible: false
+          });
+        }
+        hideDelDialog() {
+          this.setState({
+            delVisible: false
+          });
+        }
+        handleMoveConfirm() {
+          alert('move confirm');
+          this.hideMoveDialog();
+        }
+        handleMoveCancel() {
+          this.hideMoveDialog();
+        }
+        handleDelConfirm() {
+          alert('delete confirm');
+          this.hideDelDialog();
+        }
+        handleDelCancel() {
+          this.hideDelDialog();
+        }
+        moveButtonClick() {
+          this.setState({
+            moveVisible: true
+          });
+        }
+        delButtonClick() {
+          this.setState({
+            delVisible: true
+          })
+        }
+        render() {
+          var uploadInputStyles = {
+            display: 'none'
+          };
+          return (
+            <div>
+              <div className = 'photo-operation-bar' id = 'photo-operation-bar-first'>
+                <button id = 'upload-image-button' className='operation-button' onClick = {this.handleUploadButtonClick} >上传图片</button>
+                <input ref = {(input) => {this.uploadInput = input;}} id = 'upload-image-input' type = 'file' accept="image/*" style = {uploadInputStyles} onChange = {this.handleUploadInputChange} />
+              </div>
+              <div className = 'photo-operation-bar' id = 'photo-operation-bar-second'>
+                <input type='checkbox' /><label>全选</label>
+                <div id = 'photo-flow-opebar-move-div'>
+                  <button id = 'photo-flow-opebar-move-button' className = 'operation-button' onClick = {this.moveButtonClick}>移动分组</button>
+                  <MovePhotoGroupDialog confirm = {this.handleMoveConfirm} cancel = {this.handleMoveCancel} visible = {this.state.moveVisible}/>
+                </div>
+                <div id = 'photo-flow-opebar-del-div'>
+                  <button id = 'photo-flow-opebar-del-button' className = 'operation-button' onClick = {this.delButtonClick}>删除</button>
+                  <ConfirmDialog title = '确认删除?' confirm = {this.handleDelConfirm} cancel = {this.handleDelCancel} visible = {this.state.delVisible} />
+                </div>
+              </div>
+            </div>
+          );
+        }
+      }
       class PhotoItem extends React.Component {
         constructor(props) {
           super(props);
@@ -250,7 +339,6 @@ block main-body-block
             checkState: {},
             start: 0, //暂时没用到，做个标记😊 
           };
-          this.handleUploadButtonClick = this.handleUploadButtonClick.bind(this);
           this.handleUploadInputChange = this.handleUploadInputChange.bind(this);
           this.handleCheckChange = this.handleCheckChange.bind(this);
 
@@ -261,10 +349,7 @@ block main-body-block
           this.getGroupPhotos = this.getGroupPhotos.bind(this);
           this.getGroupPhotos();
         }
-        handleUploadButtonClick(e) {
-          var input = this.uploadInput;
-          input.click();
-        }
+
         // 上传图片
         handleUploadInputChange(e) {
           var that = this;
@@ -335,8 +420,10 @@ block main-body-block
             }
           })
         }
+        /**
+         * 这里在 photo flow 中添加、移动、删除时不能更新
+         */
         getGroupPhotos() {
-          console.log('get group photos, gid: ' + this.props.gid);
           var that = this;
           // this or that 😊 在函数参数中，待查
           fetch('/admin/datas/photos/get', {
@@ -344,7 +431,6 @@ block main-body-block
             type: 'get',
             dataType: 'json',
             success: function(dt) {
-              console.log('get group photos, ' + JSON.stringify(dt));
               if (dt.code == 0) {
                 that.setState({
                   photos: dt.data,
@@ -382,21 +468,9 @@ block main-body-block
             var checked = this.state.checkState[photo.id] ? true : false;
             return <PhotoItem photo = {photo} rename = {this.renamePhoto} movegroup = {this.moveGroup} delphoto = {this.deletePhoto} handleCheckChange = {this.handleCheckChange} checked = {checked}/>
           });
-
-          var uploadInputStyles = {
-            display: 'none'
-          };
           return (
             <div id = 'photo-flow-div'>
-              <div className = 'photo-operation-bar' id = 'photo-operation-bar-first'>
-                <button id = 'upload-image-button' className='operation-button' onClick = {this.handleUploadButtonClick} >上传图片</button>
-                <input ref = {(input) => {this.uploadInput = input;}} id = 'upload-image-input' type = 'file' accept="image/*" style = {uploadInputStyles} onChange = {this.handleUploadInputChange} />
-              </div>
-              <div className = 'photo-operation-bar' id = 'photo-operation-bar-second'>
-                <input type='checkbox' /><label>全选</label>
-                <button className = 'operation-button'>移动分组</button>
-                <button className = 'operation-button'>删除</button>
-              </div>
+              <PhotoFlowOperationBar handleUploadInputChange = {this.handleUploadInputChange} />
               <ul id = 'photo-flow-items-ul'>
                 {items}
               </ul>

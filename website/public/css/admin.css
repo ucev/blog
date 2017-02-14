@@ -506,3 +506,12 @@ td {
 .move-group-radio-li:nth-of-type(2n+1) {
   margin-right: 40px;
 }
+
+#photo-flow-opebar-move-div,
+#photo-flow-opebar-del-div {
+  position: relative;
+  display: inline-block;
+  height: 30px;
+  padding: 0;
+  margin-left: 30px;
+}
