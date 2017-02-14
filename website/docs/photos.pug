@@ -478,8 +478,8 @@ block main-body-block
               <ul id = 'photo-group-items-ul'>
                 {groupItems}
                 <li id = 'add-new-photo-group-item' className = 'photo-group-item-li' onClick = {this.showAddDialog}>新建分组</li>
-                <InputDialog title = '新建分组' confirm = {this.handleConfirm} cancel = {this.handleCancel} visible = {addVisible}/>
               </ul>
+              <InputDialog title = '新建分组' confirm = {this.handleConfirm} cancel = {this.handleCancel} visible = {addVisible}/>
             </div>
           );
         }
@@ -502,7 +502,7 @@ block main-body-block
          * 但没有找到合适的更新方法
          * 暂且用 key 来更新
          * 以后再看一看有没有更好的方法
-         * 现在这个做个记号😊 🔥 
+         * 现在这个做个记号😊 
          * 以示可以在这里拉取数据
          * 然后作为 PhotoFlow 的 props 传入
          * 这样封装性不太好

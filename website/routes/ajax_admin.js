@@ -84,22 +84,35 @@ router.get('/articles/get', (req, res, next) => {
 });
 
 router.get('/photos/get', (req, res, next) => {
-  var gid = strToNum(req.query.gid);
-  console.log('----------gid: ', gid);
+  var params = [];
+  var sql = 'select id, name, title from photos where 1';
+  if (req.query.id != undefined) {
+    sql += ' and id = ?';
+    params.push(strToNum(req.query.id));
+  } else {
+    sql += ' and photogroup = ?';
+    params.push(strToNum(req.query.gid));
+  }
+  sql += ' order by id asc';
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
-  conn.query('select id, name, title from photos where photogroup = ? order by id asc',
-    [gid], (err, results, fields) => {
+  conn.query(sql, params, (err, results, fields) => {
+    if (err) {
+      res.json({
+        code: 1,
+        data: '请求失败'
+      });
+    } else {
       res.json({
         code: 0,
         msg: '请求成功',
         data: results
       });
-      conn.end((err) => {
-
-      });
     }
-  );
+    conn.end((err) => {
+
+    });
+  });
 });
 
 router.post('/photos/add', (req, res, next) => {
@@ -140,12 +153,87 @@ router.post('/photos/add', (req, res, next) => {
             msg: '添加失败'
           });
         } else {
-          res.json({
-            code: 0,
-            msg: '添加成功'
+          conn.query('select count(*) as cnt from photos where photogroup = ?', [gid], (err, results, fields) => {
+            var cnt = results[0].cnt;
+            conn.query('update photogroups set count = ? where id = ?', [cnt, gid], (err, results, fields) => {
+              res.json({
+                code: 0,
+                msg: '添加成功'
+              });
+            });
           });
         }
       });
+    });
+  });
+});
+
+/**
+ * 错误更新处理及其他稍后家😊 
+ */
+router.get('/photos/delete', (req, res, next) => {
+  var id = strToNum(req.query.id);
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('select name, photogroup from photos where id = ?', [id], (err, results, fields) => {
+    if (err) throw err;
+    var filename = results[0].name;
+    var gid = results[0].photogroup;
+    conn.query('delete from photos where id = ?', [id], (err, results, fields) => {
+      if (err) throw err;
+      conn.query('update photogroups set count = count - 1 where id = ?', [gid], (err, results, fields) => {
+        fs.unlink(path.join(uploadPhotoDir, filename), (err) => {
+
+        });
+        res.json({code: 0, msg: '删除成功'});
+        conn.end((err) => {
+
+        });
+      });
+    });
+  })
+});
+
+
+/**
+ * 错误更新处理及其他稍后家😊 
+ */
+router.get('/photos/move', (req, res, next) => {
+  var photos = req.query.photos;
+  photos = photos.split(',');
+  photos = photos.map((i) => (strToNum(i)));
+  console.log(photos);
+  var gid = strToNum(req.query.gid);
+  console.log('***************req: ' , req.query);
+  console.log('***************photos: ', photos);
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('select photogroup from photos where id in  ? ', [[photos]], (err, results, fields) => {
+    var gids = results.map((row) => (row.photogroup));
+    conn.query('update photos set photogroup = ? where id in ?', [gid, [photos]], (err, results, fields) => {
+      conn.query('update photogroups set count = count - 1 where id in ?', [[gids]], (err, results, fields) => {
+        res.jsonp({code: 0, msg: '更新成功'});
+        conn.end((err) => {
+
+        });
+      });
+    })
+  })
+});
+
+router.get('/photos/rename', (req, res, next) => {
+  var id = strToNum(req.query.id);
+  var title = req.query.title;
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('update photos set title = ? where id = ?', [title, id], (err, results, fields) => {
+    if (err) {
+      res.json({code: 1, msg: '更新失败'});
+    } else {
+      res.json({code: 0, msg: '更新成功'});
+    }
+    conn.end((err) => {
+
     });
   });
 });
