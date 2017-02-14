@@ -552,8 +552,8 @@ block main-body-block
               <ul id = 'photo-group-items-ul'>
                 {groupItems}
                 <li id = 'add-new-photo-group-item' className = 'photo-group-item-li' onClick = {this.showAddDialog}>新建分组</li>
-                <InputDialog title = '新建分组' confirm = {this.handleConfirm} cancel = {this.handleCancel} visible = {addVisible}/>
               </ul>
+              <InputDialog title = '新建分组' confirm = {this.handleConfirm} cancel = {this.handleCancel} visible = {addVisible}/>
             </div>
           );
         }
