@@ -6,6 +6,12 @@ const path = require('path');
 const configs = require('../config/base.config');
 const uploadPhotoDir = path.join(__dirname, '../public/images/blog');
 
+const RECOUNT_PHOTO_GROUP_SQL = `update photogroups as pg 
+             left join
+             (select photogroup as gid, count(*) as cnt from photos group by photogroup) as cp
+             on pg.id = cp.gid
+             set pg.count = if(isnull(cp.cnt), 0, cp.cnt)`;
+
 function strToNum(str) {
   var a = Number(str);
   return isNaN(a) ? 0 : a;
@@ -182,26 +188,39 @@ router.post('/photos/add', (req, res, next) => {
  * 错误更新处理及其他稍后家😊 
  */
 router.get('/photos/delete', (req, res, next) => {
-  var id = strToNum(req.query.id);
+  var photos = req.query.photos;
+  photos = photos.split(',');
+  photos = photos.map((i) => (strToNum(i)));
+  console.log(photos);
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
-  conn.query('select name, photogroup from photos where id = ?', [id], (err, results, fields) => {
-    if (err) throw err;
-    var filename = results[0].name;
-    var gid = results[0].photogroup;
-    conn.query('delete from photos where id = ?', [id], (err, results, fields) => {
-      if (err) throw err;
-      conn.query('update photogroups set count = count - 1 where id = ?', [gid], (err, results, fields) => {
-        fs.unlink(path.join(uploadPhotoDir, filename), (err) => {
+  conn.beginTransaction((err) => {
+    conn.query('delete from photos where id in ?', [[photos]], (err, results, fields) => {
+      if (err) {
+        throw err;
+        transactionError(res, conn);
+      } else {
+        conn.query(RECOUNT_PHOTO_GROUP_SQL, (err, results, fields) => {
+          if (err) {
+            throw err;
+            transactionError(res, conn);
+          } else {
+            conn.commit((err) => {
+              if (err) {
+                throw err;
+                transactionError(res, conn);
+              } else {
+                res.json({code: 0, msg: '操作成功'});
+                conn.end((err) => {
 
+                });
+              }
+            });
+          }
         });
-        res.json({code: 0, msg: '删除成功'});
-        conn.end((err) => {
-
-        });
-      });
+      }
     });
-  })
+  });
 });
 
 router.get('/photos/move', (req, res, next) => {
@@ -217,13 +236,10 @@ router.get('/photos/move', (req, res, next) => {
   conn.beginTransaction((err) => {
     conn.query('update photos set photogroup = ? where id in ?', [gid, [photos]], (err, results, fields) => {
       if (err) {
+        throw err;
         transactionError(res, conn);
       } else {
-        conn.query(`update photogroups as pg 
-             left join
-             (select photogroup as gid, count(*) as cnt from photos group by photogroup) as cp
-             on pg.id = cp.gid
-             set pg.count = if(isnull(cp.cnt), 0, cp.cnt)`, (err, results, fields) => {
+        conn.query(RECOUNT_PHOTO_GROUP_SQL, (err, results, fields) => {
           if (err) {
             throw err;
             transactionError(res, conn);

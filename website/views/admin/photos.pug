@@ -142,6 +142,8 @@ block main-body-block
           // button action
           this.moveButtonClick = this.moveButtonClick.bind(this);
           this.delButtonClick = this.delButtonClick.bind(this);
+          // all-check
+          this.handleAllCheckChanged = this.handleAllCheckChanged.bind(this);
         }
         handleUploadButtonClick(e) {
           var input = this.uploadInput;
@@ -160,15 +162,15 @@ block main-body-block
             delVisible: false
           });
         }
-        handleMoveConfirm() {
-          alert('move confirm');
+        handleMoveConfirm(new_gid) {
+          this.props.handleMoveChecked(new_gid);
           this.hideMoveDialog();
         }
         handleMoveCancel() {
           this.hideMoveDialog();
         }
         handleDelConfirm() {
-          alert('delete confirm');
+          this.props.handleDeleteChecked();
           this.hideDelDialog();
         }
         handleDelCancel() {
@@ -184,6 +186,10 @@ block main-body-block
             delVisible: true
           })
         }
+        handleAllCheckChanged(e) {
+          var allChecked = e.target.checked;
+          this.props.handleAllCheckChanged(allChecked);
+        }
         render() {
           var uploadInputStyles = {
             display: 'none'
@@ -195,7 +201,7 @@ block main-body-block
                 <input ref = {(input) => {this.uploadInput = input;}} id = 'upload-image-input' type = 'file' accept="image/*" style = {uploadInputStyles} onChange = {this.handleUploadInputChange} />
               </div>
               <div className = 'photo-operation-bar' id = 'photo-operation-bar-second'>
-                <input type='checkbox' /><label>全选</label>
+                <input type='checkbox' onChange = {this.handleAllCheckChanged}/><label>全选</label>
                 <div id = 'photo-flow-opebar-move-div'>
                   <button id = 'photo-flow-opebar-move-button' className = 'operation-button' onClick = {this.moveButtonClick}>移动分组</button>
                   <MovePhotoGroupDialog confirm = {this.handleMoveConfirm} cancel = {this.handleMoveCancel} visible = {this.state.moveVisible}/>
@@ -342,12 +348,83 @@ block main-body-block
           this.handleUploadInputChange = this.handleUploadInputChange.bind(this);
           this.handleCheckChange = this.handleCheckChange.bind(this);
 
+          // all-check checkbox
+          this.handleAllCheckChanged = this.handleAllCheckChanged.bind(this);
+          this.handleDeleteChecked = this.handleDeleteChecked.bind(this);
+          this.handleMoveChecked = this.handleMoveChecked.bind(this);
+
           this.moveGroup = this.moveGroup.bind(this);
+          this.moveSingleGroup = this.moveSingleGroup.bind(this);
           this.renamePhoto = this.renamePhoto.bind(this);
-          this.deletePhoto = this.deletePhoto.bind(this);
+          this.deletePhotos = this.deletePhotos.bind(this);
+          this.deleteSinglePhoto = this.deleteSinglePhoto.bind(this);
           this.getSinglePhoto = this.getSinglePhoto.bind(this);
           this.getGroupPhotos = this.getGroupPhotos.bind(this);
           this.getGroupPhotos();
+        }
+
+        handleAllCheckChanged(checked) {
+          var checkState = this.state.checkState;
+          this.state.photos.forEach((photo) => {
+            checkState[photo.id] = checked;
+          });
+          this.setState({
+            checkState: checkState
+          });
+        }
+
+        deletePhotos(ids) {
+          var that = this;
+          fetch('/admin/datas/photos/delete', {
+            data: {photos: ids},
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              console.log('delete photo: ' + JSON.stringify(dt));
+              that.props.handleRefetch();
+            }
+          })
+        }
+        deleteSinglePhoto(id) {
+          this.deletePhotos([id].join(','));
+        }
+
+        handleDeleteChecked() {
+          var ids = [];
+          for (let id in this.state.checkState) {
+            if (this.state.checkState[id]) {
+              ids.push(id);
+            }
+          }
+          this.deletePhotos(ids);
+        }
+
+        moveGroup(ids, new_gid) {
+          console.log('move group, ids: ' + ids + ', gid: ' + new_gid);
+          var that = this;
+          fetch('/admin/datas/photos/move', {
+            data: {photos: ids, gid: new_gid},
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              console.log('move group, ' + JSON.stringify(dt));
+              if (dt.code == 0) {
+                that.props.handleRefetch();
+              }
+            }
+          })
+        }
+        moveSingleGroup(id, new_gid) {
+          this.moveGroup([id].join(','), new_gid);
+        }
+        handleMoveChecked(new_gid) {
+          var ids = [];
+          for (let id in this.state.checkState) {
+            if (this.state.checkState[id]) {
+              ids.push(id);
+            }
+          }
+          this.moveGroup(ids.join(','), new_gid);
         }
 
         // 上传图片
@@ -382,18 +459,6 @@ block main-body-block
               if (dt.code == 0) {
                 that.getSinglePhoto(id);
               }
-            }
-          })
-        }
-        deletePhoto(id) {
-          var that = this;
-          fetch('/admin/datas/photos/delete', {
-            data: {id: id},
-            type: 'get',
-            dataType: 'json',
-            success: function(dt) {
-              console.log('delete photo: ' + JSON.stringify(dt));
-              that.props.handleRefetch();
             }
           })
         }
@@ -441,22 +506,9 @@ block main-body-block
           })
         }
 
-        moveGroup(id, new_gid) {
-          console.log('move group');
-          var that = this;
-          fetch('/admin/datas/photos/move', {
-            data: {photos: [id].join(','), gid: new_gid},
-            type: 'get',
-            dataType: 'json',
-            success: function(dt) {
-              console.log('move group, ' + JSON.stringify(dt));
-              if (dt.code == 0) {
-                that.props.handleRefetch();
-              }
-            }
-          })
-        }
+
         handleCheckChange(id, checked) {
+          console.log('check change, id: ' + id + ', checked: ' + checked);
           var checkState = this.state.checkState;
           checkState[id] = checked;
           this.setState({
@@ -466,11 +518,11 @@ block main-body-block
         render() {
           const items = this.state.photos.map((photo) => {
             var checked = this.state.checkState[photo.id] ? true : false;
-            return <PhotoItem photo = {photo} rename = {this.renamePhoto} movegroup = {this.moveGroup} delphoto = {this.deletePhoto} handleCheckChange = {this.handleCheckChange} checked = {checked}/>
+            return <PhotoItem photo = {photo} rename = {this.renamePhoto} movegroup = {this.moveSingleGroup} delphoto = {this.deleteSinglePhoto} handleCheckChange = {this.handleCheckChange} checked = {checked}/>
           });
           return (
             <div id = 'photo-flow-div'>
-              <PhotoFlowOperationBar handleUploadInputChange = {this.handleUploadInputChange} />
+              <PhotoFlowOperationBar handleUploadInputChange = {this.handleUploadInputChange} handleAllCheckChanged = {this.handleAllCheckChanged} handleDeleteChecked = {this.handleDeleteChecked} handleMoveChecked = {this.handleMoveChecked} />
               <ul id = 'photo-flow-items-ul'>
                 {items}
               </ul>
