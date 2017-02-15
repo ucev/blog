@@ -18,9 +18,6 @@ function strToNum(str) {
 }
 
 function emptyString(str) {
-  console.log('-----------str start');
-  //str = str.trim();
-  console.log('str: ' + str);
   var str =  (str === null || str === undefined) ? '' : str.trim();
   return (str === '' || str === '-1') ? '' : str;
 }
@@ -106,8 +103,10 @@ router.get('/photos/get', (req, res, next) => {
     sql += ' and id = ?';
     params.push(strToNum(req.query.id));
   } else {
-    sql += ' and photogroup = ?';
-    params.push(strToNum(req.query.gid));
+    if (req.query.gid != -1) {
+      sql += ' and photogroup = ?';
+      params.push(strToNum(req.query.gid));
+    }
   }
   sql += ' order by id asc';
   const mysql = require('mysql');
@@ -134,16 +133,12 @@ router.get('/photos/get', (req, res, next) => {
 router.post('/photos/add', (req, res, next) => {
   var form = new multiparty.Form();
   form.parse(req, (err, fields, files) => {
-    console.log(fields);
-    console.log(files);
-    console.log('---------gid: ' + fields.gid);
-    const gid = fields.gid;
+    const gid = fields.gid < 1 ? 1 : fields.gid;
     const tempfile = files.file[0].path;
     var dt = new Date();
     const addtime = Math.floor((dt.getTime() / 1000));
     const newname = dt.getFullYear() + dt.getTime() + path.extname(tempfile);
     const newpath = path.join(uploadPhotoDir, newname);
-    console.log('------------new name: ' + newpath);
     fs.rename(tempfile, newpath, (err) => {
       if (err) {
         res.json({
@@ -184,14 +179,10 @@ router.post('/photos/add', (req, res, next) => {
   });
 });
 
-/**
- * 错误更新处理及其他稍后家😊 
- */
 router.get('/photos/delete', (req, res, next) => {
   var photos = req.query.photos;
   photos = photos.split(',');
   photos = photos.map((i) => (strToNum(i)));
-  console.log(photos);
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
   conn.beginTransaction((err) => {
@@ -227,10 +218,8 @@ router.get('/photos/move', (req, res, next) => {
   var photos = req.query.photos;
   photos = photos.split(',');
   photos = photos.map((i) => (strToNum(i)));
-  console.log(photos);
   var gid = strToNum(req.query.gid);
-  console.log('***************req: ' , req.query);
-  console.log('***************photos: ', photos);
+  gid = gid < 1 ? 1 : gid;
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
   conn.beginTransaction((err) => {
@@ -282,10 +271,12 @@ router.get('/photogroup/get', (req, res, next) => {
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
   conn.query('select id, name, count from photogroups order by id asc', (err, results, fields) => {
+    var cnt = results.reduce((sum, row) => (sum + row.count), 0);
+    var groups = [{id: -1, name: '全部分组', count: cnt}, ...results];
     res.json({
       code: 0,
       msg: '获取成功',
-      data: results
+      data: groups
     });
     conn.end((err) => {
 
@@ -311,5 +302,66 @@ router.get('/photogroup/modify', (req, res, next) => {
     });
   });
 });
+
+router.get('/photogroup/remove', (req, res, next) => {
+  var gid = req.query.gid;
+  if (gid < 2) {
+   res.json({code: 0, msg: '删除成功'});
+   return; 
+  }
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.beginTransaction((err) => {
+    conn.query('update photos set photogroup = 1 where photogroup = ?', [gid], (err, results, fields) => {
+      if (err) {
+        transactionError(res, conn, {code: 1, msg: '0'});
+      } else {
+        conn.query('delete from photogroups where id = ?', [gid], (err, results, fields) => {
+          if (err) {
+            transactionError(res, conn, {code: 1, msg: '1'});
+          } else {
+            conn.query(RECOUNT_PHOTO_GROUP_SQL, (err, results, fields) => {
+              if (err) {
+                transactionError(res, conn, {code: 1, msg: '2'});
+              } else {
+                conn.commit((err) => {
+                  if (err) {
+                    transactionError(res, conn, {code: 1, msg: '3'});
+                  } else {
+                    res.json({code: 0, msg: '操作成功'});
+                    conn.end((err) => {
+
+                    });
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+  })
+});
+
+router.get('/photogroup/rename', (req, res, next) => {
+  var gid = req.query.gid;
+  if (gid < 2) {
+    res.json({code: 1, msg: '更新失败'});
+    return;
+  }
+  var name = req.query.name;
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('update photogroups set name = ? where id = ?', [name, gid], (err, results, fields) => {
+    if (err) {
+      res.json({code: 1, msg: '更新失败'});
+    } else {
+      res.json({code: 0, msg: '更新成功'});
+    }
+    conn.end((err) => {
+
+    })
+  })
+})
 
 module.exports = router;

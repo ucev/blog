@@ -23,6 +23,14 @@ body {
   cursor: pointer;
 }
 
+.operation-button-confirm {
+  background-color: #009688;
+}
+
+.operation-button-cancel {
+  background-color: #78909C;
+}
+
 #admin-banner {
   position: fixed;
   top: 0;
@@ -299,23 +307,31 @@ td {
   width: 200px;
   box-flex: 1;
   -moz-box-flex: 1;
-  background: green;
+  background-color: #A1887F;
 }
 
 #photo-group-div {
   position: relative;
   width: 150px;
-  background-color: lavender;
+  background-color: white;
   border: 1px solid #BDBDBD;
   overflow: visible;
 }
 
-.photo-operation-bar {
+.photo-operation-bar,
+.photo-group-operation-bar {
   width: 100%;
   height: 50px;
+  border-bottom: 1px solid #6D4C41;
+}
+
+.photo-operation-bar {
   padding-top: 10px;
-  background-color: yellow;
-  border-bottom: 1px solid #BDBDBD;
+  background-color: #795548;
+}
+
+.photo-operation-bar > label {
+  color: white;
 }
 
 #photo-operation-bar-first {
@@ -334,9 +350,8 @@ td {
   margin-right: 30px;
 }
 
-
 #photo-flow-items-ul {
-  margin: 0;
+  margin: 10px 0 0;
   padding: 0;
   list-style-type: none;
 }
@@ -349,6 +364,7 @@ td {
   padding: 0;
   margin-left: calc((100% - 200px * 4) / 8);
   margin-right: calc((100% - 200px * 4) / 8);
+  margin-top: 5px;
   background-color: #4CAF5099;
 }
 
@@ -412,6 +428,10 @@ td {
   background-image: url(/images/icons/ic_delete_black_24dp_2x.png);
 }
 
+.photo-group-operation-bar {
+  
+}
+
 #photo-group-items-ul {
   list-style-type: none;
   padding: 0;
@@ -422,21 +442,63 @@ td {
   height: 40px;
   line-height: 40px;
   padding-left: 10px;
+  color: #424242;
   background-color: white;
   border-bottom: 1px solid #BDBDBD;
   cursor: pointer;
 }
 
+.photo-group-item-li:hover,
 .photo-group-item-li-current {
-  background-color: yellow;
+  background-color: #A1887F;
 }
 
-#add-new-photo-group-item {
+.photo-group-item-li-title-span,
+.photo-group-item-li-ope-img {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+.photo-group-item-li-ope-img:hover {
+  background: white;
+}
+
+.photo-group-item-li-title-span {
+  width: calc(100% - 40px);
+}
+
+.photo-group-item-li-ope-img {
+  width: 20px;
+}
+
+#add-new-photo-group-div {
+  width: 100%;
+  height: 100%;
+  line-height: 50px;
   padding-left: 20px;
-  background-image: url(/images/icons/ic_add_black_24dp_2x.png);
-  background-repeat: no-repeat;
-  background-size: 20px 20px;
-  background-position: 0px;
+  margin: 0;
+  cursor: pointer;
+}
+
+#photo-group-opebar-title-div,
+#photo-group-opebar-img {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#photo-group-opebar-title-div {
+  width: calc(100% - 40px);
+  height: 50px;
+  padding-left: 20px;
+  line-height: 50px;
+}
+
+#photo-group-opebar-img {
+  width: 20px;
+  cursor: pointer;
 }
 
 .dialog-div {
@@ -445,7 +507,9 @@ td {
   z-index: 40;
   width: 300px;
   padding: 30px;
-  background: yellow;
+  background: white;
+  border: 1px solid #BDBDBD;
+  box-shadow: 3px 3px 3px #E0E0E0;
 }
 
 #add-new-group-div {
@@ -456,6 +520,7 @@ td {
 .dialog-title-div {
   line-height: 40px;
   font-size: 14px;
+  color: #424242;
 }
 
 .dialog-content-input,
@@ -473,8 +538,11 @@ td {
 }
 
 .dialog-operation-button {
-  width: 40%;
+  display: inline-block;
+  width: 45%;
   height: 30px;
+  margin: 0;
+  padding: 0;
   font-size: 14px;
   border: 1px solid #BDBDBD;
   outline: none;
@@ -486,26 +554,31 @@ td {
 }
 
 .dialog-cancel-button {
-  margin-left: 20%;
+  margin-left: 10%;
   background-color: #E0E0E0;
 }
 
 #move-group-radio-ul {
   list-style-type: none;
+  max-height: 100px;
+  overflow: scroll;
   padding: 0;
 }
 
 .move-group-radio-li {
   display: inline-block;
-  width: 100px;
+  width: 45%;
   height: 30px;
+  margin: 0;
+  padding: 0;
   line-height: 30px;
+  color: #424242;
   overflow: hidden;
   vertical-align: middle;
 }
 
-.move-group-radio-li:nth-of-type(2n+1) {
-  margin-right: 40px;
+.move-group-radio-li:nth-of-type(2n) {
+  margin-left: 5%;
 }
 
 #photo-flow-opebar-move-div,

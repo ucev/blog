@@ -4,14 +4,12 @@ block main-body-block
   div.main
     div#main-div
     script(type='text/babel').
-      /**
-       * 这个决定修改成类
-       */
       class InputDialog extends React.Component {
         constructor(props) {
           super(props);
           this.handleConfirmClick = this.handleConfirmClick.bind(this);
           this.handleCancelClick = this.handleCancelClick.bind(this);
+          this.handleKeyDown = this.handleKeyDown.bind(this);
         }
         handleConfirmClick() {
           var val = this.textInput.value;
@@ -20,6 +18,11 @@ block main-body-block
         }
         handleCancelClick() {
           this.props.cancel();
+        }
+        handleKeyDown(e) {
+          if (e.which == 13) {
+            this.handleConfirmClick();
+          }
         }
         render() {
           var styles = {};
@@ -31,7 +34,7 @@ block main-body-block
                   <div className = 'dialog-title-div'>{this.props.title}</div>
                 </div>
                 <div className = 'dialog-main-body-div'>
-                  <input className = 'dialog-content-input' ref = {(input) => (this.textInput = input)}/>
+                  <input className = 'dialog-content-input' ref = {(input) => (this.textInput = input)} onKeyDown = {this.handleKeyDown} />
                 </div>
                 <div className = 'dialog-buttom-operation-bar'>
                   <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
@@ -41,6 +44,7 @@ block main-body-block
           );
         }
       }
+
       class MovePhotoGroupDialog extends React.Component {
         constructor(props) {
           super(props);
@@ -51,12 +55,15 @@ block main-body-block
             newgroup : -1
           };
         }
+
         handleConfirmClick(e) {
           this.props.confirm(this.state.newgroup);
         }
+
         handleCancelClick(e) {
           this.props.cancel();
         }
+
         handleGroupChange(e) {
           var radio = e.target;
           if (radio.checked) {
@@ -65,11 +72,13 @@ block main-body-block
             });
           }
         }
+
         render() {
           var styles = {};
           if (!this.props.visible) styles.display = 'none';
           var groups = JSON.parse(localStorage.getItem("photo_group"));
           var groupItems = groups.map((group) => {
+            if (group.id == -1) return '';
             return (
               <li className = 'move-group-radio-li'>
                 <input type = 'radio' name = 'photogroup' value = {group.id} onChange = {this.handleGroupChange}/>
@@ -92,6 +101,7 @@ block main-body-block
           );
         }
       }
+
       class ConfirmDialog extends React.Component {
         constructor(props) {
           super(props);
@@ -120,6 +130,7 @@ block main-body-block
           );
         }
       }
+
       class PhotoFlowOperationBar extends React.Component {
         constructor(props) {
           super(props);
@@ -145,47 +156,58 @@ block main-body-block
           // all-check
           this.handleAllCheckChanged = this.handleAllCheckChanged.bind(this);
         }
+
         handleUploadButtonClick(e) {
           var input = this.uploadInput;
           input.click();
         }
+
         handleUploadInputChange(e) {
           this.props.handleUploadInputChange(e);
         }
+
         hideMoveDialog() {
           this.setState({
             moveVisible: false
           });
         }
+
         hideDelDialog() {
           this.setState({
             delVisible: false
           });
         }
+
         handleMoveConfirm(new_gid) {
           this.props.handleMoveChecked(new_gid);
           this.hideMoveDialog();
         }
+
         handleMoveCancel() {
           this.hideMoveDialog();
         }
+
         handleDelConfirm() {
           this.props.handleDeleteChecked();
           this.hideDelDialog();
         }
+
         handleDelCancel() {
           this.hideDelDialog();
         }
+
         moveButtonClick() {
           this.setState({
             moveVisible: true
           });
         }
+
         delButtonClick() {
           this.setState({
             delVisible: true
           })
         }
+
         handleAllCheckChanged(e) {
           var allChecked = e.target.checked;
           this.props.handleAllCheckChanged(allChecked);
@@ -203,11 +225,11 @@ block main-body-block
               <div className = 'photo-operation-bar' id = 'photo-operation-bar-second'>
                 <input type='checkbox' onChange = {this.handleAllCheckChanged}/><label>全选</label>
                 <div id = 'photo-flow-opebar-move-div'>
-                  <button id = 'photo-flow-opebar-move-button' className = 'operation-button' onClick = {this.moveButtonClick}>移动分组</button>
+                  <button id = 'photo-flow-opebar-move-button' className = 'operation-button operation-button-confirm' onClick = {this.moveButtonClick}>移动分组</button>
                   <MovePhotoGroupDialog confirm = {this.handleMoveConfirm} cancel = {this.handleMoveCancel} visible = {this.state.moveVisible}/>
                 </div>
                 <div id = 'photo-flow-opebar-del-div'>
-                  <button id = 'photo-flow-opebar-del-button' className = 'operation-button' onClick = {this.delButtonClick}>删除</button>
+                  <button id = 'photo-flow-opebar-del-button' className = 'operation-button operation-button-cancel' onClick = {this.delButtonClick}>删除</button>
                   <ConfirmDialog title = '确认删除?' confirm = {this.handleDelConfirm} cancel = {this.handleDelCancel} visible = {this.state.delVisible} />
                 </div>
               </div>
@@ -215,6 +237,7 @@ block main-body-block
           );
         }
       }
+
       class PhotoItem extends React.Component {
         constructor(props) {
           super(props);
@@ -336,6 +359,7 @@ block main-body-block
           );
         }
       }
+
       class PhotoFlow extends React.Component {
         constructor(props) {
           super(props);
@@ -380,11 +404,11 @@ block main-body-block
             type: 'get',
             dataType: 'json',
             success: function(dt) {
-              console.log('delete photo: ' + JSON.stringify(dt));
               that.props.handleRefetch();
             }
           })
         }
+
         deleteSinglePhoto(id) {
           this.deletePhotos([id].join(','));
         }
@@ -400,23 +424,23 @@ block main-body-block
         }
 
         moveGroup(ids, new_gid) {
-          console.log('move group, ids: ' + ids + ', gid: ' + new_gid);
           var that = this;
           fetch('/admin/datas/photos/move', {
             data: {photos: ids, gid: new_gid},
             type: 'get',
             dataType: 'json',
             success: function(dt) {
-              console.log('move group, ' + JSON.stringify(dt));
               if (dt.code == 0) {
                 that.props.handleRefetch();
               }
             }
           })
         }
+
         moveSingleGroup(id, new_gid) {
           this.moveGroup([id].join(','), new_gid);
         }
+
         handleMoveChecked(new_gid) {
           var ids = [];
           for (let id in this.state.checkState) {
@@ -440,7 +464,6 @@ block main-body-block
             type: 'post',
             dataType: 'json',
             success: function(dt) {
-              console.log('上传成功', JSON.stringify(dt));
               that.props.handleRefetch();
             },
             error: function(err) {
@@ -506,15 +529,14 @@ block main-body-block
           })
         }
 
-
         handleCheckChange(id, checked) {
-          console.log('check change, id: ' + id + ', checked: ' + checked);
           var checkState = this.state.checkState;
           checkState[id] = checked;
           this.setState({
             checkState: checkState
           });
         }
+
         render() {
           const items = this.state.photos.map((photo) => {
             var checked = this.state.checkState[photo.id] ? true : false;
@@ -530,25 +552,132 @@ block main-body-block
           );
         }
       }
+
+      class PhotoGroupItem extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            inputVisible: false,
+            delVisible: false
+          }
+          // Dialog Visibility
+          this.showInputDialog = this.showInputDialog.bind(this);
+          this.hideInputDialog = this.hideInputDialog.bind(this);
+          this.showDelDialog = this.showDelDialog.bind(this);
+          this.hideDelDialog = this.hideDelDialog.bind(this);
+          // Dialog action
+          this.handleInputConfirm = this.handleInputConfirm.bind(this);
+          this.handleInputCancel = this.handleInputCancel.bind(this);
+          this.handleDelConfirm = this.handleDelConfirm.bind(this);
+          this.handleDelCancel = this.handleDelCancel.bind(this);
+          this.handleGroupItemClick = this.handleGroupItemClick.bind(this);
+          // Self-Owned action
+          this.handleDeleteGroup = this.handleDeleteGroup.bind(this);
+          this.handleRenameGroup = this.handleRenameGroup.bind(this);
+        }
+        showInputDialog(){
+          this.setState({
+            inputVisible: true
+          });
+        }
+        hideInputDialog() {
+          this.setState({
+            inputVisible: false
+          });
+        }
+        showDelDialog(){
+          this.setState({
+            delVisible: true
+          });
+        }
+        hideDelDialog() {
+          this.setState({
+            delVisible: false
+          });
+        }
+        handleInputConfirm(name) {
+          var gid = this.props.group.id;
+          this.props.handleRenameGroup(gid, name);
+          this.hideInputDialog();
+        }
+        handleInputCancel() {
+          this.hideInputDialog();
+        }
+        handleDelConfirm() {
+          var gid = this.props.group.id;
+          this.props.handleDeleteGroup(gid);
+          this.hideDelDialog();
+        }
+        handleDelCancel() {
+          this.hideDelDialog();
+        }
+        handleGroupItemClick(e) {
+          var gid = this.props.group.id;
+          this.props.handleGroupItemClick(gid);
+          e.stopPropagation();
+        }
+        handleDeleteGroup(e) {
+          this.showDelDialog();
+        }
+        handleRenameGroup(e) {
+          this.showInputDialog();
+          e.stopPropagation();
+        }
+        render() {
+          var opeImgStyles = {};
+          if (!this.props.opeImgVisible) {
+            opeImgStyles.display = 'none';
+          }
+          var group = this.props.group;
+          var gid = group.id;
+          var classes = 'photo-group-item-li';
+          if (gid == this.props.gid) classes += ' photo-group-item-li-current';
+          var imgSrc = '/images/icons/ic_close_black_24dp_2x.png';
+          if (gid < 2) {
+            return (
+              <li className = {classes}>
+                <span className = 'photo-group-item-li-title-span' data-gid = {group.id} onClick = {this.handleGroupItemClick}>{group.name}({group.count})</span>
+              </li>
+            );
+          }
+          return (
+            <li className = {classes}>
+              <span className = 'photo-group-item-li-title-span' onClick = {this.handleGroupItemClick}>{group.name}({group.count})</span>
+              <img className = 'photo-group-item-li-ope-img' src = '/images/icons/ic_mode_edit_black_24dp_2x.png' style = {opeImgStyles} onClick = {this.handleRenameGroup}/>
+              <img className = 'photo-group-item-li-ope-img' src = '/images/icons/ic_close_black_24dp_2x.png' style = {opeImgStyles} onClick = {this.handleDeleteGroup}/>
+              <InputDialog title = '编辑名称' confirm = {this.handleInputConfirm} cancel = {this.handleInputCancel} visible = {this.state.inputVisible}/>
+              <ConfirmDialog title = '确认删除?' confirm = {this.handleDelConfirm} cancel = {this.handleDelCancel} visible = {this.state.delVisible} />
+            </li>
+          );
+        }
+      }
+
       class PhotoGroupBar extends React.Component {
         constructor(props) {
           super(props);
           this.state = {
             groups: this.props.groups,
-            addVisible: false
+            addVisible: false,
+            opeImgVisible: false
           }
           this.handleConfirm = this.handleConfirm.bind(this);
           this.handleCancel = this.handleCancel.bind(this);
           this.handleGroupItemClick = this.handleGroupItemClick.bind(this);
           this.showAddDialog = this.showAddDialog.bind(this);
           this.fetchGroupData = this.fetchGroupData.bind(this);
+          this.toggleOpeImgState = this.toggleOpeImgState.bind(this);
+          this.handleDeleteGroup = this.handleDeleteGroup.bind(this);
+          this.handleRenameGroup = this.handleRenameGroup.bind(this);
+
           this.fetchGroupData();
         }
+
         showAddDialog() {
           this.setState({
             addVisible: true
           });
         }
+
         fetchGroupData() {
           var that = this;
           fetch('/admin/datas/photogroup/get', {
@@ -564,6 +693,7 @@ block main-body-block
             }
           });
         }
+
         handleConfirm(groupname) {
           this.setState({
             addVisible: false
@@ -581,31 +711,81 @@ block main-body-block
             }
           });
         }
+
         handleCancel() {
           this.setState({
             addVisible: false
           });
         }
-        handleGroupItemClick (e) {
-          var gid = e.target.getAttribute('data-gid');
+
+        handleGroupItemClick (gid) {
           this.props.groupChange(gid);
         }
-        render() {
-          var groupItems = this.state.groups.map((group) => {
-            var gid = group.id;
-            var classes = 'photo-group-item-li';
-            if (gid == this.props.gid) classes += ' photo-group-item-li-current';
-            return <li className = {classes} data-gid = {group.id} onClick = {this.handleGroupItemClick}>{group.name}({group.count})</li>
+
+        handleDeleteGroup(gid) {
+          console.log('gid: ' + gid);
+          var that = this;
+          fetch('/admin/datas/photogroup/remove', {
+            data: {gid: gid},
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              console.log(JSON.stringify(dt));
+              if (dt.code == 0) {
+                if (gid == that.props.gid) {
+                  that.props.groupChange(-1);
+                } else {
+                  that.fetchGroupData();
+                }
+              }
+            }
           });
-          var addVisible = this.state.addVisible;
+        }
+
+        handleRenameGroup(gid, name) {
+          alert(gid + ', ' + name);
+          var that = this;
+          fetch('/admin/datas/photogroup/rename', {
+            data: {gid: gid, name: name},
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              if (dt.code == 0) {
+                that.fetchGroupData();
+              }
+            }
+          })
+        }
+
+        toggleOpeImgState() {
+          this.setState(function(previous, props) {
+            return {
+              opeImgVisible: !previous.opeImgVisible
+            };
+          });
+        }
+
+        render() {
+          var opebarImg = this.state.opeImgVisible ? 
+              '/images/icons/ic_cancel_black_24dp_2x.png' :
+              '/images/icons/ic_arrow_drop_down_circle_black_24dp_2x.png';
+          var groupItems = this.state.groups.map((group) => (
+            <PhotoGroupItem group = {group} gid = {this.props.gid} opeImgVisible = {this.state.opeImgVisible} handleGroupItemClick = {this.handleGroupItemClick} handleDeleteGroup = {this.handleDeleteGroup} handleRenameGroup = {this.handleRenameGroup}/>
+          ));
           var key = new Date().getTime();
           return (
             <div id = 'photo-group-div'>
+              <div className = 'photo-group-operation-bar'>
+                <div id = 'add-new-photo-group-div' onClick = {this.showAddDialog}>新建分组</div>
+                <InputDialog title = '新建分组' confirm = {this.handleConfirm} cancel = {this.handleCancel} visible = {this.state.addVisible}/>
+              </div>
+              <div className = 'photo-group-operation-bar'>
+                <div id = 'photo-group-opebar-title-div' >图片组</div>
+                <img id = 'photo-group-opebar-img' src = {opebarImg} onClick = {this.toggleOpeImgState}/>
+              </div>
               <ul id = 'photo-group-items-ul'>
                 {groupItems}
-                <li id = 'add-new-photo-group-item' className = 'photo-group-item-li' onClick = {this.showAddDialog}>新建分组</li>
               </ul>
-              <InputDialog title = '新建分组' confirm = {this.handleConfirm} cancel = {this.handleCancel} visible = {addVisible}/>
             </div>
           );
         }
@@ -614,7 +794,7 @@ block main-body-block
         constructor(props) {
           super(props);
           this.state = {
-            gid: 1,
+            gid: -1,
             key: new Date().getTime()
           }
           this.handlePhotoGroupChange = this.handlePhotoGroupChange.bind(this);
