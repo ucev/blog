@@ -364,7 +364,7 @@ block main-body-block
             dataType: 'json',
             success: function(dt) {
               console.log('上传成功', JSON.stringify(dt));
-              that.getGroupPhotos();
+              that.props.handleRefetch();
             },
             error: function(err) {
               console.log('error');
@@ -393,7 +393,7 @@ block main-body-block
             dataType: 'json',
             success: function(dt) {
               console.log('delete photo: ' + JSON.stringify(dt));
-              that.getGroupPhotos();
+              that.props.handleRefetch();
             }
           })
         }
@@ -451,7 +451,7 @@ block main-body-block
             success: function(dt) {
               console.log('move group, ' + JSON.stringify(dt));
               if (dt.code == 0) {
-                that.getGroupPhotos();
+                that.props.handleRefetch();
               }
             }
           })
@@ -562,13 +562,21 @@ block main-body-block
         constructor(props) {
           super(props);
           this.state = {
-            gid: 1
+            gid: 1,
+            key: new Date().getTime()
           }
           this.handlePhotoGroupChange = this.handlePhotoGroupChange.bind(this);
+          this.handleRefetch = this.handleRefetch.bind(this);
         }
         handlePhotoGroupChange(gid) {
           this.setState({
-            gid: gid
+            gid: gid,
+            key: new Date().getTime()
+          });
+        }
+        handleRefetch() {
+          this.setState({
+            key: new Date().getTime()
           });
         }
         /**
@@ -586,11 +594,10 @@ block main-body-block
         }
         render() {
           var groups = [];
-          var key = new Date().getTime();
           return (
             <div id='photo-div'>
-              <PhotoFlow key = {key} gid = {this.state.gid} />
-              <PhotoGroupBar key = {key + 100} gid = {this.state.gid} groups = {groups} groupChange = {this.handlePhotoGroupChange}/>
+              <PhotoFlow key = {this.state.key} gid = {this.state.gid} handleRefetch = {this.handleRefetch}/>
+              <PhotoGroupBar key = {this.state.key + 100} gid = {this.state.gid} groups = {groups} groupChange = {this.handlePhotoGroupChange} handleRefetch = {this.handleRefetch}/>
             </div>
           );
         }

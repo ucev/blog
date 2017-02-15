@@ -19,6 +19,16 @@ function emptyString(str) {
   return (str === '' || str === '-1') ? '' : str;
 }
 
+function transactionError(res, conn, resMsg = {code: 1, msg: '操作失败'}) {
+  conn.rollback(() => {
+
+  });
+  conn.end((err) => {
+
+  });
+  res.json(resMsg);
+}
+
 router.get('/articles/modify', (req, res, next) => {
   const id = strToNum(req.query.id);
   const state = req.query.state;
@@ -194,10 +204,6 @@ router.get('/photos/delete', (req, res, next) => {
   })
 });
 
-
-/**
- * 错误更新处理及其他稍后家😊 
- */
 router.get('/photos/move', (req, res, next) => {
   var photos = req.query.photos;
   photos = photos.split(',');
@@ -208,17 +214,35 @@ router.get('/photos/move', (req, res, next) => {
   console.log('***************photos: ', photos);
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
-  conn.query('select photogroup from photos where id in  ? ', [[photos]], (err, results, fields) => {
-    var gids = results.map((row) => (row.photogroup));
+  conn.beginTransaction((err) => {
     conn.query('update photos set photogroup = ? where id in ?', [gid, [photos]], (err, results, fields) => {
-      conn.query('update photogroups set count = count - 1 where id in ?', [[gids]], (err, results, fields) => {
-        res.jsonp({code: 0, msg: '更新成功'});
-        conn.end((err) => {
+      if (err) {
+        transactionError(res, conn);
+      } else {
+        conn.query(`update photogroups as pg 
+             left join
+             (select photogroup as gid, count(*) as cnt from photos group by photogroup) as cp
+             on pg.id = cp.gid
+             set pg.count = if(isnull(cp.cnt), 0, cp.cnt)`, (err, results, fields) => {
+          if (err) {
+            throw err;
+            transactionError(res, conn);
+          } else {
+            conn.commit((err) => {
+              if (err) {
+                transactionError(res, conn);
+              } else {
+                res.jsonp({code: 0, msg: '更新成功'});
+                conn.end((err) => {
 
+                });
+              }
+            });
+          }
         });
-      });
-    })
-  })
+      }
+    });
+  });
 });
 
 router.get('/photos/rename', (req, res, next) => {

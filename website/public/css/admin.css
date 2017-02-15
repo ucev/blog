@@ -303,6 +303,7 @@ td {
 }
 
 #photo-group-div {
+  position: relative;
   width: 150px;
   background-color: lavender;
   border: 1px solid #BDBDBD;
