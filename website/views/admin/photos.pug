@@ -74,9 +74,12 @@ block main-body-block
         }
 
         render() {
-          var styles = {};
+          var styles = {}, groups = [];
           if (!this.props.visible) styles.display = 'none';
-          var groups = JSON.parse(localStorage.getItem("photo_group"));
+          if (localStorage.getItem('photo_group')) {
+            groups = JSON.parse(localStorage.getItem("photo_group"));
+          }
+
           var groupItems = groups.map((group) => {
             if (group.id == -1) return '';
             return (
