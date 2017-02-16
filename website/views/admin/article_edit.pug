@@ -123,9 +123,11 @@ block main-body-block
       }
   script.
     var simplemde = new SimpleMDE(markdown_editor_config);
+    var cm = simplemde.codemirror;
     var markdown = markdownit();
     markdown.renderer.rules.paragraph_open = markdown.renderer.rules.heading_open =
-    markdown.renderer.rules.table_open =  markdown.renderer.rules.ordered_list_open = injectLineNumbers;
+    markdown.renderer.rules.ordered_list_open = markdown.renderer.rules.bullet_list_open =
+    markdown.renderer.rules.table_open =  injectLineNumbers;
     $('#display-area').html(markdown.render(simplemde.value()));
     $("#submit").click(submitArticle);
     
@@ -154,7 +156,7 @@ block main-body-block
       var lineCount = mirror.doc.lineCount();
       var firstLine = mirror.heightAtLine(0);
       for (i = 0; i < lineCount; i++) {
-        lineHeightMap.push(mirror.heightAtLine(i) - firstLine);
+        lineHeightMap.push(Math.floor(mirror.heightAtLine(i) - firstLine));
       }
       for (i = 0; i < lineCount; i++) {
         scrollMap.push(-1);
@@ -163,19 +165,23 @@ block main-body-block
       scrollMap[0] = 0;
       $(".line").each((index, ele) => {
         var $ele = $(ele), _line = $ele.data('line');
-        nonEmptyList.push(_line);
-        scrollMap[_line] = $ele.offset().top + offset;
+        if (_line != 0) nonEmptyList.push(_line);
+        scrollMap[_line] = Math.floor($ele.offset().top + offset);
       });
+
       var pos = 0;
-      for (i = 0; i < lineCount; i++) {
+      for (i = 1; i <= lineCount; i++) {
         if (scrollMap[i] != -1) {
           pos++;
           continue;
         }
         var a = nonEmptyList[pos];
         var b = nonEmptyList[pos + 1];
-        scrollMap[i] = (scrollMap[b] * (i - a) + scrollMap[a] * (b - i)) / (b - a);
+        scrollMap[i] = Math.floor((scrollMap[b] * (i - a) + scrollMap[a] * (b - i)) / (b - a));
       }
+      // scrollmap[0]
+      scrollMap[0] = 0;
+
       return {
         lineHeightMap: lineHeightMap,
         scrollMap: scrollMap
@@ -200,7 +206,7 @@ block main-body-block
 
     var syncSrcScroll = myDebounce(function() {
       var $target = $('#display-area');
-      var toffset = $target.scrollTop() - $target.offset().top;
+      var toffset = Math.ceil($target.scrollTop());
       var smap = buildScrollMap();
       var lineHeightMap = smap.lineHeightMap;
       var scrollMap = smap.scrollMap;
@@ -211,7 +217,14 @@ block main-body-block
           break;
         }
       }
+      if (pos >= 0) {
+      console.log('pos info, pos: ' + pos + ', scroll: ' + toffset);
+      console.log('line height map: ' + JSON.stringify(lineHeightMap));
+      console.log('scroll map: ' + JSON.stringify(scrollMap));
       simplemde.codemirror.scrollTo(0, lineHeightMap[pos]);
+      } else {
+        simplemde.codemirror.scrollTo(0, 0);
+      }
     }, 600);
 
     var syncResScroll = myDebounce(function() {
@@ -235,6 +248,9 @@ block main-body-block
     $("#edit-area").on('mouseover', function() {
       $('#display-area').off('scroll');
       simplemde.codemirror.on('scroll', syncResScroll);
+    });
+    $("#edit-area").on('mouseout', function() {
+      simplemde.codemirror.off('scroll', syncResScroll);
     });
     simplemde.codemirror.on('change', function() {
       $("#display-area").html(markdown.render(simplemde.value()));
