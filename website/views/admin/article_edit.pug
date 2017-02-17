@@ -1,13 +1,13 @@
 extends base_layout
 
 block append jsscript-block
-  script(src='/dist/simplemde.min.js?' + new Date().getTime())
+  script(src='/js/simplemde.min.js?' + new Date().getTime())
   script(src='/markdown-it.min.js')
   script(src='/template.js')
   script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;
 
 block append stylesheet-block
-  link(rel='stylesheet' href='/dist/simplemde.min.css')
+  link(rel='stylesheet' href='/css/simplemde.min.css')
   link(rel='stylesheet' href='/css/article_edit.css?' + new Date().getTime())
 
 block main-body-block
@@ -34,6 +34,12 @@ block main-body-block
           button.operation-button#choose-photo-div-upload-button 上传图片
         div#choose-photo-div-photo-list-div
           ul#choose-photo-div-photo-list-ul
+  div#insert-url-div
+    div#insert-url-div-title 输入URL:
+    input#insert-url-div-input
+    div#insert-url-div-bottom-operation-bar
+      button.operation-button.operation-button-cancel(onclick='onInsertUrlCancelClick()') 取消
+      button.operation-button.operation-button-confirm(onclick='onInsertUrlConfirmClick()') 确定
 
   script#label-tpl(type='text/html').
     <div id="label-div-<%= ord %>" class='label-div label-div-label-<%= nclass %>'>
@@ -43,7 +49,7 @@ block main-body-block
   script#photo-group-tpl(type='text/html').
     <li class='choose-photo-div-photo-group-li <%= current %>' data-gid='<%= gid %>' onclick='onGroupItemClick(this)'><%= name %>(<%= cnt %>)</li>
   script#photo-item-tpl(type='text/html').
-    <li class='choose-photo-div-photo-item-li'>
+    <li class='choose-photo-div-photo-item-li' onClick = 'onPhotoItemClick(this)'>
       <img class='choose-photo-div-photo-item-img' data-id='<%= id %>' src='<%= imgsrc %>' alt='图片' onload='photoImgOnLoad(this)' />
     </li>
   script.
@@ -79,6 +85,12 @@ block main-body-block
         }
       });
     })();
+    function insertUrlFunction() {
+      $("#insert-url-div").show();
+    }
+    function insertImgFunction() {
+      $("#choose-photo-div").show();
+    }
   if type == 'edit'
     script.
       const markdown_editor_config = {
@@ -86,6 +98,8 @@ block main-body-block
         status: false,
         spellChecker: false,
         promptURLs: true,
+        insertUrlFunction: insertUrlFunction,
+        insertImgFunction: insertImgFunction,
         initialValue: decodeURIComponent('#{content}')
       };
       function submitArticle(e) {
@@ -117,7 +131,9 @@ block main-body-block
         element: document.getElementById("md-editor"),
         status: false,
         spellChecker: false,
-        promptURLs: true
+        promptURLs: true,
+        insertUrlFunction: insertUrlFunction,
+        insertImgFunction: insertImgFunction
       };
       function submitArticle(e) {
         $('#submit').unbind('click');
@@ -333,6 +349,56 @@ block main-body-block
       var nh = oh / scale;
       img.setAttribute('width', nw + 'px');
       img.setAttribute('height', nh + 'px');
+    }
+    function onPhotoItemClick(target) {
+      $("#choose-photo-div").hide();
+      var imgsrc = $($(target).find('img')[0]).attr('src');
+      S(simplemde, imgsrc);
+    }
+    function onInsertUrlConfirmClick() {
+      var url = $("#insert-url-div-input").val();
+      $("#insert-url-div").hide();
+      k(simplemde, url);
+    }
+    function onInsertUrlCancelClick() {
+      $("#insert-url-div-input").val("");
+      $("#insert-url-div").hide();
+    }
+    /**
+     * 以下三个函数是复制过来的
+     */
+    function l(e, t) {
+      t = t || e.getCursor("start");
+      var n = e.getTokenAt(t);
+      if (!n.type) return {};
+      for (var r, i, o = n.type.split(" "), a = {}, l = 0; l < o.length; l++) r = o[l], "strong" === r ? a.bold = !0 : "variable-2" === r ? (i = e.getLine(t.line), /^\s*\d+\.\s/.test(i) ? a["ordered-list"] = !0 : a["unordered-list"] = !0) : "atom" === r ? a.quote = !0 : "em" === r ? a.italic = !0 : "quote" === r ? a.quote = !0 : "strikethrough" === r ? a.strikethrough = !0 : "comment" === r ? a.code = !0 : "link" === r ? a.link = !0 : "tag" === r ? a.image = !0 : r.match(/^header(\-[1-6])?$/) && (a[r.replace("header", "heading")] = !0);
+      return a
+    }
+    function k(e, url) {
+      var t = e.codemirror,
+        n = l(t),
+        r = e.options,
+        i = "http://";
+      return void E(t, n.link, r.insertTexts.link, url);
+    }
+    function S(e, imgsrc) {
+      var t = e.codemirror,
+        n = l(t),
+        r = e.options,
+        i = "http://";
+      return void E(t, n.image, r.insertTexts.image, imgsrc);
+    }
+    function E(e, t, n, r) {
+      if (!/editor-preview-active/.test(e.getWrapperElement().lastChild.className)) {
+        var i, o = n[0],
+          a = n[1],
+          l = e.getCursor("start"),
+          s = e.getCursor("end");
+        r && (a = a.replace("#url#", r)), t ? (i = e.getLine(l.line), o = i.slice(0, l.ch), a = i.slice(l.ch), e.replaceRange(o + a, {
+          line: l.line,
+          ch: 0
+        })) : (i = e.getSelection(), e.replaceSelection(o + i + a), l.ch += o.length, l !== s && (s.ch += o.length)), e.setSelection(l, s), e.focus()
+      }
     }
     addLabel(current_labels.split(','));
     fetchGroupData();

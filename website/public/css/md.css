@@ -131,3 +131,8 @@
   background-color: inherit;
   text-decoration: none;
 }
+
+.markdown-display img {
+  width: 100%;
+  max-width: 300px;
+}
