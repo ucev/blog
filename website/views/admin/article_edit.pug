@@ -21,18 +21,37 @@ block main-body-block
         label#label-label 标签
         input#label-input-area(placeholder='输入标签' maxlength=10)
         div#labels-area
-      div.op-bar
+      div.op-bar#upload-image-div
         button.operation-button#submit 发布文章
         //button.operation-button#save 保存文章
+  div#choose-photo-div
+    div#choose-photo-div-title 选择图片
+    div#choose-photo-div-main-div
+      div#choose-photo-div-groups
+        ul#choose-photo-div-photo-group-ul
+      div#choose-photo-div-right-div
+        div#choose-photo-div-upload-div
+          button.operation-button#choose-photo-div-upload-button 上传图片
+        div#choose-photo-div-photo-list-div
+          ul#choose-photo-div-photo-list-ul
+
   script#label-tpl(type='text/html').
     <div id="label-div-<%= ord %>" class='label-div label-div-label-<%= nclass %>'>
       <span><%= label %></span>
       <img id='label-div-delete-img-<%= ord %>' src='/images/icons/ic_clear_white_24dp_2x.png' onclick='deleteLabel(<%= ord %>)'></img>
     </div>
+  script#photo-group-tpl(type='text/html').
+    <li class='choose-photo-div-photo-group-li <%= current %>' data-gid='<%= gid %>' onclick='onGroupItemClick(this)'><%= name %>(<%= cnt %>)</li>
+  script#photo-item-tpl(type='text/html').
+    <li class='choose-photo-div-photo-item-li'>
+      <img class='choose-photo-div-photo-item-img' data-id='<%= id %>' src='<%= imgsrc %>' alt='图片' onload='photoImgOnLoad(this)' />
+    </li>
   script.
     var labels = [];
     var labelCount = 0;
     const labelTpl = $("#label-tpl").html();
+    const photoGroupTpl = $("#photo-group-tpl").html();
+    const photoItemTpl = $("#photo-item-tpl").html();
     function deleteLabel(i) {
       let id = '#label-div-' + i;
       let label = $(id).children('span').text();
@@ -256,8 +275,64 @@ block main-body-block
       $("#display-area").html(markdown.render(simplemde.value()));
       syncResScroll();
     });
+    function fetchGroupData() {
+      $.ajax({
+        url: '/admin/datas/photogroup/get',
+        type: 'get',
+        dataType: 'json',
+        success: function(dt) {
+          if (dt.code == 0) {
+            var groups = dt.data;
+            groups.forEach((group) => {
+              var params = {gid: group.id, name: group.name, cnt: group.count, current: ''};
+              if (group.id == -1) params.current = 'choose-photo-div-photo-group-li-current';
+              $(template(photoGroupTpl, params)).appendTo($("#choose-photo-div-photo-group-ul"));
+            })
+          }
+          getGroupPhotos();
+        }
+      });
+    }
+    function getGroupPhotos(gid = -1) {
+      $.ajax({
+        url: '/admin/datas/photos/get',
+        data: {gid: gid},
+        type: 'get',
+        dataType: 'json',
+        success: function(dt) {
+          if (dt.code == 0) {
+            var photos = dt.data;
+            var prefix = '/images/blog/';
+            $("#choose-photo-div-photo-list-ul").empty();
+            photos.forEach((photo) => {
+              var params = {id: photo.id, imgsrc: prefix + photo.name};
+              $(template(photoItemTpl, params)).appendTo($("#choose-photo-div-photo-list-ul"));
+            });
+          }
+        }
+      });
+    }
     /**
-     * 设置scroll async
+     * 原本想合并😊 
      */
-    
+    function onGroupItemClick(target) {
+      $(".choose-photo-div-photo-group-li").removeClass('choose-photo-div-photo-group-li-current');
+      $(target).addClass('choose-photo-div-photo-group-li-current');
+      getGroupPhotos($(target).attr('data-gid'));
+    }
+    function photoImgOnLoad(e) {
+      var img = e;
+      var imgsrc = img.src;
+      var image = new Image();
+      image.src = imgsrc;
+      var ow = image.width;
+      var oh = image.height;
+      var small = ow < oh ? ow : oh;
+      var scale = small / 150;
+      var nw = ow / scale;
+      var nh = oh / scale;
+      img.setAttribute('width', nw + 'px');
+      img.setAttribute('height', nh + 'px');
+    }
     addLabel(current_labels.split(','));
+    fetchGroupData();
