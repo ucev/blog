@@ -31,26 +31,25 @@ body {
   left: 0;
   z-index: 100;
   width: 100%;
-  height: 100px;
+  height: 60px;
   background-color: #795548;
   box-shadow: 0px 5px 5px #4E342E;
 }
 
 #website-intro-div > div {
   position: absolute;
-  top: 30px;
+  top: 15px;
   display: inline-block;
   height: 30px;
 }
 
 #website-front-div {
   left: 30px;
-  height: 100%;
 }
 
 #website-front-div a {
   display: inline-block;
-  font-size: 30px;
+  font-size: 25px;
   color: white;
 }
 
@@ -91,7 +90,6 @@ body {
 .main {
   min-height: 800px;
   margin-top: 100px;
-  padding: 50px 100px;
 }
 
 #display-area {
@@ -116,3 +114,46 @@ footer {
   color: white;
 }
 
+#articles-list-ul {
+  width: 80%;
+  margin-left: 10%;
+  list-style-type: none;
+}
+
+.article-item-li {
+  max-height: 210px;
+  margin-top: 10px;
+  padding: 20px;
+  border: 1px solid black;
+}
+
+.article-item-li-title,
+.article-item-li-content {
+  cursor: pointer;
+}
+
+.article-item-li-title {
+  height: 40px;
+  line-height: 40px;
+  font-size: 25px;
+}
+
+.article-item-li-content {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.article-item-li-bottom-info {
+  height: 30px;
+  text-align: right;
+}
+
+.article-item-li-bottom-info > div {
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+}
+
+.article-item-li-addtime {
+  
+}

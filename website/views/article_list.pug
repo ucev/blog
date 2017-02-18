@@ -3,8 +3,22 @@ extends base_layout
 block body-block
   include website_banner
   mixin article_item(itemData)
-    li.article_item
-      a(href='/articles/view/' + itemData.id) #{itemData.title}
+    li.article-item-li(data-id = itemData.id )
+      div.article-item-li-title #{itemData.title}
+      div.article-item-li-content #{itemData.content}
+      div.article-item-li-bottom-info
+        div.article-item-li-pageview 阅读量(#{itemData.pageview})
+        div.article-item-li-addtime #{itemData.addtime}
   div.main#articles-list
-    each data in datas
-      +article_item(data)
+    ul#articles-list-ul
+      each data in datas
+        +article_item(data)
+  script.
+    $(document).ready(() => {
+      $('.article-item-li-title, .article-item-li-content').click(function() {
+        location.href = '/articles/view/' + $(this).parent('.article-item-li').attr('data-id');
+      });
+      $('.article-item-li-addtime').click(function() {
+        alert($(this).text());
+      })
+    });
