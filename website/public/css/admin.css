@@ -264,7 +264,14 @@ td {
   margin-left: 10%;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+.table-filter-bar-top {
   text-align: right;
+}
+
+.table-filter-bar-bottom {
+  text-align: left;
 }
 
 .table-filter-item {

@@ -39,61 +39,98 @@ router.get('/articles/modify', (req, res, next) => {
   const conn = mysql.createConnection(configs.database_config);
   conn.query('update articles set state = ? where id = ?', [state, id],
     (err, results, fields) => {
-      conn.query('select id, title, category, label, state, top, pageview from articles where id = ?',
-        [id],
-        (err, results, fields) => {
-          var row = results.length > 0 ? results[0] : {};
-          res.json({code: 0, msg: '更新成功', data: row});
-          conn.end((err) => {
+      if (err) {
+        res.json({code: 1, msg: '更新失败'});
+      } else {
+        res.json({code: 0, msg: '更新成功'});
+      }
+    }
+  );
+});
 
-          });
-        }
-      );
+router.get('/articles/getsingle/', (req, res, next) => {
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('select id, title, category, label, state, top, pageview from articles where id = ?', [id],
+    (err, results, fields) => {
+      if (err) {
+        res.json({code: 1, msg: '请求失败'});
+      } else {
+        res.json({code: 0, msg: '请求成功', data: results[0]});
+      }
     }
   );
 });
 
 router.get('/articles/get', (req, res, next) => {
-  const current = strToNum(req.query.start);
-  const start = current * configs.query_config.step;
-  const state = emptyString(req.query.state);
-  const category = strToNum(emptyString(req.query.category));
-  const label = emptyString(req.query.label);
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
-  var wheres = ' where 1';
-  var whereArgs = [];
-  if ( state || category || label) {
-    if (state) {
-      wheres += ' AND state = ?';
-      whereArgs.push(state);
-     }
-    if (category) {
-      wheres += ' AND category = ?';
-      whereArgs.push(category);
-    }
-    if (label) {
-      wheres += ' AND label = ?';
-      whereArgs.push(label);
-    }
-  }
-  conn.query('select count(*) as total from articles' + wheres, whereArgs, (err, results, fields) => {
-    const total = Math.ceil((results[0]['total'] + 1)/ configs.query_config.step);
-    var sql = 'select id, title, category, label, state, top, pageview from articles ';
-    sql += wheres;
-    sql += ' limit ?, ?';
-    conn.query(sql, [...whereArgs, start, configs.query_config.step], (err, results, fields) => {
-        res.json({code: 0, msg: '获取成功', data: {
-          total: total,
-          current: current,
-          data: results
-        }});
+  if (req.query.id != undefined) {
+    const id = req.query.id;
+    conn.query('select id, title, category, label, state, top, pageview from articles where id = ?', [id],
+      (err, results, fields) => {
+        if (results.length > 0) {
+          res.json({code: 0, msg: '请求成功', data: results[0]});
+        } else {
+          res.json({code: 1, msg: '请求失败'});
+        }
         conn.end((err) => {
-
-        });
+          
+        })
       }
     );
-  });
+  } else {
+    const current = strToNum(req.query.start);
+    const start = current * configs.query_config.step;
+    const state = emptyString(req.query.state);
+    const category = strToNum(emptyString(req.query.category));
+    const label = emptyString(req.query.label);
+    var wheres = ' where 1';
+    var whereArgs = [];
+    if ( state || category || label) {
+      if (state) {
+        wheres += ' AND state = ?';
+        whereArgs.push(state);
+       }
+      if (category) {
+        wheres += ' AND category = ?';
+        whereArgs.push(category);
+      }
+      if (label) {
+        wheres += ' AND label = ?';
+        whereArgs.push(label);
+      }
+    }
+    conn.query('select count(*) as total from articles' + wheres, whereArgs, (err, results, fields) => {
+      const total = Math.ceil(results[0]['total'] / configs.query_config.step);
+      var sql = 'select id, title, category, label, state, top, pageview from articles ';
+      sql += wheres;
+      sql += ' limit ?, ?';
+      conn.query(sql, [...whereArgs, start, configs.query_config.step], (err, results, fields) => {
+          res.json({code: 0, msg: '获取成功', data: {
+            total: total,
+            current: current,
+            data: results
+          }});
+          conn.end((err) => {
+
+          });
+        }
+      );
+    });
+  }
+});
+
+router.get('/labels/get', (req, res, next) => {
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('select * from labels', (err, results, fields) => {
+    if (err) {
+      res.json({code: 1, msg: '获取失败'});
+    } else {
+      res.json({code: 0, msg: '获取成功', data: results});
+    }
+  })
 });
 
 router.get('/photos/get', (req, res, next) => {

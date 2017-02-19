@@ -1,1 +1,156 @@
 extends base_layout
+
+block main-body-block
+  div.main
+    div#target-div
+      div#table-div
+  script(type='text/babel').
+    class TableLabel extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        return (
+          <tr className = 'content-row-label'>
+            <th className = 'content-row-check-label'></th>
+            <th className = 'content-row-index-label'>序号</th>
+            <th className = 'content-row-title-label'>标题</th>
+            <th className = 'content-row-article-count-label'>文章数</th>
+            <th className = 'content-row-hotmark-label'>热度</th>
+            <th className = 'content-row-addtime-label'>添加日期</th>
+            <th className = 'content-row-operation-label'>操作</th>
+          </tr>
+        )
+      }
+    }
+    class LabelRow extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        const label = this.props.label;
+        return (
+          <tr className = 'content-row-data'>
+            <td className = 'content-row-checkbox-data'><input type='checkbox' /></td>
+            <td className = 'content-row-index-data'>{label.id}</td>
+            <td className = 'content-row-title-data'>{label.name}</td>
+            <td className = 'content-row-article-count-data'>{label.count}</td>
+            <td className = 'content-row-hotmark-data'>{label.hotmark}</td>
+            <td className = 'content-row-addtime-data'>{label.addtime}</td>
+            <td className = 'content-row-operation-data'>操作</td>
+          </tr>
+        )
+      }
+    }
+    class LabelTable extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        const labels = this.props.labels.map((label) => (
+          <LabelRow label = {label} />
+        ));
+        return (
+          <table className = 'content-table'>
+            <thead>
+              <TableLabel />
+            </thead>
+            <tbody>
+              {labels}
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+        )
+      }
+    }
+    class LabelLayout extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          labels: []
+        }
+        this.fetchLabelData = this.fetchLabelData.bind(this);
+        this.fetchLabelData();
+      }
+      fetchLabelData() {
+        var that = this;
+        fetch('/admin/datas/labels/get', {
+          type: 'get',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              that.setState({
+                labels: dt.data
+              });
+            }
+          }
+        })
+      }
+      render() {
+        return (
+          <LabelTable labels = {this.state.labels} />
+        );
+      }
+    }
+    function fetch(url, {
+        data = {}, 
+        type = 'get', 
+        dataType = 'text', 
+        success = function(){}, 
+        error = function(){}, 
+        complete = function(){}}) {
+      function urlParamsEncode(obj) {
+        var param = '';
+        for (let key in obj) {
+          param += (encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]) + '&');
+        }
+        return param.substring(0, param.length - 1);
+      }
+      var xhr = new XMLHttpRequest();
+      if (xhr == null) return;
+      if (type == 'get') {
+        var params = urlParamsEncode(data);
+        if (!url.endsWith('?')) url += '?';
+        url += params;
+      }
+      xhr.open(type, url);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+          complete();
+          if (xhr.status == 200) {
+            switch (dataType) {
+              case 'json':
+                success(JSON.parse(xhr.responseText));
+                break;
+              case 'xml':
+                success(xhr.responseXML);
+                break;
+              case 'text':
+              default:
+                success(xhr.responseText);
+                break;
+            }
+          } else {
+            // 此处没有参数
+            error();
+          }
+        }
+      };
+      if (type == 'post') {
+        if (data instanceof FormData) {
+          //xhr.setRequestHeader('content-type', 'multipart/form-data');
+          xhr.send(data);
+        } else {
+          var params = urlParamsEncode(data);
+          xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+          xhr.send(params)
+        }
+      } else {
+        xhr.send();
+      }
+    }
+    ReactDOM.render(
+      <LabelLayout />,
+      document.getElementById('table-div')
+    );
