@@ -160,6 +160,66 @@ router.post('/categories/add', (req, res, next) => {
   //})
 })
 
+router.post('/categories/delete', (req, res, next) => {
+  var id = req.body.id;
+  if (id < 1) {
+    res.json({code: 1, msg: '更新失败'});
+    return;
+  }
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.beginTransaction((err) => {
+    conn.query('delete from categories where id = ?', [id], (err, results, fields) => {
+      if (err) {
+        transactionError(res, conn);
+        return;
+      }
+      conn.query('update categories set parent = 0 where parent = ?', [id], (err, results, fields) => {
+        if (err) {
+          transactionError(res, conn);
+          return;
+        }
+        conn.commit((err) => {
+          if (err) {
+            transactionError(res, conn);
+            return;
+          }
+          res.json({code: 0, msg: '删除成功'});
+          conn.end((err) => {
+            
+          })
+        })
+
+      })
+    })
+  })
+})
+
+router.post('/categories/modify', (req, res, next) => {
+  var id = strToNum(req.body.id);
+  var name = req.body.name;
+  // 错误检查
+  var parent = req.body.parent;
+  var descp = req.body.descp;
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('update categories set ? where id = ?', [{
+    name: name,
+    parent: parent,
+    descp: descp
+  }, id], (err, results, fields) => {
+    if (err) {
+      console.log(err);
+      res.json({code: 1, msg: '更新失败'});
+    } else {
+      res.json({code: 0, msg: '更新成功'});
+    }
+    conn.end((err) => {
+
+    });
+  })
+})
+
 router.get('/cagetories/get', (req, res, next) => {
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);

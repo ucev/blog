@@ -676,3 +676,34 @@ td {
 .add-category-div-opebar .operation-button-cancel {
   margin-right: 30px;
 }
+
+.category-row-index-label {
+  width: 10%;
+}
+
+.category-row-name-label {
+  width: 10%;
+}
+
+.category-row-parent-label {
+  width: 10%;
+}
+
+.category-row-descp-label {
+  width: 30%;
+  padding-left: 30px;
+  text-align: left;
+}
+
+.category-row-articlecnt-label {
+  width: 10%;
+}
+
+.category-row-operation-label {
+  width: 10%;
+}
+
+.category-row-descp-data {
+  padding-left: 30px;
+  text-align: left;
+}

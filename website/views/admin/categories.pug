@@ -8,12 +8,10 @@ block main-body-block
     class OperationBar extends React.Component {
       constructor(props) {
         super(props);
+        this.addNewCategory = this.addNewCategory.bind(this);
       }
       addNewCategory() {
-        var acd = document.getElementById('add-category-div');
-        acd.style.height = '300px';
-        acd.style.borderWidth = '1px';
-        acd.style.opacity = '1';
+        this.props.addNewCategory(true, 'add');
       }
       render() {
         return (
@@ -26,63 +24,75 @@ block main-body-block
     class AddCategoryDiv extends React.Component {
       constructor(props) {
         super(props);
-        this.hideAddCategoryDiv = this.hideAddCategoryDiv.bind(this);
+        this.valueChange = this.valueChange.bind(this);
         this.addCategoryCancel = this.addCategoryCancel.bind(this);
         this.addCategoryConfirm = this.addCategoryConfirm.bind(this);
       }
-      hideAddCategoryDiv() {
-        var div = document.getElementById('add-category-div');
-        div.style.height = '0';
-        div.style.borderWidth = '0';
-        div.style.opacity = '0';
+      valueChange(e) {
+        var title = e.target.getAttribute('data-title');
+        var value = e.target.value;
+        var data = this.props.data;
+        data[title] = value;
+        this.props.valueChange(data);
       }
       addCategoryCancel(e) {
-        this.hideAddCategoryDiv();
-        e.preventDefault();
+        this.props.cancel();
       }
       addCategoryConfirm(e) {
         var name = document.getElementById('add-category-div-item-input-name').value;
         var parent = document.getElementById('add-category-div-item-input-parent').value;
         var descp = document.getElementById('add-category-div-item-input-descp').value;
-        var data = new FormData();
-        data.append('name', name);
-        data.append('parent', 0);
-        data.append('descp', descp);
-        var that = this;
-        fetch('/admin/datas/categories/add', {
-          data: {name: name, parent: parent, descp: descp},
-          type: 'post',
-          dataType: 'json',
-          success: function(dt) {
-            if (dt.code == 0) {
-              that.hideAddCategoryDiv();
-              that.props.fetchCagetoryDatas();
-            }
-          }
-        })
+        var data = {
+          name: name,
+          parent: parent,
+          descp: descp
+        }
+        this.props.confirm(data);
         e.preventDefault();
       }
       render() {
-        var categoryItems = this.props.categories.map((category) => (
-          <option value = {category.id}>{category.name}</option>
-        ))
+        var data = this.props.data == {} ? {} : this.props.data;
+        var name = data.name ? data.name : '';
+        var parent = data.parent ? data.parent : '';
+        var descp = data.descp ? data.descp : '';
+        var categoryItems = this.props.categories.map((category) => {
+          if (category.id == parent) {
+            return (<option value = {category.id} selected>{category.name}</option>);
+          } else {
+            return (<option value = {category.id}>{category.name}</option>);
+          }
+        });
+        var styles;
+        if (this.props.visible) {
+          styles = {
+            height: '300px',
+            'border-width': '1px',
+            opacity: 1
+          }
+        } else {
+          styles = {
+            height: '0',
+            'border-width': '0',
+            opacity: 0
+          }
+        }
         return (
-          <div id = 'add-category-div'>
+          <div id = 'add-category-div' style = {styles}>
             <form id = 'add-category-form'>
-              <legend id = 'add-category-div-title'>添加类别</legend>
+              <legend id = 'add-category-div-title'>{this.props.title}</legend>
               <li className = 'add-category-div-item' id = 'add-category-div-name'>
                 <label className = 'add-category-div-item-label'>标题</label>
-                <input className = 'add-category-div-item-input' id = 'add-category-div-item-input-name' type='text'/>
+                <input className = 'add-category-div-item-input' id = 'add-category-div-item-input-name' type='text' data-title = 'name' value = {name} onChange = {this.valueChange}/>
               </li>
               <li className = 'add-category-div-item' id = 'add-category-div-parent'>
                 <label className = 'add-category-div-item-label'>父节点</label>
-                <select className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent'>
+                <select className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent' data-title = 'parent' onChange = {this.valueChange}>
                   {categoryItems}
                 </select>
               </li>
               <li className = 'add-category-div-item' id = 'add-category-div-descp'>
                 <label className = 'add-category-div-item-label'>描述</label>
-                <textarea className = 'add-category-div-item-textarea' id = 'add-category-div-item-input-descp'></textarea>
+                <textarea className = 'add-category-div-item-textarea' id = 'add-category-div-item-input-descp' value = {descp} data-title = 'descp' onChange = {this.valueChange} />
               </li>
               <li className = 'add-category-div-item add-category-div-opebar'>
                 <button className = 'operation-button operation-button-cancel' onClick = {this.addCategoryCancel}>取消</button>
@@ -99,13 +109,13 @@ block main-body-block
       }
       render() {
         return (
-          <tr className = 'content-row-label'>
-            <th className = 'content-row-index-label'>序号</th>
-            <th className = 'content-row-title-label'>名称</th>
-            <th classname = 'content-row-parent-label'>父节点</th>
-            <th className = 'content-row-descp-label'>描述</th>
-            <th className = 'content-row-articlecnt-label'>文章数</th>
-            <th className = 'content-row-operation-label'>操作</th>
+          <tr className = 'content-row-label category-row-label'>
+            <th className = 'category-row-index-label'>序号</th>
+            <th className = 'category-row-name-label'>名称</th>
+            <th className = 'category-row-parent-label'>父节点</th>
+            <th className = 'category-row-descp-label'>描述</th>
+            <th className = 'category-row-articlecnt-label'>文章数</th>
+            <th className = 'content-row-operation-label category-row-operation-label'>操作</th>
           </tr>
         );
       }
@@ -113,17 +123,34 @@ block main-body-block
     class CategoryRow extends React.Component {
       constructor(props) {
         super(props);
+        this.categoryOperationClick = this.categoryOperationClick.bind(this);
+        this.operationUl = (
+          <ul className='article-operation-ul' data-id = {this.props.category.id}>
+            <li data-type = 'modify' onClick = {this.categoryOperationClick}>修改</li>
+            <li data-type='delete' onClick = {this.categoryOperationClick}>删除</li>
+          </ul>
+        );
+      }
+      categoryOperationClick(e) {
+        var type = e.target.getAttribute('data-type');
+        var id = e.target.parentNode.getAttribute('data-id');
+        if (type == 'modify') {
+          this.props.modifyCategory(true, 'modify', this.props.category);
+        } else if (type == 'delete') {
+          var data = {id: id};
+          this.props.deleteCategory(data);
+        }
       }
       render() {
         var category = this.props.category;
         return (
-          <tr className = 'content-row-data'>
-            <td>{category.id}</td>
-            <td>{category.name}</td>
-            <td>{category.parent}</td>
-            <td>{category.descp}</td>
-            <td>{category.articlecnt}</td>
-            <td></td>
+          <tr className = 'content-row-data category-row-data'>
+            <td className = 'category-row-index-data'>{category.id}</td>
+            <td className = 'category-row-name-data'>{category.name}</td>
+            <td className = 'category-row-parent-data'>{category.parent}</td>
+            <td className = 'category-row-descp-data'>{category.descp}</td>
+            <td className = 'category-row-articlecnt-data'>{category.articlecnt}</td>
+            <td className = 'content-row-operation-data'>{this.operationUl}</td>
           </tr>
         );
       }
@@ -134,10 +161,10 @@ block main-body-block
       }
       render() {
         var categories = this.props.categories.map((category) => (
-          <CategoryRow category = {category} />
+          <CategoryRow category = {category} modifyCategory = {this.props.modifyCategory} deleteCategory = {this.props.deleteCategory} />
         ));
         return (
-          <table className = 'content-table'>
+          <table className = 'content-table category-content-table'>
             <thead>
               <CategoryLabel />
             </thead>
@@ -154,10 +181,71 @@ block main-body-block
       constructor(props) {
         super(props);
         this.state = {
-          categories: []
+          categories: [],
+          addVisible: false,
+          addType: 'add',
+          addData: {}
         }
+        this.addTitle = {
+          add: '添加类别',
+          modify: '修改类别'
+        }
+        this.addCategoryDivStateChange = this.addCategoryDivStateChange.bind(this);
+        this.addCategoryDivValueChange = this.addCategoryDivValueChange.bind(this);
+        this.addCategoryDivConfirm = this.addCategoryDivConfirm.bind(this);
+        this.addCategoryDivCancel = this.addCategoryDivCancel.bind(this);
+        this.deleteCategory = this.deleteCategory.bind(this);
         this.fetchCagetoryDatas = this.fetchCagetoryDatas.bind(this);
         this.fetchCagetoryDatas();
+      }
+      addCategoryDivStateChange(visible, type = this.state.addType, data = {}) {
+        this.setState({
+          addVisible: visible,
+          addType: type,
+          addData: data
+        })
+      }
+      deleteCategory(data) {
+        var that = this;
+        fetch('/admin/datas/categories/delete', {
+          data: data,
+          type: 'post',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              that.fetchCagetoryDatas();
+            }
+          }
+        })
+      }
+      addCategoryDivConfirm(data) {
+        var url = '';
+        if (this.state.addType == 'add') {
+          url = '/admin/datas/categories/add';
+        } else if (this.props.addType = 'modify') {
+          url = '/admin/datas/categories/modify';
+          data.id = this.state.addData.id;
+        }
+        var that = this;
+        fetch(url, {
+          data: data,
+          type: 'post',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              that.addCategoryDivStateChange(false);
+              that.fetchCagetoryDatas();
+            }
+          }
+        })
+      }
+      addCategoryDivCancel() {
+        this.addCategoryDivStateChange(false);
+      }
+      addCategoryDivValueChange(data) {
+        this.setState({
+          addData: data
+        })
       }
       fetchCagetoryDatas() {
         var that = this;
@@ -176,11 +264,12 @@ block main-body-block
       }
       render() {
         var categories = this.state.categories;
+        var addType = this.state.addType;
         return (
           <div>
-            <OperationBar />
-            <CategoryTable categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas} />
-            <AddCategoryDiv categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas}/>
+            <OperationBar addNewCategory = {this.addCategoryDivStateChange}/>
+            <CategoryTable categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas} modifyCategory = {this.addCategoryDivStateChange} deleteCategory = {this.deleteCategory} />
+            <AddCategoryDiv type = {addType} title = {this.addTitle[addType]} data = {this.state.addData} categories = {categories} visible = {this.state.addVisible} confirm = {this.addCategoryDivConfirm} cancel = {this.addCategoryDivCancel} valueChange = {this.addCategoryDivValueChange} />
           </div>
         );
       }

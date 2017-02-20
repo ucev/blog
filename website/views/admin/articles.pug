@@ -137,13 +137,13 @@ block main-body-block
             off: '已下线',
             check: '待核查'
           };
-          this.article_operation = {
-            on: <ul className='article-operation-ul'><li data-type='off' onClick = {this.handleStateClick}>下线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
-            off: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
-            check: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
-          }
           this.handleStateClick = this.handleStateClick.bind(this);
           this.handleCheckStateChange = this.handleCheckStateChange.bind(this);
+          this.article_operation = {
+            on: <ul className='article-operation-ul'><li data-type='off' onClick = {this.handleStateClick}>下线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
+            off: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='move' onClick = {this.handleStateClick}>移动</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
+            check: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='move' onClick = {this.handleStateClick}>移动</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
+          }
         }
         handleStateClick(e) {
           var id = this.props.article.id;
@@ -206,6 +206,8 @@ block main-body-block
             alert(del);
           } else if (type == 'check') {
             location.href = `/admin/articles/modify?id=${id}`;
+          } else if (type == 'move') {
+            alert('id: ' + id + ', type: ' + type);
           }
         }
         checkStateChange(id, checked) {
@@ -285,9 +287,9 @@ block main-body-block
             success: function(dt) {
               if (dt.code == 0) {
                 var articles = that.state.articles;
-                for (let i in datas) {
+                for (let i in articles) {
                   if (articles[i].id == id) {
-                    articles[i] = dt.articles;
+                    articles[i] = dt.data;
                     that.setState({
                       articles: articles
                     });
