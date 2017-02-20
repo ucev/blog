@@ -137,17 +137,23 @@ block main-body-block
             off: '已下线',
             check: '待核查'
           };
-          this.handleStateClick = this.handleStateClick.bind(this);
           this.article_operation = {
             on: <ul className='article-operation-ul'><li data-type='off' onClick = {this.handleStateClick}>下线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
             off: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
             check: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
           }
+          this.handleStateClick = this.handleStateClick.bind(this);
+          this.handleCheckStateChange = this.handleCheckStateChange.bind(this);
         }
         handleStateClick(e) {
           var id = this.props.article.id;
           var type = e.target.getAttribute('data-type');
           this.props.handleStateClick(id, type);
+        }
+        handleCheckStateChange(e) {
+          var id = this.props.article.id;
+          var checked = e.target.checked;
+          this.props.checkStateChange(id, checked);
         }
         render() {
           var article = this.props.article;
@@ -155,10 +161,10 @@ block main-body-block
           const topStatus = article.top == 0 ? {} : {color: '#EF5350'};
           const articleState = this.article_state_label[article.state];
           const operation = this.article_operation[article.state];
-          const checked = this.props.checked ? 'checked' : '';
+          const checked = this.props.checked === true ? 'checked' : '';
           return (
             <tr className='content-row-data'>
-              <td className='content-row-checkbox-data'><input type='checkbox' checked = {checked}/></td>
+              <td className='content-row-checkbox-data'><input type='checkbox' checked = {checked} onChange = {this.handleCheckStateChange}/></td>
               <td className='content-row-index-data' onClick = {this.handleIndexClick}>{this.props.index + 1}</td>
               <td className='content-row-title-data' style={topStatus}><a href={url}>{article.title}</a></td>
               <td className='content-row-category-data'>{article.category}</td>
@@ -173,16 +179,12 @@ block main-body-block
       class ArticleTable extends React.Component {
         constructor(props) {
           super(props);
-          this.state = {
-            checked: false
-          };
           this.allChecked = this.allChecked.bind(this);
           this.handleStateClick = this.handleStateClick.bind(this);
+          this.checkStateChange = this.checkStateChange.bind(this);
         }
         allChecked(checked) {
-          this.setState({
-            checked: checked
-          });
+          this.props.allChecked(checked);
         }
         handleStateClick(id, type) {
           var that = this;
@@ -206,10 +208,15 @@ block main-body-block
             location.href = `/admin/articles/modify?id=${id}`;
           }
         }
+        checkStateChange(id, checked) {
+          this.props.checkStateChange(id, checked);     
+        }
         render() {
-          const articleRows = this.props.articleDatas.map((article, index, arr) => {
+          var that = this;
+          const articleRows = this.props.articles.map((article, index, arr) => {
+            var checked = that.props.checkState[article.id];
             return (
-              <ArticleRow key = {index} index = {index} checked = {this.state.checked} article = {article} handleStateClick = {this.handleStateClick}/>
+              <ArticleRow key = {index} index = {index} checked = {checked} article = {article} handleStateClick = {this.handleStateClick} checkStateChange = {this.checkStateChange}/>
             );
           });
           return (
@@ -230,9 +237,10 @@ block main-body-block
         constructor(props) {
           super(props);
           this.state = {
-            data: this.props.data,
+            articles: this.props.data,
             current: this.props.current,
-            total: this.props.total
+            total: this.props.total,
+            checkState: {}
           }
           this.stateOptions = [
             {value: '-1', title: '全部'},
@@ -243,11 +251,30 @@ block main-body-block
           this.opeOptions = [
             {value: '-1', title: '--选择操作--'}
           ];
+          this.allChecked = this.allChecked.bind(this);
+          this.checkStateChange = this.checkStateChange.bind(this);
           this.handlePageChange = this.handlePageChange.bind(this);
           this.handleFilterChange = this.handleFilterChange.bind(this);
           this.fetchArticles = this.fetchArticles.bind(this);
           this.fetchSingleArticle = this.fetchSingleArticle.bind(this);
           this.filter = {start : 0};
+        }
+        checkStateChange(id, checked) {
+          var checkState = this.state.checkState;
+          checkState[id] = checked;
+          this.setState({
+            checkState: checkState
+          })
+        }
+        allChecked(checked) {
+          var articles = this.state.articles;
+          var checkState = {};
+          for (let i = 0; i < articles.length; i++) {
+            checkState[articles[i].id] = checked;
+          }
+          this.setState({
+            checkState: checkState
+          })
         }
         fetchSingleArticle(id) {
           var that = this;
@@ -257,12 +284,12 @@ block main-body-block
             dataType: 'json',
             success: function(dt) {
               if (dt.code == 0) {
-                var datas = that.state.data;
+                var articles = that.state.articles;
                 for (let i in datas) {
-                  if (datas[i].id == id) {
-                    datas[i] = dt.data;
+                  if (articles[i].id == id) {
+                    articles[i] = dt.articles;
                     that.setState({
-                      data: datas
+                      articles: articles
                     });
                     break;
                   }
@@ -280,9 +307,10 @@ block main-body-block
             success: function(dt) {
               if (dt.code == 0) {
                 that.setState({
-                  data: dt.data.data,
+                  articles: dt.data.data,
                   current: dt.data.current,
-                  total: dt.data.total
+                  total: dt.data.total,
+                  checkState: {}
                 });
               }
             }
@@ -311,7 +339,7 @@ block main-body-block
                 <FilterInput title = 'category' label = '类别' change = {this.handleFilterChange} />
                 <FilterInput title = 'label' label = '标签' change = {this.handleFilterChange} />
               </div>
-              <ArticleTable articleDatas = {this.state.data} fetchSingleArticle = {this.fetchSingleArticle} />
+              <ArticleTable articles = {this.state.articles} checkState = {this.state.checkState} fetchSingleArticle = {this.fetchSingleArticle} checkStateChange = {this.checkStateChange} allChecked = {this.allChecked} />
               <div className = 'table-filter-bar table-filter-bar-bottom'>
                 <FilterSelect options = {this.opeOptions} />
               </div>

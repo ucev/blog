@@ -1,1 +1,248 @@
 extends base_layout
+
+block main-body-block
+  div.main
+    div#target-div
+      div#table-div
+  script(type='text/babel').
+    class OperationBar extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      addNewCategory() {
+        var acd = document.getElementById('add-category-div');
+        acd.style.height = '300px';
+        acd.style.borderWidth = '1px';
+        acd.style.opacity = '1';
+      }
+      render() {
+        return (
+          <div className = 'table-operation-bar table-operation-bar-top'>
+            <button className = 'operation-button operation-button-confirm' onClick = {this.addNewCategory}>新建类别</button>
+          </div>
+        )
+      }
+    }
+    class AddCategoryDiv extends React.Component {
+      constructor(props) {
+        super(props);
+        this.hideAddCategoryDiv = this.hideAddCategoryDiv.bind(this);
+        this.addCategoryCancel = this.addCategoryCancel.bind(this);
+        this.addCategoryConfirm = this.addCategoryConfirm.bind(this);
+      }
+      hideAddCategoryDiv() {
+        var div = document.getElementById('add-category-div');
+        div.style.height = '0';
+        div.style.borderWidth = '0';
+        div.style.opacity = '0';
+      }
+      addCategoryCancel(e) {
+        this.hideAddCategoryDiv();
+        e.preventDefault();
+      }
+      addCategoryConfirm(e) {
+        var name = document.getElementById('add-category-div-item-input-name').value;
+        var parent = document.getElementById('add-category-div-item-input-parent').value;
+        var descp = document.getElementById('add-category-div-item-input-descp').value;
+        var data = new FormData();
+        data.append('name', name);
+        data.append('parent', 0);
+        data.append('descp', descp);
+        var that = this;
+        fetch('/admin/datas/categories/add', {
+          data: {name: name, parent: parent, descp: descp},
+          type: 'post',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              that.hideAddCategoryDiv();
+              that.props.fetchCagetoryDatas();
+            }
+          }
+        })
+        e.preventDefault();
+      }
+      render() {
+        var categoryItems = this.props.categories.map((category) => (
+          <option value = {category.id}>{category.name}</option>
+        ))
+        return (
+          <div id = 'add-category-div'>
+            <form id = 'add-category-form'>
+              <legend id = 'add-category-div-title'>添加类别</legend>
+              <li className = 'add-category-div-item' id = 'add-category-div-name'>
+                <label className = 'add-category-div-item-label'>标题</label>
+                <input className = 'add-category-div-item-input' id = 'add-category-div-item-input-name' type='text'/>
+              </li>
+              <li className = 'add-category-div-item' id = 'add-category-div-parent'>
+                <label className = 'add-category-div-item-label'>父节点</label>
+                <select className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent'>
+                  {categoryItems}
+                </select>
+              </li>
+              <li className = 'add-category-div-item' id = 'add-category-div-descp'>
+                <label className = 'add-category-div-item-label'>描述</label>
+                <textarea className = 'add-category-div-item-textarea' id = 'add-category-div-item-input-descp'></textarea>
+              </li>
+              <li className = 'add-category-div-item add-category-div-opebar'>
+                <button className = 'operation-button operation-button-cancel' onClick = {this.addCategoryCancel}>取消</button>
+                <button className = 'operation-button operation-button-confirm' onClick = {this.addCategoryConfirm}>添加</button>
+              </li>
+            </form>
+          </div>
+        )
+      }
+    }
+    class CategoryLabel extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        return (
+          <tr className = 'content-row-label'>
+            <th className = 'content-row-index-label'>序号</th>
+            <th className = 'content-row-title-label'>名称</th>
+            <th classname = 'content-row-parent-label'>父节点</th>
+            <th className = 'content-row-descp-label'>描述</th>
+            <th className = 'content-row-articlecnt-label'>文章数</th>
+            <th className = 'content-row-operation-label'>操作</th>
+          </tr>
+        );
+      }
+    }
+    class CategoryRow extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        var category = this.props.category;
+        return (
+          <tr className = 'content-row-data'>
+            <td>{category.id}</td>
+            <td>{category.name}</td>
+            <td>{category.parent}</td>
+            <td>{category.descp}</td>
+            <td>{category.articlecnt}</td>
+            <td></td>
+          </tr>
+        );
+      }
+    }
+    class CategoryTable extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        var categories = this.props.categories.map((category) => (
+          <CategoryRow category = {category} />
+        ));
+        return (
+          <table className = 'content-table'>
+            <thead>
+              <CategoryLabel />
+            </thead>
+            <tbody>
+              {categories}
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+        );
+      }
+    }
+    class CategoryLayout extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          categories: []
+        }
+        this.fetchCagetoryDatas = this.fetchCagetoryDatas.bind(this);
+        this.fetchCagetoryDatas();
+      }
+      fetchCagetoryDatas() {
+        var that = this;
+        fetch('/admin/datas/cagetories/get', {
+          type: 'get',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              localStorage.setItem('categories', JSON.stringify(dt.data));
+              that.setState({
+                categories: dt.data
+              })
+            }
+          }
+        })
+      }
+      render() {
+        var categories = this.state.categories;
+        return (
+          <div>
+            <OperationBar />
+            <CategoryTable categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas} />
+            <AddCategoryDiv categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas}/>
+          </div>
+        );
+      }
+    }
+      function fetch(url, {
+          data = {}, 
+          type = 'get', 
+          dataType = 'text', 
+          success = function(){}, 
+          error = function(){console.log('err');}, 
+          complete = function(){}}) {
+        function urlParamsEncode(obj) {
+          var param = '';
+          for (let key in obj) {
+            param += (encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]) + '&');
+          }
+          return param.substring(0, param.length - 1);
+        }
+        var xhr = new XMLHttpRequest();
+        if (xhr == null) return;
+        if (type == 'get') {
+          var params = urlParamsEncode(data);
+          if (!url.endsWith('?')) url += '?';
+          url += params;
+        }
+        xhr.open(type, url);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4) {
+            complete();
+            if (xhr.status == 200) {
+              switch (dataType) {
+                case 'json':
+                  success(JSON.parse(xhr.responseText));
+                  break;
+                case 'xml':
+                  success(xhr.responseXML);
+                  break;
+                case 'text':
+                default:
+                  success(xhr.responseText);
+                  break;
+              }
+            } else {
+              // 此处没有参数
+              error();
+            }
+          }
+        };
+        if (type == 'post') {
+          if (data instanceof FormData) {
+            //xhr.setRequestHeader('content-type', 'multipart/form-data');
+            xhr.send(data);
+          } else {
+            var params = urlParamsEncode(data);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send(params);
+          }
+        } else {
+          xhr.send();
+        }
+      }
+    ReactDOM.render(
+      <CategoryLayout />,
+      document.getElementById('table-div')
+    );

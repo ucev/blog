@@ -75,7 +75,7 @@ router.get('/articles/get', (req, res, next) => {
           res.json({code: 1, msg: '请求失败'});
         }
         conn.end((err) => {
-          
+
         })
       }
     );
@@ -119,6 +119,56 @@ router.get('/articles/get', (req, res, next) => {
       );
     });
   }
+});
+
+router.post('/categories/add', (req, res, next) => {
+  var form = new multiparty.Form();
+  /*form.parse(req, (err, fields, files) => {
+    if (err) {
+      console.log('-------- parse err ----');
+      console.log(err);
+    }
+    console.log('fields: ' + JSON.stringify(fields));
+    var name = fields.name;
+    var parent = fields.parent;
+
+    parent = 0;
+
+    var descp = fields.descp;*/
+    var name = req.body.name;
+    var parent = req.body.parent;
+    parent = strToNum(parent);
+    var descp = req.body.descp;
+    var addtime = Math.floor(new Date().getTime() / 1000);
+    const mysql = require('mysql');
+    const conn = mysql.createConnection(configs.database_config);
+    conn.query('insert into categories set ?', {
+      name: name,
+      parent: parent,
+      descp: descp,
+      addtime: addtime
+    }, (err, results, fields) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.json({code: 0, msg: '添加成功'});
+      }
+      conn.end((err) => {
+
+      });
+    })
+  //})
+})
+
+router.get('/cagetories/get', (req, res, next) => {
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('select * from categories', (err, results, next) => {
+    res.json({code: 0, msg: '获取成功', data: results});
+    conn.end((err) => {
+
+    });
+  })
 });
 
 router.get('/labels/get', (req, res, next) => {
