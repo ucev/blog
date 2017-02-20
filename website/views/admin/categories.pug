@@ -39,9 +39,9 @@ block main-body-block
         this.props.cancel();
       }
       addCategoryConfirm(e) {
-        var name = document.getElementById('add-category-div-item-input-name').value;
-        var parent = document.getElementById('add-category-div-item-input-parent').value;
-        var descp = document.getElementById('add-category-div-item-input-descp').value;
+        var name = this.nameInput.value;
+        var parent = this.parentSelect.value;
+        var descp = this.descpArea.value;
         var data = {
           name: name,
           parent: parent,
@@ -82,17 +82,17 @@ block main-body-block
               <legend id = 'add-category-div-title'>{this.props.title}</legend>
               <li className = 'add-category-div-item' id = 'add-category-div-name'>
                 <label className = 'add-category-div-item-label'>标题</label>
-                <input className = 'add-category-div-item-input' id = 'add-category-div-item-input-name' type='text' data-title = 'name' value = {name} onChange = {this.valueChange}/>
+                <input ref = {(input) => {this.nameInput = input;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-name' type='text' data-title = 'name' value = {name} onChange = {this.valueChange}/>
               </li>
               <li className = 'add-category-div-item' id = 'add-category-div-parent'>
                 <label className = 'add-category-div-item-label'>父节点</label>
-                <select className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent' data-title = 'parent' onChange = {this.valueChange}>
+                <select ref = {(select) => {this.parentSelect = select;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent' data-title = 'parent' onChange = {this.valueChange}>
                   {categoryItems}
                 </select>
               </li>
               <li className = 'add-category-div-item' id = 'add-category-div-descp'>
                 <label className = 'add-category-div-item-label'>描述</label>
-                <textarea className = 'add-category-div-item-textarea' id = 'add-category-div-item-input-descp' value = {descp} data-title = 'descp' onChange = {this.valueChange} />
+                <textarea ref = {(textarea) => {this.descpArea = textarea;}} className = 'add-category-div-item-textarea' id = 'add-category-div-item-input-descp' value = {descp} data-title = 'descp' onChange = {this.valueChange} />
               </li>
               <li className = 'add-category-div-item add-category-div-opebar'>
                 <button className = 'operation-button operation-button-cancel' onClick = {this.addCategoryCancel}>取消</button>
