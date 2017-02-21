@@ -262,22 +262,28 @@ td {
 .table-filter-bar,
 .table-operation-bar {
   width: 80%;
+  height: 30px;
   margin-left: 10%;
   margin-top: 10px;
   margin-bottom: 10px;
 }
 
-.table-filter-bar-top,
-.table-operation-bar {
-  text-align: right;
+.table-filter-bar-top .table-filter-item,
+.table-operation-bar .table-filter-item {
+  float: right;
+  margin-top: 5px;
 }
 
 .table-filter-bar-bottom {
   text-align: left;
 }
 
+.table-filter-bar .operation-button {
+}
+
 .table-filter-item {
   display: inline-block;
+  height: 20px;
 }
 
 .table-filter-item-label {
@@ -706,4 +712,32 @@ td {
 .category-row-descp-data {
   padding-left: 30px;
   text-align: left;
+}
+
+.del-category-dialog,
+.del-article-dialog,
+.move-category-dialog {
+  position: fixed;
+  top: 200px;
+}
+
+.label-row-index-label {
+  width: 10%;
+}
+
+.label-row-title-label {
+  width: 10%;
+  text-align: center;
+}
+
+.label-row-articlecnt-label {
+  width: 10%;
+}
+
+.label-row-hotmark-label {
+  width: 10%;
+}
+
+.label-row-addtime-label {
+  width: 10%;
 }

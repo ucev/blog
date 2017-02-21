@@ -6,6 +6,14 @@ const path = require('path');
 const configs = require('../config/base.config');
 const uploadPhotoDir = path.join(__dirname, '../public/images/blog');
 
+const RECOUNT_ARTICLE_GROUP_SQL = `
+            update categories as ct
+            left join
+            (select category, count(*) as cnt from articles group by category) as cp
+            on ct.id = cp.category
+            set ct.articlecnt = if(isnull(cp.cnt), 0, cp.cnt)
+`;
+
 const RECOUNT_PHOTO_GROUP_SQL = `update photogroups as pg 
              left join
              (select photogroup as gid, count(*) as cnt from photos group by photogroup) as cp
@@ -32,21 +40,46 @@ function transactionError(res, conn, resMsg = {code: 1, msg: '操作失败'}) {
   res.json(resMsg);
 }
 
-router.get('/articles/modify', (req, res, next) => {
-  const id = strToNum(req.query.id);
-  const state = req.query.state;
+router.post('/articles/delete', (req, res, next) => {
+  var id = strToNum(req.body.id);
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
-  conn.query('update articles set state = ? where id = ?', [state, id],
-    (err, results, fields) => {
-      if (err) {
-        res.json({code: 1, msg: '更新失败'});
-      } else {
-        res.json({code: 0, msg: '更新成功'});
-      }
+  conn.beginTransaction((err) => {
+    if (err) {
+      transactionError(res, conn);
+      return;
     }
-  );
-});
+    conn.query('select label from articles where id = ?', [id], (err, results, fields) => {
+      if (err) {
+        transactionError(res, conn);
+        return;
+      }
+      var label = results[0]['label'];
+      conn.query('delete from articles where id = ?', [id], (err, results, fields) => {
+        if (err) {
+          transactionError(res, conn);
+          return;
+        }
+        conn.query('update labels set articles = articles - 1 where name in ? ', [[label.split(',')]], (err, results, fields) => {
+          if (err) {
+            transactionError(res, conn);
+            return;
+          }
+          conn.commit((err) => {
+            if (err) {
+              transactionError(res, conn);
+              return;
+            }
+            res.json({code: 0, msg: '删除成功'});
+            conn.end((err) => {
+
+            });
+          })
+        })
+      })
+    })
+  })
+})
 
 router.get('/articles/getsingle/', (req, res, next) => {
   const mysql = require('mysql');
@@ -121,20 +154,68 @@ router.get('/articles/get', (req, res, next) => {
   }
 });
 
+router.get('/articles/move', (req, res, next) => {
+  var ids = req.query.id;
+  ids = ids.split(',');
+  var gid = req.query.gid;
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.beginTransaction((err) => {
+    if (err) {
+      console.log('-----------------------pos1');
+      transactionError(res, conn);
+      return;
+    }
+    conn.query('update articles set category = ? where id in ?', [gid, [ids]], (err, results, fields) => {
+      if (err) {
+        console.log(err);
+        console.log(JSON.stringify(ids) + ', gid: ' + gid);
+      console.log('-----------------------pos2');
+        transactionError(res, conn);
+        return;
+      }
+      conn.query(RECOUNT_ARTICLE_GROUP_SQL, (err, results, fields) => {
+        if (err) {
+          console.log(err);
+      console.log('-----------------------pos3');
+          transactionError(res, conn);
+          return;
+        }
+        conn.commit((err) => {
+          if (err) {
+      console.log('-----------------------pos4');
+            transactionError(res, conn);
+            return;
+          }
+          res.json({code: 0, msg: '更新成功'});
+          conn.end((err) => {
+
+          })
+        })
+      })
+    })
+  })
+})
+
+router.get('/articles/state', (req, res, next) => {
+  var ids = req.query.id;
+  ids = ids.split(',');
+  const state = req.query.state;
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  conn.query('update articles set state = ? where id in ?', [state, [ids]],
+    (err, results, fields) => {
+      if (err) {
+        res.json({code: 1, msg: '更新失败'});
+      } else {
+        res.json({code: 0, msg: '更新成功'});
+      }
+    }
+  );
+});
+
 router.post('/categories/add', (req, res, next) => {
   var form = new multiparty.Form();
-  /*form.parse(req, (err, fields, files) => {
-    if (err) {
-      console.log('-------- parse err ----');
-      console.log(err);
-    }
-    console.log('fields: ' + JSON.stringify(fields));
-    var name = fields.name;
-    var parent = fields.parent;
-
-    parent = 0;
-
-    var descp = fields.descp;*/
     var name = req.body.name;
     var parent = req.body.parent;
     parent = strToNum(parent);
@@ -157,7 +238,6 @@ router.post('/categories/add', (req, res, next) => {
 
       });
     })
-  //})
 })
 
 router.post('/categories/delete', (req, res, next) => {
@@ -220,7 +300,7 @@ router.post('/categories/modify', (req, res, next) => {
   })
 })
 
-router.get('/cagetories/get', (req, res, next) => {
+router.get('/categories/get', (req, res, next) => {
   const mysql = require('mysql');
   const conn = mysql.createConnection(configs.database_config);
   conn.query('select * from categories', (err, results, next) => {

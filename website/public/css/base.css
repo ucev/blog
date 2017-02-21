@@ -93,6 +93,8 @@ body {
 }
 
 #display-area {
+  width: 80%;
+  margin-left: 10%;
   padding: 30px;
 }
 
@@ -122,9 +124,8 @@ footer {
 
 .article-item-li {
   max-height: 210px;
-  margin-top: 10px;
   padding: 20px;
-  border: 1px solid black;
+  border-bottom: 1px solid #E0E0E0;
 }
 
 .article-item-li-title,

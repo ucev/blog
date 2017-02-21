@@ -5,6 +5,89 @@ block main-body-block
     div#target-div
       div#table-div
     script(type='text/babel').
+      class ConfirmDialog extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleConfirmClick = this.handleConfirmClick.bind(this);
+          this.handleCancelClick = this.handleCancelClick.bind(this);
+        }
+        handleConfirmClick(e) {
+          this.props.confirm();
+        }
+        handleCancelClick(e) {
+          this.props.cancel();
+        }
+        render() {
+          var styles = {};
+          if (!this.props.visible) styles.display = 'none';
+          return (
+            <div className = 'dialog-div del-article-dialog' style = {styles}>
+              <div className = 'dialog-header-div'>
+                <div className = 'dialog-title-div'>{this.props.title}</div>
+              </div>
+              <div className = 'dialog-bottom-operation-bar'>
+                <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
+                <button className = 'dialog-operation-button dialog-cancel-button' onClick = {this.handleCancelClick}>取消</button>
+              </div>
+            </div>
+          );
+        }
+      }
+      class MoveGroupDialog extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleConfirmClick = this.handleConfirmClick.bind(this);
+          this.handleCancelClick = this.handleCancelClick.bind(this);
+          this.handleGroupChange = this.handleGroupChange.bind(this);
+          this.state = {
+            newgroup : -1
+          };
+        }
+
+        handleConfirmClick(e) {
+          this.props.confirm(this.state.newgroup);
+        }
+
+        handleCancelClick(e) {
+          this.props.cancel();
+        }
+
+        handleGroupChange(e) {
+          var radio = e.target;
+          if (radio.checked) {
+            this.setState({
+              newgroup: radio.value
+            });
+          }
+        }
+
+        render() {
+          var styles = {};
+          if (!this.props.visible) styles.display = 'none';
+          var groupItems = this.props.categories.map((group) => {
+            if (group.id == -1) return '';
+            return (
+              <li className = 'move-group-radio-li'>
+                <input type = 'radio' name = 'photogroup' value = {group.id} onChange = {this.handleGroupChange}/>
+                <label>{group.name}</label>
+              </li>
+            );
+          });
+          return (
+            <div className = 'dialog-div option-dialog move-category-dialog' style = {styles}>
+              <div className = 'dialog-main-body-div'>
+                <ul id = 'move-group-radio-ul'>
+                  {groupItems}
+                </ul>
+              </div>
+              <div className = 'dialog-bottom-operation-bar'>
+                <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
+                <button className = 'dialog-operation-button dialog-cancel-button' onClick = {this.handleCancelClick}>取消</button>
+              </div>
+            </div>
+          );
+        }
+      }
       class FilterInput extends React.Component {
         constructor(props) {
           super(props);
@@ -37,9 +120,15 @@ block main-body-block
           this.props.change(title, value);
         }
         render() {
-          const options = this.props.options.map((opt) => (
-            <option value={opt.value}>{opt.title}</option>
-          ));
+          const options = this.props.options.map((opt) => {
+            //console.log('reset: ' + this.props.reset + ', value: ' + opt.value + ', default:' + this.props.defaultVal + ', title: ' + opt.value);
+            if (this.props.reset == true && opt.value == -1) {
+              //console.log('true' + new Date().toLocaleString());
+              return <option value = {opt.value} selected = 'selected'>{opt.title}</option>
+            } else {
+              return <option value = {opt.value}>{opt.title}</option>
+            }
+          });
           return (
             <div className = 'table-filter-item'>
               <label className = 'table-filter-item-label'>{this.props.label}</label>
@@ -134,15 +223,13 @@ block main-body-block
           super(props);
           this.article_state_label = {
             on: '已上线',
-            off: '已下线',
-            check: '待核查'
+            off: '已下线'
           };
           this.handleStateClick = this.handleStateClick.bind(this);
           this.handleCheckStateChange = this.handleCheckStateChange.bind(this);
           this.article_operation = {
             on: <ul className='article-operation-ul'><li data-type='off' onClick = {this.handleStateClick}>下线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
-            off: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='move' onClick = {this.handleStateClick}>移动</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
-            check: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='move' onClick = {this.handleStateClick}>移动</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
+            off: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='move' onClick = {this.handleStateClick}>移动</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
           }
         }
         handleStateClick(e) {
@@ -187,27 +274,14 @@ block main-body-block
           this.props.allChecked(checked);
         }
         handleStateClick(id, type) {
-          var that = this;
           if (type == 'on' || type == 'off') {
-            fetch('/admin/datas/articles/modify',
-              {
-                data: {id: id, state: type},
-                type: 'get',
-                dataType: 'json',
-                success: function(dt) {
-                  that.props.fetchSingleArticle(id);
-                },
-                error: function() {
-                  console.log(error);
-                }
-              }
-            );
+            this.props.articleStateChange(id, type);
           } else if (type == 'del') {
-            alert(del);
+            this.props.delete(id);
           } else if (type == 'check') {
             location.href = `/admin/articles/modify?id=${id}`;
           } else if (type == 'move') {
-            alert('id: ' + id + ', type: ' + type);
+            this.props.handleMoveCategory(id);
           }
         }
         checkStateChange(id, checked) {
@@ -218,7 +292,12 @@ block main-body-block
           const articleRows = this.props.articles.map((article, index, arr) => {
             var checked = that.props.checkState[article.id];
             return (
-              <ArticleRow key = {index} index = {index} checked = {checked} article = {article} handleStateClick = {this.handleStateClick} checkStateChange = {this.checkStateChange}/>
+              <ArticleRow key = {index} 
+                          index = {index} 
+                          checked = {checked} 
+                          article = {article} 
+                          handleStateClick = {this.handleStateClick} 
+                          checkStateChange = {this.checkStateChange} />
             );
           });
           return (
@@ -234,32 +313,100 @@ block main-body-block
             </table>
           );
         }
-      };
+      }
       class ArticleLayout extends React.Component {
         constructor(props) {
           super(props);
           this.state = {
-            articles: this.props.data,
-            current: this.props.current,
-            total: this.props.total,
-            checkState: {}
+            articles: [],
+            current: 0,
+            total: 0,
+            checkState: {},
+            // delete dialog
+            delVisible: false,
+            delArticleId: -1,
+            // move dialog
+            moveVisible: false,
+            categories: [],
+            moveArticleId: -1
           }
           this.stateOptions = [
             {value: '-1', title: '全部'},
             {value: 'on', title: '已上线'},
-            {value: 'off', title: '已下线'},
-            {value: 'check', title: '待核查'}
+            {value: 'off', title: '已下线'}
           ];
           this.opeOptions = [
-            {value: '-1', title: '--选择操作--'}
+            {value: '-1', title: '--选择操作--'},
+            {value: 'on', title: '上线'},
+            {value: 'off', title: '下线'},
+            {value: 'move', title: '移动'},
+            {value: 'del', title: '删除'}
           ];
+          this.addArticle = this.addArticle.bind(this);
+          this.articleStateChange = this.articleStateChange.bind(this);
+          this.articleGroupChange = this.articleGroupChange.bind(this);
           this.allChecked = this.allChecked.bind(this);
           this.checkStateChange = this.checkStateChange.bind(this);
           this.handlePageChange = this.handlePageChange.bind(this);
           this.handleFilterChange = this.handleFilterChange.bind(this);
+          this.handleDeleteArticle = this.handleDeleteArticle.bind(this);
+          this.deleteArticleConfirm = this.deleteArticleConfirm.bind(this);
+          this.deleteArticleCancel = this.deleteArticleCancel.bind(this);
           this.fetchArticles = this.fetchArticles.bind(this);
           this.fetchSingleArticle = this.fetchSingleArticle.bind(this);
+          this.fetchCategories = this.fetchCategories.bind(this);
+          this.groupOpeChange = this.groupOpeChange.bind(this);
+          // categories
+          this.moveCategoryConfirm = this.moveCategoryConfirm.bind(this);
+          this.moveCategoryCancel = this.moveCategoryCancel.bind(this);
+          this.handleMoveCategory = this.handleMoveCategory.bind(this);
+
           this.filter = {start : 0};
+          this.fetchArticles();
+          this.fetchCategories();
+        }
+        addArticle() {
+          location.href = '/admin/articles/add';
+        }
+        articleStateChange(id, type, isgroup = false) {
+          var that = this;
+          fetch('/admin/datas/articles/state', {
+              data: {id: id, state: type},
+              type: 'get',
+              dataType: 'json',
+              success: function(dt) {
+                if (isgroup) {
+                  that.fetchArticles();
+                } else {
+                  that.fetchSingleArticle(id);
+                }
+              },
+              error: function() {
+                console.log(error);
+              }
+            }
+          );
+        }
+        articleGroupChange(id, gid, isgroup = false) {
+          var that = this;
+          fetch('/admin/datas/articles/move', {
+            data: {id: id, gid: gid},
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              if (dt.code == 0) {
+                if (isgroup) {
+                  that.fetchArticles();
+                } else {
+                  that.setState({
+                    moveVisible: false,
+                    moveArticleId: -1
+                  })
+                  that.fetchSingleArticle(id);
+                }
+              }
+            }
+          })
         }
         checkStateChange(id, checked) {
           var checkState = this.state.checkState;
@@ -318,6 +465,20 @@ block main-body-block
             }
           });
         }
+        fetchCategories() {
+          var that = this;
+          fetch('/admin/datas/categories/get', {
+            type: 'get',
+            dataType: 'json',
+            success: function(dt) {
+              if (dt.code == 0) {
+                that.setState({
+                  categories: dt.data
+                })
+              }
+            }
+          })
+        }
         handlePageChange(i) {
           this.filter.start = i;
           this.fetchArticles();
@@ -328,24 +489,101 @@ block main-body-block
           this.filter.start = 0;
           this.fetchArticles();
         }
+        handleDeleteArticle(id) {
+          this.setState({
+            delVisible: true,
+            delArticleId: id
+          })
+        }
+        deleteArticleConfirm() {
+          var that = this;
+          fetch('/admin/datas/articles/delete', {
+            data: {id: that.state.delArticleId},
+            type: 'post',
+            dataType: 'json',
+            success: function(dt) {
+              if (dt.code == 0) {
+                that.setState({
+                  delVisible: false,
+                  delArticleId: -1
+                })
+                that.fetchArticles();
+              }
+            }
+          })
+        }
+        deleteArticleCancel() {
+          this.setState({
+            delVisible: false
+          })
+        }
+        groupOpeChange(title, value) {
+          var checkState = this.state.checkState;
+          var ids = [];
+          for (let key in checkState) {
+            if (checkState[key]) ids.push(key);
+          }
+          ids = ids.join(',');
+          if (value == 'on' || value == 'off') {
+            this.articleStateChange(ids, value, true);
+          }
+        }
+        //category
+        moveCategoryConfirm(gid) {
+          this.articleGroupChange(this.state.moveArticleId, gid, false);
+        }
+        moveCategoryCancel() {
+          this.setState({
+            moveVisible: false
+          })
+        }
+        handleMoveCategory(id) {
+          this.setState({
+            moveArticleId: id,
+            moveVisible: true
+          })
+        }
         render() {
           /**
            * 这样感觉封装性稍差一点
            * 以后更有体会了再来看看😊
            * 先做一个标记
            */
+          var groupopeReset = true;
           return (
             <div>
               <div className = 'table-filter-bar table-filter-bar-top'>
-                <FilterSelect title = 'state' label = '状态' options = {this.stateOptions} change = {this.handleFilterChange} />
-                <FilterInput title = 'category' label = '类别' change = {this.handleFilterChange} />
+                <button className = 'operation-button' onClick = {this.addArticle}>添加文章</button>
                 <FilterInput title = 'label' label = '标签' change = {this.handleFilterChange} />
+                <FilterInput title = 'category' label = '类别' change = {this.handleFilterChange} />
+                <FilterSelect title = 'state' label = '状态' options = {this.stateOptions} change = {this.handleFilterChange} />
               </div>
-              <ArticleTable articles = {this.state.articles} checkState = {this.state.checkState} fetchSingleArticle = {this.fetchSingleArticle} checkStateChange = {this.checkStateChange} allChecked = {this.allChecked} />
+              <ArticleTable articles = {this.state.articles} 
+                            checkState = {this.state.checkState} 
+                            fetchSingleArticle = {this.fetchSingleArticle} 
+                            checkStateChange = {this.checkStateChange} 
+                            articleStateChange = {this.articleStateChange}
+                            handleMoveCategory = {this.handleMoveCategory}
+                            allChecked = {this.allChecked} 
+                            delete = {this.handleDeleteArticle}/>
               <div className = 'table-filter-bar table-filter-bar-bottom'>
-                <FilterSelect options = {this.opeOptions} />
+                <FilterSelect title = 'groupope' 
+                              options = {this.opeOptions} 
+                              change = {this.groupOpeChange} 
+                              reset = {groupopeReset} 
+                              defaultVal = '-1'/>
               </div>
-              <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
+              <TableNavLink page = {this.state.current} 
+                            total = {this.state.total} 
+                            pagechange = {this.handlePageChange} />
+              <ConfirmDialog title = '确认删除?' 
+                             confirm = {this.deleteArticleConfirm} 
+                             cancel = {this.deleteArticleCancel} 
+                             visible = {this.state.delVisible} />
+              <MoveGroupDialog categories = {this.state.categories}
+                             confirm = {this.moveCategoryConfirm}
+                             cancel = {this.moveCategoryCancel}
+                             visible = {this.state.moveVisible} />
             </div>
           );
         }
@@ -411,17 +649,7 @@ block main-body-block
           xhr.send();
         }
       }
-      function getData(start = 0) {
-        fetch('/admin/datas/articles/get', {
-          type: 'get', 
-          data: {start: start},
-          dataType: 'json', 
-          success: function(dt) {
-            ReactDOM.render(
-              <ArticleLayout data = {dt.data.data} current = {dt.data.current} total = {dt.data.total} />,
-              document.getElementById('table-div')
-            );
-          }
-        });
-      }
-      getData();
+      ReactDOM.render(
+        <ArticleLayout />,
+        document.getElementById('table-div')
+      );

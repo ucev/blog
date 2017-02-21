@@ -5,10 +5,10 @@ block body-block
   mixin article_item(itemData)
     li.article-item-li(data-id = itemData.id )
       div.article-item-li-title #{itemData.title}
-      div.article-item-li-content #{itemData.content}
+      div.article-item-li-content #{itemData.descp}
       div.article-item-li-bottom-info
         div.article-item-li-pageview 阅读量(#{itemData.pageview})
-        div.article-item-li-addtime #{itemData.addtime}
+        div.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
   div.main#articles-list
     ul#articles-list-ul
       each data in datas

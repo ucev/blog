@@ -109,6 +109,7 @@ router.get('/articles/add', (req, res, next) => {
 
 router.post('/articles/add', (req, res, next) => {
   var content = req.body.md.trim();
+  var descp = req.body.descp;
   var label = req.body.label;
   var h1 = content.substring(0, content.indexOf('\n')).trim();
   var title = h1.split(/\s+/).slice(1).join(' ');
@@ -120,6 +121,7 @@ router.post('/articles/add', (req, res, next) => {
     conn.query("insert into articles set ?", {
       title: title,
       content: content,
+      descp: descp,
       category: 0,
       label: label,
       addtime: addtime,
@@ -143,7 +145,7 @@ router.get('/articles/modify', (req, res, next) => {
         if (results.length > 0) {
           const row = results[0];
           const content = row.content;
-          const current_labels = row.label;   
+          const current_labels = row.label;
           conn.query('select name from labels', (err, results, fields) => {
             var labels = results.map((r) => (r.name));
             res.render('admin/article_edit', {
@@ -167,6 +169,7 @@ router.get('/articles/modify', (req, res, next) => {
 
 router.post('/articles/modify', (req, res, next) => {
   var content = req.body.md.trim();
+  var descp = req.body.descp;
   var label = req.body.label;
   var id = req.body.id;
   var h1 = content.substring(0, content.indexOf('\n')).trim();
@@ -176,8 +179,8 @@ router.post('/articles/modify', (req, res, next) => {
   const conn = mysql.createConnection(configs.database_config);
   conn.connect();
   conn.beginTransaction((err) => {
-    conn.query('update articles set title = ?, content = ?, label = ?, modtime = ? where id = ?', 
-      [title, content, label, modtime, id],
+    conn.query('update articles set title = ?, content = ?, descp = ?, label = ?, modtime = ? where id = ?', 
+      [title, content, descp, label, modtime, id],
       (err, results, fields) => {
         if (err) return;
         updateLabels(res, conn, configs.label_hotmark_rule.add, label.split(','));

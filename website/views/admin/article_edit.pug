@@ -105,10 +105,11 @@ block main-body-block
       function submitArticle(e) {
         console.log('submit');
         $('#submit').unbind('click');
-        content = simplemde.value();
+        var content = simplemde.value();
+        var descp = getContentDescription(content);
         $.ajax({
           url: 'http://localhost:3000/admin/articles/modify',
-          data: {md: content, label: labels.join(','), id: this_article_id},
+          data: {md: content, descp: descp, label: labels.join(','), id: this_article_id},
           type: "post",
           dataType: "json",
           success: (res) => {
@@ -137,10 +138,11 @@ block main-body-block
       };
       function submitArticle(e) {
         $('#submit').unbind('click');
-        content = simplemde.value();
+        var content = simplemde.value();
+        var descp = getContentDescription(content);
         $.ajax({
           url: 'http://localhost:3000/admin/add',
-          data: {md: content, label: labels.join(',')},
+          data: {md: content, descp: descp, label: labels.join(',')},
           type: "post",
           dataType: "json",
           success: (res) => {
@@ -166,6 +168,12 @@ block main-body-block
     $('#display-area').html(markdown.render(simplemde.value()));
     $("#submit").click(submitArticle);
     
+    // 取 content 中第一个段落(<p></p>)中的内容
+    function getContentDescription(content) {
+      content = markdown.render(content);
+      var p = content.match(/(<p[\s\S]*?>)([\s\S]*?)(<\/p>)/);
+      return p ? p[2] : ''; 
+    }
     // 这个是粘贴过来的,
     function injectLineNumbers(tokens, idx, options, env, slf) {
       var line;

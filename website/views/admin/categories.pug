@@ -37,6 +37,7 @@ block main-body-block
       }
       addCategoryCancel(e) {
         this.props.cancel();
+        e.preventDefault();
       }
       addCategoryConfirm(e) {
         var name = this.nameInput.value;
@@ -103,6 +104,35 @@ block main-body-block
         )
       }
     }
+      class ConfirmDialog extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleConfirmClick = this.handleConfirmClick.bind(this);
+          this.handleCancelClick = this.handleCancelClick.bind(this);
+        }
+        handleConfirmClick(e) {
+          this.props.confirm();
+        }
+        handleCancelClick(e) {
+          this.props.cancel();
+        }
+        render() {
+          var styles = {};
+          if (!this.props.visible) styles.display = 'none';
+          return (
+            <div className = 'dialog-div del-category-dialog' style = {styles}>
+              <div className = 'dialog-header-div'>
+                <div className = 'dialog-title-div'>{this.props.title}</div>
+              </div>
+              <div className = 'dialog-bottom-operation-bar'>
+                <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
+                <button className = 'dialog-operation-button dialog-cancel-button' onClick = {this.handleCancelClick}>取消</button>
+              </div>
+            </div>
+          );
+        }
+      }
+
     class CategoryLabel extends React.Component {
       constructor(props) {
         super(props);
@@ -135,10 +165,9 @@ block main-body-block
         var type = e.target.getAttribute('data-type');
         var id = e.target.parentNode.getAttribute('data-id');
         if (type == 'modify') {
-          this.props.modifyCategory(true, 'modify', this.props.category);
+          this.props.modify(true, 'modify', this.props.category);
         } else if (type == 'delete') {
-          var data = {id: id};
-          this.props.deleteCategory(data);
+          this.props.delete(id);
         }
       }
       render() {
@@ -161,7 +190,7 @@ block main-body-block
       }
       render() {
         var categories = this.props.categories.map((category) => (
-          <CategoryRow category = {category} modifyCategory = {this.props.modifyCategory} deleteCategory = {this.props.deleteCategory} />
+          <CategoryRow category = {category} modify = {this.props.modify} delete = {this.props.delete} />
         ));
         return (
           <table className = 'content-table category-content-table'>
@@ -184,7 +213,9 @@ block main-body-block
           categories: [],
           addVisible: false,
           addType: 'add',
-          addData: {}
+          addData: {},
+
+          delVisible: false
         }
         this.addTitle = {
           add: '添加类别',
@@ -194,7 +225,9 @@ block main-body-block
         this.addCategoryDivValueChange = this.addCategoryDivValueChange.bind(this);
         this.addCategoryDivConfirm = this.addCategoryDivConfirm.bind(this);
         this.addCategoryDivCancel = this.addCategoryDivCancel.bind(this);
-        this.deleteCategory = this.deleteCategory.bind(this);
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.deleteCategoryConfirm = this.deleteCategoryConfirm.bind(this);
+        this.deleteCategoryCancel = this.deleteCategoryCancel.bind(this);
         this.fetchCagetoryDatas = this.fetchCagetoryDatas.bind(this);
         this.fetchCagetoryDatas();
       }
@@ -203,19 +236,6 @@ block main-body-block
           addVisible: visible,
           addType: type,
           addData: data
-        })
-      }
-      deleteCategory(data) {
-        var that = this;
-        fetch('/admin/datas/categories/delete', {
-          data: data,
-          type: 'post',
-          dataType: 'json',
-          success: function(dt) {
-            if (dt.code == 0) {
-              that.fetchCagetoryDatas();
-            }
-          }
         })
       }
       addCategoryDivConfirm(data) {
@@ -247,9 +267,37 @@ block main-body-block
           addData: data
         })
       }
+      deleteCategoryConfirm() {
+        var that = this;
+        fetch('/admin/datas/categories/delete', {
+          data: {id: that.state.delCategoryId},
+          type: 'post',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              that.setState({
+                delVisible: false,
+                delCategoryId: -1
+              })
+              that.fetchCagetoryDatas();
+            }
+          }
+        })
+      }
+      deleteCategoryCancel() {
+        this.setState({
+          delVisible: false
+        })
+      }
+      handleDeleteClick(id) {
+        this.setState({
+          delVisible: true,
+          delCategoryId: id
+        })
+      }
       fetchCagetoryDatas() {
         var that = this;
-        fetch('/admin/datas/cagetories/get', {
+        fetch('/admin/datas/categories/get', {
           type: 'get',
           dataType: 'json',
           success: function(dt) {
@@ -268,8 +316,9 @@ block main-body-block
         return (
           <div>
             <OperationBar addNewCategory = {this.addCategoryDivStateChange}/>
-            <CategoryTable categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas} modifyCategory = {this.addCategoryDivStateChange} deleteCategory = {this.deleteCategory} />
+            <CategoryTable categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas} modify= {this.addCategoryDivStateChange} delete = {this.handleDeleteClick} />
             <AddCategoryDiv type = {addType} title = {this.addTitle[addType]} data = {this.state.addData} categories = {categories} visible = {this.state.addVisible} confirm = {this.addCategoryDivConfirm} cancel = {this.addCategoryDivCancel} valueChange = {this.addCategoryDivValueChange} />
+            <ConfirmDialog title = '确认删除此类别?' visible = {this.state.delVisible} confirm = {this.deleteCategoryConfirm} cancel = {this.deleteCategoryCancel} />
           </div>
         );
       }
