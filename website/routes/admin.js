@@ -189,11 +189,8 @@ router.post('/articles/modify', (req, res, next) => {
   });
 });
 
-router.get('/login', (req, res, next) => {
-  res.render('admin/login', {
-    title: '登陆'
-  });
-});
+const login_route = require('./login');
+router.use('/login', login_route);
 
 const ajax_request = require('./ajax_admin');
 router.use('/datas', ajax_request);
