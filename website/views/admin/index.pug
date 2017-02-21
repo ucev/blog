@@ -3,3 +3,8 @@ extends base_layout
 block main-body-block
   div.main
     a(href="/admin/add") 添加文章
+    span#qq-login-btn
+  script.
+    QC.Login({
+      btnId: 'qq-login-btn'
+    });

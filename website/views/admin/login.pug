@@ -1,4 +1,10 @@
 extends base_layout
 
-block append body-block
-  a(href='/admin/add') 添加文章
+block main-body-block
+  div.main
+    span#qq-login-btn
+  script(type="text/javascript" src="http://qzonestyle.gtimg.cn/qzone/openapi/qc_loader.js" data-appid="101383430" data-redirecturi="http://learn.ilovecrystal.com.cn/admin/login" data-callback='true' charset="utf-8")
+  script.
+    QC.Login({
+      btnId: 'qq-login-btn'
+    });

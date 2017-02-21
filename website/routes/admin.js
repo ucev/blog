@@ -190,9 +190,14 @@ router.post('/articles/modify', (req, res, next) => {
 });
 
 router.get('/login', (req, res, next) => {
+  console.log('--------------------\n' + JSON.stringify(req.query) + '\n----------------------\n');
   res.render('admin/login', {
     title: '登陆'
   });
+});
+
+router.get('/qqredirect', (req, res, next) => {
+  res.render('admin/qqredirect');
 });
 
 const ajax_request = require('./ajax_admin');
