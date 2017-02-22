@@ -39,7 +39,13 @@ app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
 
 app.use('/', index);
 app.use('/admin', (req, res, next) => {
-  if (req.session.openid == configs.qqlogin.allowed_openid) {
+  var this_session = undefined;
+  if (configs.website_info.debug) {
+    this_session = configs.website_info.debug_session;
+  } else {
+    this_session = configs.qqlogin.allowed_openid;
+  }
+  if (req.session.openid == this_session) {
     next();
   } else {
     res.redirect('/login');

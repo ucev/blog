@@ -9,7 +9,6 @@ router.get('/redirect', (req, res, next) => {
   var code = req.query.code;
   var state = req.query.state;
   var url = `https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=${loginConfig.appid}&client_secret=${loginConfig.secret}&code=${code}&redirect_uri=${loginConfig.redirect_url}`;
-  console.log('---------------' + url);
   request(url, (err, r, body) => {
     var params = body.split("&");
     var token = params[0].split("=")[1];
@@ -20,17 +19,32 @@ router.get('/redirect', (req, res, next) => {
       body = body.match(/{[\s\S]*?}/)[0];
       body = JSON.parse(body);
       var openid = body.openid;
-      //res.send(openid);
       //res.cookie('openid', openid, {path: '/'});
       req.session.openid = openid;
-      res.redirect('/admin');
+      var url = `https://graph.qq.com/user/get_user_info?access_token=${token}&oauth_consumer_key=12345&openid=${openid}`;
+      request(url, (err, r, body) => {
+        body = JSON.parse(body);
+        req.session.avatar = body.figureurl_qq_1;
+        res.redirect('/admin');
+      });
     });
   });
 });
 
+router.get('/logout', (req, res, next) => {
+  req.session.openid = undefined;
+  res.redirect('/admin');
+})
+
 router.get('/', (req, res, next) => {
-  var url = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101383430&redirect_uri=${loginConfig.redirect_url}&state=${loginConfig.state}`;
-  res.redirect(url);
+  if (configs.website_info.debug) {
+    req.session.openid = configs.website_info.debug_session;
+    req.session.avatar = '/images/avatar.jpeg';
+    res.redirect('/admin');
+  } else {
+    var url = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101383430&redirect_uri=${loginConfig.redirect_url}&state=${loginConfig.state}`;
+    res.redirect(url);
+  }
 })
 
 module.exports = router;

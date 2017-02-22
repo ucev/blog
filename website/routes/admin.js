@@ -69,25 +69,29 @@ function updateLabels(res, conn, addval, labels, ord = 0) {
 
 router.get('/articles', (req, res, next) => {
   res.render('admin/articles', {
-    title: '文章管理'
+    title: '文章管理',
+    avatar: req.session.avatar
   });
 });
 
 router.get('/photos', (req, res, next) => {
   res.render('admin/photos', {
-    title: '照片管理'
+    title: '照片管理',
+    avatar: req.session.avatar
   });
 });
 
 router.get('/labels', (req, res, next) => {
   res.render('admin/labels', {
-    title: '标签管理'
+    title: '标签管理',
+    avatar: req.session.avatar
   });
 });
 
 router.get('/categories', (req, res, next) => {
   res.render('admin/categories', {
-    title: '类别管理'
+    title: '类别管理',
+    avatar: req.session.avatar
   })
 });
 
@@ -99,6 +103,7 @@ router.get('/articles/add', (req, res, next) => {
     var labels = results.map((row) => (row.name));
     res.render('admin/article_edit', {
       title: '添加文章',
+      avatar: req.session.avatar,
       labels: JSON.stringify(labels)
     });
     conn.end((err) => {
@@ -150,6 +155,7 @@ router.get('/articles/modify', (req, res, next) => {
             var labels = results.map((r) => (r.name));
             res.render('admin/article_edit', {
               title: '修改文章',
+              avatar: req.session.avatar,
               type: 'edit',
               id: id,
               content: encodeURIComponent(content),
@@ -194,7 +200,8 @@ router.use('/datas', ajax_request);
 
 router.get('/', (req, res, next) => {
   res.render('admin/index', {
-    title: '首页'
+    title: '首页',
+    avatar: req.session.avatar
   });
 });
 
