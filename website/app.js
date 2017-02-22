@@ -3,12 +3,14 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 
 var admin = require('./routes/admin');
 var articles = require('./routes/articles');
 var index = require('./routes/index');
 var users = require('./routes/users');
+var login = require('./routes/login');
 
 var configs = require('./config/base.config');
 
@@ -24,6 +26,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cookieSession(configs.session));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // nodejs modules
@@ -35,9 +38,17 @@ app.use(express.static(path.join(__dirname, 'node_modules/react-dom/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
 
 app.use('/', index);
+app.use('/admin', (req, res, next) => {
+  if (req.session.openid == configs.qqlogin.allowed_openid) {
+    next();
+  } else {
+    res.redirect('/login');
+  }
+});
 app.use('/admin', admin);
 app.use('/articles', articles);
 app.use('/users', users);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

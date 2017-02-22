@@ -28,7 +28,8 @@ router.get('/', function(req, res, next) {
         imgUrl = configs.website_info.default_front_pic;
       }
     }
-    res.render('index', { title: '欢迎来到张帅的博客', backgroundImg: imgUrl });
+    //res.render('index', { title: '欢迎来到张帅的博客', backgroundImg: imgUrl });
+    res.render('index', { title: req.session.openid, backgroundImg: imgUrl });
   });
 });
 

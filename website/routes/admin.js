@@ -189,9 +189,6 @@ router.post('/articles/modify', (req, res, next) => {
   });
 });
 
-const login_route = require('./login');
-router.use('/login', login_route);
-
 const ajax_request = require('./ajax_admin');
 router.use('/datas', ajax_request);
 

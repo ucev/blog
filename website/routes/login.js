@@ -20,7 +20,10 @@ router.get('/redirect', (req, res, next) => {
       body = body.match(/{[\s\S]*?}/)[0];
       body = JSON.parse(body);
       var openid = body.openid;
-      res.send(openid);
+      //res.send(openid);
+      //res.cookie('openid', openid, {path: '/'});
+      req.session.openid = openid;
+      res.redirect('/admin');
     });
   });
 });
