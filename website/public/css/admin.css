@@ -741,3 +741,38 @@ td {
 .label-row-addtime-label {
   width: 10%;
 }
+
+#avatar-img {
+  border-radius: 50%;
+  background: inherit;
+  margin-left: 20px;
+  margin-right: 30px;
+}
+
+#admin-operation-ul {
+  position: fixed;
+  display: none;
+  right: 15px;
+  top: 50px;
+  z-index: 100;
+  width: 130px;
+  background-color: white;
+  border: 1px solid #BDBDBD;
+  list-style-type: none;
+  box-shadow: 3px 3px 3px #9E9E9E;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-operation-li {
+  display: block;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.admin-operation-li:hover {
+  background-color: #78909C;
+  color: white;
+}
