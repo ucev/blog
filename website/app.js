@@ -10,6 +10,8 @@ var articles = require('./routes/articles');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
+var configs = require('./config/base.config');
+
 var app = express();
 
 // view engine setup
@@ -55,6 +57,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(3000);
+app.listen(configs.website_info.port);
 
 module.exports = app;
