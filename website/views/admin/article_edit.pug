@@ -108,7 +108,7 @@ block main-body-block
         var content = simplemde.value();
         var descp = getContentDescription(content);
         $.ajax({
-          url: 'http://localhost:3000/admin/articles/modify',
+          url: '/admin/articles/modify',
           data: {md: content, descp: descp, label: labels.join(','), id: this_article_id},
           type: "post",
           dataType: "json",
@@ -141,7 +141,7 @@ block main-body-block
         var content = simplemde.value();
         var descp = getContentDescription(content);
         $.ajax({
-          url: 'http://localhost:3000/admin/add',
+          url: '/admin/add',
           data: {md: content, descp: descp, label: labels.join(',')},
           type: "post",
           dataType: "json",
