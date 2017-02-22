@@ -141,7 +141,7 @@ block main-body-block
         var content = simplemde.value();
         var descp = getContentDescription(content);
         $.ajax({
-          url: '/admin/add',
+          url: '/admin/articles/add',
           data: {md: content, descp: descp, label: labels.join(',')},
           type: "post",
           dataType: "json",
@@ -154,6 +154,7 @@ block main-body-block
             }
           },
           error: () => {
+            console.log('error');
             $('#submit').click(submitArticle);
           }
         });
