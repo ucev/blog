@@ -14,5 +14,11 @@ $(document).ready(() => {
     $('#add-article-img').click(() => {
       location.href = '/admin/articles/add';
     });
+    $('#avatar-img').click(() => {
+      $('#admin-operation-ul').show();
+    });
+    $('.admin-operation-li').click(() => {
+      $('#admin-operation-ul').hide();
+    })
   })();
 });
