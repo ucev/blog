@@ -14,15 +14,16 @@ router.get('/redirect', (req, res, next) => {
     var token = params[0].split("=")[1];
     var expire = params[1].split("=")[1];
     var refresh = params[2].split("=")[1];
-    var url = "https://graph.qq.com/oauth2.0/me?access_token=" + token + '&callback=f';
+    var url = "https://graph.qq.com/oauth2.0/me?access_token=" + token;
     request(url, (err, r, body) => {
       body = body.match(/{[\s\S]*?}/)[0];
       body = JSON.parse(body);
       var openid = body.openid;
       //res.cookie('openid', openid, {path: '/'});
       req.session.openid = openid;
-      var url = `https://graph.qq.com/user/get_user_info?access_token=${token}&oauth_consumer_key=12345&openid=${openid}`;
+      var url = `https://graph.qq.com/user/get_user_info?access_token=${token}&oauth_consumer_key=${loginConfig.appid}&openid=${openid}`;
       request(url, (err, r, body) => {
+        console.log('-----------------body: ' + body);
         body = JSON.parse(body);
         req.session.avatar = body.figureurl_qq_1;
         res.redirect('/admin');
