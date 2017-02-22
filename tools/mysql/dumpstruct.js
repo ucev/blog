@@ -1,0 +1,1 @@
+require('./src/dumpdatabase')(function(){console.log('finish');});

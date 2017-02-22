@@ -1,0 +1,1 @@
+require('./src/importstruct')(function(){console.log('finish');});

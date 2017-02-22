@@ -58,9 +58,10 @@ app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  res.redirect('/');/*
   var err = new Error('Not Found');
   err.status = 404;
-  next(err);
+  next(err);*/
 });
 
 // error handler
