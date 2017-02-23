@@ -776,3 +776,48 @@ td {
   background-color: #78909C;
   color: white;
 }
+
+#info-overview-div {
+  width: 80%;
+  height: 300px;
+  margin-left: 10%;
+  margin-top: 50px;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  box-shadow: 1px 1px 1px #E0E0E0;
+}
+
+.info-overview-item {
+  display: inline-block;
+  vertical-align: center;
+  width: 30%;
+  height: 100%;
+  margin-left: 13.3%;
+}
+
+.info-overview-item > span {
+  width: 100%;
+  display: block;
+}
+
+.info-overview-item-title {
+  height: calc(300px * 0.4);
+  font-size: 30px;
+  padding-top: 80px;
+  text-align: center;
+  color: #424242;
+}
+
+.info-overview-item-count {
+  height: calc(300px * 0.5);
+  text-align: center;
+  font-size: 100px;
+  font-family: Impact;
+  color: rgba(75,192,192,1);
+}
+
+#info-perhour-view-div {
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 40px;
+}

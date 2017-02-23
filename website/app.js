@@ -32,6 +32,7 @@ app.use(cookieSession(configs.session));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // nodejs modules
+app.use(express.static(path.join(__dirname, 'node_modules/chart.js/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/markdown-it/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/react/dist')));
@@ -41,7 +42,7 @@ app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
 
 app.use('/admin', enterControl.adminControl);
 app.use('/admin', admin);
-app.use('/', enterControl.userControl);
+app.use('/articles', enterControl.userControl);
 app.use('/articles', articles);
 app.use('/users', users);
 app.use('/login', login);

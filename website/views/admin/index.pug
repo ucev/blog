@@ -2,4 +2,60 @@ extends base_layout
 
 block main-body-block
   div.main
-    a(href="/admin/add") 添加文章
+    div#info-overview-div
+      div.info-overview-item
+        span.info-overview-item-title 今日浏览量
+        span.info-overview-item-count #{pv}
+      div.info-overview-item
+        span.info-overview-item-title 今日读者数
+        span.info-overview-item-count #{uv}
+    div#info-perhour-view-div
+      canvas#info-perhour-view-canvas
+    script(type='text/javascript')  var pvPerHour = `#{pvPerHour}`;
+    script.
+      var pvs = JSON.parse(pvPerHour);
+      var labels = [];
+      for (var i = 0; i < pvs.length; i++) {
+        labels.push(i);
+      }
+      var data = {
+        labels: labels,
+        datasets: [
+          {
+            label: "每小时浏览量",
+            fill: true,
+            lineTension: 0.1,
+            backgroundColor: "rgba(75,192,192,0.4)",
+            borderColor: "rgba(75,192,192,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(75,192,192,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+            pointHoverBorderColor: "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: pvs,
+            spanGaps: false,
+
+          }
+        ],
+        options: {
+          scale: {
+            gridLines: {
+              display: false
+            }
+          }
+        }
+      };
+      var canvas = document.getElementById('info-perhour-view-canvas');
+      var chart = new Chart(canvas, {
+          type: 'line',
+          data: data
+        }
+      );

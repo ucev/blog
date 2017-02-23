@@ -63,3 +63,4 @@ function adminControl(req, res, next) {
 
 exports.userControl = userControl;
 exports.adminControl = adminControl;
+exports.clearDateTime = clearDateTime;

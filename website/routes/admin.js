@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const enterControl = require('./entercontrol');
 const md = require('markdown-it')({
   html: true,
   linkify: true,
@@ -199,10 +200,51 @@ const ajax_request = require('./ajax_admin');
 router.use('/datas', ajax_request);
 
 router.get('/', (req, res, next) => {
-  res.render('admin/index', {
-    title: '首页',
-    avatar: req.session.avatar
-  });
+  const mysql = require('mysql');
+  const conn = mysql.createConnection(configs.database_config);
+  var now = Math.floor(new Date().getTime() / 1000);
+  var today = enterControl.clearDateTime(new Date());
+  today = Math.floor(today.getTime() / 1000);
+  conn.query(`select * from uservisit where time > ?`, [today], (err, results, fields) => {
+    var pv, uv, ip;
+    pv = results.length;
+    var uvs = [], ips = [], pvPerHour = [];
+    for (var i = 0; i < 24; i++) {
+      pvPerHour[i] = 0;
+    }
+    results.forEach((row) => {
+      pvPerHour[Math.ceil((row.time - today) / 3600)]++;
+      if (uvs.indexOf(row.uv) == -1) {
+        uvs.push(row.uv);
+      }
+      if (ips.indexOf(row.ip) == -1) {
+        ips.push(row.ip);
+      }
+    })
+    uv = uvs.length;
+    ip = ips.length;
+    conn.query(`select count(*) as cnt from visithistory where date = ?`, [today], (err, results, fields) => {
+      var querysql, querydata;
+      if (results[0].cnt == 0) {
+        querysql = `insert into visithistory set ?`;
+        querydata = [{pv: pv, uv: uv, ip: ip, date: today}];
+      } else {
+        querysql = `update visithistory set ? where date = ?`;
+        querydate = [{pv: pv, uv: uv, ip: ip}, today];
+      }
+      conn.query(querysql, querydata, (err, results, fields) => {
+        conn.end((err) => {
+        })
+        res.render('admin/index', {
+          title: '首页',
+          avatar: req.session.avatar,
+          pv: pv,
+          uv: uv,
+          pvPerHour: JSON.stringify(pvPerHour)
+        });
+      })
+    })
+  })
 });
 
 module.exports = router;
