@@ -45,17 +45,32 @@ block main-body-block
 
           }
         ],
-        options: {
-          scale: {
-            gridLines: {
-              display: false
-            }
-          }
-        }
       };
+      var options = {
+          title: {
+            display: true,
+            fontSize: 24,
+            text: '每小时页浏览量(PV)'
+          },
+          legend: {
+            display: false
+          },
+          tooltips: {
+            //footerFontSize: 24,
+            callbacks: {
+              title: (tooltipItem, data) => (tooltipItem[0].xLabel + '时'),
+            }
+          },
+          animation: {
+            duration: 1000
+          },
+          line: {
+          },
+      }
       var canvas = document.getElementById('info-perhour-view-canvas');
       var chart = new Chart(canvas, {
           type: 'line',
-          data: data
+          data: data,
+          options: options
         }
       );
