@@ -36,6 +36,7 @@ router.get('/view/:id', (req, res, next) => {
     const result = results[0];
     res.render('article', {title: result.title, 
       websiteInfo: configs.website_info,
+      aid: result.id,
       md: md.render(result.content)}
     );
   });
