@@ -26,6 +26,7 @@ const conn = mysql.createConnection(configs);
 function saveDatabaseStruct(structs) {
   var file = fs.createWriteStream(fileconfig.data + 'database.sql', {defaultEncoding: 'utf8'});
   for (let struct in structs) {
+    file.write(`drop table ${struct} if exists;\n`);
     file.write(structs[struct] + ';\n');
   }
   __this_callback(false);
