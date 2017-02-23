@@ -12,6 +12,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
 
+var enterControl = require('./routes/entercontrol');
+
 var configs = require('./config/base.config');
 
 var app = express();
@@ -37,24 +39,13 @@ app.use(express.static(path.join(__dirname, 'node_modules/react-dom/dist')));
 //app.use(express.static(path.join(__dirname, 'node_modules/simplemde')));
 app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
 
-app.use('/', index);
-app.use('/admin', (req, res, next) => {
-  var this_session = undefined;
-  if (configs.website_info.debug) {
-    this_session = configs.website_info.debug_session;
-  } else {
-    this_session = configs.qqlogin.allowed_openid;
-  }
-  if (req.session.openid == this_session) {
-    next();
-  } else {
-    res.redirect('/login');
-  }
-});
+app.use('/admin', enterControl.adminControl);
 app.use('/admin', admin);
+app.use('/', enterControl.userControl);
 app.use('/articles', articles);
 app.use('/users', users);
 app.use('/login', login);
+app.use('/', index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
