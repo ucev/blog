@@ -1,4 +1,4 @@
-drop table articles if exists;
+drop table if exists articles;
 CREATE TABLE `articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` char(20) NOT NULL,
@@ -13,8 +13,8 @@ CREATE TABLE `articles` (
   `pageview` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-drop table categories if exists;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+drop table if exists categories;
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` char(20) NOT NULL,
@@ -24,8 +24,8 @@ CREATE TABLE `categories` (
   `articlecnt` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-drop table labels if exists;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+drop table if exists labels;
 CREATE TABLE `labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` char(10) NOT NULL,
@@ -34,8 +34,8 @@ CREATE TABLE `labels` (
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-drop table photogroups if exists;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+drop table if exists photogroups;
 CREATE TABLE `photogroups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` char(10) NOT NULL,
@@ -43,8 +43,8 @@ CREATE TABLE `photogroups` (
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-drop table photos if exists;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+drop table if exists photos;
 CREATE TABLE `photos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
@@ -54,4 +54,18 @@ CREATE TABLE `photos` (
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+drop table if exists uservisit;
+CREATE TABLE `uservisit` (
+  `usercookie` char(32) NOT NULL,
+  `ip` char(32) NOT NULL,
+  `time` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+drop table if exists visithistory;
+CREATE TABLE `visithistory` (
+  `date` int(11) NOT NULL,
+  `pv` int(11) DEFAULT '0',
+  `uv` int(11) DEFAULT '0',
+  `ip` int(11) DEFAULT '0',
+  PRIMARY KEY (`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
