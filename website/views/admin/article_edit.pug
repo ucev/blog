@@ -31,7 +31,8 @@ block main-body-block
         ul#choose-photo-div-photo-group-ul
       div#choose-photo-div-right-div
         div#choose-photo-div-upload-div
-          button.operation-button#choose-photo-div-upload-button 上传图片
+          button.operation-button#choose-photo-div-upload-button(onclick='openUploadImgDialog()') 上传图片
+          input#upload-img-input(type='file' accept='image/*' style='display:none' onchange='uploadImgInputChange()')
         div#choose-photo-div-photo-list-div
           ul#choose-photo-div-photo-list-ul
   div#insert-url-div
@@ -341,9 +342,11 @@ block main-body-block
      * 原本想合并😊 
      */
     function onGroupItemClick(target) {
+      var gid = $(target).attr('data-gid');
+      $("#choose-photo-div").attr('data-curr-gid', gid);
       $(".choose-photo-div-photo-group-li").removeClass('choose-photo-div-photo-group-li-current');
       $(target).addClass('choose-photo-div-photo-group-li-current');
-      getGroupPhotos($(target).attr('data-gid'));
+      getGroupPhotos(gid);
     }
     function photoImgOnLoad(e) {
       var img = e;
@@ -372,6 +375,28 @@ block main-body-block
     function onInsertUrlCancelClick() {
       $("#insert-url-div-input").val("");
       $("#insert-url-div").hide();
+    }
+    function openUploadImgDialog() {
+      $('#upload-img-input').click();
+    }
+    function uploadImgInputChange(e) {
+      var file = $("#upload-img-input")[0].files[0];
+      var gid = $("#choose-photo-div").attr('data-curr-gid');
+      var fd = new FormData();
+      fd.append('file', file);
+      // default
+      fd.append('gid', gid);
+      $.ajax({
+        url: '/admin/datas/photos/add',
+        data: fd,
+        type: 'post',
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function(dt) {
+          getGroupPhotos(gid);
+        }
+      })
     }
     /**
      * 以下三个函数是复制过来的
