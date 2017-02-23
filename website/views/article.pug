@@ -7,3 +7,11 @@ block body-block
   include website_banner
   div.main
     div.markdown-display#display-area !{md}
+    <!--高速版-->
+    div#SOHUCS(sid="请将此处替换为配置SourceID的语句")
+    script(charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/changyan.js")
+    script.
+      window.changyan.api.config({
+        appid: 'cysRzyE0Y',
+        conf: 'prod_3a5ce45774b1fc3fe0b627ba017b3f62'
+      });
