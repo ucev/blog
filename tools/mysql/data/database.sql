@@ -12,7 +12,7 @@ CREATE TABLE `articles` (
   `pageview` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` char(20) NOT NULL,
@@ -50,3 +50,15 @@ CREATE TABLE `photos` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+CREATE TABLE `uservisit` (
+  `usercookie` char(32) NOT NULL,
+  `ip` char(32) NOT NULL,
+  `time` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `visithistory` (
+  `date` int(11) NOT NULL,
+  `pv` int(11) DEFAULT '0',
+  `uv` int(11) DEFAULT '0',
+  `ip` int(11) DEFAULT '0',
+  PRIMARY KEY (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

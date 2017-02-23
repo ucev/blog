@@ -159,3 +159,8 @@ footer {
 .article-item-li-addtime {
   
 }
+
+.nt-list {
+  display: none;
+  opacity: 0;
+}
