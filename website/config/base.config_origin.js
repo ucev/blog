@@ -3,7 +3,8 @@ const mysql_database_config = {
   host: "",
   user: "",
   password: "",
-  database: ""
+  database: "",
+  charset: 'utf8mb4'
 };
 
 // configs for config 'cookie-session'
