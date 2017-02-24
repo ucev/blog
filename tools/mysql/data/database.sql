@@ -1,19 +1,20 @@
 drop table if exists articles;
 CREATE TABLE `articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` char(20) NOT NULL,
-  `content` text NOT NULL,
-  `descp` varchar(500) DEFAULT NULL,
+  `title` char(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci,
+  `descp` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `category` int(11) NOT NULL,
-  `label` char(100) DEFAULT NULL,
-  `state` enum('on','off') DEFAULT 'off',
+  `label` char(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `state` enum('on','off') COLLATE utf8mb4_unicode_ci DEFAULT 'off',
   `top` tinyint(4) DEFAULT '0',
   `addtime` int(11) NOT NULL,
   `modtime` int(11) NOT NULL DEFAULT '0',
   `pageview` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `title` (`title`),
+  UNIQUE KEY `title_2` (`title`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 drop table if exists categories;
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -54,7 +55,7 @@ CREATE TABLE `photos` (
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
 drop table if exists uservisit;
 CREATE TABLE `uservisit` (
   `usercookie` char(32) NOT NULL,

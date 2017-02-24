@@ -8,7 +8,7 @@ const md = require('markdown-it')({
 });
 const configs = require('../config/base.config');
 
-function errorResponde(res, conn) {
+function transactionError(res, conn) {
     conn.rollback(() => {
       res.json({code: 1, msg: '添加失败'});
       conn.end((err) => {
@@ -21,7 +21,7 @@ function updateLabels(res, conn, addval, labels, ord = 0) {
   if (ord >= labels.length) {
     conn.commit((err) => {
       if (err) {
-        errorResponde(res, conn);
+        transactionError(res, conn);
         return;
       }
       res.json({code: 0, msg: '添加成功'});
@@ -34,7 +34,7 @@ function updateLabels(res, conn, addval, labels, ord = 0) {
   let label = labels[ord];
   conn.query('select * from labels where ? ', {name: label}, (err, results, fields) => {
     if (err) {
-      errorResponde(res, conn);
+      transactionError(res, conn);
       return;
     }
     if (results.length > 0) {
@@ -44,7 +44,7 @@ function updateLabels(res, conn, addval, labels, ord = 0) {
         [hotmark, articles, label],
         (err, results, fields) => {
           if (err) {
-            errorResponde(res, conn);
+            transactionError(res, conn);
             return;
           }
           updateLabels(res, conn, addval, labels, ord + 1);
@@ -58,7 +58,7 @@ function updateLabels(res, conn, addval, labels, ord = 0) {
         {name: label, articles: articles, hotmark: hotmark, addtime: addtime},
         (err, results, fields) => {
           if (err) {
-            errorResponde(res, conn);
+            transactionError(res, conn);
             return;
           }
           updateLabels(res, conn, addval, labels, ord + 1);
@@ -133,7 +133,10 @@ router.post('/articles/add', (req, res, next) => {
       addtime: addtime,
       modtime: addtime
     }, (err, results, fields) => {
-      if (err) return;
+      if (err) {
+        transactionError(res, conn);
+        return;
+      }
       updateLabels(res, conn, configs.label_hotmark_rule.add, label.split(','));
     });
   });
@@ -189,7 +192,11 @@ router.post('/articles/modify', (req, res, next) => {
     conn.query('update articles set title = ?, content = ?, descp = ?, label = ?, modtime = ? where id = ?', 
       [title, content, descp, label, modtime, id],
       (err, results, fields) => {
-        if (err) return;
+        if (err) {
+          console.log(err);
+          transactionError(res, conn);
+          return;
+        }
         updateLabels(res, conn, configs.label_hotmark_rule.add, label.split(','));
       }
     );

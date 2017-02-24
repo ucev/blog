@@ -104,6 +104,7 @@ block main-body-block
         initialValue: decodeURIComponent('#{content}')
       };
       function submitArticle(e) {
+        console.log('submit');
         $('#submit').unbind('click');
         var content = simplemde.value();
         var descp = getContentDescription(content);
@@ -137,6 +138,7 @@ block main-body-block
         insertImgFunction: insertImgFunction
       };
       function submitArticle(e) {
+        console.log('submit');
         $('#submit').unbind('click');
         var content = simplemde.value();
         var descp = getContentDescription(content);
