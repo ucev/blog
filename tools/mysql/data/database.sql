@@ -1,3 +1,6 @@
+create database if not exists blog_node character set utf8mb4 collate utf8mb4_unicode_ci;
+alter database blog_node character set utf8mb4 collate utf8mb4_unicode_ci;
+use blog_node;
 drop table if exists articles;
 CREATE TABLE `articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -15,6 +15,8 @@ const configs = {
 };
 const database = dbconfig.database;
 
+const createDatabaseSql = `create database ${database} character set utf8mb4 collate utf8mb4_unicode_ci`;
+
 var __this_callback = undefined;
 
 const conn = mysql.createConnection(configs);
@@ -25,6 +27,9 @@ const conn = mysql.createConnection(configs);
  */
 function saveDatabaseStruct(structs) {
   var file = fs.createWriteStream(fileconfig.data + 'database.sql', {defaultEncoding: 'utf8'});
+  file.write(`create database if not exists ${database} character set utf8mb4 collate utf8mb4_unicode_ci;\n`);
+  file.write(`alter database ${database} character set utf8mb4 collate utf8mb4_unicode_ci;\n`);
+  file.write(`use ${database};\n`)
   for (let struct in structs) {
     file.write(`drop table if exists ${struct};\n`);
     file.write(structs[struct] + ';\n');
@@ -49,7 +54,7 @@ function closeConn() {
 }
 
 function createDatabase() {
-  conn.query(`create database ${database} character set utf8`, (err, results, fields) => {
+  conn.query(createDatabaseSql, (err, results, fields) => {
     if (err) {
       transactionFail('createDatabase');
       return;
