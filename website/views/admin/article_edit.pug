@@ -104,7 +104,6 @@ block main-body-block
         initialValue: decodeURIComponent('#{content}')
       };
       function submitArticle(e) {
-        console.log('submit');
         $('#submit').unbind('click');
         var content = simplemde.value();
         var descp = getContentDescription(content);
@@ -213,6 +212,8 @@ block main-body-block
         if (_line != 0) nonEmptyList.push(_line);
         scrollMap[_line] = Math.floor($ele.offset().top + offset);
       });
+      scrollMap[lineCount] = $target[0].scrollHeight;
+      nonEmptyList.push(lineCount);
 
       var pos = 0;
       for (i = 1; i <= lineCount; i++) {
@@ -263,25 +264,30 @@ block main-body-block
         }
       }
       if (pos >= 0) {
-      console.log('pos info, pos: ' + pos + ', scroll: ' + toffset);
-      console.log('line height map: ' + JSON.stringify(lineHeightMap));
-      console.log('scroll map: ' + JSON.stringify(scrollMap));
       simplemde.codemirror.scrollTo(0, lineHeightMap[pos]);
       } else {
         simplemde.codemirror.scrollTo(0, 0);
       }
     }, 600);
 
-    var syncResScroll = myDebounce(function() {
-      var etop = simplemde.codemirror.getScrollInfo().top;
+    var syncResScroll = myDebounce(function(line = undefined) {
+      var pos = 0;
       var smap = buildScrollMap();
       var lineHeightMap = smap.lineHeightMap,
           scrollMap = smap.scrollMap;
-      var pos = 0, lineCount = lineHeightMap.length, i;
-      for (i = 0; i < lineCount; i++) {
-        if (lineHeightMap[i] > etop) {
-          pos = i - 1;
-          break;
+      if (line != undefined) {
+        pos = line;
+      } else {
+        var etop = simplemde.codemirror.getScrollInfo().top;
+        var smap = buildScrollMap();
+        var lineHeightMap = smap.lineHeightMap,
+            scrollMap = smap.scrollMap;
+        var lineCount = lineHeightMap.length, i;
+        for (i = 0; i < lineCount; i++) {
+          if (lineHeightMap[i] > etop) {
+            pos = i - 1;
+            break;
+          }
         }
       }
       $("#display-area").scrollTop(scrollMap[pos]);
@@ -292,14 +298,28 @@ block main-body-block
     });
     $("#edit-area").on('mouseover', function() {
       $('#display-area').off('scroll');
-      simplemde.codemirror.on('scroll', syncResScroll);
+      simplemde.codemirror.on('scroll', () => {
+        syncResScroll();
+      });
     });
     $("#edit-area").on('mouseout', function() {
       simplemde.codemirror.off('scroll', syncResScroll);
     });
-    simplemde.codemirror.on('change', function() {
+    simplemde.codemirror.on('change', function(instance, changeObj) {
+      var line = changeObj.to.line;
+      var size = instance.doc.size;
+      var toPos;
+      /**
+       * 当然这里有更好的改法，这里用了最方便实现的方法
+       * 先标记一下 😊
+       */
+      if (line > size - 2) {
+        toPos = size - 1;
+      } else {
+        toPos = line;
+      }
       $("#display-area").html(markdown.render(simplemde.value()));
-      syncResScroll();
+      syncResScroll(toPos);
     });
     function fetchGroupData() {
       $.ajax({
