@@ -6,6 +6,9 @@ const path = require('path');
 const configs = require('../config/base.config');
 const uploadPhotoDir = path.join(__dirname, '../public/images/blog');
 
+const Articles = require('../class/article.db');
+const __articles = new Articles();
+
 const RECOUNT_ARTICLE_GROUP_SQL = `
             update categories as ct
             left join
@@ -42,43 +45,15 @@ function transactionError(res, conn, resMsg = {code: 1, msg: '操作失败'}) {
 
 router.post('/articles/delete', (req, res, next) => {
   var id = strToNum(req.body.id);
-  const mysql = require('mysql');
-  const conn = mysql.createConnection(configs.database_config);
-  conn.beginTransaction((err) => {
-    if (err) {
-      transactionError(res, conn);
-      return;
+  __articles.delete(
+    id, 
+    () => {
+      res.json({code: 0, msg: '删除成功'});
+    },
+    () => {
+      res.json({code: 1, msg: '删除失败'});
     }
-    conn.query('select label from articles where id = ?', [id], (err, results, fields) => {
-      if (err) {
-        transactionError(res, conn);
-        return;
-      }
-      var label = results[0]['label'];
-      conn.query('delete from articles where id = ?', [id], (err, results, fields) => {
-        if (err) {
-          transactionError(res, conn);
-          return;
-        }
-        conn.query('update labels set articles = articles - 1 where name in ? ', [[label.split(',')]], (err, results, fields) => {
-          if (err) {
-            transactionError(res, conn);
-            return;
-          }
-          conn.commit((err) => {
-            if (err) {
-              transactionError(res, conn);
-              return;
-            }
-            res.json({code: 0, msg: '删除成功'});
-            conn.end((err) => {
-
-            });
-          })
-        })
-      })
-    })
-  })
+  )
 })
 
 router.get('/articles/getsingle/', (req, res, next) => {
@@ -96,61 +71,40 @@ router.get('/articles/getsingle/', (req, res, next) => {
 });
 
 router.get('/articles/get', (req, res, next) => {
-  const mysql = require('mysql');
-  const conn = mysql.createConnection(configs.database_config);
   if (req.query.id != undefined) {
     const id = req.query.id;
-    conn.query('select id, title, category, label, state, top, pageview from articles where id = ?', [id],
-      (err, results, fields) => {
-        if (results.length > 0) {
-          res.json({code: 0, msg: '请求成功', data: results[0]});
-        } else {
-          res.json({code: 1, msg: '请求失败'});
-        }
-        conn.end((err) => {
-
-        })
+    __articles.getsingle(
+      id,
+      function(r) {
+        res.json({code: 0, msg: '请求成功', data: r});
+      }, 
+      function() {
+        res.json({code: 1, msg: '请求失败'});
       }
     );
   } else {
-    const current = strToNum(req.query.start);
-    const start = current * configs.query_config.step;
+    const start = strToNum(req.query.start);
     const state = emptyString(req.query.state);
     const category = strToNum(emptyString(req.query.category));
     const label = emptyString(req.query.label);
-    var wheres = ' where 1';
-    var whereArgs = [];
-    if ( state || category || label) {
-      if (state) {
-        wheres += ' AND state = ?';
-        whereArgs.push(state);
-       }
-      if (category) {
-        wheres += ' AND category = ?';
-        whereArgs.push(category);
-      }
-      if (label) {
-        wheres += ' AND label = ?';
-        whereArgs.push(label);
-      }
+    var where = {};
+    if (state) {
+      where.state = state;
     }
-    conn.query('select count(*) as total from articles' + wheres, whereArgs, (err, results, fields) => {
-      const total = Math.ceil(results[0]['total'] / configs.query_config.step);
-      var sql = 'select id, title, category, label, state, top, pageview from articles ';
-      sql += wheres;
-      sql += ' limit ?, ?';
-      conn.query(sql, [...whereArgs, start, configs.query_config.step], (err, results, fields) => {
-          res.json({code: 0, msg: '获取成功', data: {
-            total: total,
-            current: current,
-            data: results
-          }});
-          conn.end((err) => {
-
-          });
-        }
-      );
-    });
+    if (category) {
+      where.category = category;
+    }
+    if (label) {
+      where.label = label;
+    }
+    __articles.getByCond({where: where, start: start}, 
+      function(r) {
+        res.json({code: 0, msg: '获取成功', data: r});
+      },
+      function() {
+        res.json({code: 1, msg: '获取失败'});
+      }
+    )
   }
 });
 
@@ -158,60 +112,30 @@ router.get('/articles/move', (req, res, next) => {
   var ids = req.query.id;
   ids = ids.split(',');
   var gid = req.query.gid;
-  const mysql = require('mysql');
-  const conn = mysql.createConnection(configs.database_config);
-  conn.beginTransaction((err) => {
-    if (err) {
-      console.log('-----------------------pos1');
-      transactionError(res, conn);
-      return;
+  __articles.move(
+    ids, gid,
+    () => {
+      res.json({code: 0, msg: '更新成功'});
+    },
+    () => {
+      res.json({code: 1, msg: '更新失败'});
     }
-    conn.query('update articles set category = ? where id in ?', [gid, [ids]], (err, results, fields) => {
-      if (err) {
-        console.log(err);
-        console.log(JSON.stringify(ids) + ', gid: ' + gid);
-      console.log('-----------------------pos2');
-        transactionError(res, conn);
-        return;
-      }
-      conn.query(RECOUNT_ARTICLE_GROUP_SQL, (err, results, fields) => {
-        if (err) {
-          console.log(err);
-      console.log('-----------------------pos3');
-          transactionError(res, conn);
-          return;
-        }
-        conn.commit((err) => {
-          if (err) {
-      console.log('-----------------------pos4');
-            transactionError(res, conn);
-            return;
-          }
-          res.json({code: 0, msg: '更新成功'});
-          conn.end((err) => {
-
-          })
-        })
-      })
-    })
-  })
+  )
 })
 
 router.get('/articles/state', (req, res, next) => {
   var ids = req.query.id;
   ids = ids.split(',');
   const state = req.query.state;
-  const mysql = require('mysql');
-  const conn = mysql.createConnection(configs.database_config);
-  conn.query('update articles set state = ? where id in ?', [state, [ids]],
-    (err, results, fields) => {
-      if (err) {
-        res.json({code: 1, msg: '更新失败'});
-      } else {
-        res.json({code: 0, msg: '更新成功'});
-      }
+  __articles.updateState(
+    ids, state,
+    (r) => {
+      res.json({code: 0, msg: '更新成功', data: r});
+    },
+    () => {
+      res.json({code: 1, msg: '更新失败'});
     }
-  );
+  )
 });
 
 router.post('/categories/add', (req, res, next) => {

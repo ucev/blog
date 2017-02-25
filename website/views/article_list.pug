@@ -13,6 +13,8 @@ block body-block
     ul#articles-list-ul
       each data in datas
         +article_item(data)
+    ul#articles-foot-nav-ul
+      
   script.
     $(document).ready(() => {
       $('.article-item-li-title, .article-item-li-content').click(function() {
