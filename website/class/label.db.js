@@ -18,10 +18,21 @@ class Labels {
     gt.then((data) => {
       succ(data);
     }).catch(() => {
-      fail();
+      fail([]);
     }).finally(() => {
       conn.end((err) => {});
     })
+  }
+
+  getNames(succ, fail) {
+    this.get(
+      function(labels) {
+        console.log(JSON.stringify(labels));
+        var l = labels.map((label) => (label.name));
+        succ(l);
+      },
+      fail
+    )
   }
 }
 

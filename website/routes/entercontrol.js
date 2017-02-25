@@ -1,6 +1,9 @@
 const crypto = require('crypto');
 const configs = require('../config/base.config');
 
+const FluxRecord = require('../class/fluxrecord');
+const __fluxrecord = new FluxRecord();
+
 function md5(str) {
   var md5sum = crypto.createHash('md5');
   md5sum.update(str);
@@ -31,17 +34,10 @@ function userControl(req, res, next) {
     res.cookie('usercookie', usercookie, {path: '/', expire: getCookieExpire});
   }
   var time = Math.floor(new Date().getTime() / 1000);
-  var today = Math.floor(clearDateTime(new Date()).getTime());
-  const mysql = require('mysql');
-  const conn = mysql.createConnection(configs.database_config);
-  conn.query('insert into uservisit set ?', [{
+  __fluxrecord.visit({
       usercookie: usercookie,
       ip: ip,
       time: time
-    }], (err, results, fields) => {
-      conn.end((err) => {
-
-      });
     }
   )
   next();

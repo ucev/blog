@@ -40,7 +40,7 @@ router.get('/articles/get', (req, res, next) => {
   if (req.query.id != undefined) {
     const id = req.query.id;
     __articles.getsingle(
-      id,
+      {id: id},
       function(r) {
         res.json({code: 0, msg: '请求成功', data: r});
       }, 
