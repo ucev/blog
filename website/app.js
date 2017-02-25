@@ -16,6 +16,15 @@ var enterControl = require('./routes/entercontrol');
 
 var configs = require('./config/base.config');
 
+
+Promise.prototype.finally = function (callback) {
+  let P = this.constructor;
+  return this.then(
+    value  => P.resolve(callback()).then(() => value),
+    reason => P.resolve(callback()).then(() => { throw reason })
+  );
+};
+
 var app = express();
 
 // view engine setup

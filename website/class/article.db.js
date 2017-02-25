@@ -1,13 +1,6 @@
 const mysql = require('mysql');
 const configs = require('../config/base.config.js');
 
-Promise.prototype.finally = function (callback) {
-  let P = this.constructor;
-  return this.then(
-    value  => P.resolve(callback()).then(() => value),
-    reason => P.resolve(callback()).then(() => { throw reason })
-  );
-};
 
 const RECOUNT_ARTICLE_GROUP_SQL = `
             update categories as ct
