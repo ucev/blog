@@ -1,1 +1,1 @@
-require('./src/dumpdatabase')(function(){console.log('finish');});
+require('./src/dumpstruct')(function(){console.log('finish');});
