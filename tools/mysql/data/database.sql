@@ -4,7 +4,7 @@ use blog_node;
 drop table if exists articles;
 CREATE TABLE `articles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` char(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `title` char(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` text COLLATE utf8mb4_unicode_ci,
   `descp` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `category` int(11) NOT NULL,
@@ -16,8 +16,9 @@ CREATE TABLE `articles` (
   `pageview` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`),
-  UNIQUE KEY `title_2` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  UNIQUE KEY `title_2` (`title`),
+  UNIQUE KEY `title_3` (`title`)
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 drop table if exists categories;
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -28,7 +29,7 @@ CREATE TABLE `categories` (
   `articlecnt` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 drop table if exists labels;
 CREATE TABLE `labels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -38,7 +39,7 @@ CREATE TABLE `labels` (
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 drop table if exists photogroups;
 CREATE TABLE `photogroups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -47,7 +48,7 @@ CREATE TABLE `photogroups` (
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 drop table if exists photos;
 CREATE TABLE `photos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -58,7 +59,7 @@ CREATE TABLE `photos` (
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 drop table if exists uservisit;
 CREATE TABLE `uservisit` (
   `usercookie` char(32) NOT NULL,

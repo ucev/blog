@@ -267,7 +267,7 @@ class Articles {
       return new Promise((resolve, reject) => {
         conn.query(`insert into ${this.dbname} set ?`, [datas],
           (err, results, fields) => {
-            if (err) {reject()};
+            if (err) {throw err;reject()};
             resolve();
           }
         )
@@ -281,6 +281,7 @@ class Articles {
         succ();
       })
     }).catch((err) => {
+      console.log(err);
       conn.rollback((err) => {
         conn.end((err) => {});
       })
@@ -376,7 +377,9 @@ class Articles {
     })
     return p1.then((_eLabels) => {
       if (labels == '') {
-        resolve();
+        return new Promise((resolve, reject) => {
+          resolve();
+        })
       }
       if (typeof labels == 'string')
         labels = labels.split(',');
