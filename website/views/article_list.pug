@@ -14,6 +14,7 @@ block body-block
       each data in datas
         +article_item(data)
     ul#articles-foot-nav-ul
+    include page_foot_pager_nav
       
   script.
     $(document).ready(() => {

@@ -130,8 +130,14 @@ class Articles {
     var whereArgs = [];
     var whereSql = '';
     for (let key in where) {
-      whereSql += (' And ' + conn.escapeId(key) + ' = ?');
-      whereArgs.push(where[key]);
+      if (key == 'label') {
+        var s = (` AND ${conn.escapeId(key)} like ` + conn.escape(`%${where[key]}%`));
+        console.log('-------------------' + s);
+        whereSql += s;
+      } else {
+        whereSql += (' AND ' + conn.escapeId(key) + ' = ?');
+        whereArgs.push(where[key]);
+      }
     }
     var queryCount = new Promise((resolve, reject) => {
       conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`, 
@@ -147,7 +153,7 @@ class Articles {
       returnData.total = Math.ceil(total / this.step);
     });
     var queryData = new Promise((resolve, reject) => {
-      conn.query(`select ?? from ${this.dbname} where 1 ${whereSql} limit ?, ?`,
+      conn.query(`select ?? from ${this.dbname} where 1 ${whereSql} order by id desc limit ?, ?`,
         [queryfields, ...whereArgs, start * this.step, this.step], (err, results, fields) => {
           if (err) reject();
           resolve(results);
