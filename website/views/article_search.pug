@@ -2,9 +2,9 @@ extends base_layout
 
 block body-block
   include website_banner
-  - var titleExp = new RegExp('(' + args + ')');
+  - var titleExp = new RegExp('(' + args + ')', 'i');
   mixin article_label(label)
-    if label.indexOf(args) == -1
+    if label.toLowerCase().indexOf(args.toLowerCase()) == -1
       li.article-item-li-label-li #{label}
     else
       li.article-item-li-label-li.article-item-li-label-li-selected #{label}
