@@ -2,16 +2,28 @@ extends base_layout
 
 block body-block
   include website_banner
+  - var titleExp = new RegExp('(' + args + ')');
+  mixin article_label(label)
+    if label.indexOf(args) == -1
+      li.article-item-li-label-li #{label}
+    else
+      li.article-item-li-label-li.article-item-li-label-li-selected #{label}
   mixin article_item(itemData)
     li.article-item-li(data-id = itemData.id )
       h3.article-item-li-title
-        a(href='/') #{itemData.title}
+        a(href='/') !{itemData.title.replace(titleExp, '<strong>$1</strong>')}
+        ul.article-item-li-labels-ul
+          each lb in itemData.label.split(',')
+            +article_label(lb)
       div.article-item-li-content #{itemData.descp}
       div.article-item-li-bottom-info
         span.article-item-li-pageview 阅读量(#{itemData.pageview})
         span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
   div.main#articles-list
     block body-article-block
+      div#article-search-hint-div
+        div#hint-param-article-search-div 查找结果
+        a#quit-article-search-div(href='/articles') 返回
       ul#articles-list-ul
         each data in datas
           +article_item(data)
@@ -20,6 +32,9 @@ block body-block
       
   script.
     $(document).ready(() => {
+      $('.article-item-li-title, .article-item-li-content').click(function() {
+        location.href = '/articles/view/' + $(this).parent('.article-item-li').attr('data-id');
+      });
       $('.article-item-li-addtime').click(function() {
         alert($(this).text());
       })

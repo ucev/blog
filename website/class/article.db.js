@@ -129,14 +129,20 @@ class Articles {
     }
     var whereArgs = [];
     var whereSql = '';
-    for (let key in where) {
-      if (key == 'label') {
-        var s = (` AND ${conn.escapeId(key)} like ` + conn.escape(`%${where[key]}%`));
-        console.log('-------------------' + s);
-        whereSql += s;
-      } else {
-        whereSql += (' AND ' + conn.escapeId(key) + ' = ?');
-        whereArgs.push(where[key]);
+    // 对模糊搜索的支持
+    if ('args' in where) {
+      var escapedVal = conn.escape(`%${where['args']}%`);
+      whereSql += (` AND (title like ${escapedVal} or label like ${escapedVal})`);
+      console.log('-------------' + whereSql);
+    } else {
+      for (let key in where) {
+        if (key == 'label') {
+          var s = (` AND ${conn.escapeId(key)} like ` + conn.escape(`%${where[key]}%`));
+          whereSql += s;
+        } else {
+          whereSql += (' AND ' + conn.escapeId(key) + ' = ?');
+          whereArgs.push(where[key]);
+        }
       }
     }
     var queryCount = new Promise((resolve, reject) => {

@@ -22,7 +22,8 @@ $(document).ready(function(){
     });
     $(searchInput).keydown((e) => {
       if (e.which == 13) {
-        alert($(searchInput).val());
+        var searchParam = $(searchInput).val();
+        location.href = '/articles/search?args=' + encodeURIComponent(searchParam);
       }
     });
   })();

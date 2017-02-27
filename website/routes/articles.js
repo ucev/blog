@@ -7,7 +7,6 @@ const __articles =  new Articles();
 const configs = require('../config/base.config');
 
 function __pager(current, total) {
-  console.log('-----------------' + current + ', ' + total);
   var start = current < 5 ? 0 : current - 5;
   var len;
   if (start + 10 <= total) {
@@ -30,6 +29,10 @@ function __pager(current, total) {
     pagerParams.push({page: current + 1, title: '下一页'});
   }
   return pagerParams;
+}
+
+function __searchStyleTitle(title, args) {
+  return title.replace(new RegExp('(' + args + ')'), '<strong>$1</strong>')
 }
 
 router.get('/view/:id', (req, res, next) => {
@@ -56,6 +59,34 @@ router.get('/view/:id', (req, res, next) => {
   )
 });
 
+router.get('/search', (req, res, next) => {
+  var start = req.query.p ? req.query.p : 0;
+  // 查找的参数
+  var args = req.query.args;
+  console.log('----------------' + args);
+  __articles.getByCond(
+    {
+      where: {args: args},
+      start: start,
+      client: true
+    },
+    (arts) => {
+      res.render('article_search', {
+        title: '文章查找',
+        websiteInfo: configs.website_info,
+        datas: arts.data,
+        current: arts.current,
+        pager: __pager(arts.current, arts.total),
+        pagerurl: `?args=${args}&p=`,
+        args: args
+      })
+    },
+    () => {
+      res.redirect('/');
+    }
+  )
+})
+
 router.get('/', (req, res, next) => {
   var start = req.query.p ? req.query.p : 0;
   __articles.getByCond(
@@ -70,7 +101,8 @@ router.get('/', (req, res, next) => {
           websiteInfo: configs.website_info,
           datas: arts.data,
           current: arts.current,
-          pager: __pager(arts.current, arts.total)
+          pager: __pager(arts.current, arts.total),
+          pagerurl: '?p='
         }
       )
     },
