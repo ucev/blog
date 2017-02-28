@@ -144,7 +144,7 @@ class Articles {
       queryfields = ['id', 'title', 'category', 'label', 'state', 'top', 'pageview'];
     } else {
       queryfields = ['*'];
-      whereSql = (` AND state = 'on' `);
+      whereSql += (` AND state = 'on' `);
     }
     var queryCount = new Promise((resolve, reject) => {
       conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`, 
