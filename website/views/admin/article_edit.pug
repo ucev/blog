@@ -445,12 +445,16 @@ block main-body-block
       return void E(t, n.image, r.insertTexts.image, imgsrc);
     }
     function E(e, t, n, r) {
+      console.log(n[1]);
       if (!/editor-preview-active/.test(e.getWrapperElement().lastChild.className)) {
         var i, o = n[0],
           a = n[1],
           l = e.getCursor("start"),
           s = e.getCursor("end");
-        r && (a = a.replace("#url#", r)), t ? (i = e.getLine(l.line), o = i.slice(0, l.ch), a = i.slice(l.ch), e.replaceRange(o + a, {
+        r && (a = a.replace("#url#", r)), 
+        console.log(a);
+        console.log(o);
+        t ? (i = e.getLine(l.line), o = i.slice(0, l.ch), a = i.slice(l.ch), e.replaceRange(o + a, {
           line: l.line,
           ch: 0
         })) : (i = e.getSelection(), e.replaceSelection(o + i + a), l.ch += o.length, l !== s && (s.ch += o.length)), e.setSelection(l, s), e.focus()
