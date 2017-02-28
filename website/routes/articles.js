@@ -4,6 +4,13 @@ const router = express.Router();
 const Articles =  require('../class/article.db');
 const __articles =  new Articles();
 
+
+const __markdown = require('markdown-it')({
+    html: true,
+    linkify: true,
+    typographer: true
+  });
+
 const configs = require('../config/base.config');
 
 function __pager(current, total) {
@@ -37,18 +44,13 @@ function __searchStyleTitle(title, args) {
 
 router.get('/view/:id', (req, res, next) => {
   var id = req.params.id;
-  var md = require('markdown-it')({
-    html: true,
-    linkify: true,
-    typographer: true
-  });
   __articles.view(
     id,
     (article) => {
       res.render('article', {
           title: article.title,
           websiteInfo: configs.website_info,
-          md: md.render(article.content),
+          md: __markdown.render(article.content),
           debug: configs.website_info.debug
         }
       )

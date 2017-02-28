@@ -5,7 +5,7 @@ block body-block
   mixin article_item(itemData)
     li.article-item-li(data-id = itemData.id )
       h3.article-item-li-title
-        a(href='/') #{itemData.title}
+        a(href='/articles/view/' + itemData.id) #{itemData.title}
       div.article-item-li-content #{itemData.descp}
       div.article-item-li-bottom-info
         span.article-item-li-pageview 阅读量(#{itemData.pageview})
