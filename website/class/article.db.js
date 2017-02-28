@@ -121,12 +121,6 @@ class Articles {
       data: []
     };
     var conn = mysql.createConnection(this.dbconfig);
-    var queryfields;
-    if (!client) {
-      queryfields = ['id', 'title', 'category', 'label', 'state', 'top', 'pageview'];
-    } else {
-      queryfields = ['*'];
-    }
     var whereArgs = [];
     var whereSql = '';
     // 对模糊搜索的支持
@@ -144,6 +138,13 @@ class Articles {
           whereArgs.push(where[key]);
         }
       }
+    }
+    var queryfields;
+    if (!client) {
+      queryfields = ['id', 'title', 'category', 'label', 'state', 'top', 'pageview'];
+    } else {
+      queryfields = ['*'];
+      whereSql = (` AND state = 'on' `);
     }
     var queryCount = new Promise((resolve, reject) => {
       conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`, 
