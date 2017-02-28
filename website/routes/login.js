@@ -4,6 +4,8 @@ const request = require('request');
 const configs = require('../config/base.config');
 const loginConfig = configs.qqlogin;
 
+const __log = require('../utils/log');
+
 // 错误处理
 router.get('/redirect', (req, res, next) => {
   var code = req.query.code;
@@ -23,7 +25,7 @@ router.get('/redirect', (req, res, next) => {
       req.session.openid = openid;
       var url = `https://graph.qq.com/user/get_user_info?access_token=${token}&oauth_consumer_key=${loginConfig.appid}&openid=${openid}`;
       request(url, (err, r, body) => {
-        console.log('-----------------body: ' + body);
+        __log.debug(body);
         body = JSON.parse(body);
         req.session.avatar = body.figureurl_qq_1;
         res.redirect('/admin');

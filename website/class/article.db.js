@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const configs = require('../config/base.config.js');
 const ReadWriteLock = require('rwlock');
+const __log = require('../utils/log');
 
 const RECOUNT_ARTICLE_GROUP_SQL = `
             update categories as ct
@@ -127,7 +128,7 @@ class Articles {
     if ('args' in where) {
       var escapedVal = conn.escape(`%${where['args']}%`);
       whereSql += (` AND (title like ${escapedVal} or label like ${escapedVal})`);
-      console.log('-------------' + whereSql);
+      __log.debug(whereSql);
     } else {
       for (let key in where) {
         if (key == 'label') {
@@ -294,7 +295,7 @@ class Articles {
         succ();
       })
     }).catch((err) => {
-      console.log(err);
+      __log.debug(err);
       conn.rollback((err) => {
         conn.end((err) => {});
       })

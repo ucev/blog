@@ -254,7 +254,6 @@ router.get('/photos/move', (req, res, next) => {
       ids: photos, photogroup: gid
     },
     () => {
-      console.log('-----------succ');
       res.json({code: 0, msg: '更新成功'});
     },
     () => {

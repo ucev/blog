@@ -27,7 +27,6 @@ class Labels {
   getNames(succ, fail) {
     this.get(
       function(labels) {
-        console.log(JSON.stringify(labels));
         var l = labels.map((label) => (label.name));
         succ(l);
       },

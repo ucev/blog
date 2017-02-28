@@ -4,6 +4,8 @@ const router = express.Router();
 const Articles =  require('../class/article.db');
 const __articles =  new Articles();
 
+const __log = require('../utils/log');
+
 
 const __markdown = require('markdown-it')({
     html: true,
@@ -65,7 +67,7 @@ router.get('/search', (req, res, next) => {
   var start = req.query.p ? req.query.p : 0;
   // 查找的参数
   var args = req.query.args;
-  console.log('----------------' + args);
+  __log.debug(args);
   __articles.getByCond(
     {
       where: {args: args},
