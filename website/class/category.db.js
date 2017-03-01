@@ -87,7 +87,7 @@ class Categories {
   get(succ, fail) {
     var conn = mysql.createConnection(this.dbconfig);
     var gt = new Promise((resolve, reject) => {
-      conn.query(`select * from ${this.dbname}`, (err, results, fields) => {
+      conn.query(`select * from ${this.dbname} order by mainorder asc`, (err, results, fields) => {
         if (err) reject();
         resolve(results);
       })
@@ -101,11 +101,11 @@ class Categories {
     })
   }
 
-  update({id: id, name: name, parent: parent, descp: descp} = {}, succ, fail) {
+  update({id, data={}} = {}, succ, fail) {
     var conn = mysql.createConnection(this.dbconfig);
     var upd = new Promise((resolve, reject) => {
       conn.query(`update ${this.dbname} set ? where id = ?`, [
-          {name: name, parent: parent, descp: descp},
+          data,
           id
         ], (err, results, fields) => {
           if (err) reject();

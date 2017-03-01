@@ -696,9 +696,13 @@ td {
 }
 
 .category-row-descp-label {
-  width: 30%;
+  width: 20%;
   padding-left: 30px;
   text-align: left;
+}
+
+.category-row-order-label {
+  width: 10%;
 }
 
 .category-row-articlecnt-label {
@@ -712,6 +716,12 @@ td {
 .category-row-descp-data {
   padding-left: 30px;
   text-align: left;
+}
+
+.category-row-order-data input {
+  text-align: center;
+  border: none;
+  background: none;
 }
 
 .del-category-dialog,

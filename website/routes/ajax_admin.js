@@ -144,15 +144,25 @@ router.post('/categories/delete', (req, res, next) => {
 
 router.post('/categories/modify', (req, res, next) => {
   var id = strToNum(req.body.id);
+  var data = {};
   var name = req.body.name;
+  if (req.body.name) {
+    data.name = req.body.name;
+  }
   // 错误检查
-  var parent = req.body.parent;
-  var descp = req.body.descp;
-  __categories.update({
+  if (req.body.parent) {
+    data.parent = req.body.parent;
+  }
+  if (req.body.descp) {
+    data.descp = req.body.descp;
+  }
+  if (req.body.order) {
+    data.mainorder = req.body.order;
+  }
+  __categories.update(
+    {
       id: id,
-      name: name,
-      parent: parent,
-      descp: descp,
+      data: data
     },
     () => {
       res.json({code: 0, msg: '更新成功'});

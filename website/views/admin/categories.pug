@@ -104,34 +104,35 @@ block main-body-block
         )
       }
     }
-      class ConfirmDialog extends React.Component {
-        constructor(props) {
-          super(props);
-          this.handleConfirmClick = this.handleConfirmClick.bind(this);
-          this.handleCancelClick = this.handleCancelClick.bind(this);
-        }
-        handleConfirmClick(e) {
-          this.props.confirm();
-        }
-        handleCancelClick(e) {
-          this.props.cancel();
-        }
-        render() {
-          var styles = {};
-          if (!this.props.visible) styles.display = 'none';
-          return (
-            <div className = 'dialog-div del-category-dialog' style = {styles}>
-              <div className = 'dialog-header-div'>
-                <div className = 'dialog-title-div'>{this.props.title}</div>
-              </div>
-              <div className = 'dialog-bottom-operation-bar'>
-                <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
-                <button className = 'dialog-operation-button dialog-cancel-button' onClick = {this.handleCancelClick}>取消</button>
-              </div>
-            </div>
-          );
-        }
+    class ConfirmDialog extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleConfirmClick = this.handleConfirmClick.bind(this);
+        this.handleCancelClick = this.handleCancelClick.bind(this);
       }
+      handleConfirmClick(e) {
+        this.props.confirm();
+      }
+      handleCancelClick(e) {
+        this.props.cancel();
+      }
+
+      render() {
+        var styles = {};
+        if (!this.props.visible) styles.display = 'none';
+        return (
+          <div className = 'dialog-div del-category-dialog' style = {styles}>
+            <div className = 'dialog-header-div'>
+              <div className = 'dialog-title-div'>{this.props.title}</div>
+            </div>
+            <div className = 'dialog-bottom-operation-bar'>
+              <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
+              <button className = 'dialog-operation-button dialog-cancel-button' onClick = {this.handleCancelClick}>取消</button>
+            </div>
+          </div>
+        );
+      }
+    }
 
     class CategoryLabel extends React.Component {
       constructor(props) {
@@ -144,7 +145,7 @@ block main-body-block
             <th className = 'category-row-name-label'>名称</th>
             <th className = 'category-row-parent-label'>父节点</th>
             <th className = 'category-row-descp-label'>描述</th>
-            <th className = 'category-row-preface-art-label'>序言</th>
+            <th className = 'category-row-order-label'>顺序</th>
             <th className = 'category-row-articlecnt-label'>文章数</th>
             <th className = 'content-row-operation-label category-row-operation-label'>操作</th>
           </tr>
@@ -155,11 +156,12 @@ block main-body-block
       constructor(props) {
         super(props);
         this.categoryOperationClick = this.categoryOperationClick.bind(this);
+        this.categoryOrderChange = this.categoryOrderChange.bind(this);
+        this.categoryOrderKeyDown = this.categoryOrderKeyDown.bind(this);
         this.operationUl = (
           <ul className='article-operation-ul' data-id = {this.props.category.id}>
             <li data-type = 'modify' onClick = {this.categoryOperationClick}>修改</li>
             <li data-type='delete' onClick = {this.categoryOperationClick}>删除</li>
-            <li data-type='preface' onClick = {this.categoryOperationClick}>设置序言</li>
           </ul>
         );
       }
@@ -172,6 +174,18 @@ block main-body-block
           this.props.delete(id);
         }
       }
+      categoryOrderChange(e) {
+        var id = this.props.category.id;
+        var order = e.target.value;
+        this.props.handleCategoryOrderChange(id, order);
+      }
+      categoryOrderKeyDown(e) {
+        if (e.which == 13) {
+          var id = this.props.category.id;
+          var order = e.target.value;
+          this.props.updateCategoryOrder(id, order);
+        }
+      }
       render() {
         var category = this.props.category;
         return (
@@ -180,7 +194,7 @@ block main-body-block
             <td className = 'category-row-name-data'>{category.name}</td>
             <td className = 'category-row-parent-data'>{category.parent}</td>
             <td className = 'category-row-descp-data'>{category.descp}</td>
-            <td className = 'category-row-preface-art-data'></td>
+            <td className = 'category-row-order-data'><input type='number' value={category.mainorder} onChange = {this.categoryOrderChange} onKeyDown = {this.categoryOrderKeyDown} /></td>
             <td className = 'category-row-articlecnt-data'>{category.articlecnt}</td>
             <td className = 'content-row-operation-data'>{this.operationUl}</td>
           </tr>
@@ -191,9 +205,12 @@ block main-body-block
       constructor(props) {
         super(props);
       }
+      onCategoryOrderChange(id, order) {
+
+      }
       render() {
         var categories = this.props.categories.map((category) => (
-          <CategoryRow category = {category} modify = {this.props.modify} delete = {this.props.delete} />
+          <CategoryRow category = {category} modify = {this.props.modify} delete = {this.props.delete} handleCategoryOrderChange = {this.props.handleCategoryOrderChange} updateCategoryOrder = {this.props.updateCategoryOrder} />
         ));
         return (
           <table className = 'content-table category-content-table'>
@@ -231,8 +248,12 @@ block main-body-block
         this.handleDeleteClick = this.handleDeleteClick.bind(this);
         this.deleteCategoryConfirm = this.deleteCategoryConfirm.bind(this);
         this.deleteCategoryCancel = this.deleteCategoryCancel.bind(this);
-        this.fetchCagetoryDatas = this.fetchCagetoryDatas.bind(this);
-        this.fetchCagetoryDatas();
+        // category order
+        this.handleCategoryOrderChange = this.handleCategoryOrderChange.bind(this);
+        this.updateCategoryOrder = this.updateCategoryOrder.bind(this);
+
+        this.fetchCategoryDatas = this.fetchCategoryDatas.bind(this);
+        this.fetchCategoryDatas();
       }
       addCategoryDivStateChange(visible, type = this.state.addType, data = {}) {
         this.setState({
@@ -257,7 +278,7 @@ block main-body-block
           success: function(dt) {
             if (dt.code == 0) {
               that.addCategoryDivStateChange(false);
-              that.fetchCagetoryDatas();
+              that.fetchCategoryDatas();
             }
           }
         })
@@ -282,7 +303,7 @@ block main-body-block
                 delVisible: false,
                 delCategoryId: -1
               })
-              that.fetchCagetoryDatas();
+              that.fetchCategoryDatas();
             }
           }
         })
@@ -298,7 +319,32 @@ block main-body-block
           delCategoryId: id
         })
       }
-      fetchCagetoryDatas() {
+      handleCategoryOrderChange(id, order) {
+        var categories = this.state.categories;
+        for (var i in categories) {
+          if (categories[i].id == id) {
+            categories[i].mainorder = order;
+            this.setState({
+              categories: categories
+            })
+            break;
+          }
+        }
+      }
+      updateCategoryOrder(id, order) {
+        var that = this;
+        fetch('/admin/datas/categories/modify', {
+          data: {id: id, order: order},
+          type: 'post',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              that.fetchCategoryDatas();
+            }
+          }
+        })
+      }
+      fetchCategoryDatas() {
         var that = this;
         fetch('/admin/datas/categories/get', {
           type: 'get',
@@ -319,7 +365,7 @@ block main-body-block
         return (
           <div>
             <OperationBar addNewCategory = {this.addCategoryDivStateChange}/>
-            <CategoryTable categories = {categories} fetchCagetoryDatas = {this.fetchCagetoryDatas} modify= {this.addCategoryDivStateChange} delete = {this.handleDeleteClick} />
+            <CategoryTable categories = {categories} fetchCategoryDatas = {this.fetchCategoryDatas} modify= {this.addCategoryDivStateChange} delete = {this.handleDeleteClick} handleCategoryOrderChange = {this.handleCategoryOrderChange} updateCategoryOrder = {this.updateCategoryOrder}/>
             <AddCategoryDiv type = {addType} title = {this.addTitle[addType]} data = {this.state.addData} categories = {categories} visible = {this.state.addVisible} confirm = {this.addCategoryDivConfirm} cancel = {this.addCategoryDivCancel} valueChange = {this.addCategoryDivValueChange} />
             <ConfirmDialog title = '确认删除此类别?' visible = {this.state.delVisible} confirm = {this.deleteCategoryConfirm} cancel = {this.deleteCategoryCancel} />
           </div>
