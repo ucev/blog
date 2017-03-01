@@ -3,6 +3,8 @@ const router = express.Router();
 
 const Articles =  require('../class/article.db');
 const __articles =  new Articles();
+const Categories = require('../class/category.db');
+const __categories = new Categories();
 
 const __log = require('../utils/log');
 
@@ -43,6 +45,10 @@ function __pager(current, total) {
 function __searchStyleTitle(title, args) {
   return title.replace(new RegExp('(' + args + ')'), '<strong>$1</strong>')
 }
+
+router.get('/category', (req, res, next) => {
+  res.render('category_list');
+});
 
 router.get('/view/:id', (req, res, next) => {
   var id = req.params.id;
@@ -93,6 +99,17 @@ router.get('/search', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
   var start = req.query.p ? req.query.p : 0;
+  function response(arts, cats) {
+    res.render('article_list', {
+      title: '文章列表',
+      websiteInfo: configs.website_info,
+      datas: arts.data,
+      categories: cats,
+      current: arts.current,
+      pager: __pager(arts.current, arts.total),
+      pagerurl: '?p='
+    })
+  }
   __articles.getByCond(
     {
       where: {},
@@ -100,13 +117,12 @@ router.get('/', (req, res, next) => {
       client: true
     },
     (arts) => {
-      res.render('article_list', {
-          title: '文章列表',
-          websiteInfo: configs.website_info,
-          datas: arts.data,
-          current: arts.current,
-          pager: __pager(arts.current, arts.total),
-          pagerurl: '?p='
+      __categories.get(
+        (cats) => {
+          response(arts, cats);
+        },
+        () => {
+          response(arts, []);
         }
       )
     },
