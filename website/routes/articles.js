@@ -47,7 +47,21 @@ function __searchStyleTitle(title, args) {
 }
 
 router.get('/category', (req, res, next) => {
-  res.render('category_list');
+  function responde(cats) {
+    res.render('category_list', {
+      title: '文章类别',
+      websiteInfo: configs.website_info,
+      categories: cats
+    });
+  }
+  __categories.get(
+    (cats) => {
+      responde(cats);
+    },
+    () => {
+      responde([]);;
+    }
+  )
 });
 
 router.get('/view/:id', (req, res, next) => {

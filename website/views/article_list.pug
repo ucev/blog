@@ -11,7 +11,7 @@ block body-block
         span.article-item-li-pageview 阅读量(#{itemData.pageview})
         span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
   mixin article_category(itemData)
-    li.category-item-li
+    li.article-category-item-li
       a(href='#') #{itemData.name}
   div.main#articles-div
     block body-article-block
@@ -23,7 +23,10 @@ block body-block
         include page_foot_pager_nav
     block article-left-side-block
       aside#article-left-sidebar
-        img#article-category-img(src='/images/icons/ic_toc_grey_24dp_2x.png' data-state='hide')
+        div#article-category-title-div
+          img#article-category-img(src='/images/icons/ic_toc_grey_24dp_2x.png' data-state='hide')
+          span#article-category-title-span 
+            a(href='/articles/category') 文章类别
         ul#article-categories-ul.article-categories-ul-hide
           each category in categories
             +article_category(category)

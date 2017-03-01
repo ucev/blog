@@ -58,32 +58,42 @@ body {
 }
 
 #website-search-div > * {
-  display: inline-blox;
+  display: inline-block;
   vertical-align: middle;
-}
-
-#website-search-input {
-  height: 100%;
-  width: 0px;
-  padding: 0;
-  margin: 0;
-  outline: none;
-  border: none;
-  color: white;
-  background: none;
-  border-bottom: 2px solid white;
-  transition: width 1s linear;
-  -moz-transition: width 1s linear;
-  -webkit-transition: width 1s linear;
 }
 
 #website-search-img {
   height: 25px;
 }
 
+#website-search-input-div {
+  width: 0;
+  height: 30px;
+  border-bottom: 2px solid white;
+  transition: width 0.5s linear;
+  -moz-transition: width 0.5s linear;
+  -webkit-transition: width 0.5s linear;
+}
+
+#website-search-input-div > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#website-search-input {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  border: none;
+  color: white;
+  background: none;
+}
+
 #website-hide-input-img {
-  position: relative;
-  left: -25px;
+  position: absolute;
+  right: 0;
   height: 25px;
 }
 
@@ -125,12 +135,32 @@ footer {
 #article-left-sidebar {
   -moz-box-ordinal-group: 1;
   padding-left: 30px;
-  width: 100px;
   overflow: hidden;
+}
+
+#article-category-title-div {
+  width: 150px;
+}
+
+#article-category-title-div > * {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 #article-category-img {
   width: 30px;
+}
+
+#article-category-title-span {
+  display: none;
+  width: 70px;
+  font-size: 16px;
+  color: #9E9E9E;
+}
+
+#article-category-title-span a {
+  color: inherit;
+  text-decoration: none;
 }
 
 #article-categories-ul {
@@ -154,14 +184,14 @@ footer {
   width: 200px;
 }
 
-.category-item-li {
+.article-category-item-li {
   height: 30px;
   padding-left: 10px;
   line-height: 30px;
   border-bottom: 1px solid #EEEEEE;
 }
 
-.category-item-li a {
+.article-category-item-li a {
   color: #607D8B;
   text-decoration: none;
 }
@@ -321,3 +351,25 @@ footer {
   text-decoration: none;
   color: #4CAF50;
 }
+
+#categories-list-ul {
+  width: 70%;
+  margin-left: 15%;
+  list-style-type: none;
+}
+
+.category-item-li {
+  padding: 20px 10px;
+  border-bottom: 1px solid #E0E0E0;;
+}
+
+.category-item-title-div {
+  height: 40px;
+}
+
+.category-item-title-div a {
+  font-size: 30px;
+  color: #424242;
+  text-decoration: none;
+}
+

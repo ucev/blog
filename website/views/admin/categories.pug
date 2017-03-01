@@ -144,6 +144,7 @@ block main-body-block
             <th className = 'category-row-name-label'>名称</th>
             <th className = 'category-row-parent-label'>父节点</th>
             <th className = 'category-row-descp-label'>描述</th>
+            <th className = 'category-row-preface-art-label'>序言</th>
             <th className = 'category-row-articlecnt-label'>文章数</th>
             <th className = 'content-row-operation-label category-row-operation-label'>操作</th>
           </tr>
@@ -158,6 +159,7 @@ block main-body-block
           <ul className='article-operation-ul' data-id = {this.props.category.id}>
             <li data-type = 'modify' onClick = {this.categoryOperationClick}>修改</li>
             <li data-type='delete' onClick = {this.categoryOperationClick}>删除</li>
+            <li data-type='preface' onClick = {this.categoryOperationClick}>设置序言</li>
           </ul>
         );
       }
@@ -178,6 +180,7 @@ block main-body-block
             <td className = 'category-row-name-data'>{category.name}</td>
             <td className = 'category-row-parent-data'>{category.parent}</td>
             <td className = 'category-row-descp-data'>{category.descp}</td>
+            <td className = 'category-row-preface-art-data'></td>
             <td className = 'category-row-articlecnt-data'>{category.articlecnt}</td>
             <td className = 'content-row-operation-data'>{this.operationUl}</td>
           </tr>
