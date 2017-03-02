@@ -184,6 +184,19 @@ router.get('/categories/get', (req, res, next) => {
   )
 });
 
+router.get('/categories/tree', (req, res, next) => {
+  var id = req.query.id;
+  __categories.getTree(
+    id,
+    (tree) => {
+      res.json({code: 0, msg: '获取成功', data: tree});
+    },
+    () => {
+      res.json({code: 0, msg: '获取失败', data: []});
+    }
+  )
+})
+
 router.get('/labels/get', (req, res, next) => {
   __labels.get(
     (r) => {

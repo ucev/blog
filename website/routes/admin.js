@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const enterControl = require('./entercontrol');
+const __log = require('../utils/log');
 const md = require('markdown-it')({
   html: true,
   linkify: true,
@@ -9,6 +10,8 @@ const md = require('markdown-it')({
 
 const Articles = require('../class/article.db');
 const __articles = new Articles();
+const Categories = require('../class/category.db');
+const __categories = new Categories();
 const Labels = require('../class/label.db');
 const __labels = new Labels();
 const FluxRecord = require('../class/fluxrecord');
@@ -44,6 +47,13 @@ router.get('/categories', (req, res, next) => {
     avatar: req.session.avatar
   })
 });
+
+router.get('/categories/refact/:id', (req, res, next) => {
+  res.render('admin/category_refact', {
+    title: '文档整理',
+    avatar: req.session.avatar,
+  })
+})
 
 router.get('/articles/add', (req, res, next) => {
   function response(labels) {

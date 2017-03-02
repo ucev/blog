@@ -1,11 +1,13 @@
 const mysql = require('mysql');
 const configs = require('../config/base.config.js');
+const __log = require('../utils/log');
 
 // articlecnt is not set
 
 class Categories {
   constructor() {
     this.dbname = 'categories';
+    this.tb_article = 'articles';
     this.dbconfig = configs.database_config;
   }
 
@@ -96,6 +98,85 @@ class Categories {
       succ(results);
     }).catch(() => {
       fail();
+    }).finally(() => {
+      conn.end((err) => {});
+    })
+  }
+
+  __getTreeArticle(id, conn) {
+    __log.debug('__getTreeArticle');
+    return new Promise((resolve, reject) => {
+      conn.query(`select * from ${this.tb_article} where category = ?`, [id], (err, results, fields) => {
+        if (err) {
+          __log.debug(JSON.stringify(err));
+          resolve([]);
+        }
+        var arts = results.map((art) => {
+          return {title: art.title, id: art.id, seq: art.suborder, type: 'art'}
+        })
+        __log.debug('arts: ' + JSON.stringify(arts));
+        resolve(arts);
+      })
+    })
+  }
+
+  __getTreeDir(id, conn) {
+    __log.debug('__getTreeDir');
+    return new Promise((resolve, reject) => {
+      conn.query(`select * from ${this.dbname} where parent = ?`, [id], (err, results, fields) => {
+        if (err) {
+          __log.debug(JSON.stringify(err));
+          resolve([]);
+        }
+        var dirs = results.map((dir) => {
+          return {title: dir.name, id: dir.id, seq: dir.suborder, type: 'dir'}
+        })
+        __log.debug('dirs: ' + JSON.stringify(dirs));
+        resolve(dirs);
+      })
+    })
+  }
+
+  __getTree(dir, conn) {
+    __log.debug('__getTree');
+    var tdir = this.__getTreeDir(dir.id, conn);
+    var tart = this.__getTreeArticle(dir.id, conn);
+    var _tree = Promise.all([tdir, tart]);
+    return _tree.then(([dirs, arts] = datas) => {
+      dir.childs = Array.from([...dirs, ...arts]).sort((a, b) => {
+        return a.suborder > b.suborder;
+      })
+      __log.debug(JSON.stringify(dir));
+      var subdirs = dirs.map((d) => {
+        return this.__getTree(d, conn);
+      })
+      return Promise.all(subdirs);
+    })
+  }
+
+  getTree(id, succ, fail) {
+    __log.debug('getTree');
+    var cats;
+    var conn = mysql.createConnection(this.dbconfig);
+    var tree = new Promise((resolve, reject) => {
+      conn.query(`select * from ${this.dbname} where id = ?`, [id], (err, results, fields) => {
+        if (err) {__log.debug(JSON.stringify(err));reject();};
+        var dir = results[0];
+        var root = {title: dir.name, id: dir.id, seq: dir.suborder, type: 'dir'};
+        resolve(root);
+      })
+    })
+    tree.then((dir) => {
+      cats = dir;
+      __log.debug(JSON.stringify(dir));
+      return this.__getTree(dir, conn);
+    }).then((datas) => {
+      __log.debug('succ');
+      succ([cats]);
+    }).catch((err) => {
+      console.log(err);
+      __log.debug('fail');
+      fail([]);
     }).finally(() => {
       conn.end((err) => {});
     })

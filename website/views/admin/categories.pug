@@ -158,12 +158,6 @@ block main-body-block
         this.categoryOperationClick = this.categoryOperationClick.bind(this);
         this.categoryOrderChange = this.categoryOrderChange.bind(this);
         this.categoryOrderKeyDown = this.categoryOrderKeyDown.bind(this);
-        this.operationUl = (
-          <ul className='article-operation-ul' data-id = {this.props.category.id}>
-            <li data-type = 'modify' onClick = {this.categoryOperationClick}>修改</li>
-            <li data-type='delete' onClick = {this.categoryOperationClick}>删除</li>
-          </ul>
-        );
       }
       categoryOperationClick(e) {
         var type = e.target.getAttribute('data-type');
@@ -188,6 +182,13 @@ block main-body-block
       }
       render() {
         var category = this.props.category;
+        var operationUl = (
+          <ul className='article-operation-ul' data-id = {this.props.category.id}>
+            <li data-type = 'modify' onClick = {this.categoryOperationClick}>修改</li>
+            <li data-type='delete' onClick = {this.categoryOperationClick}>删除</li>
+            <li data-type='refact'><a href = {'/admin/categories/refact/' + category.id}>重构</a></li>
+          </ul>
+        );
         return (
           <tr className = 'content-row-data category-row-data'>
             <td className = 'category-row-index-data'>{category.id}</td>
@@ -196,7 +197,7 @@ block main-body-block
             <td className = 'category-row-descp-data'>{category.descp}</td>
             <td className = 'category-row-order-data'><input type='number' value={category.mainorder} onChange = {this.categoryOrderChange} onKeyDown = {this.categoryOrderKeyDown} /></td>
             <td className = 'category-row-articlecnt-data'>{category.articlecnt}</td>
-            <td className = 'content-row-operation-data'>{this.operationUl}</td>
+            <td className = 'content-row-operation-data'>{operationUl}</td>
           </tr>
         );
       }

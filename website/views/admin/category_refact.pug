@@ -1,0 +1,177 @@
+extends base_layout
+
+block main-body-block
+  div.main#reform-area
+  script(type='text/babel').
+    class DetailArea extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        return (
+          <div>DETAIL AREA</div>
+        );
+      }
+    }
+    class ArticleItemLi extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        var article = this.props.article;
+        return <li className = 'category-tree-article-li'>{article.title}</li>
+      }
+    }
+    class CategoryItemLi extends React.Component {
+      constructor(props) {
+        super(props);
+        this.categoryState = {
+          expand: 'expand',
+          collapse: 'collapse'
+        }
+        this.handleCategoryClick = this.handleCategoryClick.bind(this);
+      }
+      handleCategoryClick(e) {
+        var target = e.target;
+        var stat = target.getAttribute('data-state');
+        if (stat == this.categoryState.expand) {
+          target.setAttribute('data-state', this.categoryState.collapse);
+          target.nextSibling.style.display = 'none';
+        } else {
+          target.setAttribute('data-state', this.categoryState.expand);
+          target.nextSibling.style.display = 'block';
+        }
+      }
+      render() {
+        var category = this.props.category;
+        var content = category.childs.map((child) => {
+          if (child.type == 'art') {
+            return <ArticleItemLi article = {child} />
+          } else {
+            return <CategoryItemLi category = {child} />
+          }
+        })
+        return (
+          <li className = 'category-tree-category-li'>
+            <span className = 'category-tree-category-title' date-state = {this.categoryState.expand} onClick = {this.handleCategoryClick}>{category.title}</span>
+            <ul className = 'category-tree-category-ul'>
+              {content}
+            </ul>
+          </li>
+        )
+      }
+    }
+    class CategoryTree extends React.Component {
+      constructor(props) {
+        super(props);
+      }
+      render() {
+        var tree = this.props.tree;
+        if (tree.length) {
+          return (
+            <ul className = 'category-tree-category-ul'>
+              <CategoryItemLi category = {this.props.tree[0]} />
+            </ul>
+          );
+        } else {
+          return <div>EMPTY</div>
+        }
+      }
+    }
+    class ReformArea extends React.Component {
+      constructor(props) {
+        super(props);
+        var cid = Number(location.pathname.match(/\/admin\/categories\/refact\/(\d+)/)[1]);
+        this.state = {
+          cid: cid,
+          tree: []
+        }
+        this.getCategoryTree = this.getCategoryTree.bind(this);
+        this.getCategoryTree();
+      }
+      getCategoryTree() {
+        var that = this;
+        var cid = this.state.cid;
+        fetch('/admin/datas/categories/tree', {
+          data: {id: cid},
+          type: 'get',
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              that.setState({
+                tree: dt.data
+              })
+            }
+          }
+        })
+      }
+      render() {
+        return (
+          <div>
+            <CategoryTree tree = {this.state.tree}/>
+            <DetailArea />
+          </div>
+        )
+      }
+    }
+    ReactDOM.render(
+      <ReformArea />,
+      document.getElementById('reform-area')
+    );
+      function fetch(url, {
+          data = {}, 
+          type = 'get', 
+          dataType = 'text', 
+          success = function(){}, 
+          error = function(){console.log('err');}, 
+          complete = function(){}}) {
+        function urlParamsEncode(obj) {
+          var param = '';
+          for (let key in obj) {
+            param += (encodeURIComponent(key) + "=" + encodeURIComponent(obj[key]) + '&');
+          }
+          return param.substring(0, param.length - 1);
+        }
+        var xhr = new XMLHttpRequest();
+        if (xhr == null) return;
+        if (type == 'get') {
+          var params = urlParamsEncode(data);
+          if (!url.endsWith('?')) url += '?';
+          url += params;
+        }
+        xhr.open(type, url);
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4) {
+            complete();
+            if (xhr.status == 200) {
+              switch (dataType) {
+                case 'json':
+                  success(JSON.parse(xhr.responseText));
+                  break;
+                case 'xml':
+                  success(xhr.responseXML);
+                  break;
+                case 'text':
+                default:
+                  success(xhr.responseText);
+                  break;
+              }
+            } else {
+              // 此处没有参数
+              error();
+            }
+          }
+        };
+        if (type == 'post') {
+          if (data instanceof FormData) {
+            //xhr.setRequestHeader('content-type', 'multipart/form-data');
+            xhr.send(data);
+          } else {
+            var params = urlParamsEncode(data);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send(params);
+          }
+        } else {
+          xhr.send();
+        }
+      }

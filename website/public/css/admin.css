@@ -233,6 +233,11 @@ td {
   cursor: pointer;
 }
 
+.article-operation-ul li a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
 #display-area {
   padding: 30px;
 }
@@ -724,6 +729,10 @@ td {
   background: none;
 }
 
+.category-row-order-data input:hover {
+  background-color: #E0E0E0;
+}
+
 .del-category-dialog,
 .del-article-dialog,
 .move-category-dialog {
@@ -831,4 +840,29 @@ td {
   margin-left: 10%;
   margin-top: 40px;
   margin-bottom: 50px;
+}
+
+.category-tree-category-ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.category-tree-category-li {
+  font-size: 20px;
+  padding-left: 20px;
+}
+
+.category-tree-category-title {
+  display: block;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  background-color: brown;
+}
+
+.category-tree-article-li {
+  height: 25px;
+  line-height: 25px;
+  padding-left: 20px;
+  background-color: green;
 }
