@@ -42,10 +42,20 @@ router.get('/labels', (req, res, next) => {
 });
 
 router.get('/categories', (req, res, next) => {
-  res.render('admin/categories', {
-    title: '类别管理',
-    avatar: req.session.avatar
-  })
+  function responde(dt) {
+    res.render('admin/categories', {
+      title: '类别管理',
+      avatar: req.session.avatar
+    })
+  }
+  __categories.get(
+    (dt) => {
+      responde(dt);
+    },
+    () => {
+      responde([]);
+    }
+  )
 });
 
 router.get('/categories/refact/:id', (req, res, next) => {
@@ -114,7 +124,9 @@ router.get('/articles/modify', (req, res, next) => {
     res.redirect('/admin');
   } else {
     __articles.getsingle(
-      {id: id, client: true},
+      {
+        id: id
+      },
       (article) => {
         __labels.getNames(
           (labels) => {response(article, labels);},

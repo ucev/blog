@@ -23,6 +23,23 @@ function emptyString(str) {
   return (str === '' || str === '-1') ? '' : str;
 }
 
+function getCategoryRefactItemDetail(res, id, type, typeid) {
+  __articles.getsingle(
+    {
+      id: id,
+      queryfields: ['id', 'title', 'descp', 'suborder']
+    },
+    (art) => {
+      art.type = type;
+      art.typeid = typeid;
+      res.json({code: 0, msg: '请求成功', data: art});
+    },
+    () => {
+      res.json({code: 1, msg: '请求失败'})
+    }
+  );
+}
+
 router.post('/articles/delete', (req, res, next) => {
   var id = strToNum(req.body.id);
   __articles.delete(
@@ -40,7 +57,10 @@ router.get('/articles/get', (req, res, next) => {
   if (req.query.id != undefined) {
     const id = req.query.id;
     __articles.getsingle(
-      {id: id},
+      {
+        id: id,
+        queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
+      },
       function(r) {
         res.json({code: 0, msg: '请求成功', data: r});
       }, 
@@ -80,6 +100,23 @@ router.get('/articles/move', (req, res, next) => {
   var gid = req.query.gid;
   __articles.move(
     ids, gid,
+    () => {
+      res.json({code: 0, msg: '更新成功'});
+    },
+    () => {
+      res.json({code: 1, msg: '更新失败'});
+    }
+  )
+})
+
+router.get('/articles/order', (req, res, next) => {
+  var id = req.query.id;
+  var ord = req.query.order;
+  __articles.updateOrder(
+    {
+      id: id,
+      ord: ord
+    },
     () => {
       res.json({code: 0, msg: '更新成功'});
     },
@@ -183,6 +220,32 @@ router.get('/categories/get', (req, res, next) => {
     }
   )
 });
+
+router.get('/categories/preface', (req, res, next) => {
+  var category = req.query.category;
+  var preface = req.query.preface;
+  var isSet = req.query.isSet;
+})
+
+router.get('/categories/refact/get', (req, res, next) => {
+  var type = req.query.type;
+  var id = req.query.id;
+  if (type == 'dir') {
+    __categories.getById(
+      {
+        id: id
+      },
+      (cat) => {
+        getCategoryRefactItemDetail(res, cat.id, type, id);
+      },
+      () => {
+        res.json({code: 1, msg: '获取失败'});
+      }
+    )
+  } else {
+    getCategoryRefactItemDetail(res, id, type, id);
+  }
+})
 
 router.get('/categories/tree', (req, res, next) => {
   var id = req.query.id;

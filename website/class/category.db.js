@@ -103,10 +103,28 @@ class Categories {
     })
   }
 
+  getById({id, queryfields} = {}, succ, fail) {
+    queryfields = queryfields ? queryfields : ['*'];
+    var conn = mysql.createConnection(this.dbconfig);
+    var get = new Promise((resolve, reject) => {
+      conn.query(`select ?? from ${this.dbname} where id = ?`, [queryfields, id], (err, results, fields) => {
+        if (err || results.length == 0) {throw err;reject();}
+        resolve(results[0]);
+      })
+    })
+    get.then((cat) => {
+      succ(cat);
+    }).catch((err) => {
+      __log.debug('fail');
+      __log.debug(err);
+      fail();
+    })
+  }
+
   __getTreeArticle(id, conn) {
     __log.debug('__getTreeArticle');
     return new Promise((resolve, reject) => {
-      conn.query(`select * from ${this.tb_article} where category = ?`, [id], (err, results, fields) => {
+      conn.query(`select * from ${this.tb_article} where category = ? order by suborder`, [id], (err, results, fields) => {
         if (err) {
           __log.debug(JSON.stringify(err));
           resolve([]);
@@ -137,7 +155,7 @@ class Categories {
     })
   }
 
-  __getTree(dir, conn) {
+  __getTree(dir, conn, ids) {
     __log.debug('__getTree');
     var tdir = this.__getTreeDir(dir.id, conn);
     var tart = this.__getTreeArticle(dir.id, conn);
@@ -148,7 +166,11 @@ class Categories {
       })
       __log.debug(JSON.stringify(dir));
       var subdirs = dirs.map((d) => {
-        return this.__getTree(d, conn);
+        var id = d.id;
+        if (!ids.includes(id)) {
+          ids.push(id);
+          return this.__getTree(d, conn, ids);
+        }
       })
       return Promise.all(subdirs);
     })
@@ -157,6 +179,7 @@ class Categories {
   getTree(id, succ, fail) {
     __log.debug('getTree');
     var cats;
+    var idGets = [];
     var conn = mysql.createConnection(this.dbconfig);
     var tree = new Promise((resolve, reject) => {
       conn.query(`select * from ${this.dbname} where id = ?`, [id], (err, results, fields) => {
@@ -168,8 +191,9 @@ class Categories {
     })
     tree.then((dir) => {
       cats = dir;
+      idGets.push(dir.id);
       __log.debug(JSON.stringify(dir));
-      return this.__getTree(dir, conn);
+      return this.__getTree(dir, conn, idGets);
     }).then((datas) => {
       __log.debug('succ');
       succ([cats]);
@@ -180,6 +204,10 @@ class Categories {
     }).finally(() => {
       conn.end((err) => {});
     })
+  }
+
+  setPreface({id, preface, isSet}, succ, fail) {
+    
   }
 
   update({id, data={}} = {}, succ, fail) {

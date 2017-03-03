@@ -95,8 +95,8 @@ class Articles {
     })
   }
 
-  getsingle({id = 0, client = false} = {}, succ, fail) {
-    var queryfields = client ? ['*'] : ['id', 'title', 'category', 'label', 'state', 'top', 'pageview'];
+  getsingle({id = 0, queryfields} = {}, succ, fail) {
+    queryfields = queryfields ? queryfields : ['*'];
     var conn = mysql.createConnection(this.dbconfig);
     var query = new Promise((resolve, reject) => {
       conn.query(`select ?? from ${this.dbname} where id = ?`, [queryfields, id], (err, results, fields) => {
@@ -238,6 +238,21 @@ class Articles {
       conn.end((err) => {
 
       })
+    })
+  }
+
+  updateOrder({id, ord}, succ, fail) {
+    var conn = mysql.createConnection(this.dbconfig);
+    var order = new Promise((resolve, reject) => {
+      conn.query(`update ${this.dbname} set suborder = ? where id = ?`, [ord, id], (err, results, fields) => {
+        if (err) {throw err; reject();}
+        resolve();
+      })
+    })
+    order.then(() => {
+      succ();
+    }).catch((err) => {
+      fail();
     })
   }
 
