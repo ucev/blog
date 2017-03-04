@@ -73,6 +73,7 @@ router.get('/view/:id', (req, res, next) => {
           title: article.title,
           websiteInfo: configs.website_info,
           md: __markdown.render(article.content),
+          aid: id,
           debug: configs.website_info.debug
         }
       )
