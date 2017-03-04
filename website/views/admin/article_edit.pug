@@ -151,7 +151,7 @@ block main-body-block
           dataType: "json",
           success: (res) => {
             if (res.code == 0) {
-              location.href = '/articles';
+              location.href = '/admin/articles';
             } else {
               alert(res.msg);
               $('#submit').click(submitArticle);
