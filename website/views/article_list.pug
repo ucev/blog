@@ -12,7 +12,7 @@ block body-block
         span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
   mixin article_category(itemData)
     li.article-category-item-li
-      a(href='#') #{itemData.name}
+      a(href = '/articles/category/' + itemData.id) #{itemData.name}
   div.main#articles-div
     block body-article-block
       div#articles-list-div

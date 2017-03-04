@@ -1,0 +1,25 @@
+extends base_layout
+
+block body-block
+  include website_banner
+  mixin categoryListArticleItem(data, depth)
+    li.category-tree-article-li(style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+  mixin categoryListCategoryItem(data, depth)
+    li.category-tree-category-li
+      div.category-tree-category-title-div
+        span.category-tree-category-title(style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+      ul.category-tree-category-ul
+        each item in data.childs
+          if item.type == 'dir'
+            +categoryListCategoryItem(item, depth + 1)
+          else
+            +categoryListArticleItem(item, depth + 1)
+  div.main
+    div#category-content-area
+      block category-list-block
+        div#category-tree-area
+          ul.category-tree-category-ul
+            +categoryListCategoryItem(tree, 0)
+      block category-article-block
+        div#category-article-area
+          div.markdown-display#category-article-div !{content}

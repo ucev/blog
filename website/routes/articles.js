@@ -46,6 +46,59 @@ function __searchStyleTitle(title, args) {
   return title.replace(new RegExp('(' + args + ')'), '<strong>$1</strong>')
 }
 
+router.get('/category/:cid', (req, res, next) => {
+  var cid = req.params.cid;
+  __categories.getById(
+    {
+      id: cid,
+      queryfields: ['preface']
+    },
+    (data) => {
+      __log.debug('preposition ' + JSON.stringify(data));
+      res.redirect(`/articles/category/${cid}/${data.preface}`);
+    },
+    () => {
+      res.redirect('/articles/category/${cid}/0');
+    }
+  )
+})
+
+router.get('/category/:cid/:id', (req, res, next) => {
+  var cid = req.params.cid;
+  var aid = req.params.id;
+  function responde(tree, article) {
+    var content = __markdown.render(article.content ? article.content : '');
+    res.render('category', {
+      title: article.title ? article.title : (tree.title ? tree.title : '未知类别'),
+      websiteInfo: configs.website_info,
+      tree: tree,
+      content: content,
+      articleid: aid
+    })
+  }
+  __categories.getTree(
+    cid,
+    (tree) => {
+      tree = tree[0];
+      __articles.getsingle(
+        {
+          id: aid,
+          queryfields: ['title', 'content']
+        },
+        (art) => {
+          responde(tree, art);
+        },
+        () => {
+          responde(tree, {});
+        }
+      )
+    },
+    () => {
+      responde({}, {});
+    }
+  )
+})
+
 router.get('/category', (req, res, next) => {
   function responde(cats) {
     res.render('category_list', {

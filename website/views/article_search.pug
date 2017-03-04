@@ -19,7 +19,7 @@ block body-block
       div.article-item-li-bottom-info
         span.article-item-li-pageview 阅读量(#{itemData.pageview})
         span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
-  div.main#articles-list
+  div.main#articles-list-div
     block body-article-block
       div#article-search-hint-div
         div#hint-param-article-search-div 查找结果
