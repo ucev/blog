@@ -13,6 +13,8 @@ const __photos = new Photos();
 const PhotoGroups = require('../class/photogroup.db');
 const __photogroups = new PhotoGroups();
 
+const __log = require('../utils/log');
+
 function strToNum(str) {
   var a = Number(str);
   return isNaN(a) ? 0 : a;
@@ -23,7 +25,7 @@ function emptyString(str) {
   return (str === '' || str === '-1') ? '' : str;
 }
 
-function getCategoryRefactItemDetail(res, id, type, typeid) {
+function getCategoryRefactItemDetail(res, id, type) {
   __articles.getsingle(
     {
       id: id,
@@ -31,7 +33,6 @@ function getCategoryRefactItemDetail(res, id, type, typeid) {
     },
     (art) => {
       art.type = type;
-      art.typeid = typeid;
       res.json({code: 0, msg: '请求成功', data: art});
     },
     () => {
@@ -224,7 +225,21 @@ router.get('/categories/get', (req, res, next) => {
 router.get('/categories/preface', (req, res, next) => {
   var category = req.query.category;
   var preface = req.query.preface;
-  var isSet = req.query.isSet;
+  var isSet = req.query.isSet === 'true';
+  __log.debug(req.query);
+  __categories.setPreface(
+    {
+      id: category,
+      preface: preface,
+      isSet: isSet
+    },
+    () => {
+      res.json({code: 0, msg: '更新成功'});
+    },
+    () => {
+      res.json({code: 1, msg: '更新失败'})
+    }
+  )
 })
 
 router.get('/categories/refact/get', (req, res, next) => {
@@ -236,14 +251,14 @@ router.get('/categories/refact/get', (req, res, next) => {
         id: id
       },
       (cat) => {
-        getCategoryRefactItemDetail(res, cat.id, type, id);
+        getCategoryRefactItemDetail(res, cat.preface, type);
       },
       () => {
         res.json({code: 1, msg: '获取失败'});
       }
     )
   } else {
-    getCategoryRefactItemDetail(res, id, type, id);
+    getCategoryRefactItemDetail(res, id, type);
   }
 })
 
@@ -252,6 +267,7 @@ router.get('/categories/tree', (req, res, next) => {
   __categories.getTree(
     id,
     (tree) => {
+      __log.debug(JSON.stringify(tree));
       res.json({code: 0, msg: '获取成功', data: tree});
     },
     () => {

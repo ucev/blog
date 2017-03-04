@@ -64,7 +64,7 @@ block main-body-block
       }
       onItemClicked (e) {
         var article = this.props.article;
-        this.props.click('art', article.id);
+        this.props.click('art', article.id, this.props.cid);
       }
       render() {
         var depth = this.props.depth;
@@ -72,29 +72,26 @@ block main-body-block
           'padding-left': (depth * 20 + 20) + 'px'
         }
         var article = this.props.article;
-        return <li className = 'category-tree-article-li' style = {styles} onClick = {this.onItemClicked} >{article.title}</li>
+        var articleClass = 'category-tree-article-li';
+        if (article.id == this.props.articleId) {
+          articleClass += ' category-tree-article-li-current';
+        }
+        return <li className = {articleClass} style = {styles} onClick = {this.onItemClicked} >{article.title}</li>
       }
     }
     class CategoryItemLi extends React.Component {
       constructor(props) {
         super(props);
-        this.categoryState = {
-          expand: 'expand',
-          collapse: 'collapse'
-        }
+        this.expandChange = this.expandChange.bind(this);
         this.handleCategoryClick = this.handleCategoryClick.bind(this);
       }
       handleCategoryClick(e) {
         var target = e.target;
-        var stat = target.getAttribute('data-state');
-        if (stat == this.categoryState.expand) {
-          target.setAttribute('data-state', this.categoryState.collapse);
-          target.nextSibling.style.display = 'none';
-        } else {
-          target.setAttribute('data-state', this.categoryState.expand);
-          target.nextSibling.style.display = 'block';
-        }
-        this.props.click('dir', this.props.category.id);
+        this.props.click('dir', this.props.category.id, this.props.category.id);
+      }
+      expandChange(e) {
+        this.props.expandChange(this.props.category.id);
+        e.stopPropagation();
       }
       render() {
         var depth = this.props.depth;
@@ -104,15 +101,28 @@ block main-body-block
         var category = this.props.category;
         var content = category.childs.map((child) => {
           if (child.type == 'art') {
-            return <ArticleItemLi article = {child} depth = {depth + 1} click = {this.props.click} />
+            return <ArticleItemLi article = {child} cid = {category.id} articleId = {this.props.articleId} depth = {depth + 1} click = {this.props.click} />
           } else {
-            return <CategoryItemLi category = {child} depth = {depth + 1} click = {this.props.click}/>
+            return <CategoryItemLi category = {child}  categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {depth + 1} click = {this.props.click} expandChange = {this.props.expandChange} />
           }
         })
+        var titleClass = 'category-tree-category-title';
+        if (category.id == this.props.categoryId) {
+          titleClass += ' category-tree-category-title-current';
+        }
+        var articlesUlStyle = {};
+        var titleImage = '/images/icons/ic_expand_more_white_24dp_2x.png';
+        if (this.props.cstate[category.id] === false) {
+          articlesUlStyle.display = 'none';
+          titleImage = '/images/icons/ic_expand_less_white_24dp_2x.png';
+        }
         return (
           <li className = 'category-tree-category-li'>
-            <span className = 'category-tree-category-title' date-state = {this.categoryState.expand} onClick = {this.handleCategoryClick} style = {styles}>{category.title}</span>
-            <ul className = 'category-tree-category-ul'>
+            <div className = 'category-tree-category-title-div'>
+              <span className = {titleClass} onClick = {this.handleCategoryClick} style = {styles}>{category.title}</span>
+              <img className = 'category-tree-category-title-img' src = {titleImage} onClick = {this.expandChange}></img>
+            </div>
+            <ul className = 'category-tree-category-ul' style = {articlesUlStyle}>
               {content}
             </ul>
           </li>
@@ -129,7 +139,7 @@ block main-body-block
           return (
             <div id = 'refact-tree-area'>
               <ul className = 'category-tree-category-ul'>
-                <CategoryItemLi category = {this.props.tree[0]} depth = {0} click = {this.props.click} />
+                <CategoryItemLi category = {this.props.tree[0]} categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {0} click = {this.props.click} expandChange = {this.props.expandChange} />
               </ul>
             </div>
           );
@@ -145,10 +155,14 @@ block main-body-block
         this.state = {
           cid: cid,
           tree: [],
-          detail: {}
+          detail: {},
+          category: -1,
+          article: -1,
+          cstate: {}  //categoryExpandState
         }
         this.articleOrderChange = this.articleOrderChange.bind(this);
         this.categoryPrefaceChange = this.categoryPrefaceChange.bind(this);
+        this.categoryExpandChange = this.categoryExpandChange.bind(this);
         this.__getReactDetail = this.__getReactDetail.bind(this);
         this.getReactDetail = this.getReactDetail.bind(this);
         this.getCategoryTree = this.getCategoryTree.bind(this);
@@ -163,7 +177,6 @@ block main-body-block
             type: 'get',
             dataType: 'json',
             success: function(dt) {
-              console.log(JSON.stringify(dt));
               if (dt.code == 0) {
                 that.getCategoryTree();
               }
@@ -180,11 +193,8 @@ block main-body-block
       categoryPrefaceChange(id, isSet = true) {
         var that = this;
         var detail = this.state.detail;
-        if (detail.type != 'dir') {
-          return;
-        }
         var data = {
-          category: detail.typeid,
+          category: this.state.category,
           preface: id,
           isSet: isSet
         }
@@ -193,11 +203,17 @@ block main-body-block
           type: 'get',
           dataType: 'json',
           success: function(dt) {
-            console.log(JSON.stringify(dt));
             if (dt.code == 0) {
               that.getCategoryTree();
             }
           }
+        })
+      }
+      categoryExpandChange(id) {
+        var cstate = this.state.cstate;
+        cstate[id] = cstate[id] === false;
+        this.setState({
+          cstate: cstate
         })
       }
       getCategoryTree() {
@@ -211,13 +227,18 @@ block main-body-block
             if (dt.code == 0) {
               var data = dt.data;
               var root = data[0];
+              var tid = that.state.category == -1 ? root.id : that.state.category;
+              that.setState({
+                tree: data
+              })
               that.__getReactDetail(
-                root.type,
-                root.id,
-                function(dt) {
+                'dir',
+                tid,
+                function(dt1) {
+                  var detail = dt1.code == 0 ? dt1.data : {};
                   that.setState({
-                    tree: data,
-                    detail: dt
+                    detail: detail,
+                    category: tid,
                   })
                 }
               )
@@ -225,31 +246,33 @@ block main-body-block
           }
         })
       }
-      getReactDetail(type, id) {
+      getReactDetail(type, id, cid) {
         var that = this;
+        cid = type == 'dir' ? id : cid;
         this.__getReactDetail(type, id, function(dt) {
+          var detail = dt.code == 0 ? dt.data : {};
+          var aid = (type === 'art' && detail.id) ? detail.id : -1;
           that.setState({
-            detail: dt
+            detail: detail,
+            category: cid,
+            article: aid
           })
         });
       }
       __getReactDetail(type, id, cb) {
-        console.log('__getReactDetail  id: ' + id + ', type: ' + type);
         fetch('/admin/datas/categories/refact/get', {
           data: {type: type, id: id},
           type: 'get',
           dataType: 'json',
           success: function(dt) {
-            if (dt.code == 0) {
-              cb(dt.data);
-            }
+            cb(dt);
           }
         })
       }
       render() {
         return (
           <div id = 'refact-area'>
-            <CategoryTree tree = {this.state.tree} click = {this.getReactDetail} />
+            <CategoryTree tree = {this.state.tree} category = {this.state.category} categoryId = {this.state.category} articleId = {this.state.article} cstate = {this.state.cstate} click = {this.getReactDetail} expandChange = {this.categoryExpandChange} />
             <DetailArea data = {this.state.detail} orderChange = {this.articleOrderChange} prefaceChange = {this.categoryPrefaceChange} />
           </div>
         )

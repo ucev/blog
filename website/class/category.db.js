@@ -122,54 +122,54 @@ class Categories {
   }
 
   __getTreeArticle(id, conn) {
-    __log.debug('__getTreeArticle');
     return new Promise((resolve, reject) => {
       conn.query(`select * from ${this.tb_article} where category = ? order by suborder`, [id], (err, results, fields) => {
         if (err) {
-          __log.debug(JSON.stringify(err));
+          throw err;
           resolve([]);
         }
         var arts = results.map((art) => {
           return {title: art.title, id: art.id, seq: art.suborder, type: 'art'}
         })
-        __log.debug('arts: ' + JSON.stringify(arts));
         resolve(arts);
       })
     })
   }
 
   __getTreeDir(id, conn) {
-    __log.debug('__getTreeDir');
     return new Promise((resolve, reject) => {
       conn.query(`select * from ${this.dbname} where parent = ?`, [id], (err, results, fields) => {
         if (err) {
-          __log.debug(JSON.stringify(err));
+          throw err;
           resolve([]);
         }
         var dirs = results.map((dir) => {
-          return {title: dir.name, id: dir.id, seq: dir.suborder, type: 'dir'}
+          return {title: dir.name, id: dir.id, seq: dir.suborder, preface: dir.preface, type: 'dir'}
         })
-        __log.debug('dirs: ' + JSON.stringify(dirs));
         resolve(dirs);
       })
     })
   }
 
-  __getTree(dir, conn, ids) {
-    __log.debug('__getTree');
+  __getTree(dir, conn, ids, prefaces) {
     var tdir = this.__getTreeDir(dir.id, conn);
     var tart = this.__getTreeArticle(dir.id, conn);
     var _tree = Promise.all([tdir, tart]);
+    __log.debug('prefaces: ' + JSON.stringify(prefaces));
     return _tree.then(([dirs, arts] = datas) => {
+      arts = arts.filter((art) => {
+        return !prefaces.has(art.id);
+      })
       dir.childs = Array.from([...dirs, ...arts]).sort((a, b) => {
         return a.suborder > b.suborder;
       })
-      __log.debug(JSON.stringify(dir));
       var subdirs = dirs.map((d) => {
         var id = d.id;
-        if (!ids.includes(id)) {
-          ids.push(id);
-          return this.__getTree(d, conn, ids);
+        prefaces.add(d.preface);
+        __log.debug('  in prefaces: ' + JSON.stringify(prefaces));
+        if (!ids.has(id)) {
+          ids.add(id);
+          return this.__getTree(d, conn, ids, prefaces);
         }
       })
       return Promise.all(subdirs);
@@ -177,13 +177,12 @@ class Categories {
   }
 
   getTree(id, succ, fail) {
-    __log.debug('getTree');
     var cats;
-    var idGets = [];
+    var idGets = new Set(), prefaces = new Set();
     var conn = mysql.createConnection(this.dbconfig);
     var tree = new Promise((resolve, reject) => {
       conn.query(`select * from ${this.dbname} where id = ?`, [id], (err, results, fields) => {
-        if (err) {__log.debug(JSON.stringify(err));reject();};
+        if (err) {throw err;reject();};
         var dir = results[0];
         var root = {title: dir.name, id: dir.id, seq: dir.suborder, type: 'dir'};
         resolve(root);
@@ -191,23 +190,101 @@ class Categories {
     })
     tree.then((dir) => {
       cats = dir;
-      idGets.push(dir.id);
-      __log.debug(JSON.stringify(dir));
-      return this.__getTree(dir, conn, idGets);
+      idGets.add(dir.id);
+      prefaces.add(dir.preface);
+      return this.__getTree(dir, conn, idGets, prefaces);
     }).then((datas) => {
-      __log.debug('succ');
       succ([cats]);
     }).catch((err) => {
       console.log(err);
-      __log.debug('fail');
       fail([]);
     }).finally(() => {
       conn.end((err) => {});
     })
   }
 
+  __setPreface(conn, id, preface) {
+    __log.debug(`__setPreface id: ${id} preface: ${preface}`);
+    var p = new Promise((resolve, reject) => {
+      conn.query(`update ${this.tb_article} left join (select preface from ${this.dbname} where id = ?) as preface on ${this.tb_article}.id = preface.preface set ${this.tb_article}.suborder = 0`, [id], (err, results, fields) => {
+        if (err) {__log.debug('1: ' + err); throw err; reject();}
+        resolve();
+        //
+      })
+    })
+    return p.then(() => {
+      var p1 = new Promise((resolve, reject) => {
+        conn.query(`update ${this.dbname} set preface = ? where id = ?`, [preface, id], (err, results, fields) => {
+          if (err) {__log.debug('2: ' + err); throw err; reject();}
+          resolve();
+        })
+      })
+      var p2 = new Promise((resolve, reject) => {
+        conn.query(`update ${this.tb_article} set suborder = -1 where id = ?`, [preface], (err, results, fields) => {
+          if (err) {__log.debug('3: ' + err); throw err;reject();}
+          resolve()
+        })
+      })
+      return Promise.all([p1, p2]);
+    }).catch((err) => {
+      // ?
+      __log.debug(err);
+      __log.debug('--fail');
+      return -1;
+    });
+  }
+
+  __cancelPreface(conn, id) {
+    __log.debug('__cancelPreface');
+    var p1 = new Promise((resolve, reject) => {
+      conn.query(`update ${this.tb_article} left join (select preface from ${this.dbname} where id = ?) as p on ${this.tb_article}.id = p.preface set ${this.tb_article}.suborder = 0`, [id], (err, results, fields) => {
+        if (err) {__log.debug(err);throw err; reject();}
+        resolve();
+      })
+    })
+    return p1.then(() => {
+      return new Promise((resolve, reject) => {
+        conn.query(`update ${this.dbname} set preface = 0 where id = ?`, [id], (err, results, fields) => {
+          if (err) {__log.debug(err); throw err; reject();}
+          resolve();
+        })
+      })
+    })
+  }
+
   setPreface({id, preface, isSet}, succ, fail) {
-    
+    __log.debug('setPreface');
+    var conn = mysql.createConnection(this.dbconfig);
+    var p = new Promise((resolve, reject) => {
+      conn.beginTransaction((err) => {
+        if (err) {throw err; reject();}
+        resolve();
+      })
+    })
+    __log.debug(isSet);
+    p.then(() => {
+      if (isSet === true) {
+        return this.__setPreface(conn, id, preface);
+      } else {
+        return this.__cancelPreface(conn, id);
+      }
+    }).then(() => {
+      conn.commit((err) => {
+        __log.debug('commit');
+        if (err) {throw err; return;}
+        conn.end(() => {
+          __log.debug('end');
+          succ();
+        });
+      })
+    }).catch((err) => {
+      __log.debug(err);
+      __log.debug('catch');
+      conn.rollback((err) => {
+        conn.end(() => {});
+      })
+      fail();
+    })
   }
 
   update({id, data={}} = {}, succ, fail) {

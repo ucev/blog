@@ -242,6 +242,9 @@ class Articles {
   }
 
   updateOrder({id, ord}, succ, fail) {
+    if (Number(ord) < 0) {
+      fail();
+    }
     var conn = mysql.createConnection(this.dbconfig);
     var order = new Promise((resolve, reject) => {
       conn.query(`update ${this.dbname} set suborder = ? where id = ?`, [ord, id], (err, results, fields) => {
