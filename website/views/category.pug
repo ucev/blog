@@ -3,11 +3,13 @@ extends base_layout
 block body-block
   include website_banner
   mixin categoryListArticleItem(data, depth)
-    li.category-tree-article-li(style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+    li.category-tree-article-li
+      a(href = '/articles/category/' + cid + '/' + data.id style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
   mixin categoryListCategoryItem(data, depth)
     li.category-tree-category-li
       div.category-tree-category-title-div
-        span.category-tree-category-title(style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+        span.category-tree-category-title
+          a(href = '/articles/category/' + cid + '/' + data.id style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
       ul.category-tree-category-ul
         each item in data.childs
           if item.type == 'dir'
@@ -23,3 +25,4 @@ block body-block
       block category-article-block
         div#category-article-area
           div.markdown-display#category-article-div !{content}
+          include comment

@@ -73,7 +73,9 @@ router.get('/category/:cid/:id', (req, res, next) => {
       websiteInfo: configs.website_info,
       tree: tree,
       content: content,
-      articleid: aid
+      aid: aid,
+      cid: cid,
+      debug: configs.website_info.debug
     })
   }
   __categories.getTree(

@@ -425,14 +425,21 @@ footer {
   background-color: #6D4C41;
 }
 
-.category-tree-category-title:hover {
+.category-tree-category-title a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.category-tree-category-title a:hover {
   text-decoration: underline;
   background-color: #6D4C41;
 }
 
 .category-tree-article-li {
   height: 25px;
-  padding-right: 50px;
   line-height: 25px;
   font-size: 16px;
   color: #424242;
@@ -443,7 +450,16 @@ footer {
   background-color: #BDBDBD;
 }
 
-.category-tree-article-li:hover {
+.category-tree-article-li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding-right: 50px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.category-tree-article-li a:hover {
   text-decoration: underline;
   background-color: #BDBDBD;
 }
