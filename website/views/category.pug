@@ -26,3 +26,5 @@ block body-block
         div#category-article-area
           div.markdown-display#category-article-div !{content}
           include comment
+  script.
+    $("#category-content-area").height($("#category-article-area")[0].scrollHeight + 100);
