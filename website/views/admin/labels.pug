@@ -21,17 +21,95 @@ block main-body-block
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
       return fmt;
     }
+    class TableNavLinkLi extends React.Component {
+      constructor(props) {
+        super(props);
+        this.handleClick = this.handleClick.bind(this);
+      }
+      handleClick() {
+        this.props.click(this.props.page);
+      }
+      render() {
+        var classes = 'table-nav-ul-li';
+        if (this.props.current == this.props.page) classes += ' table-nav-ul-li-current';
+        return (
+          <li className = {classes} onClick = {this.handleClick}>{this.props.title}</li>
+        );
+      }
+    }
+    class TableNavLink extends React.Component {
+      constructor(props) {
+        super(props);
+        this.getRenderData = this.getRenderData.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+      }
+      handleClick(pg) {
+        this.props.pagechange(pg);
+      }
+      getRenderData() {
+        const page = this.props.page;
+        const total = this.props.total;
+        var start = page < 5 ? 0 : page - 5;
+        var len;
+        if (start + 10 <= total) {
+          len = 10;
+        } else if (total - 10 > 0) {
+          start = total - 10;
+          len = 10;
+        } else {
+          start = 0;
+          len = total;
+        }
+        var lis = [];
+        if (page != 0) lis.push(<TableNavLinkLi page = {page - 1} current = {page} title='上一页' click = {this.handleClick} />);
+        for (let i = 1; i <= len; i++)
+          lis.push(<TableNavLinkLi page = {start + i - 1} current = {page} title= {start + i} click = {this.handleClick} />);
+        if (page + 1 < total) lis.push(<TableNavLinkLi page = {page + 1} current = {page} title = '下一页' click = {this.handleClick} />);
+        return lis;
+      }
+      render() {
+        const lis = this.getRenderData();
+        return (
+          <ul id = 'table-nav-ul'>
+            {lis}
+          </ul>
+        );
+      }
+    }
     class TableLabel extends React.Component {
       constructor(props) {
         super(props);
+        this.orderState = {
+          asc: {
+            label: 'asc',
+            imgsrc: '/images/icons/ic_arrow_drop_down_white_24dp_2x.png'
+          },
+          desc: {
+            label: 'desc',
+            imgsrc: '/images/icons/ic_arrow_drop_up_white_24dp_2x.png'
+          }
+        }
+        this.handleOrderImgClick = this.handleOrderImgClick.bind(this);
+      }
+      handleOrderImgClick(e) {
+        var orderby = e.target.getAttribute('data-label');
+        var orderDirect = this.props.orderDirect == this.orderState.asc.label ? this.orderState.desc.label : this.orderState.asc.label;
+        this.props.orderChange(orderby, orderDirect);
       }
       render() {
+        var targetsrc, othersrc;
+        if (this.props.orderDirect == this.orderState.asc.label) {
+          targetsrc = this.orderState.asc.imgsrc;
+        } else {
+          targetsrc = this.orderState.desc.imgsrc;
+        }
+        othersrc = this.orderState.asc.imgsrc;
         return (
           <tr className = 'content-row-label'>
-            <th className = 'content-row-index-label label-row-index-label'>序号</th>
+            <th className = 'content-row-index-label label-row-index-label'>序号<img className = 'label-row-hotmark-order-img' src = {this.props.orderby == 'id' ? targetsrc : othersrc} data-label = 'id' onClick =  {this.handleOrderImgClick} ></img></th>
             <th className = 'content-row-title-label label-row-title-label'>标题</th>
-            <th className = 'content-row-article-count-label label-row-articlecnt-label'>文章数</th>
-            <th className = 'content-row-hotmark-label label-row-hotmark-label'>热度</th>
+            <th className = 'content-row-article-count-label label-row-articlecnt-label'>文章数<img className = 'label-row-hotmark-order-img' src = {this.props.orderby == 'id' ? targetsrc : othersrc} data-label = 'articles' onClick =  {this.handleOrderImgClick} ></img></th>
+            <th className = 'content-row-hotmark-label label-row-hotmark-label'>热度<img className = 'label-row-hotmark-order-img' src = {this.props.orderby == 'hotmark' ? targetsrc : othersrc} data-label = 'hotmark' onClick =  {this.handleOrderImgClick} ></img></th>
             <th className = 'content-row-addtime-label label-row-addtime-label'>添加日期</th>
           </tr>
         )
@@ -47,7 +125,7 @@ block main-body-block
         return (
           <tr className = 'content-row-data'>
             <td className = 'content-row-index-data'>{label.id}</td>
-            <td className = 'content-row-title-data'>{label.name}</td>
+            <td className = 'content-row-title-data label-row-title-data'><a href = {'/articles/search?args=' + label.name}>{label.name}</a></td>
             <td className = 'content-row-article-count-data'>{label.articles}</td>
             <td className = 'content-row-hotmark-data'>{label.hotmark}</td>
             <td className = 'content-row-addtime-data'>{addtime}</td>
@@ -66,7 +144,7 @@ block main-body-block
         return (
           <table className = 'content-table'>
             <thead>
-              <TableLabel />
+              <TableLabel orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {this.props.orderChange} />
             </thead>
             <tbody>
               {labels}
@@ -81,20 +159,46 @@ block main-body-block
       constructor(props) {
         super(props);
         this.state = {
+          current: 0,
+          total: 0,
+          orderby: 'id',
+          orderDirect: 'asc',
           labels: []
         }
+        this.filter = {start : 0};
+        this.handleOrderChange = this.handleOrderChange.bind(this);
+        this.handlePageChange = this.handlePageChange.bind(this);
         this.fetchLabelData = this.fetchLabelData.bind(this);
+        this.fetchLabelData(this.state.orderby, this.state.orderDirect);
+      }
+      handlePageChange(i) {
+        this.filter.start = i;
         this.fetchLabelData();
       }
-      fetchLabelData() {
+      handleOrderChange(orderby, orderDirect) {
+        this.filter.start = 0;
+        this.fetchLabelData(orderby, orderDirect);
+      }
+      fetchLabelData(orderby, orderDirect) {
         var that = this;
+        var data = {
+          start: this.filter.start,
+          orderby: orderby,
+          asc: orderDirect
+        }
         fetch('/admin/datas/labels/get', {
+          data: data,
           type: 'get',
           dataType: 'json',
           success: function(dt) {
             if (dt.code == 0) {
+              var returnData = dt.data;
               that.setState({
-                labels: dt.data
+                current: returnData.current,
+                total: returnData.total,
+                orderby: orderby,
+                orderDirect: orderDirect,
+                labels: returnData.data
               });
             }
           }
@@ -102,7 +206,10 @@ block main-body-block
       }
       render() {
         return (
-          <LabelTable labels = {this.state.labels} />
+          <div id = 'label-table-div'>
+            <LabelTable labels = {this.state.labels} orderby = {this.state.orderby} orderDirect = {this.state.orderDirect} orderChange = {this.handleOrderChange} />
+            <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
+          </div>
         );
       }
     }

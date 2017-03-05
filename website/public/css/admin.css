@@ -718,6 +718,11 @@ td {
   width: 10%;
 }
 
+.category-row-name-data a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .category-row-descp-data {
   padding-left: 30px;
   text-align: left;
@@ -740,7 +745,12 @@ td {
   top: 200px;
 }
 
+#label-table-div {
+  margin-top: 40px;
+}
+
 .label-row-index-label {
+  position: relative;
   width: 10%;
 }
 
@@ -750,15 +760,28 @@ td {
 }
 
 .label-row-articlecnt-label {
+  position: relative;
   width: 10%;
 }
 
 .label-row-hotmark-label {
+  position: relative;
   width: 10%;
+}
+
+.label-row-hotmark-order-img {
+  position: absolute;
+  top: calc((100% - 24px) / 2);
+  right: 24px;
+  width: 24px;
 }
 
 .label-row-addtime-label {
   width: 10%;
+}
+
+.label-row-title-data a {
+  display: block;
 }
 
 #avatar-img {

@@ -278,7 +278,19 @@ router.get('/categories/tree', (req, res, next) => {
 })
 
 router.get('/labels/get', (req, res, next) => {
+  var queryData = {};
+  var start = req.query.start ? req.query.start : 0;
+  queryData.start = start;
+  if (req.query.orderby) {
+    var lb = req.query.orderby;
+    var asc = req.query.asc ? req.query.asc : 'asc';
+    queryData['orderby'] = {
+      lb: lb,
+      asc: asc
+    }
+  }
   __labels.get(
+    queryData,
     (r) => {
       res.json({code: 0, msg: '获取成功', data: r});
     },

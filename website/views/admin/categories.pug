@@ -192,7 +192,7 @@ block main-body-block
         return (
           <tr className = 'content-row-data category-row-data'>
             <td className = 'category-row-index-data'>{category.id}</td>
-            <td className = 'category-row-name-data'>{category.name}</td>
+            <td className = 'category-row-name-data'><a href = {'/articles/category/' + category.id}>{category.name}</a></td>
             <td className = 'category-row-parent-data'>{category.parent}</td>
             <td className = 'category-row-descp-data'>{category.descp}</td>
             <td className = 'category-row-order-data'><input type='number' value={category.mainorder} onChange = {this.categoryOrderChange} onKeyDown = {this.categoryOrderKeyDown} /></td>
