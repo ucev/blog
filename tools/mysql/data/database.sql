@@ -14,11 +14,12 @@ CREATE TABLE `articles` (
   `addtime` int(11) NOT NULL,
   `modtime` int(11) NOT NULL DEFAULT '0',
   `pageview` int(11) DEFAULT '0',
+  `suborder` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`),
   UNIQUE KEY `title_2` (`title`),
   UNIQUE KEY `title_3` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 drop table if exists categories;
 CREATE TABLE `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -27,6 +28,9 @@ CREATE TABLE `categories` (
   `addtime` int(11) NOT NULL,
   `descp` char(50) NOT NULL,
   `articlecnt` int(11) DEFAULT '0',
+  `preface` int(11) DEFAULT '0',
+  `mainorder` int(11) DEFAULT '0' COMMENT '在列表中的顺序',
+  `suborder` int(11) DEFAULT '0' COMMENT '在列表树中的顺序',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
@@ -38,8 +42,9 @@ CREATE TABLE `labels` (
   `hotmark` int(11) DEFAULT '0',
   `addtime` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `name_2` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 drop table if exists photogroups;
 CREATE TABLE `photogroups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
