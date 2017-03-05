@@ -374,8 +374,6 @@ footer {
 }
 
 #category-content-area {
-  display: -moz-box;
-  -moz-box-orient: horizontal;
   width: 80%;
   overflow-x: hidden;
   overflow-y: auto;
@@ -383,13 +381,26 @@ footer {
   min-height: 800px;
 }
 
+#category-tree-area,
+#category-article-area {
+  display: inline-block;
+  vertical-align: top;
+}
+
 #category-tree-area {
+  max-width: 20%;
+  min-height: 1000px;
+  padding-bottom: 50px;
   background-color: #F5F5F5;
+}
+
+#category-article-area {
+  max-width: 80%;
+  padding: 0px 30px;
 }
 
 .category-tree-category-ul {
   list-style-type: none;
-  height: 100%;
   padding: 0px;
   margin: 0;
 }
@@ -462,10 +473,4 @@ footer {
 .category-tree-article-li a:hover {
   text-decoration: underline;
   background-color: #BDBDBD;
-}
-
-#category-article-area {
-  -moz-box-flex: 1;
-  padding: 0px 30px;
-  
 }
