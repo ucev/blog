@@ -214,6 +214,7 @@ router.post('/categories/modify', (req, res, next) => {
 router.get('/categories/get', (req, res, next) => {
   __categories.get(
     (r) => {
+      __log.debug(r);
       res.json({code: 0, msg: '获取成功', data: r});
     },
     () => {

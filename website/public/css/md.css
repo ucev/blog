@@ -76,7 +76,7 @@
   padding: 10px 20px;
 }
 
-.markdown-display tbody tr:nth-of-type(2) {
+.markdown-display tbody tr:nth-of-type(2n) {
   background-color: #F5F5F5;
 }
 
