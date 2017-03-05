@@ -474,3 +474,8 @@ footer {
   text-decoration: underline;
   background-color: #BDBDBD;
 }
+
+#category-article-area #comment-area {
+  width: 100%;
+  margin: 0;
+}
