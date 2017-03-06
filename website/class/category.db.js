@@ -115,7 +115,6 @@ class Categories {
     get.then((cat) => {
       succ(cat);
     }).catch((err) => {
-      __log.debug('fail');
       __log.debug(err);
       fail();
     })
@@ -155,7 +154,6 @@ class Categories {
     var tdir = this.__getTreeDir(dir.id, conn);
     var tart = this.__getTreeArticle(dir.id, conn);
     var _tree = Promise.all([tdir, tart]);
-    __log.debug('prefaces: ' + JSON.stringify(prefaces));
     return _tree.then(([dirs, arts] = datas) => {
       arts = arts.filter((art) => {
         return !prefaces.has(art.id);
@@ -166,7 +164,6 @@ class Categories {
       var subdirs = dirs.map((d) => {
         var id = d.id;
         prefaces.add(d.preface);
-        __log.debug('  in prefaces: ' + JSON.stringify(prefaces));
         if (!ids.has(id)) {
           ids.add(id);
           return this.__getTree(d, conn, ids, prefaces);
@@ -204,7 +201,6 @@ class Categories {
   }
 
   __setPreface(conn, id, preface) {
-    __log.debug(`__setPreface id: ${id} preface: ${preface}`);
     var p = new Promise((resolve, reject) => {
       conn.query(`update ${this.tb_article} left join (select preface from ${this.dbname} where id = ?) as preface on ${this.tb_article}.id = preface.preface set ${this.tb_article}.suborder = 0`, [id], (err, results, fields) => {
         if (err) {__log.debug('1: ' + err); throw err; reject();}
@@ -228,14 +224,11 @@ class Categories {
       return Promise.all([p1, p2]);
     }).catch((err) => {
       // ?
-      __log.debug(err);
-      __log.debug('--fail');
       return -1;
     });
   }
 
   __cancelPreface(conn, id) {
-    __log.debug('__cancelPreface');
     var p1 = new Promise((resolve, reject) => {
       conn.query(`update ${this.tb_article} left join (select preface from ${this.dbname} where id = ?) as p on ${this.tb_article}.id = p.preface set ${this.tb_article}.suborder = 0`, [id], (err, results, fields) => {
         if (err) {__log.debug(err);throw err; reject();}
@@ -253,7 +246,6 @@ class Categories {
   }
 
   setPreface({id, preface, isSet}, succ, fail) {
-    __log.debug('setPreface');
     var conn = mysql.createConnection(this.dbconfig);
     var p = new Promise((resolve, reject) => {
       conn.beginTransaction((err) => {
@@ -261,7 +253,6 @@ class Categories {
         resolve();
       })
     })
-    __log.debug(isSet);
     p.then(() => {
       if (isSet === true) {
         return this.__setPreface(conn, id, preface);
@@ -270,16 +261,13 @@ class Categories {
       }
     }).then(() => {
       conn.commit((err) => {
-        __log.debug('commit');
         if (err) {throw err; return;}
         conn.end(() => {
-          __log.debug('end');
           succ();
         });
       })
     }).catch((err) => {
       __log.debug(err);
-      __log.debug('catch');
       conn.rollback((err) => {
         conn.end(() => {});
       })

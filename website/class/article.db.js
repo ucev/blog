@@ -44,39 +44,22 @@ class Articles {
     }
   }
 
-  delete(id, succ, fail) {
+  delete(ids, succ, fail) {
     var targetLabel = '';
     var conn = mysql.createConnection(this.dbconfig);
     var del = new Promise((resolve, reject) => {
       conn.beginTransaction((err) => {
-        if (err) {reject(err)};
+        if (err) {throw err;reject(err)};
         resolve();
       })
     })
     del.then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`select label from ${this.dbname} where id = ?`, [id],
-          (err, results, fields) => {
-            if (err) {reject(err)};
-            targetLabel = results[0].label;
-            resolve(results[0].label);
-          }
-        )
-      })
+      this.__updateLabelsOnDeleteArticle(conn, ids);
     }).then(() => {
       return new Promise((resolve, reject) => {
-        conn.query(`delete from ${this.dbname} where id = ?`, [id],
+        conn.query(`delete from ${this.dbname} where id in ?`, [[ids]],
           (err, results, fields) => {
-            if (err) {reject(err);};
-            resolve();
-          }
-        )
-      })
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`update labels set articles = articles - 1 where name in ?`,
-          [[targetLabel.split(',')]], (err, results, fields) => {
-            if (err) {reject(err)};
+            if (err) {throw err;reject(err);};
             resolve();
           }
         )
@@ -128,7 +111,6 @@ class Articles {
     if ('args' in where) {
       var escapedVal = conn.escape(`%${where['args']}%`);
       whereSql += (` AND (title like ${escapedVal} or label like ${escapedVal})`);
-      __log.debug(whereSql);
     } else {
       for (let key in where) {
         if (key == 'label') {
@@ -362,6 +344,38 @@ class Articles {
         conn.end((err) => {})
       })
       fail();
+    })
+  }
+
+  __updateLabelsOnDeleteArticle(conn, ids) {
+    var p1 = new Promise((resolve, reject) => {
+      conn.query(`select label from ${this.dbname} where id in ?`, [[ids]], (err, results, fields) => {
+        if (err) {throw err;reject()};
+        var labelObj = {};
+        var labels = [].concat(...(results.map((row) => (row.label.split(',')))));
+        labels.forEach((label) => {
+          if (label in labelObj) {
+            labelObj[label] += 1;
+          } else {
+            labelObj[label] = 1;
+          }
+        })
+        resolve(labelObj);
+      })
+    })
+    return p1.then((labels) => {
+      var ps = [];
+      for (var label in labels) {
+        var p = new Promise((resolve, reject) => {
+          conn.query(`update labels set articles = if (articles - ? > 0, articles - ?, 0) where name = ?`, [labels[label], labels[label], label], (err, results, fields) => {
+            if (err) {throw err;reject()};
+            resolve();
+          })
+        })
+      }
+      return Promise.all(ps);
+    }).catch((err) => {
+      __log.debug(err);
     })
   }
 

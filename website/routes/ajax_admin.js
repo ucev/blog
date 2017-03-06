@@ -42,9 +42,11 @@ function getCategoryRefactItemDetail(res, id, type) {
 }
 
 router.post('/articles/delete', (req, res, next) => {
-  var id = strToNum(req.body.id);
+  var ids = req.body.id;
+  ids = ids.split(',');
+  __log.debug('here');
   __articles.delete(
-    id, 
+    ids, 
     () => {
       res.json({code: 0, msg: '删除成功'});
     },
@@ -97,6 +99,7 @@ router.get('/articles/get', (req, res, next) => {
 
 router.get('/articles/move', (req, res, next) => {
   var ids = req.query.id;
+  __log.debug(ids);
   ids = ids.split(',');
   var gid = req.query.gid;
   __articles.move(
@@ -214,7 +217,6 @@ router.post('/categories/modify', (req, res, next) => {
 router.get('/categories/get', (req, res, next) => {
   __categories.get(
     (r) => {
-      __log.debug(r);
       res.json({code: 0, msg: '获取成功', data: r});
     },
     () => {

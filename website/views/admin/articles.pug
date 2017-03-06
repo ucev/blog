@@ -121,9 +121,7 @@ block main-body-block
         }
         render() {
           const options = this.props.options.map((opt) => {
-            //console.log('reset: ' + this.props.reset + ', value: ' + opt.value + ', default:' + this.props.defaultVal + ', title: ' + opt.value);
             if (this.props.reset == true && opt.value == -1) {
-              //console.log('true' + new Date().toLocaleString());
               return <option value = {opt.value} selected = 'selected'>{opt.title}</option>
             } else {
               return <option value = {opt.value}>{opt.title}</option>
@@ -204,9 +202,10 @@ block main-body-block
           e.stopPropagation();
         }
         render() {
+          var checked = this.props.allCheckState == true ? 'checked': '';
           return (
             <tr className='content-row-label'>
-              <th className='content-row-check-label'><input type='checkbox' onChange = {this.handleCheckStateChange}/></th>
+              <th className='content-row-check-label'><input type='checkbox' checked = {checked} onChange = {this.handleCheckStateChange}/></th>
               <th className='content-row-index-label'>序号</th>
               <th className='content-row-title-label'>标题</th>
               <th className='content-row-category-label'>类别</th>
@@ -289,21 +288,25 @@ block main-body-block
         }
         render() {
           var that = this;
-          const articleRows = this.props.articles.map((article, index, arr) => {
-            var checked = that.props.checkState[article.id];
+          var articles = this.props.articles;
+          var checkState = this.props.checkState;
+          var allCheckState = true;
+          for (var article of articles) {
+            if (checkState[article.id] !== true) {
+              allCheckState = false;
+              break;
+            }
+          }
+          const articleRows = articles.map((article, index, arr) => {
+            var checked = checkState[article.id];
             return (
-              <ArticleRow key = {index} 
-                          index = {index} 
-                          checked = {checked} 
-                          article = {article} 
-                          handleStateClick = {this.handleStateClick} 
-                          checkStateChange = {this.checkStateChange} />
+              <ArticleRow key = {index} index = {index} checked = {checked} article = {article} handleStateClick = {this.handleStateClick} checkStateChange = {this.checkStateChange} />
             );
           });
           return (
             <table className='content-table'>
               <thead>
-                <TableLabel allChecked = {this.allChecked} />
+                <TableLabel allCheckState = {allCheckState} allChecked = {this.allChecked}/>
               </thead>
               <tbody>
                 { articleRows }
@@ -328,7 +331,9 @@ block main-body-block
             // move dialog
             moveVisible: false,
             categories: [],
-            moveArticleId: -1
+            moveArticleId: -1,
+            // group operation
+            isgroup: false
           }
           this.stateOptions = [
             {value: '-1', title: '全部'},
@@ -395,8 +400,13 @@ block main-body-block
             dataType: 'json',
             success: function(dt) {
               if (dt.code == 0) {
-                if (isgroup) {
+                if (that.state.isgroup) {
                   that.fetchArticles();
+                  that.setState({
+                    moveVisible: false,
+                    moveArticleId: -1,
+                    isgroup: false
+                  })
                 } else {
                   that.setState({
                     moveVisible: false,
@@ -492,7 +502,8 @@ block main-body-block
         handleDeleteArticle(id) {
           this.setState({
             delVisible: true,
-            delArticleId: id
+            delArticleId: id,
+            isgroup: false
           })
         }
         deleteArticleConfirm() {
@@ -524,8 +535,27 @@ block main-body-block
             if (checkState[key]) ids.push(key);
           }
           ids = ids.join(',');
-          if (value == 'on' || value == 'off') {
-            this.articleStateChange(ids, value, true);
+          switch (value) {
+            case 'on':
+            case 'off':
+              this.articleStateChange(ids, value, true);
+              break;
+            case 'move':
+              this.setState({
+                moveArticleId: ids,
+                isgroup: true,
+                moveVisible: true
+              })
+              break;
+            case 'del':
+              this.setState({
+                delArticleId: ids,
+                isgroup: true,
+                delVisible: true
+              })
+              break;
+            default:
+              break;
           }
         }
         //category
@@ -540,6 +570,7 @@ block main-body-block
         handleMoveCategory(id) {
           this.setState({
             moveArticleId: id,
+            isgroup: false,
             moveVisible: true
           })
         }
@@ -558,32 +589,13 @@ block main-body-block
                 <FilterInput title = 'category' label = '类别' change = {this.handleFilterChange} />
                 <FilterSelect title = 'state' label = '状态' options = {this.stateOptions} change = {this.handleFilterChange} />
               </div>
-              <ArticleTable articles = {this.state.articles} 
-                            checkState = {this.state.checkState} 
-                            fetchSingleArticle = {this.fetchSingleArticle} 
-                            checkStateChange = {this.checkStateChange} 
-                            articleStateChange = {this.articleStateChange}
-                            handleMoveCategory = {this.handleMoveCategory}
-                            allChecked = {this.allChecked} 
-                            delete = {this.handleDeleteArticle}/>
+              <ArticleTable articles = {this.state.articles} checkState = {this.state.checkState} fetchSingleArticle = {this.fetchSingleArticle} checkStateChange = {this.checkStateChange} articleStateChange = {this.articleStateChange} handleMoveCategory = {this.handleMoveCategory} allChecked = {this.allChecked} delete = {this.handleDeleteArticle}/>
               <div className = 'table-filter-bar table-filter-bar-bottom'>
-                <FilterSelect title = 'groupope' 
-                              options = {this.opeOptions} 
-                              change = {this.groupOpeChange} 
-                              reset = {groupopeReset} 
-                              defaultVal = '-1'/>
+                <FilterSelect title = 'groupope' options = {this.opeOptions} change = {this.groupOpeChange} reset = {groupopeReset} defaultVal = '-1'/>
               </div>
-              <TableNavLink page = {this.state.current} 
-                            total = {this.state.total} 
-                            pagechange = {this.handlePageChange} />
-              <ConfirmDialog title = '确认删除?' 
-                             confirm = {this.deleteArticleConfirm} 
-                             cancel = {this.deleteArticleCancel} 
-                             visible = {this.state.delVisible} />
-              <MoveGroupDialog categories = {this.state.categories}
-                             confirm = {this.moveCategoryConfirm}
-                             cancel = {this.moveCategoryCancel}
-                             visible = {this.state.moveVisible} />
+              <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
+              <ConfirmDialog title = '确认删除?' confirm = {this.deleteArticleConfirm} cancel = {this.deleteArticleCancel} visible = {this.state.delVisible} />
+              <MoveGroupDialog categories = {this.state.categories} confirm = {this.moveCategoryConfirm} cancel = {this.moveCategoryCancel} visible = {this.state.moveVisible} />
             </div>
           );
         }
