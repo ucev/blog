@@ -8,16 +8,13 @@ class Labels {
     this.dbconfig = configs.database_config;
     this.step = configs.query_config.step;
   }
-
+ 
   get({start, orderby = {lb: 'id', asc: 'asc'}}, succ, fail) {
     var returnData = {
       total: 0,
       current: start,
       data: []
     };
-    if (!['asc', 'desc'].includes(orderby.asc)) {
-      orderby.asc = 'asc';
-    }
     var conn = mysql.createConnection(this.dbconfig);
     var gc = new Promise((resolve, reject) => {
       conn.query(`select count(*) as cnt from ${this.dbname}`, (err, results, fields) => {
@@ -31,7 +28,7 @@ class Labels {
     var gt = new Promise((resolve, reject) => {
       start = start * configs.query_config.step;
       __log.debug(JSON.stringify(orderby));
-      var sql = `select * from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${orderby.asc} limit ?, ?`;
+      var sql = `select * from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)} limit ?, ?`;
       __log.debug(sql);
       conn.query(sql, [/*orderby.lb, orderby.asc, */start, this.step], (err, results, fields) => {
         if (err) reject();
@@ -51,14 +48,35 @@ class Labels {
     })
   }
 
+  getall({orderby = {lb: 'id', asc: 'asc'}, queryfields = ['*']}, succ, fail) {
+    var conn = mysql.createConnection(this.dbconfig);
+    var ga = new Promise((resolve, reject) => {
+      conn.query(`select ?? from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)}`, [[queryfields]], (err, results, fields) => {
+        if (err) {throw err; reject();}
+        resolve(results);
+      })
+    })
+    ga.then((labels) => {
+      succ(labels);
+    }).catch((err) => {
+      __log.debug(err);
+      fail();
+    })
+  }
+
   getNames(succ, fail) {
-    this.get(
+    this.getall(
+      {},
       function(labels) {
         var l = labels.map((label) => (label.name));
         succ(l);
       },
       fail
     )
+  }
+
+  __queryorder(asc) {
+    return ['asc', 'desc'].includes(asc) ? asc : 'asc';
   }
 }
 
