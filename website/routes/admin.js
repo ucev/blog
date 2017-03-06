@@ -167,6 +167,12 @@ router.post('/articles/modify', (req, res, next) => {
   )
 });
 
+router.get('/tools', (req, res, next) => {
+  res.render('admin/tools', {
+    title: '实用工具'
+  })
+})
+
 const ajax_request = require('./ajax_admin');
 router.use('/datas', ajax_request);
 
