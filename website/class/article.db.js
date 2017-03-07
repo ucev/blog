@@ -166,6 +166,24 @@ class Articles {
     })
   }
 
+  getall(succ, fail) {
+    var conn = mysql.createConnection(this.dbconfig);
+    var p = new Promise((resolve, reject) => {
+      conn.query(`select title, content from ${this.dbname} order by id asc`, (err, results, fields) => {
+        if (err) reject();
+        resolve(results);
+      })
+    })
+    p.then((arts) => {
+      succ(arts);
+    }).catch((err) => {
+      __log.debug(err);
+      fail();
+    }).finally(() => {
+      conn.end((err) => {});
+    })
+  }
+
   move(ids, gid, succ, fail) {
     var conn = mysql.createConnection(this.dbconfig);
     var update = new Promise((resolve, reject) => {

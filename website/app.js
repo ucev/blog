@@ -11,6 +11,7 @@ var articles = require('./routes/articles');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var es = require('./routes/eventsource');
 
 var enterControl = require('./routes/entercontrol');
 
@@ -75,6 +76,7 @@ app.use('/articles', enterControl.userControl);
 app.use('/articles', articles);
 app.use('/users', users);
 app.use('/login', login);
+app.use('/es', es);
 app.use('/', index);
 
 // catch 404 and forward to error handler

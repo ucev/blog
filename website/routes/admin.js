@@ -17,8 +17,16 @@ const __labels = new Labels();
 const FluxRecord = require('../class/fluxrecord');
 const __fluxrecord = new FluxRecord();
 
+const crypto = require('crypto');
+
 const configs = require('../config/base.config');
 
+function genToken(key) {
+  key = String(key);
+  var md5sum = crypto.createHash('md5');
+  md5sum.update(key);
+  return md5sum.digest('hex');
+}
 
 router.get('/articles', (req, res, next) => {
   res.render('admin/articles', {
@@ -168,8 +176,10 @@ router.post('/articles/modify', (req, res, next) => {
 });
 
 router.get('/tools', (req, res, next) => {
+  var token = genToken(req.session.openid);
   res.render('admin/tools', {
-    title: '实用工具'
+    title: '实用工具',
+    token: token
   })
 })
 

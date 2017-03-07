@@ -3,3 +3,16 @@ extends base_layout
 block main-body-block
   div.main
     div 工具
+    div#output-article-div
+      button#output-article-button 导出文章
+    input#token-input(type='hidden', value = token )
+    script.
+      $('#output-article-button').click(() => {
+        var token = $('#token-input').val();
+        console.log(token);
+        var es = new EventSource('/es/outputArticle?token=' + token);
+        es.onmessage = function(e) {
+          console.log(e.data);
+          es.close();
+        }
+      });
