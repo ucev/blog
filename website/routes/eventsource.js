@@ -19,7 +19,6 @@ function dirExists(dirpath) {
       if (!exists) {
         fs.mkdir(dirpath, (err) => {
           if (err) {
-            __log.debug(err);
             reject();
           } else {
             resolve();
@@ -36,7 +35,6 @@ router.post('/outputArticle/download', (req, res, next) => {
   var token = req.body.token;
   var date = new Date().format('yyyyMMdd');
   var filepath = path.join(__dirname, __root_dir, date, token + '.zip');
-  __log.debug(filepath);
   res.download(filepath);
 })
 
@@ -46,10 +44,8 @@ router.get('/outputArticle', (req, res, next) => {
   res.type('text/event-stream');
   var date = new Date().format('yyyyMMdd');
   var targetDir = path.join(__dirname, __root_dir, date);
-  __log.debug(targetDir);
   var pdir = dirExists(targetDir);
   pdir.then(() => {
-    __log.debug('here');
     var targetZip = fs.createWriteStream(path.join(targetDir, token + '.zip'));
     var archive = archiver('zip', {
       zlib: {level: 9}
@@ -59,7 +55,6 @@ router.get('/outputArticle', (req, res, next) => {
       return;
     })
     archive.pipe(targetZip);
-    __log.debug('here1');
     __articles.getall(
       (arts) => {
         var lockKey = 'dump article';
@@ -78,11 +73,11 @@ router.get('/outputArticle', (req, res, next) => {
         }
       },
       () => {
-        res.send('data:fail2\n\n');
+        res.send('data:fail\n\n');
       }
     )
   }).catch(() => {
-    res.send('data:fail1\n\n');
+    res.send('data:fail\n\n');
   })
 });
 
@@ -115,10 +110,10 @@ router.post('/importArticle', (req, res, next) => {
               add: true
             },
             () => {
-              resolve();
+              resolve({'tp': 'succ', 'title': fname});
             },
             () => {
-              reject();
+              resolve({'tp': 'fail', 'title': fname});
             }
             )
           })
@@ -126,10 +121,25 @@ router.post('/importArticle', (req, res, next) => {
       })(f);
     })
     var pall = Promise.all(ps);
-    pall.then(() => {
-      res.json({code: 0, msg: '添加成功'});
+    pall.then((datas) => {
+      __log.debug(datas);
+      var succ = [];
+      var allSucc = true;
+      for (var dt of datas) {
+        if (dt.tp == 'succ') {
+          succ.push(dt.title);
+        } else {
+          allSucc = false;
+        }
+      }
+      __log.debug(succ);
+      if (allSucc) {
+        res.json({code: 0, msg: '导入成功', data: succ});
+      } else {
+        res.json({code: 1, msg: '导入失败', data: succ});
+      }
     }).catch(() => {
-      res.json({code: 1, msg: '添加失败'});
+      res.json({code: 1, msg: '添加失败', data: []});
     })
   })
 })
