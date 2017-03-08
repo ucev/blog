@@ -84,6 +84,7 @@ block main-body-block
             }
           },
           error: function() {
+            $progressingLayer.hide();
             if (hideTimeout != null) {
               clearTimeout(hideTimeout);
             }
@@ -91,16 +92,13 @@ block main-body-block
             $mdiv.removeClass('message-dialog-positive');
             $mdiv.removeClass('message-dialog-alert');
             $mdiv.addClass('message-dialog-alert');
-            $mdiv.text(dt.msg);
+            $mdiv.text("导入失败");
             $mdiv.show();
             hideTimeout = setTimeout(() => {
               $mdiv.hide();
               hideTimeout = null;
             }, 1000)
           },
-          complete: function() {
-            $progressingLayer.hide();
-          }
         })
       })
       $('#choose-article-button').click(() => {
