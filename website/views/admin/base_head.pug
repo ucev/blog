@@ -8,8 +8,10 @@ head
       script(src='/react-dom.min.js')
       script(src='/js/babel.min.js')
       script(src='/Chart.min.js')
+      script(src='/template.js')
       script(src='/js/base.js?pug_cur_time' + pug_cur_time)
       script(src='/js/admin.js?' + pug_cur_time)
     block stylesheet-block
+      link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')
       link(rel='stylesheet' href='/css/admin.css?' + pug_cur_time)
       link(rel='stylesheet' href='/css/md.css?' + pug_cur_time)

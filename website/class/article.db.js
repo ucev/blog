@@ -299,7 +299,7 @@ class Articles {
       return new Promise((resolve, reject) => {
         conn.query(`insert into ${this.dbname} set ?`, [datas],
           (err, results, fields) => {
-            if (err) {throw err;reject()};
+            if (err) {reject()};
             resolve();
           }
         )
@@ -317,6 +317,7 @@ class Articles {
       conn.rollback((err) => {
         conn.end((err) => {});
       })
+      __log.debug('reject');
       fail();
     })
   }
@@ -440,7 +441,7 @@ class Articles {
       })
     })
     return p1.then((_eLabels) => {
-      if (labels == '') {
+      if (labels == '' || labels == undefined) {
         return new Promise((resolve, reject) => {
           resolve();
         })

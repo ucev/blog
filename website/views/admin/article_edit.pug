@@ -3,7 +3,6 @@ extends base_layout
 block append jsscript-block
   script(src='/js/simplemde.min.js?' + new Date().getTime())
   script(src='/markdown-it.min.js')
-  script(src='/template.js')
   script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;const __content = `#{content}`;
 
 block append stylesheet-block
