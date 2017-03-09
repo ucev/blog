@@ -374,17 +374,14 @@ footer {
 }
 
 #category-content-area {
+  display: flex;
+  flex-direction: row;
   width: 80%;
-  overflow-x: hidden;
-  overflow-y: auto;
   margin-left: 10%;
-  min-height: 800px;
 }
 
 #category-tree-area,
 #category-article-area {
-  display: inline-block;
-  vertical-align: top;
 }
 
 #category-tree-area {
@@ -395,7 +392,7 @@ footer {
 }
 
 #category-article-area {
-  max-width: 80%;
+  flex-grow: 1;
   padding: 0px 30px;
 }
 
@@ -455,6 +452,7 @@ footer {
   font-size: 16px;
   color: #424242;
   cursor: pointer;
+  overflow: hidden;
 }
 
 .category-tree-article-li-current {
