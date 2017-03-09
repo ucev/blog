@@ -393,6 +393,7 @@ footer {
 
 #category-article-area {
   flex-grow: 1;
+  max-width: 80%;
   padding: 0px 30px;
 }
 
