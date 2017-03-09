@@ -180,7 +180,7 @@ router.get('/tools', (req, res, next) => {
   res.render('admin/tools', {
     title: '实用工具',
     token: token,
-    avatar: req.sessioin.avatar
+    avatar: req.session.avatar
   })
 })
 
