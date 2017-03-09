@@ -179,7 +179,8 @@ router.get('/tools', (req, res, next) => {
   var token = genToken(req.session.openid);
   res.render('admin/tools', {
     title: '实用工具',
-    token: token
+    token: token,
+    avatar: req.sessioin.avatar
   })
 })
 
