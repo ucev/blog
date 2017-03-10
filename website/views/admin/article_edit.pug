@@ -97,12 +97,13 @@ block main-body-block
     script.
       const markdown_editor_config = {
         element: document.getElementById("md-editor"),
+        indentWithTabs: false,
         status: false,
         spellChecker: false,
         promptURLs: true,
         insertUrlFunction: insertUrlFunction,
         insertImgFunction: insertImgFunction,
-        initialValue: decodeURIComponent(__content)
+        initialValue: decodeURIComponent(__content),
       };
       function submitArticle(e) {
         console.log('submit');
@@ -132,6 +133,7 @@ block main-body-block
     script.
       const markdown_editor_config = {
         element: document.getElementById("md-editor"),
+        indentWithTabs: false,
         status: false,
         spellChecker: false,
         promptURLs: true,

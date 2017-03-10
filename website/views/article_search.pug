@@ -11,7 +11,7 @@ block body-block
   mixin article_item(itemData)
     li.article-item-li(data-id = itemData.id )
       h3.article-item-li-title
-        a(href='/articles/view/' + itemData.id) !{itemData.title.replace(titleExp, '<strong>$1</strong>')}
+        a(href='/articles/view/' + itemData.id) !{itemData.title.replace(titleExp, '<mark>$1</mark>')}
         ul.article-item-li-labels-ul
           each lb in itemData.label.split(',')
             +article_label(lb)

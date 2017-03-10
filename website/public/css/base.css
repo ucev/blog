@@ -296,8 +296,9 @@ footer {
   background-color: red;
 }
 
-.article-item-li-title strong {
+.article-item-li-title mark {
   color: red;
+  background-color: inherit;
 }
 
 .article-item-li-content {
