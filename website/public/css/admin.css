@@ -738,9 +738,8 @@ td {
   background-color: #E0E0E0;
 }
 
-.del-category-dialog,
-.del-article-dialog,
-.move-category-dialog {
+#categories-target-div .del-dialog,
+#articles-target-div .del-dialog {
   position: fixed;
   top: 200px;
 }
