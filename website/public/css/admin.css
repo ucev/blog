@@ -526,7 +526,7 @@ td {
   left: calc((100% - 300px) / 2);
   z-index: 40;
   width: 300px;
-  padding: 30px;
+  padding: 30px ;
   background: white;
   border: 1px solid #BDBDBD;
   box-shadow: 3px 3px 3px #E0E0E0;
@@ -578,16 +578,20 @@ td {
   background-color: #E0E0E0;
 }
 
-#move-group-radio-ul {
+.dialog-div-center-screen {
+  top: 200px;
+}
+
+.option-dialog-option-ul {
   list-style-type: none;
   max-height: 100px;
   overflow: scroll;
   padding: 0;
 }
 
-.move-group-radio-li {
+.option-dialog-option-li {
   display: inline-block;
-  width: 45%;
+  width: 50%;
   height: 30px;
   margin: 0;
   padding: 0;
@@ -736,13 +740,6 @@ td {
 
 .category-row-order-data input:hover {
   background-color: #E0E0E0;
-}
-
-.del-category-dialog,
-.del-article-dialog,
-.move-category-dialog {
-  position: fixed;
-  top: 200px;
 }
 
 #label-table-div {

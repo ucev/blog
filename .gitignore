@@ -70,6 +70,10 @@ tools/mysql/src/configs.js
 
 # tests
 test/*
+testlib/*
+
+# dist
+dist/*
 
 # blogs upload images
 website/public/images/blog/*
