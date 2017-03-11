@@ -1,3 +1,6 @@
+const ConfirmDialog = require("./components/confirm_dialog.js");
+const TableNavLink = require("./components/table_foot_nav.js");
+
 class OperationBar extends React.Component {
   constructor(props) {
     super(props);
@@ -14,6 +17,7 @@ class OperationBar extends React.Component {
     )
   }
 }
+
 class AddCategoryDiv extends React.Component {
   constructor(props) {
     super(props);
@@ -97,6 +101,7 @@ class AddCategoryDiv extends React.Component {
     )
   }
 }
+
 class CategoryLabel extends React.Component {
   constructor(props) {
     super(props);
@@ -115,6 +120,7 @@ class CategoryLabel extends React.Component {
     );
   }
 }
+
 class CategoryRow extends React.Component {
   constructor(props) {
     super(props);
@@ -165,6 +171,7 @@ class CategoryRow extends React.Component {
     );
   }
 }
+
 class CategoryTable extends React.Component {
   constructor(props) {
     super(props);
@@ -187,6 +194,7 @@ class CategoryTable extends React.Component {
     );
   }
 }
+
 class CategoryLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -337,9 +345,5 @@ class CategoryLayout extends React.Component {
     );
   }
 }
-function adminCategoriesInit() {
-  ReactDOM.render(
-    <CategoryLayout />,
-    document.getElementById('table-div')
-  );
-}
+
+module.exports = CategoryLayout;

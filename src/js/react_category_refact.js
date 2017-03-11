@@ -52,6 +52,7 @@ class DetailArea extends React.Component {
     }
   }
 }
+
 class ArticleItemLi extends React.Component {
   constructor(props) {
     super(props);
@@ -74,6 +75,7 @@ class ArticleItemLi extends React.Component {
     return <li className = {articleClass} style = {styles} onClick = {this.onItemClicked} >{article.title}</li>
   }
 }
+
 class CategoryItemLi extends React.Component {
   constructor(props) {
     super(props);
@@ -124,6 +126,7 @@ class CategoryItemLi extends React.Component {
     )
   }
 }
+
 class CategoryTree extends React.Component {
   constructor(props) {
     super(props);
@@ -143,7 +146,8 @@ class CategoryTree extends React.Component {
     }
   }
 }
-class ReformArea extends React.Component {
+
+class CategoryRefactArea extends React.Component {
   constructor(props) {
     super(props);
     var cid = Number(location.pathname.match(/\/admin\/categories\/refact\/(\d+)/)[1]);
@@ -277,9 +281,5 @@ class ReformArea extends React.Component {
     )
   }
 }
-function adminCategoryRefactInit() {
-  ReactDOM.render(
-    <ReformArea />,
-    document.getElementById('reform-area')
-  );
-}
+
+module.exports = CategoryRefactArea;

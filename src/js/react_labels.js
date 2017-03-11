@@ -1,3 +1,4 @@
+const TableNavLink = require("./components/table_foot_nav.js");
 // 这个扩展是从网上复制过来的
 Date.prototype.format = function (fmt) { //author: meizz
   var o = {
@@ -13,7 +14,8 @@ Date.prototype.format = function (fmt) { //author: meizz
     for (var k in o)
       if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
-  };
+};
+
 class LabelTableLabel extends React.Component {
   constructor(props) {
     super(props);
@@ -53,6 +55,7 @@ class LabelTableLabel extends React.Component {
     )
   }
 }
+
 class LabelRow extends React.Component {
   constructor(props) {
     super(props);
@@ -71,6 +74,7 @@ class LabelRow extends React.Component {
     )
   }
 }
+
 class LabelTable extends React.Component {
   constructor(props) {
     super(props);
@@ -93,6 +97,7 @@ class LabelTable extends React.Component {
     )
   }
 }
+
 class LabelLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -152,9 +157,5 @@ class LabelLayout extends React.Component {
     );
   }
 }
-function adminLabelsInit() {
-  ReactDOM.render(
-    <LabelLayout />,
-    document.getElementById('table-div')
-  );
-}
+
+module.exports = LabelLayout;

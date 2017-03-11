@@ -1,58 +1,7 @@
-class MoveGroupDialog extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleConfirmClick = this.handleConfirmClick.bind(this);
-    this.handleCancelClick = this.handleCancelClick.bind(this);
-    this.handleGroupChange = this.handleGroupChange.bind(this);
-    this.state = {
-      newgroup : -1
-    };
-  }
-  
-  handleConfirmClick(e) {
-    this.props.confirm(this.state.newgroup);
-  }
-  
-  handleCancelClick(e) {
-    this.props.cancel();
-  }
+const ConfirmDialog = require("./components/confirm_dialog.js");
+const OptionDialog = require("./components/option_dialog.js");
+const TableNavLink = require("./components/table_foot_nav.js");
 
-  handleGroupChange(e) {
-    var radio = e.target;
-    if (radio.checked) {
-      this.setState({
-        newgroup: radio.value
-      });
-    }
-  }
-
-  render() {
-    var styles = {};
-    if (!this.props.visible) styles.display = 'none';
-    var groupItems = this.props.categories.map((group) => {
-      if (group.id == -1) return '';
-      return (
-        <li className = 'move-group-radio-li'>
-	  <input type = 'radio' name = 'photogroup' value = {group.id} onChange = {this.handleGroupChange}/>
-	  <label>{group.name}</label>
-        </li>
-      );
-    });
-    return (
-      <div className = 'dialog-div option-dialog move-category-dialog' style = {styles}>
-        <div className = 'dialog-main-body-div'>
-	  <ul id = 'move-group-radio-ul'>
-	    {groupItems}
-	  </ul>
-        </div>
-        <div className = 'dialog-bottom-operation-bar'>
-	  <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
-	  <button className = 'dialog-operation-button dialog-cancel-button' onClick = {this.handleCancelClick}>取消</button>
-        </div>
-      </div>
-    );
-  }
-}
 class FilterInput extends React.Component {
   constructor(props) {
     super(props);
@@ -73,7 +22,8 @@ class FilterInput extends React.Component {
       </div>
     );
   }
-  }
+}
+
 class FilterSelect extends React.Component {
   constructor(props) {
     super(props);
@@ -102,6 +52,7 @@ class FilterSelect extends React.Component {
     );
   }
 }
+
 class ArticleTableLabel extends React.Component {
   constructor(props) {
     super(props);
@@ -127,6 +78,7 @@ class ArticleTableLabel extends React.Component {
     );
   }
 }
+
 class ArticleRow extends React.Component {
   constructor(props) {
     super(props);
@@ -172,6 +124,7 @@ class ArticleRow extends React.Component {
     );
   }
 }
+
 class ArticleTable extends React.Component {
   constructor(props) {
     super(props);
@@ -227,6 +180,7 @@ class ArticleTable extends React.Component {
     );
   }
 }
+
 class ArticleLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -510,14 +464,10 @@ class ArticleLayout extends React.Component {
         </div>
         <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
         <ConfirmDialog title = '确认删除?' confirm = {this.deleteArticleConfirm} cancel = {this.deleteArticleCancel} visible = {this.state.delVisible} />
-        <MoveGroupDialog categories = {this.state.categories} confirm = {this.moveCategoryConfirm} cancel = {this.moveCategoryCancel} visible = {this.state.moveVisible} />
+        <OptionDialog title = '移动文章分组' optionItems = {this.state.categories} confirm = {this.moveCategoryConfirm} cancel = {this.moveCategoryCancel} visible = {this.state.moveVisible} />
       </div>
     );
   }
 }
-function adminArticlesInit() {
-  ReactDOM.render(
-    <ArticleLayout />,
-    document.getElementById('table-div')
-  );
-}
+
+module.exports = ArticleLayout;
