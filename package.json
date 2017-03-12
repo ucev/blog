@@ -42,8 +42,11 @@
     "babelify": "^7.3.0",
     "browserify": "^14.1.0",
     "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-header": "^1.8.8",
     "gulp-pug": "^3.3.0",
     "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.4",
     "gulp-uglify": "^2.1.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"

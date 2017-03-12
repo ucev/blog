@@ -63,8 +63,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // nodejs modules
 app.use(express.static(path.join(__dirname, 'node_modules/chart.js/dist')));
+app.use(express.static(path.join(__dirname, 'node_modules/prismjs')))
 app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/markdown-it/dist')));
+app.use(express.static(path.join(__dirname, 'node_modules/markdown-it-classy/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/react/dist')));
 app.use(express.static(path.join(__dirname, 'node_modules/react-dom/dist')));
 //app.use(express.static(path.join(__dirname, 'node_modules/simplemde')));
