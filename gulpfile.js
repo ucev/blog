@@ -17,7 +17,10 @@ function reactCompile(opts) {
 }
 
 gulp.task("reactCompile", function() {
-  return reactCompile({standalone: "MyStructs"})
+  process.env.NODE_ENV = 'production';
+  return reactCompile({
+      standalone: "MyStructs"
+    })
     .pipe(source("my_structs.js"))
     .pipe(gulp.dest("./dist/js"));
 })

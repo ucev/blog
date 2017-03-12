@@ -1,3 +1,6 @@
+const React = require('../node_modules/react');
+const ReactDOM = require('../node_modules/react-dom');
+
 const ConfirmDialog = require("./components/confirm_dialog.js");
 const OptionDialog = require("./components/option_dialog.js");
 const TableNavLink = require("./components/table_foot_nav.js");

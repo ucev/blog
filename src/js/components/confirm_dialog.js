@@ -1,3 +1,6 @@
+const React = require('../../node_modules/react');
+const ReactDOM = require('../../node_modules/react-dom');
+
 class ConfirmDialog extends React.Component {
   constructor(props) {
     super(props);

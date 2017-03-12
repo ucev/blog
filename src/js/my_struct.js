@@ -1,3 +1,6 @@
+const React = require('../node_modules/react');
+const ReactDOM = require('../node_modules/react-dom');
+
 const Articles = require('./react_articles.js');
 const Categories = require('./react_categories.js');
 const CategoriesRefact = require('./react_category_refact.js');

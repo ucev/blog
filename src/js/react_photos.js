@@ -1,3 +1,6 @@
+const React = require('../node_modules/react');
+const ReactDOM = require('../node_modules/react-dom');
+
 const ConfirmDialog = require("./components/confirm_dialog.js");
 const InputDialog = require("./components/input_dialog.js");
 const OptionDialog = require("./components/option_dialog.js");
