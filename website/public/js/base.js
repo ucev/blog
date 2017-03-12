@@ -42,19 +42,13 @@ $(document).ready(function(){
         $(this).attr('src', '/images/icons/ic_list_grey_24dp_2x.png');
         $(categoryUl).addClass('article-categories-ul-show');
         $(categoryUl).removeClass('article-categories-ul-hide');
-        $(articlesList).addClass('articles-list-ul-expanded');
-        $(articlesList).removeClass('articles-list-ul-unexpanded');
         $(categoryTitle).show();
-        //$(categoryUl).width(200);
       } else {
         $(this).data('state', 'hide');
         $(this).attr('src', '/images/icons/ic_toc_grey_24dp_2x.png');
         $(categoryUl).addClass('article-categories-ul-hide');
         $(categoryUl).removeClass('article-categories-ul-show');
-        $(articlesList).addClass('articles-list-ul-unexpanded');
-        $(articlesList).removeClass('articles-list-ul-expanded');
         $(categoryTitle).hide();
-        //$(categoryUl).width(0);
       }
     })
   })();

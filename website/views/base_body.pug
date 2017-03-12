@@ -1,5 +1,11 @@
 body
   block body-block
-    h1 #{title}
-  = '\n'
+    block banner-block
+    div.website-container
+      block struct-main
+        div.struct-main-content
+      block struct-leftside-block
+        aside.struct-sidebar-left
+      block struct-rightside-block
+        aside.struct-sidebar-right
   include base_foot

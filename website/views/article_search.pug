@@ -19,16 +19,21 @@ block body-block
       div.article-item-li-bottom-info
         span.article-item-li-pageview 阅读量(#{itemData.pageview})
         span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
-  div.main#articles-list-div
+  div.website-container
     block body-article-block
-      div#article-search-hint-div
-        div#hint-param-article-search-div 查找结果
-        a#quit-article-search-div(href='/articles') 返回
-      ul#articles-list-ul
-        each data in datas
-          +article_item(data)
-      ul#articles-foot-nav-ul
-      include page_foot_pager_nav
+      div.struct-main-content
+        div#article-search-hint-div
+          div#hint-param-article-search-div 查找结果
+          a#quit-article-search-div(href='/articles') 返回
+        ul#articles-list-ul
+          each data in datas
+            +article_item(data)
+        ul#articles-foot-nav-ul
+        include page_foot_pager_nav
+    block article-leftside-block
+      aside.struct-sidebar-left
+    block article-rightside-block
+      aside.struct-sidebar-right
       
   script.
     $(document).ready(() => {

@@ -1,16 +1,17 @@
 extends base_layout
 
-block body-block
+mixin category_item(category)
+  li.category-item-li
+    div.category-item-title-div
+      a(href='#') #{category.name}
+    div.category-item-descp-div
+      div #{category.descp}
+
+block banner-block
   include website_banner
-  mixin category_item(category)
-    li.category-item-li
-      div.category-item-title-div
-        a(href='#') #{category.name}
-      div.category-item-descp-div
-        div #{category.descp}
-  div.main
-    block body-categories-block
-      div#categories-list-div
-        ul#categories-list-ul
-          each category in categories
-            +category_item(category)
+
+block struct-main
+  div.struct-main-content
+    ul#categories-list-ul
+      each category in categories
+        +category_item(category)

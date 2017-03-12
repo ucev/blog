@@ -4,9 +4,11 @@ block append jsscript-block
   script(src='/markdown-it.min.js')
   script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
   script(src='/prism.js')
-
-block body-block
+  
+block banner-block
   include website_banner
-  div.main
-    div.markdown-display#display-area !{md}
+
+block struct-main
+  div.struct-main-content
+    div.markdown-display !{md}
     include comment
