@@ -37,7 +37,7 @@ gulp.task("scripts", ["reactCompile"], function() {
     .pipe(gulp.dest("./website/public/js"));
 })
 
-var watcher = gulp.watch("./src/js/*.js", ["scripts"])
+var watcher = gulp.watch(["./src/js/**/*.js"], ["scripts"])
 watcher.on("change", function() {
   console.log("change");
 })

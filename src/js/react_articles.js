@@ -1,8 +1,8 @@
-const React = require('../node_modules/react');
-const ReactDOM = require('../node_modules/react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-const ConfirmDialog = require("./components/confirm_dialog.js");
-const OptionDialog = require("./components/option_dialog.js");
+const ConfirmDialog = require("./components/dialogs/confirm_dialog.js");
+const OptionDialog = require("./components/dialogs/option_dialog.js");
 const TableNavLink = require("./components/table_foot_nav.js");
 
 class FilterInput extends React.Component {
@@ -172,7 +172,7 @@ class ArticleTable extends React.Component {
     return (
       <table className='content-table'>
         <thead>
-	  <ArticleTableLabel allCheckState = {allCheckState} allChecked = {this.allChecked}/>
+          <ArticleTableLabel allCheckState = {allCheckState} allChecked = {this.allChecked}/>
         </thead>
         <tbody>
 	  { articleRows }

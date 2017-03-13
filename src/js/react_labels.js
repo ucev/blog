@@ -1,5 +1,5 @@
-const React = require('../node_modules/react');
-const ReactDOM = require('../node_modules/react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
 const TableNavLink = require("./components/table_foot_nav.js");
 // 这个扩展是从网上复制过来的

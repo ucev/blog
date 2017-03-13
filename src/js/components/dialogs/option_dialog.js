@@ -1,5 +1,12 @@
-const React = require('../../node_modules/react');
-const ReactDOM = require('../../node_modules/react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
+
+const CancelButton = require('./dialog_cancel_button');
+const ConfirmButton = require('./dialog_confirm_button');
+const Dialog = require('./dialog');
+const DialogHeader = require('./dialog_header');
+const DialogBody = require('./dialog_body');
+const DialogFoot = require('./dialog_foot');
 
 class OptionDialog extends React.Component {
   constructor(props) {
@@ -30,13 +37,6 @@ class OptionDialog extends React.Component {
   }
 
   render() {
-    var centerScreen = !(this.props.centerScreen === false);
-    var classes = "dialog-div option-dialog";
-    if (centerScreen) {
-      classes += " dialog-div-center-screen";
-    }
-    var styles = {};
-    if (!this.props.visible) styles.display = 'none';
     var groupItems = this.props.optionItems.map((group) => {
       if (group.id == -1) return '';
       return (
@@ -47,17 +47,17 @@ class OptionDialog extends React.Component {
       );
     });
     return (
-      <div className = {classes} style = {styles} data-title = {this.props.title}>
-        <div className = 'dialog-main-body-div'>
+      <Dialog className = 'option-dialog' centerScreen = {this.props.centerScreen} visible = {this.props.visible}>
+        <DialogBody>
           <ul className = 'option-dialog-option-ul'>
             {groupItems}
           </ul>
-        </div>
-        <div className = 'dialog-bottom-operation-bar'>
-          <button className = 'dialog-operation-button dialog-confirm-button' onClick = {this.handleConfirmClick}>确定</button>
-          <button className = 'dialog-operation-button dialog-cancel-button' onClick = {this.handleCancelClick}>取消</button>
-        </div>
-      </div>
+        </DialogBody>
+        <DialogFoot>
+          <ConfirmButton title = '确定' click = {this.handleConfirmClick} />
+          <CancelButton title = '取消' click = {this.handleCancelClick} />
+        </DialogFoot>
+      </Dialog>
     );
   }
 }

@@ -525,11 +525,16 @@ td {
   position: absolute;
   left: calc((100% - 300px) / 2);
   z-index: 40;
-  width: 300px;
-  padding: 30px ;
+  min-width: 300px;
+  padding: 30px;
   background: white;
   border: 1px solid #BDBDBD;
   box-shadow: 3px 3px 3px #E0E0E0;
+}
+
+.dialog-title-div,
+.dialog-main-body-div,
+.dialog-bottom-operation-bar {
 }
 
 #add-new-group-div {
@@ -614,13 +619,12 @@ td {
   margin-left: 30px;
 }
 
-#add-category-div {
-  position: fixed;
-  top: 100px;
+.add-category-dialog {
   left: calc((100% - 500px) / 2);
   z-index: 10;
   width: 500px;
   height: 0;
+  padding: 0;
   overflow: hidden;
   border: 0px solid #9E9E9E;
   background-color: white;

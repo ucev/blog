@@ -1,5 +1,5 @@
-const React = require('../../node_modules/react');
-const ReactDOM = require('../../node_modules/react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
 class TableNavLinkLi extends React.Component {
   constructor(props) {

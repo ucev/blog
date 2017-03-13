@@ -1,5 +1,5 @@
-const React = require('../node_modules/react');
-const ReactDOM = require('../node_modules/react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
 const Articles = require('./react_articles.js');
 const Categories = require('./react_categories.js');
