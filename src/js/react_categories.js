@@ -3,6 +3,11 @@ const ReactDOM = require('react-dom');
 
 const AddCategoryDialog = require('./components/dialogs/add_category_dialog');
 const ConfirmDialog = require("./components/dialogs/confirm_dialog.js");
+
+const Table = require('./components/tables/table');
+const TableLabel = require('./components/tables/table_label');
+const TableBody = require('./components/tables/table_body');
+const TableFoot = require('./components/tables/table_foot');
 const TableNavLink = require("./components/table_foot_nav.js");
 
 class OperationBar extends React.Component {
@@ -27,17 +32,18 @@ class CategoryLabel extends React.Component {
     super(props);
   }
   render() {
+    var labels = [
+      {name: 'index', val: '序号'},
+      {name: 'name', val: '名称'},
+      {name: 'parent', val: '父节点'},
+      {name: 'descp', val: '描述'},
+      {name: 'order', val: '顺序'},
+      {name: 'articlecnt', val: '文章数'},
+      {name: 'operation', val: '操作'}
+    ]
     return (
-      <tr className = 'content-row-label category-row-label'>
-        <th className = 'category-row-index-label'>序号</th>
-        <th className = 'category-row-name-label'>名称</th>
-        <th className = 'category-row-parent-label'>父节点</th>
-        <th className = 'category-row-descp-label'>描述</th>
-        <th className = 'category-row-order-label'>顺序</th>
-        <th className = 'category-row-articlecnt-label'>文章数</th>
-        <th className = 'content-row-operation-label category-row-operation-label'>操作</th>
-      </tr>
-    );
+      <TableLabel key = {1} type = 'category' labels = {labels} />
+    )
   }
 }
 
@@ -79,7 +85,7 @@ class CategoryRow extends React.Component {
       </ul>
     );
     return (
-      <tr className = 'content-row-data category-row-data'>
+      <tr key = {category.id} className = 'content-row-data category-row-data'>
         <td className = 'category-row-index-data'>{category.id}</td>
         <td className = 'category-row-name-data'><a href = {'/articles/category/' + category.id}>{category.name}</a></td>
         <td className = 'category-row-parent-data'>{category.parent}</td>
@@ -101,16 +107,13 @@ class CategoryTable extends React.Component {
       <CategoryRow category = {category} modify = {this.props.modify} delete = {this.props.delete} handleCategoryOrderChange = {this.props.handleCategoryOrderChange} updateCategoryOrder = {this.props.updateCategoryOrder} />
     ));
     return (
-      <table className = 'content-table category-content-table'>
-        <thead>
-          <CategoryLabel />
-        </thead>
-        <tbody>
+      <Table type = 'category'>
+        <CategoryLabel />
+        <TableBody>
           {categories}
-        </tbody>
-        <tfoot>
-        </tfoot>
-      </table>
+        </TableBody>
+        <TableFoot />
+      </Table>
     );
   }
 }

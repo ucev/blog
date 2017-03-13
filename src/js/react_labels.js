@@ -1,6 +1,10 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+const Table = require('./components/tables/table');
+const TableLabel = require('./components/tables/table_label');
+const TableBody = require('./components/tables/table_body');
+const TableFoot = require('./components/tables/table_foot');
 const TableNavLink = require("./components/table_foot_nav.js");
 // 这个扩展是从网上复制过来的
 Date.prototype.format = function (fmt) { //author: meizz
@@ -22,16 +26,6 @@ Date.prototype.format = function (fmt) { //author: meizz
 class LabelTableLabel extends React.Component {
   constructor(props) {
     super(props);
-    this.orderState = {
-      asc: {
-        label: 'asc',
-        imgsrc: '/images/icons/ic_arrow_drop_down_white_24dp_2x.png'
-      },
-      desc: {
-        label: 'desc',
-        imgsrc: '/images/icons/ic_arrow_drop_up_white_24dp_2x.png'
-      }
-    }
     this.handleOrderImgClick = this.handleOrderImgClick.bind(this);
   }
   handleOrderImgClick(e) {
@@ -40,21 +34,15 @@ class LabelTableLabel extends React.Component {
     this.props.orderChange(orderby, orderDirect);
   }
   render() {
-    var targetsrc, othersrc;
-    if (this.props.orderDirect == this.orderState.asc.label) {
-      targetsrc = this.orderState.asc.imgsrc;
-    } else {
-      targetsrc = this.orderState.desc.imgsrc;
-    }
-    othersrc = this.orderState.asc.imgsrc;
+    var labels = [
+      {name: 'index', val: '序号', sorted: true, sortname: 'id'},
+      {name: 'title', val: '标题'},
+      {name: 'articlecnt', val: '文章数', sorted: true, sortname: 'articles'},
+      {name: 'hotmark', val: '热度', sorted: true, sortname: 'hotmark'},
+      {name: 'addtime', val: '添加日期'}
+    ];
     return (
-      <tr className = 'content-row-label'>
-        <th className = 'content-row-index-label label-row-index-label'>序号<img className = 'label-row-hotmark-order-img' src = {this.props.orderby == 'id' ? targetsrc : othersrc} data-label = 'id' onClick =  {this.handleOrderImgClick} ></img></th>
-        <th className = 'content-row-title-label label-row-title-label'>标题</th>
-        <th className = 'content-row-article-count-label label-row-articlecnt-label'>文章数<img className = 'label-row-hotmark-order-img' src = {this.props.orderby == 'id' ? targetsrc : othersrc} data-label = 'articles' onClick =  {this.handleOrderImgClick} ></img></th>
-        <th className = 'content-row-hotmark-label label-row-hotmark-label'>热度<img className = 'label-row-hotmark-order-img' src = {this.props.orderby == 'hotmark' ? targetsrc : othersrc} data-label = 'hotmark' onClick =  {this.handleOrderImgClick} ></img></th>
-        <th className = 'content-row-addtime-label label-row-addtime-label'>添加日期</th>
-      </tr>
+      <TableLabel key = {1} type = 'label' labels = {labels} orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {this.props.orderChange} />
     )
   }
 }
@@ -67,7 +55,7 @@ class LabelRow extends React.Component {
     const label = this.props.label;
     var addtime = new Date(label.addtime * 1000).format('yyyy-MM-dd');
     return (
-      <tr className = 'content-row-data'>
+      <tr key = {label.id} className = 'content-row-data'>
         <td className = 'content-row-index-data'>{label.id}</td>
         <td className = 'content-row-title-data label-row-title-data'><a href = {'/articles/search?args=' + label.name}>{label.name}</a></td>
         <td className = 'content-row-article-count-data'>{label.articles}</td>
@@ -87,16 +75,13 @@ class LabelTable extends React.Component {
       <LabelRow label = {label} />
     ))
     return (
-      <table className = 'content-table'>
-        <thead>
-          <LabelTableLabel orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {this.props.orderChange} />
-        </thead>
-        <tbody>
+      <Table type = 'label'>
+        <LabelTableLabel orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {this.props.orderChange} />
+        <TableBody>
           {labels}
-        </tbody>
-        <tfoot>
-        </tfoot>
-      </table>
+        </TableBody>
+        <TableFoot />
+      </Table>
     )
   }
 }

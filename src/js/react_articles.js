@@ -3,6 +3,11 @@ const ReactDOM = require('react-dom');
 
 const ConfirmDialog = require("./components/dialogs/confirm_dialog.js");
 const OptionDialog = require("./components/dialogs/option_dialog.js");
+
+const Table = require('./components/tables/table');
+const TableLabel = require('./components/tables/table_label');
+const TableBody = require('./components/tables/table_body');
+const TableFoot = require('./components/tables/table_foot');
 const TableNavLink = require("./components/table_foot_nav.js");
 
 class FilterInput extends React.Component {
@@ -67,18 +72,19 @@ class ArticleTableLabel extends React.Component {
   }
   render() {
     var checked = this.props.allCheckState == true ? 'checked': '';
+    var labels = [
+          {name: 'check', val: (<input type='checkbox' checked = {checked} onChange = {this.handleCheckStateChange}/>)},
+          {name: 'index', val: '序号'},
+          {name: 'title', val: '标题'},
+          {name: 'category', val: '类别'},
+          {name: 'label', val: '标签'},
+          {name: 'status', val: '状态'},
+          {name: 'pageview', val: '阅读次数'},
+          {name: 'operation', val: '操作'}
+    ]
     return (
-      <tr className='content-row-label'>
-        <th className='content-row-check-label'><input type='checkbox' checked = {checked} onChange = {this.handleCheckStateChange}/></th>
-        <th className='content-row-index-label'>序号</th>
-        <th className='content-row-title-label'>标题</th>
-        <th className='content-row-category-label'>类别</th>
-        <th className='content-row-label-label'>标签</th>
-        <th className='content-row-status-label'>状态</th>
-        <th className='content-row-pageview-label'>阅读次数</th>
-        <th className='content-row-operation-label'>操作</th>
-      </tr>
-    );
+      <TableLabel key = {1} type = 'article' labels = {labels} />
+    )
   }
 }
 
@@ -114,7 +120,7 @@ class ArticleRow extends React.Component {
     const operation = this.article_operation[article.state];
     const checked = this.props.checked === true ? 'checked' : '';
     return (
-      <tr className='content-row-data'>
+      <tr key = {article.id} className='content-row-data'>
         <td className='content-row-checkbox-data'><input type='checkbox' checked = {checked} onChange = {this.handleCheckStateChange}/></td>
         <td className='content-row-index-data' onClick = {this.handleIndexClick}>{this.props.index + 1}</td>
         <td className='content-row-title-data' style={topStatus}><a href={url}>{article.title}</a></td>
@@ -170,16 +176,13 @@ class ArticleTable extends React.Component {
       );
     });
     return (
-      <table className='content-table'>
-        <thead>
-          <ArticleTableLabel allCheckState = {allCheckState} allChecked = {this.allChecked}/>
-        </thead>
-        <tbody>
-	  { articleRows }
-        </tbody>
-        <tfoot>
-        </tfoot>
-      </table>
+      <Table type = 'article'>
+        <ArticleTableLabel allCheckState = {allCheckState} allChecked = {this.allChecked}/>
+        <TableBody>
+          { articleRows }
+        </TableBody>
+        <TableFoot></TableFoot>
+      </Table>
     );
   }
 }
