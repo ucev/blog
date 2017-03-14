@@ -65,7 +65,6 @@ class AddCategoryDialog extends React.Component {
       }
     }
     return (
-      //<div id = 'add-category-div' style = {styles}>
       <Dialog className = 'add-category-dialog' visible = {this.props.visible} styles = {styles}>
         <form id = 'add-category-form'>
           <legend id = 'add-category-div-title'>{this.props.title}</legend>
@@ -89,7 +88,6 @@ class AddCategoryDialog extends React.Component {
           </li>
         </form>
       </Dialog>
-      //</div>
     )
   }
 }
