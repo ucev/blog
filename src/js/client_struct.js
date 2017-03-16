@@ -6,7 +6,7 @@ const ArticleList = require('./client/article_list');
 function initArticleList() {
   ReactDOM.render(
     <ArticleList />,
-    document.getElementById('article-list-area')
+    document.getElementById('articles-list-area')
   )
 }
 
