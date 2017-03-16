@@ -226,11 +226,9 @@ footer * {
 }
 
 #quit-article-search-div {
-  display: block;
-  width: 70px;
-  height: 30px;
-  line-height: 30px;
+  padding: 5px 10px;
   color: #212121;
+  font-size: 0.6rem;
   text-align: center;
   text-decoration: none;
   background-color: #EEEEEE;
@@ -241,6 +239,7 @@ footer * {
 #hint-param-article-search-div {
   height: 30px;
   line-height: 30px;
+  font-size: 0.7rem;
 }
 
 #articles-list-ul {
@@ -268,7 +267,7 @@ footer * {
 .article-item-li-title a {
   max-width: 80%;
   color: black;
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
   text-decoration: none;
   overflow: none;
@@ -286,7 +285,7 @@ footer * {
   margin-left: 10px;
   padding-left: 5px;
   padding-right: 5px;
-  font-size: 14px;
+  font-size: 0.5rem;
   font-style: normal;
   color: white;
   background-color: green;

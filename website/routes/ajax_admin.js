@@ -86,7 +86,7 @@ router.get('/articles/get', (req, res, next) => {
     if (label) {
       where.label = label;
     }
-    __articles.getByCond({where: where, start: start}, 
+    __articles.getByCond({where: where, start: start, client: false, queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']}, 
       function(r) {
         res.json({code: 0, msg: '获取成功', data: r});
       },

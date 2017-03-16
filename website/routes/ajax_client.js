@@ -10,7 +10,7 @@ router.get('/articles/get', (req, res, next) => {
   var where = {
     state: 'on'
   };
-  __articles.getByCond({where: where, start: start, client: true}, 
+  __articles.getByCond({where: where, start: start, queryfields: ['id', 'title', 'pageview', 'modtime', 'descp']}, 
     function(r) {
       res.json({code: 0, msg: '获取成功', data: r});
     },

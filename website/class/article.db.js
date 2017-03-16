@@ -98,7 +98,7 @@ class Articles {
     });
   }
 
-  getByCond({where = {}, start = 0, client = false} = {}, succ = function(){}, fail= function(){}) {
+  getByCond({where = {}, start = 0, client = true, queryfields = ['*']} = {}, succ = function(){}, fail= function(){}) {
     var returnData = {
       total: 0,
       current: start,
@@ -122,11 +122,7 @@ class Articles {
         }
       }
     }
-    var queryfields;
-    if (!client) {
-      queryfields = ['id', 'title', 'category', 'label', 'state', 'top', 'pageview'];
-    } else {
-      queryfields = ['id', 'title', 'pageview', 'modtime', 'descp'];
+    if (client) {
       whereSql += (` AND state = 'on' `);
     }
     var queryCount = new Promise((resolve, reject) => {

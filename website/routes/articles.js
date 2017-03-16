@@ -150,9 +150,10 @@ router.get('/search', (req, res, next) => {
     {
       where: {args: args},
       start: start,
-      client: true
+      queryfields: ['id', 'title', 'pageview', 'modtime', 'descp', 'label']
     },
     (arts) => {
+      __log.debug(arts);
       res.render('article_search', {
         title: '文章查找',
         websiteInfo: configs.website_info,
@@ -188,7 +189,6 @@ router.get('/', (req, res, next) => {
     {
       where: {},
       start: start,
-      client: true
     },
     (arts) => {
       __categories.get(
