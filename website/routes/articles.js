@@ -8,6 +8,8 @@ const __categories = new Categories();
 
 const __log = require('../utils/log');
 
+const clientAjax = require('./ajax_client');
+
 
 const __markdown = require('markdown-it')({
     html: true,
@@ -167,6 +169,8 @@ router.get('/search', (req, res, next) => {
   )
 })
 
+router.use('/data', clientAjax);
+
 router.get('/', (req, res, next) => {
   var start = req.query.p ? req.query.p : 0;
   function response(arts, cats) {
@@ -201,5 +205,6 @@ router.get('/', (req, res, next) => {
     }
   )
 });
+
 
 module.exports = router;

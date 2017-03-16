@@ -18,12 +18,9 @@ block banner-block
 
 
 block struct-main
-  div.struct-main-content
-    ul#articles-list-ul
-      each data in datas
-        +article_item(data)
-    ul#articles-foot-nav-ul
-      include page_foot_pager_nav
+  div.struct-main-content#article-list-area
+  //ul#articles-foot-nav-ul
+  //  include page_foot_pager_nav
 
 block struct-leftside-block
   aside.struct-sidebar-left
@@ -42,3 +39,7 @@ block append body-block
         alert($(this).text());
       })
     });
+  - var time = new Date().getTime();
+  script(src = '/js/client_structs.min.js?' + time)
+  script.
+    MyStructs.initArticleList();

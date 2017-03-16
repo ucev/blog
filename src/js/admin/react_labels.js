@@ -1,11 +1,11 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const Table = require('./components/tables/table');
-const TableLabel = require('./components/tables/table_label');
-const TableBody = require('./components/tables/table_body');
-const TableFoot = require('./components/tables/table_foot');
-const TableNavLink = require("./components/table_foot_nav.js");
+const Table = require('../components/tables/table');
+const TableLabel = require('../components/tables/table_label');
+const TableBody = require('../components/tables/table_body');
+const TableFoot = require('../components/tables/table_foot');
+const TableNavLink = require("../components/table_foot_nav.js");
 // 这个扩展是从网上复制过来的
 Date.prototype.format = function (fmt) { //author: meizz
   var o = {

@@ -10,8 +10,8 @@ var rename = require("gulp-rename");
 var pug = require("gulp-pug");
 
 
-function reactCompile(opts) {
-  return browserify("./src/js/my_struct.js", opts)
+function reactCompile(opts, filename) {
+  return browserify(filename, opts)
     .transform("babelify", {presets: ["es2015", "react"]})
     .bundle();
 }
@@ -20,7 +20,7 @@ gulp.task("reactCompile", function() {
   process.env.NODE_ENV = 'production';
   return reactCompile({
       standalone: "MyStructs"
-    })
+    }, "./src/js/my_struct.js")
     .pipe(source("my_structs.js"))
     .pipe(gulp.dest("./dist/js"));
 })
@@ -37,7 +37,29 @@ gulp.task("scripts", ["reactCompile"], function() {
     .pipe(gulp.dest("./website/public/js"));
 })
 
-var watcher = gulp.watch(["./src/js/**/*.js"], ["scripts"])
-watcher.on("change", function() {
-  console.log("change");
+gulp.task("clientCompile", function() {
+  process.env.NODE_ENV = 'production';
+  return reactCompile({
+    standalone: "MyStructs"
+  }, "./src/js/client_struct.js")
+  .pipe(source("client_struct.js"))
+  .pipe(gulp.dest("./dist/js"));
 })
+
+gulp.task("client", ["clientCompile"], function() {
+  var js_files = ["./dist/js/client_struct.js"];
+  return gulp.src(js_files)
+    .pipe(concat("client_struct.min.js"))
+    .pipe(uglify())
+    .pipe(buffer())
+    .pipe(gulp.dest("./dist/js"))
+    .pipe(rename("client_structs.min.js"))
+    .pipe(buffer())
+    .pipe(gulp.dest("./website/public/js"));
+})
+
+
+//var watcher = gulp.watch(["./src/js/**/*.js"], ["scripts"])
+//watcher.on("change", function() {
+//  console.log("change");
+//})

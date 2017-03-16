@@ -126,7 +126,7 @@ class Articles {
     if (!client) {
       queryfields = ['id', 'title', 'category', 'label', 'state', 'top', 'pageview'];
     } else {
-      queryfields = ['*'];
+      queryfields = ['id', 'title', 'pageview', 'modtime', 'descp'];
       whereSql += (` AND state = 'on' `);
     }
     var queryCount = new Promise((resolve, reject) => {

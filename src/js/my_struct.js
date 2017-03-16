@@ -1,11 +1,11 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const Articles = require('./react_articles.js');
-const Categories = require('./react_categories.js');
-const CategoriesRefact = require('./react_category_refact.js');
-const Labels = require('./react_labels.js');
-const Photos = require('./react_photos.js');
+const Articles = require('./admin/react_articles.js');
+const Categories = require('./admin/react_categories.js');
+const CategoriesRefact = require('./admin/react_category_refact.js');
+const Labels = require('./admin/react_labels.js');
+const Photos = require('./admin/react_photos.js');
 
 function adminArticlesInit() {
   ReactDOM.render(

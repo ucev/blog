@@ -1,10 +1,10 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const ConfirmDialog = require("./components/dialogs/confirm_dialog.js");
-const InputDialog = require("./components/dialogs/input_dialog.js");
-const OptionDialog = require("./components/dialogs/option_dialog.js");
-const TableNavLink = require("./components/table_foot_nav.js");
+const ConfirmDialog = require("../components/dialogs/confirm_dialog.js");
+const InputDialog = require("../components/dialogs/input_dialog.js");
+const OptionDialog = require("../components/dialogs/option_dialog.js");
+const TableNavLink = require("../components/table_foot_nav.js");
 
 class PhotoFlowOperationBar extends React.Component {
   constructor(props) {
