@@ -6,37 +6,37 @@
 .markdown-display h4,
 .markdown-display h5,
 .markdown-display h6 {
-  font-weight: bold;
+  font-weight: 500;
 }
 
 .markdown-display h1 {
-  font-size: 40px;
+  font-size: 1.2rem;
   color: #000000;
   border-bottom: 1px solid #BDBDBD;
   padding-bottom: 10px;
 }
 
 .markdown-display h2 {
-  font-size: 30px;
+  font-size: 1rem;
   color: #000000;
   padding-bottom: 10px;
   border-bottom: 1px solid #BDBDBD;
 }
 
 .markdown-display h3 {
-  font-size: 22px;
+  font-size: 0.8px;
 }
 
 .markdown-display h4 {
-  font-size: 18px;
+  font-size: 0.7px;
 }
 
 .markdown-display h5 {
-  font-size: 16px;
+  font-size: 0.6px;
 }
 
 .markdown-display h6 {
-  font-size: 14px;
+  font-size: 0.5px;
   color: #777777;
   background-color: inherit;
 }
@@ -55,14 +55,13 @@
 .markdown-display ul,
 .markdown-display table,
 .markdown-display pre {
-  font-size: 20px;
+  font-size: 0.8rem;
   line-height: 30px;
   margin: 20px 0;
 }
 
 .markdown-display table {
   border-collapse: collapse;
-  max-width: 80%;
 }
 
 .markdown-display table,
@@ -96,7 +95,7 @@
 }
 
 .markdown-display blockquote p {
-  line-height: 30px;
+  line-height: 1.2rem;
 }
 
 .markdown-display code,
@@ -134,4 +133,16 @@
 
 .markdown-display img {
   max-width: 300px;
+}
+
+@media screen and (min-width: 800px) {
+  
+}
+
+@media screen and (max-width: 800px) {
+  .markdown-display ol,
+  .markdown-display ul {
+    padding-left: 15px;
+    margin-top: 5px;
+  }
 }
