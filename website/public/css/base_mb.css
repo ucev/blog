@@ -111,7 +111,6 @@ body {
 
 .website-container {
   min-height: 100%;
-  padding-top: 10px;
   padding-bottom: 30px;
 }
 
@@ -227,6 +226,7 @@ footer * {
   padding-left: 20px;
   padding-right: 20px;
   overflow: hidden;
+  display: none;
 }
 
 #quit-article-search-div {
@@ -245,7 +245,6 @@ footer * {
 #hint-param-article-search-div {
   height: 30px;
   line-height: 30px;
-  display: none;
 }
 
 #articles-list-ul {

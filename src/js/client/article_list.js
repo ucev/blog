@@ -30,7 +30,6 @@ class QueryDataDiv extends React.Component {
     this.loadMore = this.loadMore.bind(this);
   }
   loadMore() {
-    console.log('more1');
     this.props.more();
   }
   render() {
@@ -60,7 +59,6 @@ class ArticleDiv extends React.Component {
     this.getArticleData();
   }
   loadMore() {
-    console.log('more2');
     this.getArticleData(false);
   }
   /**
@@ -76,7 +74,6 @@ class ArticleDiv extends React.Component {
     } else {
       url = '/articles/data/articles/get?start=' + that.state.current;
     }
-    console.log(url);
     $.ajax({
       url: url,
       type: 'get',
@@ -84,7 +81,6 @@ class ArticleDiv extends React.Component {
       success: function(dt) {
         if (dt.code == 0) {
           var data = dt.data;
-          console.log('total: ' + data.total + ', current: ' + data.current);
           var articles = that.state.articles;
           if (replace === true) {
             articles = data.data;

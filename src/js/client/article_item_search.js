@@ -21,7 +21,6 @@ Date.prototype.format = function (fmt) { //author: meizz
 class SearchLabel extends React.Component {
   render() {
     var label = this.props.label;
-    console.log(label + '  ' + this.props.query);
     if (this.props.query && label.search(this.props.query) == -1) {
       return <li className = 'article-item-li-label-li'>{label}</li>;
     } else {
@@ -32,6 +31,9 @@ class SearchLabel extends React.Component {
 class SearchLabels extends React.Component {
   render() {
     var labels = this.props.labels.map((label) => {
+      if (label.trim() == '') {
+        return;
+      }
       return <SearchLabel label = {label} query = {this.props.query} />
     })
     return (
@@ -44,20 +46,39 @@ class SearchLabels extends React.Component {
 class ArticleItem extends React.Component {
   constructor(props) {
     super(props);
+    this.genTitle = this.genTitle.bind(this);
+  }
+  genTitle(id, title, query) {
+    var searchExp = new RegExp(query, 'i');
+    var ele;
+    var pos = title.search(searchExp);
+    if (query== undefined || pos == -1) {
+      ele = (
+        <a href = {'/articles/view/' + id}>{title}</a>
+      )
+    } else {
+      ele = (
+        <a href = {'/articles/view/' + id}>
+          {title.substr(0, pos)}
+          <mark>{title.substr(pos, pos + query.length)}</mark>
+          {title.substr(pos + query.length)}
+        </a>
+      )
+    }
+    return ele;
   }
   render() {
-    var searchExp = new RegExp('(' + this.props.query + ')', 'i');
     var article = this.props.article;
-    var title = article.title.replace(searchExp, '<mark>$1</mark>');
+    var title = this.genTitle(article.id, article.title, this.props.query);
     return (
       <li className = 'article-item-li' date-id = {article.id}>
         <h3 className = 'article-item-li-title'>
-          <a href = {'/articles/view/' + article.id}>{title}</a>
+          {title}
           <SearchLabels labels = {article.label.split(',')} query = {this.props.query} />
         </h3>
         <div className = 'article-item-li-content'>{article.descp}</div>
         <div className = 'article-item-li-bottom-info'>
-          <span className = 'article-item-li-pageview'>阅读量{article.pageview}</span>
+          <span className = 'article-item-li-pageview'>阅读量({article.pageview})</span>
           <span className = 'article-item-li-addtime'>{new Date(Number(article.modtime) * 1000).format('yyyy-MM-dd hh:mm:ss')}</span>
         </div>
       </li>

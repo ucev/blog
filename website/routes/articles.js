@@ -145,6 +145,11 @@ router.get('/search', (req, res, next) => {
   var start = req.query.p ? req.query.p : 0;
   // 查找的参数
   var args = req.query.args;
+  console.log(args);
+  if (args == undefined || args.trim() == '') {
+    res.redirect('/articles');
+    return;
+  }
   __log.debug(args);
   __articles.getByCond(
     {

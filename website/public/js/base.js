@@ -43,7 +43,7 @@ $(document).ready(function(){
     });
     $('#mobile-search-input-img').click((e) => {
       var searchParam = $("#mobile-search-input").val();
-      location.href = '/articles/search?arg=' + encodeURIComponent(searchParam);
+      location.href = '/articles/search?args=' + encodeURIComponent(searchParam);
     })
 
     $(categoryImg).click(function(e) {

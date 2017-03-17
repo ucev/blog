@@ -2,23 +2,6 @@ extends base_layout
 
 block body-block
   include website_banner
-  - var titleExp = new RegExp('(' + args + ')', 'i');
-  mixin article_label(label)
-    if label.search(titleExp) == -1
-      li.article-item-li-label-li #{label}
-    else
-      li.article-item-li-label-li.article-item-li-label-li-selected #{label}
-  mixin article_item(itemData)
-    li.article-item-li(data-id = itemData.id )
-      h3.article-item-li-title
-        a(href='/articles/view/' + itemData.id) !{itemData.title.replace(titleExp, '<mark>$1</mark>')}
-        ul.article-item-li-labels-ul
-          each lb in itemData.label.split(',')
-            +article_label(lb)
-      div.article-item-li-content #{itemData.descp}
-      div.article-item-li-bottom-info
-        span.article-item-li-pageview 阅读量(#{itemData.pageview})
-        span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
   div.website-container
     block body-article-block
       div.struct-main-content

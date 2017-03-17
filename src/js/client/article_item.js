@@ -31,7 +31,7 @@ class ArticleItem extends React.Component {
         </h3>
         <div className = 'article-item-li-content'>{article.descp}</div>
         <div className = 'article-item-li-bottom-info'>
-          <span className = 'article-item-li-pageview'>阅读量{article.pageview}</span>
+          <span className = 'article-item-li-pageview'>阅读量({article.pageview})</span>
           <span className = 'article-item-li-addtime'>{new Date(Number(article.modtime) * 1000).format('yyyy-MM-dd hh:mm:ss')}</span>
         </div>
       </li>
