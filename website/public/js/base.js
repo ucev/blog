@@ -23,7 +23,7 @@ $(document).ready(function(){
       $(searchInputDiv).width(300);
       $(hideInputImg).fadeIn("slow");
     }
-    $(showInputImg).click((e) => {
+    $(showInputImg).click(function(e) {
       if (isMobile()) {
         location.href = '/mobiles/search';
       } else {
@@ -32,16 +32,16 @@ $(document).ready(function(){
         }
       }
     });
-    $(hideInputImg).click((e) => {
+    $(hideInputImg).click(function(e) {
       hideSearchInput();
     });
-    $(searchInput).keydown((e) => {
+    $(searchInput).keydown(function(e) {
       if (e.which == 13) {
         var searchParam = $(searchInput).val();
         location.href = '/articles/search?args=' + encodeURIComponent(searchParam);
       }
     });
-    $('#mobile-search-input-img').click((e) => {
+    $('#mobile-search-input-img').click(function(e) {
       var searchParam = $("#mobile-search-input").val();
       location.href = '/articles/search?args=' + encodeURIComponent(searchParam);
     })

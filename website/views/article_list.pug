@@ -33,12 +33,6 @@ block struct-leftside-block
         +article_category(category)
 
 block append body-block
-  script.
-    $(document).ready(() => {
-      $('.article-item-li-addtime').click(function() {
-        alert($(this).text());
-      })
-    });
   - var time = new Date().getTime();
   script(src = '/js/client_structs.min.js?' + time)
   script.
