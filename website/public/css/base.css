@@ -36,6 +36,10 @@ body {
 }
 
 #website-intro-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -47,20 +51,18 @@ body {
 }
 
 #website-intro-div > div {
-  position: absolute;
-  top: 15px;
-  display: inline-block;
   height: 30px;
 }
 
 #website-front-div {
-  left: 30px;
+  padding-left: 30px;
 }
 
 #website-front-div a {
   display: inline-block;
-  font-size: 25px;
+  font-size: 1rem;
   color: white;
+  text-decoration: none;
 }
 
 #website-search-div {
@@ -77,8 +79,10 @@ body {
 }
 
 #website-search-input-div {
+  position: relative;
   width: 0;
   height: 30px;
+  margin-right: 30px;
   border-bottom: 2px solid white;
   transition: width 0.2s linear;
   -moz-transition: width 0.2s linear;

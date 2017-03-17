@@ -1,0 +1,23 @@
+extends ../base_layout
+
+mixin labelItem(label)
+  if label.hotmark > 100
+    li.mobile-search-label-li.mobile-search-label-li-hot 
+      a(href= '/articles/search?args=' + label.name) #{label.name}
+  else if label.hotmark > 50
+    li.mobile-search-label-li.mobile-search-label-li-middle
+      a(href= '/articles/search?args=' + label.name) #{label.name}
+  else
+    li.mobile-search-label-li.mobile-search-label-li-normal
+      a(href= '/articles/search?args=' + label.name) #{label.name}
+
+block banner-block
+  include ../website_banner
+
+block struct-main
+  div#mobile-search-div
+    input#mobile-search-input(type='text' placeholder='查询(标题、标签...)')
+    img(src='/images/icons/ic_search_white_24dp_2x.png')#mobile-search-input-img
+  ul#mobile-search-lables-ul
+    each label in labels
+      +labelItem(label)

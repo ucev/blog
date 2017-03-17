@@ -25,22 +25,12 @@ block body-block
         div#article-search-hint-div
           div#hint-param-article-search-div 查找结果
           a#quit-article-search-div(href='/articles') 返回
-        ul#articles-list-ul
-          each data in datas
-            +article_item(data)
-        ul#articles-foot-nav-ul
-        include page_foot_pager_nav
+        div#articles-list-area
     block article-leftside-block
       aside.struct-sidebar-left
     block article-rightside-block
       aside.struct-sidebar-right
-      
+
+  script(src = '/js/client_structs.min.js?' + time)
   script.
-    $(document).ready(() => {
-      $('.article-item-li-title, .article-item-li-content').click(function() {
-        location.href = '/articles/view/' + $(this).parent('.article-item-li').attr('data-id');
-      });
-      $('.article-item-li-addtime').click(function() {
-        alert($(this).text());
-      })
-    });
+    MyStructs.initArticleListSearch();
