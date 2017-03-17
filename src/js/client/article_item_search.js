@@ -49,7 +49,7 @@ class ArticleItem extends React.Component {
     this.genTitle = this.genTitle.bind(this);
   }
   genTitle(id, title, query) {
-    var searchExp = new RegExp(query, 'i');
+    var searchExp = new RegExp(query, 'iu');
     var ele;
     var pos = title.search(searchExp);
     if (query== undefined || pos == -1) {
