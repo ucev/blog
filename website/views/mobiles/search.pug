@@ -17,4 +17,5 @@ block struct-main
     img(src='/images/icons/ic_search_white_24dp_2x.png')#mobile-search-input-img
   ul#mobile-search-lables-ul
     each label in labels
-      +labelItem(label)
+      if label.name.trim() != ''
+        +labelItem(label)

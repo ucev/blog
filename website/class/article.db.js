@@ -396,6 +396,9 @@ class Articles {
 
   __insertNewLabels(conn, labels, sval, /*是否报告错误*/isRej) {
     return new Promise((resolve, reject) => {
+      lables = labels.filter((label) => {
+        return label.trim() != '';
+      })
       var len = labels.length;
       if (len == 0) {
         resolve();

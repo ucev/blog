@@ -12,6 +12,10 @@ class Categories {
   }
 
   add({name, parent, descp, addtime} = {}, succ, fail) {
+    if (name.trim() == '') {
+      fail();
+      return;
+    }
     var conn = mysql.createConnection(this.dbconfig);
     var add = new Promise((resolve, reject) => {
       conn.query(`insert into ${this.dbname} set ?`, {
