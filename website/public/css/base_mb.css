@@ -138,16 +138,31 @@ body {
 }
 
 footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
   padding-bottom: 20px;
 }
 
-footer * {
-  padding-left: 5px;
+.footer-container-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.footer-item,
+.footer-item * {
   color: #BDBDBD;
   font-size: 0.8rem;
+}
+
+.footer-item {
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 24px;
+  line-height: 24px;
+}
+
+.footer-item img {
+  width: 24px;
 }
 
 #contact-me {
