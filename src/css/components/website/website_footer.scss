@@ -1,0 +1,31 @@
+footer {
+  padding-bottom: 30px;
+}
+
+.footer-container-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 30px;
+  line-height: 30px;
+}
+
+.footer-item,
+.footer-item * {
+  color: #BDBDBD;
+  font-size: 0.6rem; 
+  text-decoration: none;
+}
+
+.footer-item {
+  padding-left: 20px;
+  padding-left: 20px;
+}
+
+.footer-item * {
+  vertical-align: middle;
+}
+
+.footer-item img {
+  width: 24px;
+}

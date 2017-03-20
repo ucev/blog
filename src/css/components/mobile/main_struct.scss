@@ -1,0 +1,27 @@
+.website-container {
+  min-height: 100%;
+  padding-bottom: 30px;
+}
+
+.struct-sidebar-left {
+  order: 1;
+  flex-shrink: 0;
+  min-width: 10%;
+  padding-left: 30px;
+  display: none;
+}
+
+.struct-main-content {
+  order: 2;
+  flex-shrink: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.struct-sidebar-right {
+  order: 3;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 10%;
+  display: none;
+}

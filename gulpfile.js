@@ -65,6 +65,12 @@ gulp.task("sass", function() {
     .pipe(gulp.dest("./dist/css"));
 })
 
+gulp.task("css", ["sass"], function() {
+  var css_files = ["./dist/css/base.css", "./dist/css/md.css"];
+  return gulp.src(css_files)
+    .pipe(buffer())
+    .pipe(gulp.dest("./website/public/css"));
+})
 
 //var watcher = gulp.watch(["./src/js/**/*.js"], ["scripts"])
 //watcher.on("change", function() {

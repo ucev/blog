@@ -1,0 +1,146 @@
+#front-intro-div {
+  width: 250px;
+  height: 100px;
+  text-align: center;
+  background-color: rgba(#263238, 0.73);
+  border-radius: 10px;
+}
+
+#front-intro-div a {
+  color: white;
+  line-height: 100px;
+}
+
+#article-search-hint-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow: hidden;
+  display: none;
+}
+
+#quit-article-search-div {
+  display: block;
+  width: 70px;
+  height: 30px;
+  line-height: 30px;
+  color: #212121;
+  text-align: center;
+  text-decoration: none;
+  background-color: #EEEEEE;
+  border: 1px solid #E0E0E0;
+  outline: none;
+}
+
+#hint-param-article-search-div {
+  height: 30px;
+  line-height: 30px;
+}
+
+#article-list-pager-ul {
+  width: 80%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-left: 10%;
+  line-height: 20px;
+  font-size: 16px;
+  color: #757575;
+  padding-left: 0;
+}
+
+.article-list-pager-li {
+  display: inline-block;
+  margin-left: 20px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.article-list-pager-li a {
+  text-decoration: none;
+}
+
+.load-more-div {
+  height: 40px;
+  line-height: 40px;
+  font-size: 0.8rem;
+  text-align: center;
+  color: #F5F5F5;
+  background-color: #E0E0E0;
+}
+
+.load-more-div:hover {
+  background-color: #BDBDBD;
+}
+
+.markdown-display {
+  padding: 0 10px;
+}
+
+/**
+ * mobiles start
+ */
+
+#mobile-search-div {
+  height: 40px;
+  background-color: brown;
+}
+
+#mobile-search-input,
+#mobile-search-input-img {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#mobile-search-input {
+  width: calc(100% - 40px);
+  height: calc(100% - 10px);
+  margin: 5px;
+  border: none;
+}
+
+#mobile-search-input-img {
+  width: 30px;
+}
+
+#mobile-search-lables-ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0 10px;
+  text-align: center;
+}
+
+.mobile-search-label-li {
+  display: inline-block;
+  padding: 5px 20px;
+  margin: 5px 10px;
+  font-size: 0.8rem;
+  color: white;
+  line-height: 20px;
+  background-color: #F44336;
+  border-radius: 10px;
+}
+
+.mobile-search-label-li a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mobile-search-label-li-hot {
+  background-color: #F44336;
+}
+
+.mobile-search-label-li-middle {
+  background-color: #009688;
+}
+
+.mobile-search-label-li-normal {
+  background-color: #4DD0E1;
+}
+/**
+ * mobiles end
+ */

@@ -1,0 +1,7 @@
+@media screen and (min-width: 800px) {
+  @import "../components/website/website_intro.scss";
+}
+
+@media screen and (max-width: 800px) {
+  @import "../components/mobile/website_intro.scss";
+}

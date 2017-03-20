@@ -1,0 +1,6 @@
+@media screen and (min-width: 800px) {
+  @import "../components/website/article_list.scss";
+}
+@media screen and (max-width: 800px) {
+  @import "../components/mobile/article_list.scss";
+}
