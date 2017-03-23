@@ -3,7 +3,7 @@ extends base_layout
 block append jsscript-block
   script(src='/js/simplemde.min.js?' + new Date().getTime())
   script(src='/markdown-it.min.js')
-  script(src='/markdown-it-classy.js')
+  //script(src='/markdown-it-classy.js')
   script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
   script(src='/prism.js')
   script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;const __content = `#{content}`;
