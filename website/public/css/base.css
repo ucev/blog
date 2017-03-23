@@ -16,7 +16,8 @@ body {
   width: 100%;
   height: 100%; }
 
-.nt-list {
+.nt-list,
+.module-hot-topic {
   display: none;
   opacity: 0; }
 
@@ -627,7 +628,10 @@ body {
     color: #F5F5F5;
     background-color: #E0E0E0; }
   .load-more-div:hover {
-    background-color: #BDBDBD; } }
+    background-color: #BDBDBD; }
+  .module-cmt-float-bar-body {
+    display: none;
+    opacity: none; } }
 
 @media screen and (max-width: 800px) {
   #front-intro-div {
