@@ -572,6 +572,7 @@ body {
     height: 100px;
     text-align: center;
     background-color: rgba(38, 50, 56, 0.73);
+    background-position: center;
     border-radius: 10px; }
   #front-intro-div a {
     color: white;
