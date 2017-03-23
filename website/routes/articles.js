@@ -170,7 +170,7 @@ router.get('/search', (req, res, next) => {
       })
     },
     () => {
-      res.redirect('/');
+      res.redirect('/articles');
     }
   )
 })
