@@ -1,26 +1,10 @@
 extends base_layout
 
-
-mixin article_category(itemData)
-  li.article-category-item-li
-    a(href = '/articles/category/' + itemData.id) #{itemData.name}
-mixin article_item(itemData)
-  li.article-item-li(data-id = itemData.id )
-    h3.article-item-li-title
-      a(href='/articles/view/' + itemData.id) #{itemData.title}
-    div.article-item-li-content #{itemData.descp}
-    div.article-item-li-bottom-info
-      span.article-item-li-pageview 阅读量(#{itemData.pageview})
-      span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
-
 block banner-block
   include website_banner
 
-
 block struct-main
   div.struct-main-content#articles-list-area
-  //ul#articles-foot-nav-ul
-  //  include page_foot_pager_nav
 
 block struct-leftside-block
   aside.struct-sidebar-left
@@ -32,7 +16,7 @@ block struct-leftside-block
       each category in categories
         +article_category(category)
 
-block append body-block
+block append jsscript-block
   - var time = new Date().getTime();
   script(src = '/js/client_structs.min.js?' + time)
   script.

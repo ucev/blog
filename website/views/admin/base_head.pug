@@ -2,13 +2,6 @@ head
     meta(charset='utf-8')/
     title #{title}
     - var pug_cur_time = new Date().getTime();
-    block jsscript-block
-      script(src='/jquery.min.js')
-      script(src='/Chart.min.js')
-      script(src='/template.js')
-      script(src='/js/my_structs.min.js?pug_cur_time=' + pug_cur_time)
-      script(src='/js/base.js?pug_cur_time' + pug_cur_time)
-      script(src='/js/admin.js?' + pug_cur_time)
     block stylesheet-block
       link(rel='icon' href='/images/logo.png' type='image/png')
       link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css')

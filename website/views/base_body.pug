@@ -9,3 +9,7 @@ body
       block struct-rightside-block
         aside.struct-sidebar-right
   include base_foot
+  - var pug_cur_time = new Date().getTime();
+  block jsscript-block
+    script(src='/jquery.min.js')
+    script(src='/js/base.js?' + pug_cur_time)

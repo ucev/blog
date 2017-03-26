@@ -1,9 +1,4 @@
 extends base_layout
-
-block append jsscript-block
-  script(src='/markdown-it.min.js')
-  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
-  script(src='/prism.js')
   
 block banner-block
   include website_banner
@@ -12,3 +7,8 @@ block struct-main
   div.struct-main-content
     div.markdown-display !{md}
     include comment
+
+block append jsscript-block
+  script(src='/markdown-it.min.js')
+  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
+  script(src='/prism.js')

@@ -5,3 +5,11 @@ body
     div.main
       h1 #{title}
   = '\n'
+  - var pug_cur_time = new Date().getTime();
+  block jsscript-block
+    script(src='/jquery.min.js')
+    script(src='/Chart.min.js')
+    script(src='/template.js')
+    script(src='/js/my_structs.min.js?pug_cur_time=' + pug_cur_time)
+    script(src='/js/base.js?pug_cur_time' + pug_cur_time)
+    script(src='/js/admin.js?' + pug_cur_time)

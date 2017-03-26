@@ -1,12 +1,5 @@
 extends base_layout
 
-block append jsscript-block
-  script(src='/js/simplemde.min.js?' + new Date().getTime())
-  script(src='/markdown-it.min.js')
-  script(src='/markdown-it-classy.js')
-  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
-  script(src='/prism.js')
-  script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;const __content = `#{content}`;
 
 block append stylesheet-block
   link(rel='stylesheet' href='/css/simplemde.min.css')
@@ -55,6 +48,14 @@ block main-body-block
     <li class='choose-photo-div-photo-item-li' onClick = 'onPhotoItemClick(this)'>
       <img class='choose-photo-div-photo-item-img' data-id='<%= id %>' src='<%= imgsrc %>' alt='图片' onload='photoImgOnLoad(this)' />
     </li>
+
+block append jsscript-block
+  script(src='/js/simplemde.min.js?' + new Date().getTime())
+  script(src='/markdown-it.min.js')
+  script(src='/markdown-it-classy.js')
+  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
+  script(src='/prism.js')
+  script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;const __content = `#{content}`;
   script.
     var labels = [];
     var labelCount = 0;
