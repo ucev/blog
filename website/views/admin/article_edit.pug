@@ -3,7 +3,7 @@ extends base_layout
 block append jsscript-block
   script(src='/js/simplemde.min.js?' + new Date().getTime())
   script(src='/markdown-it.min.js')
-  //script(src='/markdown-it-classy.js')
+  script(src='/markdown-it-classy.js')
   script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
   script(src='/prism.js')
   script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;const __content = `#{content}`;
@@ -169,11 +169,13 @@ block main-body-block
       }
   script.
     var simplemde = new SimpleMDE(markdown_editor_config);
-    //simplemde.drawImage = insertImgFunction;
-    //simplemde.drawLink = insertUrlFunction;
+    simplemde.drawImage = insertImgFunction;
+    simplemde.drawLink = insertUrlFunction;
     var cm = simplemde.codemirror;
     var markdown = markdownit();
+
     markdown.use(markdownItClassy);
+    
     markdown.renderer.rules.paragraph_open = markdown.renderer.rules.heading_open =
     markdown.renderer.rules.ordered_list_open = markdown.renderer.rules.bullet_list_open =
     markdown.renderer.rules.table_open =  injectLineNumbers;

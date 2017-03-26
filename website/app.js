@@ -75,7 +75,6 @@ app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
 
 app.use('/admin', enterControl.adminControl);
 app.use('/admin', admin);
-app.use('/articles', enterControl.userControl);
 app.use('/articles', articles);
 app.use('/mobiles', mobiles);
 app.use('/users', users);

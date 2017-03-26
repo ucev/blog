@@ -1,14 +1,36 @@
 #front-intro-div {
-  width: 250px;
-  height: 100px;
+  display: flex;
+  flex-direction: column;
+  padding: 50px 10px;
   text-align: center;
-  background-color: rgba(#263238, 0.73);
-  border-radius: 10px;
+  background-color: rgba(38, 50, 56, 0.73);
+  background-position: center;
+  border-radius: 10px; 
 }
 
-#front-intro-div a {
+#front-intro-div > div {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+#front-intro-main {
+  border-bottom: 1px solid #9E9E9E;
+}
+
+#front-intro-main a {
   color: white;
-  line-height: 100px;
+  text-decoration: none;
+}
+
+#front-intro-foot {
+  margin-top: 10px;
+  font-size: 0.6rem;
+}
+
+#front-intro-foot a {
+  float: right;
+  color: white;
+  text-decoration: none;
 }
 
 #article-search-hint-div {

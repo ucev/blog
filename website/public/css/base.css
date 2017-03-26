@@ -164,7 +164,7 @@ body {
   .footer-item,
   .footer-item * {
     color: #BDBDBD;
-    font-size: 0.8rem; }
+    font-size: 0.6rem; }
   .footer-item {
     padding-left: 10px;
     padding-right: 10px;
@@ -569,15 +569,28 @@ body {
 
 @media screen and (min-width: 800px) {
   #front-intro-div {
-    width: 250px;
-    height: 100px;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 10px;
     text-align: center;
     background-color: rgba(38, 50, 56, 0.73);
     background-position: center;
     border-radius: 10px; }
-  #front-intro-div a {
+  #front-intro-div > div {
+    padding-left: 50px;
+    padding-right: 50px; }
+  #front-intro-main {
+    border-bottom: 1px solid #9E9E9E; }
+  #front-intro-main a {
     color: white;
-    line-height: 100px; }
+    text-decoration: none; }
+  #front-intro-foot {
+    margin-top: 10px;
+    font-size: 0.6rem; }
+  #front-intro-foot a {
+    float: right;
+    color: white;
+    text-decoration: none; }
   #article-search-hint-div {
     display: flex;
     flex-direction: row;
@@ -629,20 +642,34 @@ body {
     background-color: #E0E0E0; }
   .load-more-div:hover {
     background-color: #BDBDBD; }
-  .module-cmt-float-bar-body {
+  .mmodule-cmt-float-bar {
     display: none;
     opacity: none; } }
 
 @media screen and (max-width: 800px) {
   #front-intro-div {
-    width: 250px;
-    height: 100px;
+    display: flex;
+    flex-direction: column;
+    padding: 50px 10px;
     text-align: center;
     background-color: rgba(38, 50, 56, 0.73);
+    background-position: center;
     border-radius: 10px; }
-  #front-intro-div a {
+  #front-intro-div > div {
+    padding-left: 50px;
+    padding-right: 50px; }
+  #front-intro-main {
+    border-bottom: 1px solid #9E9E9E; }
+  #front-intro-main a {
     color: white;
-    line-height: 100px; }
+    text-decoration: none; }
+  #front-intro-foot {
+    margin-top: 10px;
+    font-size: 0.6rem; }
+  #front-intro-foot a {
+    float: right;
+    color: white;
+    text-decoration: none; }
   #article-search-hint-div {
     display: flex;
     flex-direction: row;

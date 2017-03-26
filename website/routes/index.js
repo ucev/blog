@@ -12,7 +12,7 @@ function getRandom(n) {
 }
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/about', function(req, res, next) {
   fs.readFile(path.join(__dirname, '../utils/images.json'), {encoding: 'utf8'}, (err, data) => {
     // 防止权限冲突导致不能正确读取，设置默认值
     // 见 ../utils/get_front_pic.js
@@ -31,5 +31,9 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: '欢迎来到张帅的博客', backgroundImg: imgUrl });
   });
 });
+
+router.get('/', (req, res, next) => {
+  res.redirect('/articles');
+})
 
 module.exports = router;
