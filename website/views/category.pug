@@ -1,9 +1,4 @@
 extends base_layout
-
-block append jsscript-block
-  script(src='/markdown-it.min.js')
-  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
-  script(src='/prism.js')
   
 mixin categoryListArticleItem(data, depth)
   if aid == data.id
@@ -36,3 +31,8 @@ block struct-leftside-block
   aside.struct-sidebar-left
     ul.category-tree-category-ul
       +categoryListCategoryItem(tree, 0)
+
+block append jsscript-block
+  script(src='/markdown-it.min.js')
+  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
+  script(src='/prism.js')

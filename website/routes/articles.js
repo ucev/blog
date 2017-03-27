@@ -70,6 +70,7 @@ router.get('/category/:cid/:id', (req, res, next) => {
   var cid = req.params.cid;
   var aid = req.params.id;
   function responde(tree, article) {
+    __log.debug(tree);
     var content = __markdown.render(article.content ? article.content : '');
     res.render('category', {
       title: article.title ? article.title : (tree.title ? tree.title : '未知类别'),
