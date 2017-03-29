@@ -861,6 +861,9 @@ body {
   margin: 0 2px;
   padding: 0 5px; }
 
+.markdown-display .code-editable {
+  background-color: white; }
+
 .markdown-display pre {
   border: 1px solid #CCCCCC;
   line-height: 1.25em;

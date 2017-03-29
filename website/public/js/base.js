@@ -62,5 +62,17 @@ $(document).ready(function(){
         $(categoryTitle).hide();
       }
     })
+
+    // code area
+    $("pre").click(function(e) {
+      $(this).attr({contenteditable: true});
+    })
+    $("pre").dblclick(function(e) {
+      $(this).attr({contenteditable: true});
+      document.execCommand("selectAll");
+    })/*
+    $("pre").blur(function(e) {
+      $(".code-editable").removeClass("code-editable");
+    })*/
   })();
 });
