@@ -78,7 +78,9 @@ router.get('/articles/add', (req, res, next) => {
     res.render('admin/article_edit', {
         title: '添加文章',
         avatar: req.session.avatar,
-        labels: JSON.stringify(labels)
+        labels: JSON.stringify(labels),
+        content: "",
+        type: "add"
       }
     )
   }
@@ -122,7 +124,8 @@ router.get('/articles/modify', (req, res, next) => {
         avatar: req.session.avatar,
         type: 'edit',
         id: article.id,
-        content: encodeURIComponent(article.content),
+        //content: encodeURIComponent(article.content),
+        content: article.content,
         labels: JSON.stringify(labels),
         current_labels: article.label
       }
