@@ -644,7 +644,9 @@ body {
     background-color: #BDBDBD; }
   .mmodule-cmt-float-bar {
     display: none;
-    opacity: none; } }
+    opacity: none; }
+  .module-cmt-float-bar {
+    display: none; } }
 
 @media screen and (max-width: 800px) {
   #front-intro-div {
