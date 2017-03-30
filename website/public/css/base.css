@@ -193,8 +193,7 @@ body {
     order: 2;
     width: 80%;
     flex-shrink: 1;
-    padding-bottom: 50px;
-    overflow: scroll; }
+    padding-bottom: 50px; }
   .struct-sidebar-right {
     order: 3;
     flex-grow: 0;
@@ -644,9 +643,7 @@ body {
     background-color: #BDBDBD; }
   .mmodule-cmt-float-bar {
     display: none;
-    opacity: none; }
-  .module-cmt-float-bar {
-    display: none; } }
+    opacity: none; } }
 
 @media screen and (max-width: 800px) {
   #front-intro-div {
@@ -874,6 +871,12 @@ body {
   border: 0;
   margin: 0;
   padding: 0; }
+
+.markdown-display pre::selection,
+.markdown-display pre::-moz-selection,
+.markdown-display code::selection,
+.markdown-display code::-moz-selection {
+  background-color: red !important; }
 
 .markdown-display a,
 .markdown-display a:visited {

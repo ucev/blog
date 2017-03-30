@@ -105,6 +105,12 @@
   margin: 0;
   padding: 0; }
 
+.markdown-display pre::selection,
+.markdown-display pre::-moz-selection,
+.markdown-display code::selection,
+.markdown-display code::-moz-selection {
+  background-color: red !important; }
+
 .markdown-display a,
 .markdown-display a:visited {
   color: #4183C4;
