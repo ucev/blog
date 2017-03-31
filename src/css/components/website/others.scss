@@ -102,7 +102,8 @@
   background-color: #BDBDBD;
 }
 
-.mmodule-cmt-float-bar {
-  display: none;
-  opacity: none;
+.module-cmt-float-bar,
+.module-cmt-float-bar-body {
+  display: none !important;
+  opacity: none !important;
 }

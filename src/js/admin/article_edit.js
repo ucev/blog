@@ -123,10 +123,6 @@ function injectLineNumbers(tokens, idx, options, env, slf) {
     line = tokens[idx].map[0];
     tokens[idx].attrJoin('class', 'lidne');
     tokens[idx].attrSet('data-line', String(line));
-    
-    if (tokens[idx].tag == 'table') {
-    //tokens[idx].attrJoin('class', 'table');
-    }
   }
   return slf.renderToken(tokens, idx, options, env, slf);
 }

@@ -19,16 +19,16 @@
   border-bottom: 1px solid #BDBDBD; }
 
 .markdown-display h3 {
-  font-size: 0.8px; }
+  font-size: 0.8rem; }
 
 .markdown-display h4 {
-  font-size: 0.7px; }
+  font-size: 0.7rem; }
 
 .markdown-display h5 {
-  font-size: 0.6px; }
+  font-size: 0.6rem; }
 
 .markdown-display h6 {
-  font-size: 0.5px;
+  font-size: 0.5rem;
   color: #777777;
   background-color: inherit; }
 
@@ -90,9 +90,6 @@
   border: 1px solid #EAEAEA;
   margin: 0 2px;
   padding: 0 5px; }
-
-.markdown-display .code-editable {
-  background-color: white; }
 
 .markdown-display pre {
   border: 1px solid #CCCCCC;

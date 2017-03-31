@@ -641,9 +641,10 @@ body {
     background-color: #E0E0E0; }
   .load-more-div:hover {
     background-color: #BDBDBD; }
-  .mmodule-cmt-float-bar {
-    display: none;
-    opacity: none; } }
+  .module-cmt-float-bar,
+  .module-cmt-float-bar-body {
+    display: none !important;
+    opacity: none !important; } }
 
 @media screen and (max-width: 800px) {
   #front-intro-div {
@@ -786,16 +787,16 @@ body {
   border-bottom: 1px solid #BDBDBD; }
 
 .markdown-display h3 {
-  font-size: 0.8px; }
+  font-size: 0.8rem; }
 
 .markdown-display h4 {
-  font-size: 0.7px; }
+  font-size: 0.7rem; }
 
 .markdown-display h5 {
-  font-size: 0.6px; }
+  font-size: 0.6rem; }
 
 .markdown-display h6 {
-  font-size: 0.5px;
+  font-size: 0.5rem;
   color: #777777;
   background-color: inherit; }
 
@@ -857,9 +858,6 @@ body {
   border: 1px solid #EAEAEA;
   margin: 0 2px;
   padding: 0 5px; }
-
-.markdown-display .code-editable {
-  background-color: white; }
 
 .markdown-display pre {
   border: 1px solid #CCCCCC;
