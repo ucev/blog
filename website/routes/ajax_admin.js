@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multiparty = require('multiparty');
+const path = require('path');
 
 const Articles = require('../class/article.db');
 const __articles = new Articles();
@@ -336,7 +337,7 @@ router.post('/photos/add', (req, res, next) => {
         photogroup: gid, addtime: addtime, name: newname, file: tempfile
       },
       () => {
-        res.json({code: 0, msg: '添加成功'});
+        res.json({code: 0, msg: '添加成功', data: `/images/blog/${newname}`});
       },
       () => {
         res.json({code: 1, msg: '添加失败'});

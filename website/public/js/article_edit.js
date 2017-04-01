@@ -123,10 +123,6 @@ function injectLineNumbers(tokens, idx, options, env, slf) {
     line = tokens[idx].map[0];
     tokens[idx].attrJoin('class', 'lidne');
     tokens[idx].attrSet('data-line', String(line));
-    
-    if (tokens[idx].tag == 'table') {
-    //tokens[idx].attrJoin('class', 'table');
-    }
   }
   return slf.renderToken(tokens, idx, options, env, slf);
 }
@@ -182,11 +178,6 @@ function buildScrollMap() {
   };
 }
 
-/**
- * 原始的 debounce 函数，从网上找来的
- * 下学期研究 😊
- * http://www.cnblogs.com/fsjohnhuang/p/4147810.html
- */
 function myDebounce(func, idle) {
   var last;
   return function () {
@@ -281,6 +272,7 @@ function openUploadImgDialog() {
 
 function uploadImgInputChange(e) {
   var file = $("#upload-img-input")[0].files[0];
+  console.log(file);
   var gid = $("#choose-photo-div").attr('data-curr-gid');
   var fd = new FormData();
   fd.append('file', file);
@@ -426,4 +418,36 @@ simplemde.codemirror.on('change', function (instance, changeObj) {
   }
   $("#display-area").html(markdown.render(simplemde.value()));
   syncResScroll(toPos);
+});
+
+simplemde.codemirror.on("drop", function(instance, e) {
+  var dt = e.dataTransfer;
+  if (!dt) return;
+  var f = dt.files[0];
+  if(!/image/.test(f.type)){
+    return;
+  }
+  console.log(f);
+  var fd = new FormData();
+  fd.append("file", f);
+  $.ajax({
+    url: '/admin/datas/photos/add',
+    data: fd,
+    type: 'post',
+    dataType: 'json',
+    processData: false,
+    contentType: false,
+    success: function (dt) {
+      var imgsrc = dt.data;
+      S(simplemde, imgsrc);
+    }
+  });
+  e.preventDefault();
+  e.stopPropagation();
+});
+$(document).on("drop", function(e) {
+  e.preventDefault();
+});
+$(document).on("dragover", function(e) {
+  e.preventDefault();
 });

@@ -24,7 +24,7 @@ class Photos {
     var file = datas.file;
     var name = datas.name;
     var addtime = datas.addtime;
-    var photogroup = datas.photogroup;
+    var photogroup = datas.photogroup || 1;
     var newpath = path.join(uploadPhotoDir, name);
     fs.rename(datas.file, newpath, (err) => {
       if (err) {
