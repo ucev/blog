@@ -1,6 +1,8 @@
 var simplemde = null;
 var markdown = null;
 var cm = null;
+var __drawImage = null;
+var __drawLink = null;
 
 var labels = [];
 var labelCount = 0;
@@ -41,13 +43,15 @@ function addLabel(lbs) {
   });
 })();
 
-function insertUrlFunction() {
+function drawLink(cb) {
+  __drawLink = cb;
   $("#insert-url-div").show();
   $("#insert-url-div-input").val("");
   $("#insert-url-div-input").focus();
 }
 
-function insertImgFunction() {
+function drawImage(cb) {
+  __drawImage = cb;
   $("#choose-photo-div").show();
 }
 
@@ -71,9 +75,8 @@ const markdown_editor_config = {
   indentWithTabs: false,
   status: false,
   spellChecker: false,
-  promptURLs: true,
-  insertUrlFunction: insertUrlFunction,
-  insertImgFunction: insertImgFunction
+  drawImage: drawImage,
+  drawLink: drawLink
 };
 
 function submitArticle(e) {
@@ -252,13 +255,13 @@ function onGroupItemClick(target) {
 function onPhotoItemClick(target) {
   $("#choose-photo-div").hide();
   var imgsrc = $($(target).find('img')[0]).attr('src');
-  S(simplemde, imgsrc);
+  __drawImage(imgsrc);
 }
 
 function onInsertUrlConfirmClick() {
   var url = $("#insert-url-div-input").val();
   $("#insert-url-div").hide();
-  k(simplemde, url);
+  __drawLink(url);
 }
 
 function onInsertUrlCancelClick() {
@@ -289,49 +292,6 @@ function uploadImgInputChange(e) {
       getGroupPhotos(gid);
     }
   })
-}
-/**
- * 以下三个函数是复制过来的
- */
-function l(e, t) {
-  t = t || e.getCursor("start");
-  var n = e.getTokenAt(t);
-  if (!n.type) return {};
-  for (var r, i, o = n.type.split(" "), a = {}, l = 0; l < o.length; l++) r = o[l], "strong" === r ? a.bold = !0 : "variable-2" === r ? (i = e.getLine(t.line), /^\s*\d+\.\s/.test(i) ? a["ordered-list"] = !0 : a["unordered-list"] = !0) : "atom" === r ? a.quote = !0 : "em" === r ? a.italic = !0 : "quote" === r ? a.quote = !0 : "strikethrough" === r ? a.strikethrough = !0 : "comment" === r ? a.code = !0 : "link" === r ? a.link = !0 : "tag" === r ? a.image = !0 : r.match(/^header(\-[1-6])?$/) && (a[r.replace("header", "heading")] = !0);
-  return a
-}
-
-function k(e, url) {
-  var t = e.codemirror,
-    n = l(t),
-    r = e.options,
-    i = "http://";
-  return void E(t, n.link, r.insertTexts.link, url);
-}
-
-function S(e, imgsrc) {
-  var t = e.codemirror,
-    n = l(t),
-    r = e.options,
-    i = "http://";
-  return void E(t, n.image, r.insertTexts.image, imgsrc);
-}
-
-function E(e, t, n, r) {
-  console.log(n[1]);
-  if (!/editor-preview-active/.test(e.getWrapperElement().lastChild.className)) {
-    var i, o = n[0],
-      a = n[1],
-      l = e.getCursor("start"),
-      s = e.getCursor("end");
-    r && (a = a.replace("#url#", r)),
-      console.log(a);
-    console.log(o);
-    t ? (i = e.getLine(l.line), o = i.slice(0, l.ch), a = i.slice(l.ch), e.replaceRange(o + a, {
-      line: l.line,
-      ch: 0
-    })) : (i = e.getSelection(), e.replaceSelection(o + i + a), l.ch += o.length, l !== s && (s.ch += o.length)), e.setSelection(l, s), e.focus()
-  }
 }
 
 simplemde = new SimpleMDE(markdown_editor_config);
@@ -427,7 +387,6 @@ simplemde.codemirror.on("drop", function(instance, e) {
   if(!/image/.test(f.type)){
     return;
   }
-  console.log(f);
   var fd = new FormData();
   fd.append("file", f);
   $.ajax({
