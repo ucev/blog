@@ -75,7 +75,7 @@ gulp.task("sass", function() {
 })
 
 gulp.task("css", ["sass"], function() {
-  var css_files = ["./dist/css/base.css", "./dist/css/md.css"];
+  var css_files = ["./dist/css/base.css", "./dist/css/md.css", "./dist/css/admin.css"];
   return gulp.src(css_files)
     .pipe(buffer())
     .pipe(gulp.dest("./website/public/css"));

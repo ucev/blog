@@ -1,0 +1,33 @@
+#left-nav-div {
+  position: fixed;
+  top: 40px;
+  z-index: 50;
+  width: 50px;
+  height: 1000px;
+  padding: 20px 10px;
+  overflow: hidden;
+  background-color: #795548;
+  box-shadow: 5px 0 5px #795548;
+  transition: width 0.2s linear;
+  -moz-transition: width 0.2s linear;
+  -webkit-transition: width 0.2s linear;
+}
+
+.left-nav-item {
+  width: 150px;
+  margin-top: 10px;
+}
+
+.left-nav-item-img,
+.left-nav-item-label {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.left-nav-item-label {
+  width: 80px;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 14px;
+  color: #BCAAA4;
+}

@@ -398,7 +398,7 @@ simplemde.codemirror.on("drop", function(instance, e) {
     contentType: false,
     success: function (dt) {
       var imgsrc = dt.data;
-      S(simplemde, imgsrc);
+      __drawImage(imgsrc);
     }
   });
   e.preventDefault();

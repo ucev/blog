@@ -98,8 +98,8 @@ class ArticleRow extends React.Component {
     this.handleStateClick = this.handleStateClick.bind(this);
     this.handleCheckStateChange = this.handleCheckStateChange.bind(this);
     this.article_operation = {
-      on: <ul className='article-operation-ul'><li data-type='off' onClick = {this.handleStateClick}>下线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
-      off: <ul className='article-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='move' onClick = {this.handleStateClick}>移动</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
+      on: <ul className='content-operation-ul'><li data-type='off' onClick = {this.handleStateClick}>下线</li><li data-type='check' onClick = {this.handleStateClick}>核查</li></ul>,
+      off: <ul className='content-operation-ul'><li data-type='on' onClick = {this.handleStateClick}>上线</li><li data-type='move' onClick = {this.handleStateClick}>移动</li><li data-type='check' onClick = {this.handleStateClick}>核查</li><li data-type='del' onClick = {this.handleStateClick}>删除</li></ul>
     }
   }
   handleStateClick(e) {

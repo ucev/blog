@@ -1,0 +1,229 @@
+@charset "utf8";
+
+* {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  margin-left: 50px;
+  margin-top: 50px;
+  padding: 20px;
+  transition: margin-left 0.2s linear;
+  -moz-transition: margin-left 0.2s linear;
+  -webkit-transition: margin-left 0.2s linear;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table,
+th,
+td {
+  border: 1px solid #BCAAA4;
+}
+
+td {
+  color: #424242;
+}
+
+#display-area {
+  padding: 30px;
+}
+
+@import "./components/admin/website_banner.scss";
+@import "./components/admin/left_nav_bar.scss";
+@import "./components/admin/operation_button.scss";
+@import "./components/admin/dialog.scss";
+@import "./components/admin/content_table.scss";
+@import "./components/admin/category.scss";
+@import "./components/admin/photos.scss";
+
+
+// styles for page photos
+// start
+@import "./components/admin/photos.scss";
+// end
+// styles for page photos
+
+@import "./components/admin/add_category_dialog.scss";
+
+@import "./components/admin/category_table.scss";
+
+@import "./components/admin/label_table.scss";
+
+
+// styles for page index
+// start
+#info-overview-div {
+  width: 80%;
+  height: 300px;
+  margin-left: 10%;
+  margin-top: 50px;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  box-shadow: 1px 1px 1px #E0E0E0;
+}
+
+.info-overview-item {
+  display: inline-block;
+  vertical-align: center;
+  width: 30%;
+  height: 100%;
+  margin-left: 13.3%;
+}
+
+.info-overview-item > span {
+  width: 100%;
+  display: block;
+}
+
+.info-overview-item-title {
+  height: calc(300px * 0.4);
+  font-size: 30px;
+  padding-top: 80px;
+  text-align: center;
+  color: #424242;
+}
+
+.info-overview-item-count {
+  height: calc(300px * 0.5);
+  text-align: center;
+  font-size: 100px;
+  font-family: Impact;
+  color: rgba(75,192,192,1);
+}
+
+#info-perhour-view-div {
+  width: 80%;
+  margin-left: 10%;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+// end
+// styles for page index
+
+// styles for page tool
+// :start
+#admin-tool-wrapper {
+  position: relative;
+  width: 80%;
+  margin-left: 10%;
+}
+
+#admin-tool-wrapper-title {
+  margin-top: 30px;
+  font-size: 30px;
+}
+
+.admin-tool-div {
+  background-color: white;
+  margin-top: 20px;
+  padding: 20px;
+  box-shadow: 5px 5px 5px grey;
+}
+
+.admin-tool-div-title {
+  font-size: 16px;
+}
+
+.admin-tool-div-ab-div {
+  text-align: right;
+  padding-right: 30px;
+}
+
+.admin-tool-div-action-button {
+  padding: 5px 20px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  background-color: #009688;
+}
+
+.admin-tool-choose-article-div {
+}
+
+#choose-article-button {
+  margin: 10px 0;
+}
+
+#article-chosen-ul {
+  margin: 0;
+}
+
+.article-chosen-li {
+  display: inline-block;
+  width: 40%;
+  height: 30px;
+  line-height: 30px;
+  margin-right: 5%;
+}
+
+.article-chosen-li-title,
+.delete-chosen-article {
+  display: inline-block;
+}
+
+.delete-chosen-article {
+  color: #9E9E9E;
+  padding-right: 5px;
+  cursor: pointer;
+}
+
+.message-dialog {
+  position: absolute;
+  z-index: 100;
+  width: 300px;
+  height: 50px;
+  left: calc((100% - 300px) / 2);
+  color: white;
+  line-height: 50px;
+  text-align: center;
+  display: none;
+}
+
+.message-dialog-top {
+  top: 0;
+}
+
+.message-dialog-positive {
+  background-color: #00E676;
+}
+
+.message-dialog-alert {
+  background-color: #F44336;
+}
+
+.cover-layer {
+  position: fixed;
+  display: none;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #9E9E9E;
+  opacity: 0.66;
+}
+
+#progressing-div {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  top: calc((100% - 40px) / 2);
+  left: calc((100% - 40px) / 2);
+  text-align: center;
+  line-height: 40px;
+}
+
+#progressing-div i {
+  color: white;
+}
+// end
+// styles for page tool

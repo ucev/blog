@@ -50,7 +50,7 @@ class TableNavLink extends React.Component {
   render() {
     const lis = this.getRenderData();
     return (
-      <ul id = 'table-nav-ul'>
+      <ul id = 'table-nav-ul' className = 'table-nav-ul'>
         {lis}
       </ul>
     );
