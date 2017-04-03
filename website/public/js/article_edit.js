@@ -1,8 +1,6 @@
 var simplemde = null;
 var markdown = null;
 var cm = null;
-var __drawImage = null;
-var __drawLink = null;
 
 var labels = [];
 var labelCount = 0;
@@ -43,15 +41,13 @@ function addLabel(lbs) {
   });
 })();
 
-function drawLink(cb) {
-  __drawLink = cb;
+function drawLink() {
   $("#insert-url-div").show();
   $("#insert-url-div-input").val("");
   $("#insert-url-div-input").focus();
 }
 
-function drawImage(cb) {
-  __drawImage = cb;
+function drawImage() {
   $("#choose-photo-div").show();
 }
 
@@ -255,13 +251,13 @@ function onGroupItemClick(target) {
 function onPhotoItemClick(target) {
   $("#choose-photo-div").hide();
   var imgsrc = $($(target).find('img')[0]).attr('src');
-  __drawImage(imgsrc);
+  simplemde.__drawImage(imgsrc);
 }
 
 function onInsertUrlConfirmClick() {
   var url = $("#insert-url-div-input").val();
   $("#insert-url-div").hide();
-  __drawLink(url);
+  simplemde.__drawLink(url);
 }
 
 function onInsertUrlCancelClick() {
@@ -398,7 +394,7 @@ simplemde.codemirror.on("drop", function(instance, e) {
     contentType: false,
     success: function (dt) {
       var imgsrc = dt.data;
-      __drawImage(imgsrc);
+      simplemde.__drawImage(imgsrc);
     }
   });
   e.preventDefault();
