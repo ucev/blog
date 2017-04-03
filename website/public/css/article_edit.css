@@ -136,6 +136,7 @@ button#submit {
   width: 150px;
 }
 #choose-photo-div-right-div {
+  flex-grow: 1;
   border-left: 1px solid #BDBDBD;
 }
 #choose-photo-div-upload-div {

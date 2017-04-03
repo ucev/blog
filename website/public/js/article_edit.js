@@ -404,6 +404,9 @@ simplemde.codemirror.on("drop", function(instance, e) {
   e.preventDefault();
   e.stopPropagation();
 });
+$("#choose-photo-div").on("scroll", function(e) {
+  e.stopPropagation();
+})
 $(document).on("drop", function(e) {
   e.preventDefault();
 });
