@@ -1,0 +1,39 @@
+.error-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.error-table th {
+  width: 100px;
+  text-align: left;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.error-table td {
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.error-img {
+  display: block;
+  width: 600px;
+  max-width: 80%;
+}
+
+.error-return {
+  display: block;
+  padding: 10px 20px;
+  color: black;
+  font-size: 0.6rem;
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+
+.error-return:hover {
+  background-color: #FFF;
+}

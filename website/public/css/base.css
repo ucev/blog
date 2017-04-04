@@ -771,8 +771,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  border: 1px solid red; }
+  height: 100%; }
 
 .error-table th {
   width: 100px;
