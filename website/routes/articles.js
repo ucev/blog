@@ -125,7 +125,7 @@ router.get('/category', (req, res, next) => {
 
 router.use('/view/:id', enterControl.userControl);
 router.get('/view/:id', (req, res, next) => {
-  var id = req.params.id;
+  var id = req.prams.id;
   __articles.view(
     id,
     (article) => {

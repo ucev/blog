@@ -96,7 +96,7 @@ body {
     margin-left: 10px; }
   #website-front-div a {
     display: inline-block;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: white;
     text-decoration: none; }
   #website-search-div {
@@ -386,7 +386,7 @@ body {
     margin: 0; }
   .article-item-li-title a {
     color: black;
-    font-size: 1rem;
+    font-size: 0.8rem;
     font-weight: 500;
     text-decoration: none;
     overflow: none; }
@@ -415,7 +415,7 @@ body {
     color: red;
     background-color: inherit; }
   .article-item-li-content {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     color: #424242; }
   .article-item-li-bottom-info {
     height: 20px;
@@ -714,7 +714,7 @@ body {
   .load-more-div {
     height: 40px;
     line-height: 40px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     text-align: center;
     color: #F5F5F5;
     background-color: #E0E0E0; }
@@ -765,6 +765,41 @@ body {
   /**
  * mobiles end
  */ }
+
+.error-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  border: 1px solid red; }
+
+.error-table th {
+  width: 100px;
+  text-align: left;
+  font-size: 18px;
+  font-weight: normal; }
+
+.error-table td {
+  font-size: 16px;
+  font-weight: normal; }
+
+.error-img {
+  display: block;
+  width: 600px;
+  max-width: 80%; }
+
+.error-return {
+  display: block;
+  padding: 10px 20px;
+  color: black;
+  font-size: 0.6rem;
+  text-decoration: none;
+  background: none;
+  border: none; }
+
+.error-return:hover {
+  background-color: #FFF; }
 
 .markdown-display h1,
 .markdown-display h2,

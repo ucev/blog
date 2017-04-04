@@ -1,6 +1,27 @@
-extends base_layout
-
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+doctype html
+html
+  include base_head
+  body
+    div.error-div
+      if debug
+        table.error-table
+          tr
+            th 错误码
+            td #{error.status}
+          tr
+            th 网址
+            td #{error.url}
+          tr
+            th 详情
+            td #{message}
+        //pre #{error.stack}
+      else
+        if error.status == 404
+          img(src='/images/error404.png').error-img
+        else
+          img(src='/images/error.png').error-img
+      a(href='/').error-return 返回首页
+        style.
+          html {
+            background-color: #F6F6F6;
+          }

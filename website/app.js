@@ -17,6 +17,9 @@ var es = require('./routes/eventsource');
 var enterControl = require('./routes/entercontrol');
 
 var configs = require('./config/base.config');
+var mail = require('./utils/mail');
+const __log = require('./utils/log');
+
 const DEBUG_MODE = configs.website_info.debug;
 
 
@@ -84,10 +87,9 @@ app.use('/', index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  res.redirect('/');/*
   var err = new Error('Not Found');
   err.status = 404;
-  next(err);*/
+  next(err);
 });
 
 // error handler
@@ -95,10 +97,18 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  err.url = req.originalUrl;
+  err.status = err.status || 500;
+
+  __log.debug("URL: ", req.originalUrl);
+  __log.debug("ERR MSG: " , err.message);
+  if (err.status != 404) {
+    mail.error_report(req.originalUrl, err.message);
+  }
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status);
+  res.render('error', {debug: DEBUG_MODE, err: err});
 });
 
 app.listen(configs.website_info.port);

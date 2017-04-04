@@ -51,7 +51,15 @@ const qqlogin = {
   redirect_url: website_info.default_front_pic + '',
   state: 1,
   allowed_openid: ''
-}
+};
+
+const mail_config = {
+  connect: {
+    // see nodemailer
+    // https://nodemailer.com/about/
+  },
+  admin: ""
+};
 
 exports.database_config = mysql_database_config;
 exports.website_info = website_info;
@@ -59,3 +67,4 @@ exports.label_hotmark_rule = label_hotmark_rule;
 exports.query_config = query_config;
 exports.qqlogin = qqlogin;
 exports.session = session;
+exports.mail_config = mail_config;
