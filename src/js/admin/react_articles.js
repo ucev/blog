@@ -10,6 +10,9 @@ const TableBody = require('../components/tables/table_body');
 const TableFoot = require('../components/tables/table_foot');
 const TableNavLink = require("../components/table_foot_nav.js");
 
+const ArticleAction = require('../actions/actions_article');
+const ArticleStore = require('../stores/stores_article');
+
 class FilterInput extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +22,7 @@ class FilterInput extends React.Component {
     if (e.which == 13) {
       var title = this.props.title;
       var value = e.target.value;
-      this.props.change(title, value);
+      ArticleAction.handleFilterChange(title, value);
     }
   }
   render() {
@@ -40,7 +43,7 @@ class FilterSelect extends React.Component {
   handleChange(e) {
     var title = this.props.title;
     var value = e.target.value;
-    this.props.change(title, value);
+    ArticleACtion.filterOptionChange(title, value);
   }
   render() {
     const options = this.props.options.map((opt) => {
@@ -67,7 +70,7 @@ class ArticleTableLabel extends React.Component {
     this.handleCheckStateChange = this.handleCheckStateChange.bind(this);
   }
   handleCheckStateChange(e) {
-    this.props.allChecked(e.target.checked);
+    ArticleAction.allChecked(e.target.checked);
     e.stopPropagation();
   }
   render() {
@@ -105,12 +108,20 @@ class ArticleRow extends React.Component {
   handleStateClick(e) {
     var id = this.props.article.id;
     var type = e.target.getAttribute('data-type');
-    this.props.handleStateClick(id, type);
+    if (type == 'on' || type == 'off') {
+      ArticleAction.articleStateChange(id, type);
+    } else if (type == 'del') {
+      ArticleAction.deleteArticle(id);
+    } else if (type == 'check') {
+      location.href = `/admin/articles/modify?id=${id}`;
+    } else if (type == 'move') {
+      ArticleAction.moveCategory(id);
+    }
   }
   handleCheckStateChange(e) {
     var id = this.props.article.id;
     var checked = e.target.checked;
-    this.props.checkStateChange(id, checked);
+    ArticleAction.checkStateChange(id, checked);
   }
   render() {
     var article = this.props.article;
@@ -137,26 +148,6 @@ class ArticleRow extends React.Component {
 class ArticleTable extends React.Component {
   constructor(props) {
     super(props);
-    this.allChecked = this.allChecked.bind(this);
-    this.handleStateClick = this.handleStateClick.bind(this);
-    this.checkStateChange = this.checkStateChange.bind(this);
-  }
-  allChecked(checked) {
-    this.props.allChecked(checked);
-  }
-  handleStateClick(id, type) {
-    if (type == 'on' || type == 'off') {
-      this.props.articleStateChange(id, type);
-    } else if (type == 'del') {
-      this.props.delete(id);
-    } else if (type == 'check') {
-      location.href = `/admin/articles/modify?id=${id}`;
-    } else if (type == 'move') {
-      this.props.handleMoveCategory(id);
-    }
-  }
-  checkStateChange(id, checked) {
-    this.props.checkStateChange(id, checked);     
   }
   render() {
     var that = this;
@@ -172,12 +163,12 @@ class ArticleTable extends React.Component {
     const articleRows = articles.map((article, index, arr) => {
       var checked = checkState[article.id];
       return (
-        <ArticleRow key = {index} index = {index} checked = {checked} article = {article} handleStateClick = {this.handleStateClick} checkStateChange = {this.checkStateChange} />
+        <ArticleRow key = {index} index = {index} checked = {checked} article = {article}/>
       );
     });
     return (
       <Table type = 'article'>
-        <ArticleTableLabel allCheckState = {allCheckState} allChecked = {this.allChecked}/>
+        <ArticleTableLabel allCheckState = {allCheckState}/>
         <TableBody>
           { articleRows }
         </TableBody>
@@ -217,168 +208,35 @@ class ArticleLayout extends React.Component {
       {value: 'move', title: '移动'},
       {value: 'del', title: '删除'}
     ];
-    this.addArticle = this.addArticle.bind(this);
-    this.articleStateChange = this.articleStateChange.bind(this);
-    this.articleGroupChange = this.articleGroupChange.bind(this);
-    this.allChecked = this.allChecked.bind(this);
-    this.checkStateChange = this.checkStateChange.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
-    this.handleFilterChange = this.handleFilterChange.bind(this);
-    this.handleDeleteArticle = this.handleDeleteArticle.bind(this);
     this.deleteArticleConfirm = this.deleteArticleConfirm.bind(this);
     this.deleteArticleCancel = this.deleteArticleCancel.bind(this);
-    this.fetchArticles = this.fetchArticles.bind(this);
-    this.fetchSingleArticle = this.fetchSingleArticle.bind(this);
-    this.fetchCategories = this.fetchCategories.bind(this);
-    this.groupOpeChange = this.groupOpeChange.bind(this);
     // categories
     this.moveCategoryConfirm = this.moveCategoryConfirm.bind(this);
     this.moveCategoryCancel = this.moveCategoryCancel.bind(this);
-    this.handleMoveCategory = this.handleMoveCategory.bind(this);
+
+    this.__onChange = this.__onChange.bind(this);
   
     this.filter = {start : 0};
-    this.fetchArticles();
-    this.fetchCategories();
+  }
+  componentDidMount() {
+    ArticleStore.addChangeListener(this.__onChange);
+    ArticleAction.fetchArticles();
+    ArticleAction.fetchCategories();
+  }
+  componentWillUnmount() {
+    ArticleStore.removeChangeListener(this.__onChange);
+  }
+  __onChange() {
+    console.log("change hreer");
+    this.setState(ArticleStore.getAll());
   }
   addArticle() {
     location.href = '/admin/articles/add';
   }
-  articleStateChange(id, type, isgroup = false) {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/articles/state',
-      data: {id: id, state: type},
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (isgroup) {
-          that.fetchArticles();
-        } else {
-          that.fetchSingleArticle(id);
-        }
-      },
-      error: function() {
-        console.log(error);
-      }
-    });
-  }
-  articleGroupChange(id, gid, isgroup = false) {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/articles/move',
-      data: {id: id, gid: gid},
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          if (that.state.isgroup) {
-            that.fetchArticles();
-            that.setState({
-              moveVisible: false,
-              moveArticleId: -1,
-              isgroup: false
-            })
-          } else {
-            that.setState({
-              moveVisible: false,
-              moveArticleId: -1
-            })
-            that.fetchSingleArticle(id);
-          }
-        }
-      }
-    })
-  }
-  checkStateChange(id, checked) {
-    var checkState = this.state.checkState;
-    checkState[id] = checked;
-    this.setState({
-      checkState: checkState
-    })
-  }
-  allChecked(checked) {
-    var articles = this.state.articles;
-    var checkState = {};
-    for (let i = 0; i < articles.length; i++) {
-      checkState[articles[i].id] = checked;
-    }
-    this.setState({
-      checkState: checkState
-    })
-  }
-  fetchSingleArticle(id) {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/articles/get',
-      type: 'get',
-      data: {id: id},
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          var articles = that.state.articles;
-          for (let i in articles) {
-            if (articles[i].id == id) {
-              articles[i] = dt.data;
-              that.setState({
-                articles: articles
-              });
-              break;
-            }
-          }
-        }
-      }
-    })
-  }
-  fetchArticles() {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/articles/get',
-      type: 'get',
-      data: that.filter,
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.setState({
-            articles: dt.data.data,
-            current: dt.data.current,
-            total: dt.data.total,
-            checkState: {}
-          });
-        }
-      }
-    });
-  }
-  fetchCategories() {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/categories/get',
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.setState({
-            categories: dt.data
-          })
-        }
-      }
-    })
-  }
   handlePageChange(i) {
     this.filter.start = i;
     this.fetchArticles();
-  }
-  handleFilterChange(label, value) {
-    if (this.filter[label] == value) return;
-    this.filter[label] = value;
-    this.filter.start = 0;
-    this.fetchArticles();
-  }
-  handleDeleteArticle(id) {
-    this.setState({
-      delVisible: true,
-      delArticleId: id,
-      isgroup: false
-    })
   }
   deleteArticleConfirm() {
     var that = this;
@@ -403,36 +261,6 @@ class ArticleLayout extends React.Component {
       delVisible: false
     })
   }
-  groupOpeChange(title, value) {
-    var checkState = this.state.checkState;
-    var ids = [];
-    for (let key in checkState) {
-      if (checkState[key]) ids.push(key);
-    }
-    ids = ids.join(',');
-    switch (value) {
-      case 'on':
-      case 'off':
-        this.articleStateChange(ids, value, true);
-        break;
-      case 'move':
-        this.setState({
-          moveArticleId: ids,
-          isgroup: true,
-          moveVisible: true
-        })
-        break;
-      case 'del':
-        this.setState({
-          delArticleId: ids,
-          isgroup: true,
-          delVisible: true
-        })
-        break;
-      default:
-        break;
-    }
-  }
   //category
   moveCategoryConfirm(gid) {
     this.articleGroupChange(this.state.moveArticleId, gid, false);
@@ -440,13 +268,6 @@ class ArticleLayout extends React.Component {
   moveCategoryCancel() {
     this.setState({
       moveVisible: false
-    })
-  }
-  handleMoveCategory(id) {
-    this.setState({
-      moveArticleId: id,
-      isgroup: false,
-      moveVisible: true
     })
   }
   render() {
@@ -460,13 +281,13 @@ class ArticleLayout extends React.Component {
       <div>
         <div className = 'table-filter-bar table-filter-bar-top'>
 	        <button className = 'operation-button' onClick = {this.addArticle}>添加文章</button>
-      	  <FilterInput title = 'label' label = '标签' change = {this.handleFilterChange} />
-      	  <FilterInput title = 'category' label = '类别' change = {this.handleFilterChange} />
-	        <FilterSelect title = 'state' label = '状态' options = {this.stateOptions} change = {this.handleFilterChange} />
+      	  <FilterInput title = 'label' label = '标签'/>
+      	  <FilterInput title = 'category' label = '类别'/>
+	        <FilterSelect title = 'state' label = '状态' options = {this.stateOptions}/>
         </div>
-        <ArticleTable articles = {this.state.articles} checkState = {this.state.checkState} fetchSingleArticle = {this.fetchSingleArticle} checkStateChange = {this.checkStateChange} articleStateChange = {this.articleStateChange} handleMoveCategory = {this.handleMoveCategory} allChecked = {this.allChecked} delete = {this.handleDeleteArticle}/>
+        <ArticleTable articles = {this.state.articles} checkState = {this.state.checkState}/>
         <div className = 'table-filter-bar table-filter-bar-bottom'>
-       	  <FilterSelect title = 'groupope' options = {this.opeOptions} change = {this.groupOpeChange} reset = {groupopeReset} defaultVal = '-1'/>
+       	  <FilterSelect title = 'groupope' options = {this.opeOptions} reset = {groupopeReset} defaultVal = '-1'/>
         </div>
         <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
         <ConfirmDialog title = '确认删除?' confirm = {this.deleteArticleConfirm} cancel = {this.deleteArticleCancel} visible = {this.state.delVisible} />
