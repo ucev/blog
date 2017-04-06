@@ -6,6 +6,9 @@ const InputDialog = require("../components/dialogs/input_dialog.js");
 const OptionDialog = require("../components/dialogs/option_dialog.js");
 const TableNavLink = require("../components/table_foot_nav.js");
 
+const PhotoActions = require('../actions/actions_photos');
+const PhotoStores = require('../stores/stores_photos');
+
 class PhotoFlowOperationBar extends React.Component {
   constructor(props) {
     super(props);
@@ -280,7 +283,7 @@ class PhotoFlow extends React.Component {
       type: 'get',
       dataType: 'json',
       success: function(dt) {
-        that.props.handleRefetch();
+        PhotoActions.refetch();
       }
     })
   }
@@ -308,7 +311,7 @@ class PhotoFlow extends React.Component {
       dataType: 'json',
       success: function(dt) {
         if (dt.code == 0) {
-          that.props.handleRefetch();
+          PhotoActions.refetch();
         }
       }
     })
@@ -342,7 +345,7 @@ class PhotoFlow extends React.Component {
       type: 'post',
       dataType: 'json',
       success: function(dt) {
-        that.props.handleRefetch();
+        PhotoActions.refetch();
       },
       error: function(err) {
         console.log('error');
@@ -559,7 +562,7 @@ class PhotoGroupBar extends React.Component {
   }
   
   fetchGroupData() {
-    this.props.fetchGroups();
+    PhotoActions.fetchPhotoGroups();
   }
 
   handleConfirm(groupname) {
@@ -588,7 +591,7 @@ class PhotoGroupBar extends React.Component {
   }
 
   handleGroupItemClick (gid) {
-    this.props.groupChange(gid);
+    PhotoActions.photoGroupChange(gid);
   }
 
   handleDeleteGroup(gid) {
@@ -603,7 +606,7 @@ class PhotoGroupBar extends React.Component {
         console.log(JSON.stringify(dt));
         if (dt.code == 0) {
           if (gid == that.props.gid) {
-            that.props.groupChange(-1);
+            PhotoActions.photoGroupChange(-1);
           } else {
             that.fetchGroupData();
           }
@@ -668,41 +671,22 @@ class PhotoArea extends React.Component {
       // groups
       groups: []
     }
-    this.fetchPhotoGroups = this.fetchPhotoGroups.bind(this);
-    this.handlePhotoGroupChange = this.handlePhotoGroupChange.bind(this);
-    this.handleRefetch = this.handleRefetch.bind(this);
+    this.__onChange = this.__onChange.bind(this);
   }
-  handlePhotoGroupChange(gid) {
-    this.setState({
-      gid: gid,
-      key: new Date().getTime()
-    });
+  componentDidMount() {
+    PhotoStores.addChangeListener(this.__onChange);
   }
-  handleRefetch() {
-    this.setState({
-      key: new Date().getTime()
-    });
-  }  
-  fetchPhotoGroups() {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/photogroup/get',
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.setState({
-            groups: dt.data
-          });
-        }
-      }
-    });
+  componentWillUnmount() {
+    PhotoStores.removeChangeListener(this.__onChange);
+  }
+  __onChange() {
+    this.setState(PhotoStores.getAll());
   }
   render() {
     return (
       <div id='photo-div'>
-        <PhotoFlow key = {this.state.key} gid = {this.state.gid} groups = {this.state.groups} handleRefetch = {this.handleRefetch}/>
-        <PhotoGroupBar key = {this.state.key + 100} gid = {this.state.gid} groups = {this.state.groups} groupChange = {this.handlePhotoGroupChange} handleRefetch = {this.handleRefetch} fetchGroups = {this.fetchPhotoGroups} />
+        <PhotoFlow key = {this.state.key} gid = {this.state.gid} groups = {this.state.groups}/>
+        <PhotoGroupBar key = {this.state.key + 100} gid = {this.state.gid} groups = {this.state.groups}/>
       </div>
     );
   }

@@ -1,6 +1,11 @@
 const ArticleDispatcher = require('../dispatcher/dispatcher_articles');
 
 var ArticleActions = {
+  addArticle: function() {
+    ArticleDispatcher.dispatch({
+      actionType: "ADD_ARTICLE"
+    })
+  },
   allChecked: function(checked) {
     ArticleDispatcher.dispatch({
       actionType: "ALL_CHECKED",
@@ -28,6 +33,16 @@ var ArticleActions = {
       id: id
     })
   },
+  deleteArticleCancel: function() {
+    ArticleDispatcher.dispatch({
+      actionType: "DELETE_ARTICLE_CANCEL"
+    })
+  },
+  deleteArticleConfirm: function() {
+    ArticleDispatcher.dispatch({
+      actionType: "DELETE_ARTICLE_CONFIRM"
+    })
+  },
   fetchArticles: function() {
     ArticleDispatcher.dispatch({
       actionType: "FETCH_ARTICLES"
@@ -49,6 +64,17 @@ var ArticleActions = {
     ArticleDispatcher.dispatch({
       actionType: "MOVE_CATEGORY",
       id: id
+    })
+  },
+  moveCategoryCancel: function() {
+    ArticleDispatcher.dispatch({
+      actionType: "MOVE_CATEGORY_CANCEL"
+    })
+  },
+  moveCategoryConfirm: function(gid) {
+    ArticleDispatcher.dispatch({
+      actionType: "MOVE_CATEGORY_CONFIRM",
+      gid: gid
     })
   },
   pageChange: function(page) {

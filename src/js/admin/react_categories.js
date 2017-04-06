@@ -10,13 +10,16 @@ const TableBody = require('../components/tables/table_body');
 const TableFoot = require('../components/tables/table_foot');
 const TableNavLink = require("../components/table_foot_nav.js");
 
+const CategoryActions = require('../actions/actions_category');
+const CategoryStore = require('../stores/stores_category');
+
 class OperationBar extends React.Component {
   constructor(props) {
     super(props);
     this.addNewCategory = this.addNewCategory.bind(this);
   }
   addNewCategory() {
-    this.props.addNewCategory(true, 'add');
+    CategoryActions.addCategoryDivStateChange(true, 'add');
   }
   render() {
     return (
@@ -58,21 +61,21 @@ class CategoryRow extends React.Component {
     var type = e.target.getAttribute('data-type');
     var id = e.target.parentNode.getAttribute('data-id');
     if (type == 'modify') {
-      this.props.modify(true, 'modify', this.props.category);
+      CategoryActions.addCategoryDivStateChange(true, 'modify', this.props.category);
     } else if (type == 'delete') {
-      this.props.delete(id);
+      CategoryActions.deleteCategoryHandle(id);
     }
   }
   categoryOrderChange(e) {
     var id = this.props.category.id;
     var order = e.target.value;
-    this.props.handleCategoryOrderChange(id, order);
+    CategoryActions.categoryOrderChange(id, order);
   }
   categoryOrderKeyDown(e) {
     if (e.which == 13) {
       var id = this.props.category.id;
       var order = e.target.value;
-      this.props.updateCategoryOrder(id, order);
+      CategoryActions.updateCategoryOrder(id, order);
     }
   }
   render() {
@@ -104,7 +107,7 @@ class CategoryTable extends React.Component {
   }
   render() {
     var categories = this.props.categories.map((category) => (
-      <CategoryRow category = {category} modify = {this.props.modify} delete = {this.props.delete} handleCategoryOrderChange = {this.props.handleCategoryOrderChange} updateCategoryOrder = {this.props.updateCategoryOrder} />
+      <CategoryRow category = {category}/>
     ));
     return (
       <Table type = 'category'>
@@ -121,149 +124,32 @@ class CategoryTable extends React.Component {
 class CategoryLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      categories: [],
-      addVisible: false,
-      addType: 'add',
-      addData: {},
-      
-      delVisible: false
-    }
+    this.state = CategoryStore.getAll();
     this.addTitle = {
       add: '添加类别',
       modify: '修改类别'
     }
-    this.addCategoryDivStateChange = this.addCategoryDivStateChange.bind(this);
-    this.addCategoryDivValueChange = this.addCategoryDivValueChange.bind(this);
-    this.addCategoryDivConfirm = this.addCategoryDivConfirm.bind(this);
-    this.addCategoryDivCancel = this.addCategoryDivCancel.bind(this);
-    this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    this.deleteCategoryConfirm = this.deleteCategoryConfirm.bind(this);
-    this.deleteCategoryCancel = this.deleteCategoryCancel.bind(this);
-    // category order
-    this.handleCategoryOrderChange = this.handleCategoryOrderChange.bind(this);
-    this.updateCategoryOrder = this.updateCategoryOrder.bind(this);
-    
-    this.fetchCategoryDatas = this.fetchCategoryDatas.bind(this);
-    this.fetchCategoryDatas();
+    this.__onChange = this.__onChange.bind(this);
   }
-  addCategoryDivStateChange(visible, type = this.state.addType, data = {}) {
-    this.setState({
-      addVisible: visible,
-      addType: type,
-      addData: data
-    })
+  componentDidMount() {
+    CategoryStore.addChangeListener(this.__onChange);
+    CategoryActions.fetchCategoryData();
   }
-  addCategoryDivConfirm(data) {
-    var url = '';
-    if (this.state.addType == 'add') {
-      url = '/admin/datas/categories/add';
-    } else if (this.props.addType = 'modify') {
-      url = '/admin/datas/categories/modify';
-      data.id = this.state.addData.id;
-    }
-    var that = this;
-    $.ajax({
-      url:url,
-      data: data,
-      type: 'post',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.addCategoryDivStateChange(false);
-          that.fetchCategoryDatas();
-        }
-      }
-    })
+  componentWillUnmount() {
+    CategoryStore.removeChangeListener(this.__onChange);
   }
-  addCategoryDivCancel() {
-    this.addCategoryDivStateChange(false);
-  }
-  addCategoryDivValueChange(data) {
-    this.setState({
-      addData: data
-    })
-  }
-  deleteCategoryConfirm() {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/categories/delete',
-      data: {id: that.state.delCategoryId},
-      type: 'post',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.setState({
-            delVisible: false,
-            delCategoryId: -1
-          })
-          that.fetchCategoryDatas();
-        }
-      }
-    })
-  }
-  deleteCategoryCancel() {
-    this.setState({
-      delVisible: false
-    })
-  }
-  handleDeleteClick(id) {
-    this.setState({
-      delVisible: true,
-      delCategoryId: id
-    })
-  }
-  handleCategoryOrderChange(id, order) {
-    var categories = this.state.categories;
-    for (var i in categories) {
-      if (categories[i].id == id) {
-        categories[i].mainorder = order;
-        this.setState({
-          categories: categories
-        })
-        break;
-      }
-    }
-  }
-  updateCategoryOrder(id, order) {
-    var that = this;
-    $.ajax({
-      url:'/admin/datas/categories/modify',
-      data: {id: id, order: order},
-      type: 'post',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.fetchCategoryDatas();
-        }
-      }
-    })
-  }
-  fetchCategoryDatas() {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/categories/get',
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          localStorage.setItem('categories', JSON.stringify(dt.data));
-          that.setState({
-            categories: dt.data
-          })
-        }
-      }
-    })
+  __onChange() {
+    this.setState(CategoryStore.getAll());
   }
   render() {
     var categories = this.state.categories;
     var addType = this.state.addType;
     return (
       <div>
-        <OperationBar addNewCategory = {this.addCategoryDivStateChange}/>
-        <CategoryTable categories = {categories} fetchCategoryDatas = {this.fetchCategoryDatas} modify= {this.addCategoryDivStateChange} delete = {this.handleDeleteClick} handleCategoryOrderChange = {this.handleCategoryOrderChange} updateCategoryOrder = {this.updateCategoryOrder}/>
-        <AddCategoryDialog type = {addType} title = {this.addTitle[addType]} data = {this.state.addData} categories = {categories} visible = {this.state.addVisible} confirm = {this.addCategoryDivConfirm} cancel = {this.addCategoryDivCancel} valueChange = {this.addCategoryDivValueChange} />
-        <ConfirmDialog title = '确认删除此类别?' visible = {this.state.delVisible} confirm = {this.deleteCategoryConfirm} cancel = {this.deleteCategoryCancel} />
+        <OperationBar/>
+        <CategoryTable categories = {categories}/>
+        <AddCategoryDialog type = {addType} title = {this.addTitle[addType]} data = {this.state.addData} categories = {categories} visible = {this.state.addVisible} confirm = {CategoryActions.addCategoryConfirm} cancel = {CategoryActions.addCategoryCancel} valueChange = {CategoryActions.addCategoryValueChange} />
+        <ConfirmDialog title = '确认删除此类别?' visible = {this.state.delVisible} confirm = {CategoryActions.deleteCategoryConfirm} cancel = {CategoryActions.deleteCategoryCancel} />
       </div>
     );
   }

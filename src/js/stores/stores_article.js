@@ -1,8 +1,6 @@
-const EventEmitter = require('events').EventEmitter;
-const assign = require('object-assign');
+const BaseStore = require('./stores_base');
 
-//var ArticleStore = assign({}, EventEmitter.prototype, {
-class ArticleStore extends EventEmitter {
+class ArticleStore extends BaseStore {
   constructor() {
     super();
     this.articles = [];
@@ -23,6 +21,9 @@ class ArticleStore extends EventEmitter {
     this.filter = {
       start: 0
     };
+  }
+  addArticle() {
+    location.href = '/admin/articles/add';
   }
   articleStateChange(id, type, isgroup = false) {
     var that = this;
@@ -58,7 +59,7 @@ class ArticleStore extends EventEmitter {
       dataType: 'json',
       success: function (dt) {
         if (dt.code == 0) {
-          if (that.state.isgroup) {
+          if (that.isgroup) {
             that.fetchArticles();
             that.moveVisible = false;
             that.moveArticleId = -1;
@@ -76,19 +77,19 @@ class ArticleStore extends EventEmitter {
     })
   }
   checkStateChange(id, checked) {
-    var checkState = this.state.checkState;
+    var checkState = this.checkState;
     checkState[id] = checked;
-    that.checkState = checkState;
-    that.emitChange();
+    this.checkState = checkState;
+    this.emitChange();
   }
   allChecked(checked) {
-    var articles = this.state.articles;
+    var articles = this.articles;
     var checkState = {};
     for (let i = 0; i < articles.length; i++) {
       checkState[articles[i].id] = checked;
     }
-    that.checkState = checkState;
-    that.emitChange();
+    this.checkState = checkState;
+    this.emitChange();
   }
   fetchSingleArticle(id) {
     var that = this;
@@ -157,17 +158,17 @@ class ArticleStore extends EventEmitter {
     this.fetchArticles();
   }
   handleDeleteArticle(id) {
-    that.delVisible = true;
-    that.delArticleId = id;
-    that.isgroup = false;
-    that.emitChange();
+    this.delVisible = true;
+    this.delArticleId = id;
+    this.isgroup = false;
+    this.emitChange();
   }
   deleteArticleConfirm() {
     var that = this;
     $.ajax({
       url: '/admin/datas/articles/delete',
       data: {
-        id: that.state.delArticleId
+        id: that.delArticleId
       },
       type: 'post',
       dataType: 'json',
@@ -183,8 +184,8 @@ class ArticleStore extends EventEmitter {
     })
   }
   deleteArticleCancel() {
-    that.delVisible = false;
-    that.emitChange();
+    this.delVisible = false;
+    this.emitChange();
   }
   filterOptionChange(title, value) {
     if (title == 'groupope') {
@@ -194,7 +195,8 @@ class ArticleStore extends EventEmitter {
     }
   }
   groupOpeChange(title, value) {
-    var checkState = this.state.checkState;
+    var that = this;
+    var checkState = this.checkState;
     var ids = [];
     for (let key in checkState) {
       if (checkState[key]) ids.push(key);
@@ -203,7 +205,7 @@ class ArticleStore extends EventEmitter {
     switch (value) {
       case 'on':
       case 'off':
-        this.articleStateChange(ids, value, true);
+        that.articleStateChange(ids, value, true);
         break;
       case 'move':
         that.moveArticleId = ids;
@@ -223,26 +225,17 @@ class ArticleStore extends EventEmitter {
   }
   //category
   moveCategoryConfirm(gid) {
-    this.articleGroupChange(this.state.moveArticleId, gid, false);
+    this.articleGroupChange(this.moveArticleId, gid, false);
   }
   moveCategoryCancel() {
-    that.moveVisible = false;
-    that.emitChange();
+    this.moveVisible = false;
+    this.emitChange();
   }
   handleMoveCategory(id) {
-    that.moveArticleId = id;
-    that.isgroup = false;
-    that.moveVisible = true;
-    that.emitChange();
-  }
-  emitChange() {
-    this.emit('change');
-  }
-  addChangeListener(cb) {
-    this.on('change', cb);
-  }
-  removeChangeListener(cb) {
-    this.removeListener('change', cb);
+    this.moveArticleId = id;
+    this.isgroup = false;
+    this.moveVisible = true;
+    this.emitChange();
   }
   getAll() {
     return {

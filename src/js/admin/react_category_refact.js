@@ -1,6 +1,9 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+const CategoryRefactActions = require('../actions/actions_category_refact');
+const CategoryRefactStore = require('../stores/stores_category_refact');
+
 class DetailArea extends React.Component {
   constructor(props) {
     super(props);
@@ -14,11 +17,11 @@ class DetailArea extends React.Component {
   prefaceButtonClicked(e) {
     var type = e.target.getAttribute('data-type');
     var isSet = type == 'set';
-    this.props.prefaceChange(this.props.data.id, isSet);
+    CategoryRefactActions.categoryPrefaceChange(this.props.data.id, isSet);
   }
   handleKeyDown(e) {
     if (e.which == 13) {
-      this.props.orderChange(e.target.value, true);
+      CategoryRefactActions.articleOrderChange(e.target.value, true);
     }
   }
   render() {
@@ -63,7 +66,7 @@ class ArticleItemLi extends React.Component {
   }
   onItemClicked (e) {
     var article = this.props.article;
-    this.props.click('art', article.id, this.props.cid);
+    CategoryRefactActions.getRefactDetail('art', article.id, this.props.cid);
   }
   render() {
     var depth = this.props.depth;
@@ -87,10 +90,10 @@ class CategoryItemLi extends React.Component {
   }
   handleCategoryClick(e) {
     var target = e.target;
-    this.props.click('dir', this.props.category.id, this.props.category.id);
+    CategoryRefactActions.getRefactDetail('dir', this.props.category.id, this.props.category.id);
   }
   expandChange(e) {
-    this.props.expandChange(this.props.category.id);
+    CategoryRefactActions.categoryExpandChange(this.props.category.id);
     e.stopPropagation();
   }
   render() {
@@ -99,13 +102,16 @@ class CategoryItemLi extends React.Component {
       'padding-left': (depth * 20 + 20) + 'px'
     }
     var category = this.props.category;
-    var content = category.childs.map((child) => {
-      if (child.type == 'art') {
-        return <ArticleItemLi article = {child} cid = {category.id} articleId = {this.props.articleId} depth = {depth + 1} click = {this.props.click} />
-      } else {
-        return <CategoryItemLi category = {child}  categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {depth + 1} click = {this.props.click} expandChange = {this.props.expandChange} />
-      }
-    })
+    var content;
+    if (category.childs) {
+      var content = category.childs.map((child) => {
+        if (child.type == 'dir') {
+          return <CategoryItemLi category = {child}  categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {depth + 1}/>
+        } else {
+          return <ArticleItemLi article = {child} cid = {category.id} articleId = {this.props.articleId} depth = {depth + 1}/>
+        }
+      })
+    }
     var titleClass = 'category-tree-category-title';
     if (category.id == this.props.categoryId) {
       titleClass += ' category-tree-category-title-current';
@@ -140,7 +146,7 @@ class CategoryTree extends React.Component {
       return (
         <div id = 'refact-tree-area'>
           <ul className = 'category-tree-category-ul'>
-            <CategoryItemLi category = {this.props.tree[0]} categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {0} click = {this.props.click} expandChange = {this.props.expandChange} />
+            <CategoryItemLi category = {this.props.tree[0]} categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {0}/>
           </ul>
         </div>
       );
@@ -153,133 +159,24 @@ class CategoryTree extends React.Component {
 class CategoryRefactArea extends React.Component {
   constructor(props) {
     super(props);
-    var cid = Number(location.pathname.match(/\/admin\/categories\/refact\/(\d+)/)[1]);
-    this.state = {
-      cid: cid,
-      tree: [],
-      detail: {},
-      category: -1,
-      article: -1,
-      cstate: {}  //categoryExpandState
-    }
-    this.articleOrderChange = this.articleOrderChange.bind(this);
-    this.categoryPrefaceChange = this.categoryPrefaceChange.bind(this);
-    this.categoryExpandChange = this.categoryExpandChange.bind(this);
-    this.__getReactDetail = this.__getReactDetail.bind(this);
-    this.getReactDetail = this.getReactDetail.bind(this);
-    this.getCategoryTree = this.getCategoryTree.bind(this);
-    this.getCategoryTree();
+    this.state = CategoryRefactStore.getAll();
+    this.__onChange = this.__onChange.bind(this);
   }
-  articleOrderChange(newOrder, update = false) {
-    var that = this;
-    var id = this.state.detail.id;
-    if (update) {
-      $.ajax({
-        url: '/admin/datas/articles/order',
-        data: {id: id, order: newOrder},
-        type: 'get',
-        dataType: 'json',
-        success: function(dt) {
-          if (dt.code == 0) {
-            that.getCategoryTree();
-          }
-        }
-      })
-    } else {
-      var detail = this.state.detail;
-      detail.suborder = newOrder;
-      this.setState({
-        detail: detail
-      })
-    }
+  componentDidMount() {
+    CategoryRefactStore.addChangeListener(this.__onChange);
+    CategoryRefactActions.getCategoryTree();
   }
-  categoryPrefaceChange(id, isSet = true) {
-    var that = this;
-    var detail = this.state.detail;
-    var data = {
-      category: this.state.category,
-      preface: id,
-      isSet: isSet
-    }
-    $.ajax({
-      url: '/admin/datas/categories/preface',
-      data: data,
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.getCategoryTree();
-        }
-      }
-    })
+  componentWillUnmount() {
+    CategoryRefactStore.removeChangeListener(this.__onChange);
   }
-  categoryExpandChange(id) {
-    var cstate = this.state.cstate;
-    cstate[id] = cstate[id] === false;
-    this.setState({
-      cstate: cstate
-    })
-  }
-  getCategoryTree() {
-    var that = this;
-    var cid = this.state.cid;
-    $.ajax({
-      url: '/admin/datas/categories/tree',
-      data: {id: cid},
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          var data = dt.data;
-          var root = data[0];
-          var tid = that.state.category == -1 ? root.id : that.state.category;
-          that.setState({
-            tree: data
-          })
-          that.__getReactDetail(
-            'dir',
-            tid,
-            function(dt1) {
-              var detail = dt1.code == 0 ? dt1.data : {};
-              that.setState({
-                detail: detail,
-                category: tid,
-              })
-            }
-          )
-        }
-      }
-    })
-  }
-  getReactDetail(type, id, cid) {
-    var that = this;
-    cid = type == 'dir' ? id : cid;
-    this.__getReactDetail(type, id, function(dt) {
-      var detail = dt.code == 0 ? dt.data : {};
-      var aid = (type === 'art' && detail.id) ? detail.id : -1;
-      that.setState({
-        detail: detail,
-        category: cid,
-        article: aid
-      })
-    });
-  }
-  __getReactDetail(type, id, cb) {
-    $.ajax({
-      url: '/admin/datas/categories/refact/get',
-      data: {type: type, id: id},
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        cb(dt);
-      }
-    })
+  __onChange() {
+    this.setState(CategoryRefactStore.getAll());
   }
   render() {
     return (
       <div id = 'refact-area'>
-        <CategoryTree tree = {this.state.tree} category = {this.state.category} categoryId = {this.state.category} articleId = {this.state.article} cstate = {this.state.cstate} click = {this.getReactDetail} expandChange = {this.categoryExpandChange} />
-        <DetailArea data = {this.state.detail} orderChange = {this.articleOrderChange} prefaceChange = {this.categoryPrefaceChange} />
+        <CategoryTree tree = {this.state.tree} category = {this.state.category} categoryId = {this.state.category} articleId = {this.state.article} cstate = {this.state.cstate}/>
+        <DetailArea data = {this.state.detail}/>
       </div>
     )
   }

@@ -6,6 +6,10 @@ const TableLabel = require('../components/tables/table_label');
 const TableBody = require('../components/tables/table_body');
 const TableFoot = require('../components/tables/table_foot');
 const TableNavLink = require("../components/table_foot_nav.js");
+
+const LabelAction = require('../actions/actions_labels');
+const LabelStore = require('../stores/stores_labels');
+
 // 这个扩展是从网上复制过来的
 Date.prototype.format = function (fmt) { //author: meizz
   var o = {
@@ -31,7 +35,7 @@ class LabelTableLabel extends React.Component {
   handleOrderImgClick(e) {
     var orderby = e.target.getAttribute('data-label');
     var orderDirect = this.props.orderDirect == this.orderState.asc.label ? this.orderState.desc.label : this.orderState.asc.label;
-    this.props.orderChange(orderby, orderDirect);
+    LabelAction.orderChange(orderby, orderDirect);
   }
   render() {
     var labels = [
@@ -42,7 +46,7 @@ class LabelTableLabel extends React.Component {
       {name: 'addtime', val: '添加日期'}
     ];
     return (
-      <TableLabel key = {1} type = 'label' labels = {labels} orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {this.props.orderChange} />
+      <TableLabel key = {1} type = 'label' labels = {labels} orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {LabelAction.orderChange} />
     )
   }
 }
@@ -76,7 +80,7 @@ class LabelTable extends React.Component {
     ))
     return (
       <Table type = 'label'>
-        <LabelTableLabel orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {this.props.orderChange} />
+        <LabelTableLabel orderby = {this.props.orderby} orderDirect = {this.props.orderDirect}/>
         <TableBody>
           {labels}
         </TableBody>
@@ -89,58 +93,24 @@ class LabelTable extends React.Component {
 class LabelLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      current: 0,
-      total: 0,
-      orderby: 'id',
-      orderDirect: 'asc',
-      labels: []
-    }
-    this.filter = {start : 0};
-    this.handleOrderChange = this.handleOrderChange.bind(this);
-    this.handlePageChange = this.handlePageChange.bind(this);
-    this.fetchLabelData = this.fetchLabelData.bind(this);
-    this.fetchLabelData(this.state.orderby, this.state.orderDirect);
+    this.state = LabelStore.getAll();
+    this.__onChange = this.__onChange.bind(this);
   }
-  handlePageChange(i) {
-    this.filter.start = i;
-    this.fetchLabelData();
+  componentDidMount() {
+    LabelStore.addChangeListener(this.__onChange);
+    LabelAction.fetchLabelData(this.state.orderby, this.state.orderDirect);
   }
-  handleOrderChange(orderby, orderDirect) {
-    this.filter.start = 0;
-    this.fetchLabelData(orderby, orderDirect);
+  componentWillUnmount() {
+    LabelStore.removeChangeListener(this.__onChange);
   }
-  fetchLabelData(orderby, orderDirect) {
-    var that = this;
-    var data = {
-      start: this.filter.start,
-      orderby: orderby,
-      asc: orderDirect
-    }
-    $.ajax({
-      url: '/admin/datas/labels/get',
-      data: data,
-      type: 'get',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          var returnData = dt.data;
-          that.setState({
-            current: returnData.current,
-            total: returnData.total,
-            orderby: orderby,
-            orderDirect: orderDirect,
-            labels: returnData.data
-          });
-        }
-      }
-    })
+  __onChange() {
+    this.setState(LabelStore.getAll());
   }
   render() {
     return (
       <div id = 'label-table-div'>
-        <LabelTable labels = {this.state.labels} orderby = {this.state.orderby} orderDirect = {this.state.orderDirect} orderChange = {this.handleOrderChange} />
-        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
+        <LabelTable labels = {this.state.labels} orderby = {this.state.orderby} orderDirect = {this.state.orderDirect}/>
+        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {LabelAction.pageChange} />
       </div>
     );
   }

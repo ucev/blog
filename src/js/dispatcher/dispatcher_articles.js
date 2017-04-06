@@ -3,6 +3,9 @@ const ArticleStore = require('../stores/stores_article');
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
+    case "ADD_ARTICLE":
+      ArticleStore.addArticle();
+      break;
     case "ALL_CHECKED":
       ArticleStore.allChecked(action.checked);
       break;
@@ -15,6 +18,12 @@ AppDispatcher.register(function(action) {
     case "DELETE_ARTICLE":
       ArticleStore.handleDeleteArticle(action.id);
       break;
+    case "DELETE_ARTICLE_CANCEL":
+      ArticleStore.deleteArticleCancel();
+      break;
+    case "DELETE_ARTICLE_CONFIRM":
+      ArticleStore.deleteArticleConfirm();
+      break;
     case "FETCH_ARTICLES":
       ArticleStore.fetchArticles();
       break;
@@ -25,10 +34,16 @@ AppDispatcher.register(function(action) {
       ArticleStore.filterOptionChange(action.label, action.value);
       break;
     case "MOVE_CATEGORY":
-      ArticleState.handleMoveCategory(action.id);
+      ArticleStore.handleMoveCategory(action.id);
+      break;
+    case "MOVE_CATEGORY_CANCEL":
+      ArticleStore.moveCategoryCancel();
+      break;
+    case "MOVE_CATEGORY_CONFIRM":
+      ArticleStore.moveCategoryConfirm(action.gid);
       break;
     case "PAGE_CHANGE":
-      ArticleState.handlePageChange(action.page);
+      ArticleStore.handlePageChange(action.page);
       break;
     default:
       break;

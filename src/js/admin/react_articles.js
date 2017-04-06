@@ -181,21 +181,6 @@ class ArticleTable extends React.Component {
 class ArticleLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      articles: [],
-      current: 0,
-      total: 0,
-      checkState: {},
-      // delete dialog
-      delVisible: false,
-      delArticleId: -1,
-      // move dialog
-      moveVisible: false,
-      categories: [],
-      moveArticleId: -1,
-      // group operation
-      isgroup: false
-    }
     this.stateOptions = [
       {value: '-1', title: '全部'},
       {value: 'on', title: '已上线'},
@@ -208,16 +193,8 @@ class ArticleLayout extends React.Component {
       {value: 'move', title: '移动'},
       {value: 'del', title: '删除'}
     ];
-    this.handlePageChange = this.handlePageChange.bind(this);
-    this.deleteArticleConfirm = this.deleteArticleConfirm.bind(this);
-    this.deleteArticleCancel = this.deleteArticleCancel.bind(this);
-    // categories
-    this.moveCategoryConfirm = this.moveCategoryConfirm.bind(this);
-    this.moveCategoryCancel = this.moveCategoryCancel.bind(this);
-
+    this.state = ArticleStore.getAll();
     this.__onChange = this.__onChange.bind(this);
-  
-    this.filter = {start : 0};
   }
   componentDidMount() {
     ArticleStore.addChangeListener(this.__onChange);
@@ -228,47 +205,7 @@ class ArticleLayout extends React.Component {
     ArticleStore.removeChangeListener(this.__onChange);
   }
   __onChange() {
-    console.log("change hreer");
     this.setState(ArticleStore.getAll());
-  }
-  addArticle() {
-    location.href = '/admin/articles/add';
-  }
-  handlePageChange(i) {
-    this.filter.start = i;
-    this.fetchArticles();
-  }
-  deleteArticleConfirm() {
-    var that = this;
-    $.ajax({
-      url: '/admin/datas/articles/delete',
-      data: {id: that.state.delArticleId},
-      type: 'post',
-      dataType: 'json',
-      success: function(dt) {
-        if (dt.code == 0) {
-          that.setState({
-            delVisible: false,
-            delArticleId: -1
-          })
-          that.fetchArticles();
-        }
-      }
-    })
-  }
-  deleteArticleCancel() {
-    this.setState({
-      delVisible: false
-    })
-  }
-  //category
-  moveCategoryConfirm(gid) {
-    this.articleGroupChange(this.state.moveArticleId, gid, false);
-  }
-  moveCategoryCancel() {
-    this.setState({
-      moveVisible: false
-    })
   }
   render() {
     /**
@@ -280,7 +217,7 @@ class ArticleLayout extends React.Component {
     return (
       <div>
         <div className = 'table-filter-bar table-filter-bar-top'>
-	        <button className = 'operation-button' onClick = {this.addArticle}>添加文章</button>
+	        <button className = 'operation-button' onClick = {ArticleAction.addArticle}>添加文章</button>
       	  <FilterInput title = 'label' label = '标签'/>
       	  <FilterInput title = 'category' label = '类别'/>
 	        <FilterSelect title = 'state' label = '状态' options = {this.stateOptions}/>
@@ -289,9 +226,9 @@ class ArticleLayout extends React.Component {
         <div className = 'table-filter-bar table-filter-bar-bottom'>
        	  <FilterSelect title = 'groupope' options = {this.opeOptions} reset = {groupopeReset} defaultVal = '-1'/>
         </div>
-        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {this.handlePageChange} />
-        <ConfirmDialog title = '确认删除?' confirm = {this.deleteArticleConfirm} cancel = {this.deleteArticleCancel} visible = {this.state.delVisible} />
-        <OptionDialog title = '移动文章分组' optionItems = {this.state.categories} confirm = {this.moveCategoryConfirm} cancel = {this.moveCategoryCancel} visible = {this.state.moveVisible} />
+        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {ArticleAction.pageChange} />
+        <ConfirmDialog title = '确认删除?' confirm = {ArticleAction.deleteArticleConfirm} cancel = {ArticleAction.deleteArticleCancel} visible = {this.state.delVisible} />
+        <OptionDialog title = '移动文章分组' optionItems = {this.state.categories} visible = {this.state.moveVisible} confirm = {ArticleAction.moveCategoryConfirm} cancel = {ArticleAction.moveCategoryCancel} />
       </div>
     );
   }
