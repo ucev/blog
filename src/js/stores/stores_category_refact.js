@@ -4,16 +4,18 @@ class CategoryRefactStore extends BaseStore {
   constructor() {
     super();
     var cidstr = location.pathname.match(/\/admin\/categories\/refact\/(\d+)/);
-    this.cid = cidstr ? Number(cidstr[1]) : -1; 
-    this.tree = [];
-    this.detail = {};
-    this.category = -1;
-    this.article = -1;
-    this.cstate = {}; //categoryExpandState
+    this.setState({
+      cid: cidstr ? Number(cidstr[1]) : -1,
+      tree: [],
+      detail: {},
+      category: -1,
+      article: -1,
+      cstate: {} //categoryExpandState
+    }, false)
   }
   articleOrderChange(newOrder, update = false) {
     var that = this;
-    var id = this.detail.id;
+    var id = this.getState("detail").id;
     if (update) {
       $.ajax({
         url: '/admin/datas/articles/order',
@@ -30,23 +32,21 @@ class CategoryRefactStore extends BaseStore {
         }
       })
     } else {
-      var detail = this.detail;
+      var detail = this.getState("detail");
       detail.suborder = newOrder;
-      that.detail = detail;
-      that.emitChange();
+      this.setState({detail: detail});
     }
   }
   categoryExpandChange(id) {
-    var cstate = this.cstate;
+    var cstate = this.getState("cstate");
     cstate[id] = cstate[id] === false;
-    this.cstate = cstate;
-    this.emitChange();
+    this.setState({cstate: cstate});
   }
   categoryPrefaceChange(id, isSet = true) {
     var that = this;
-    var detail = this.detail;
+    var detail = this.getState("detail");
     var data = {
-      category: this.category,
+      category: this.getState("category"),
       preface: id,
       isSet: isSet
     }
@@ -64,7 +64,7 @@ class CategoryRefactStore extends BaseStore {
   }
   getCategoryTree() {
     var that = this;
-    var cid = this.cid;
+    var cid = this.getState("cid");
     $.ajax({
       url: '/admin/datas/categories/tree',
       data: {
@@ -76,17 +76,17 @@ class CategoryRefactStore extends BaseStore {
         if (dt.code == 0) {
           var data = dt.data;
           var root = data[0];
-          var tid = that.category == -1 ? root.id : that.category;
-          that.tree = data;
-          that.emitChange();
+          var tid = that.getState("category") == -1 ? root.id : that.getState("category");
+          that.setState({tree: data});
           that.__getRefactDetail(
             'dir',
             tid,
             function (dt1) {
               var detail = dt1.code == 0 ? dt1.data : {};
-              that.detail = detail;
-              that.category = tid;
-              that.emitChange();
+              that.setState({
+                detail: detail,
+                category: tid
+              })
             }
           )
         }
@@ -99,10 +99,11 @@ class CategoryRefactStore extends BaseStore {
     this.__getRefactDetail(type, id, function (dt) {
       var detail = dt.code == 0 ? dt.data : {};
       var aid = (type === 'art' && detail.id) ? detail.id : -1;
-      that.detail = detail;
-      that.category = cid;
-      that.article = aid;
-      that.emitChange();
+      that.setState({
+        detail: detail,
+        category: cid,
+        article: aid
+      })
     });
   }
   __getRefactDetail(type, id, cb) {
@@ -120,14 +121,7 @@ class CategoryRefactStore extends BaseStore {
     })
   }
   getAll() {
-    return {
-      cid: this.cid,
-      tree: this.tree,
-      detail: this.detail,
-      category: this.category,
-      article: this.article,
-      cstate: this.cstate
-    }
+    return this.getState();
   }
 };
 

@@ -3,19 +3,21 @@ const BaseStore = require('./stores_base');
 class ArticleStore extends BaseStore {
   constructor() {
     super();
-    this.articles = [];
-    this.current = 0;
-    this.total = 0;
-    this.checkState = {};
-    // delete dialog
-    this.delVisible = false;
-    this.delArticleId = -1;
-    // move dialog
-    this.moveVisible = false;
-    this.categories = [];
-    this.moveArticleId = -1;
-    // group operation
-    this.isgroup = false;
+    this.setState({
+      articles: [],
+      current: 0,
+      total: 0,
+      checkState: {},
+      // delete dialog
+      delVisible: false,
+      delArticleId: -1,
+      // move dialog
+      moveVisible: false,
+      categories: [],
+      moveArticleId: -1,
+      // group operation
+      isgroup: false
+    }, false)
 
     // query filter
     this.filter = {
@@ -61,15 +63,17 @@ class ArticleStore extends BaseStore {
         if (dt.code == 0) {
           if (that.isgroup) {
             that.fetchArticles();
-            that.moveVisible = false;
-            that.moveArticleId = -1;
-            that.isgroup = false;
-            that.emitChange();
+            that.setState({
+              moveVisible: false,
+              moveArticleId: -1,
+              isgroup: false
+            })
           } else {
-            that.moveVisible = false;
-            that.moveArticleId = -1;
+            that.setState({
+              moveVisible: false,
+              moveArticleId: -1
+            })
             //
-            that.emitChange();
             that.fetchSingleArticle(id);
           }
         }
@@ -77,19 +81,17 @@ class ArticleStore extends BaseStore {
     })
   }
   checkStateChange(id, checked) {
-    var checkState = this.checkState;
+    var checkState = this.getState("checkState");
     checkState[id] = checked;
-    this.checkState = checkState;
-    this.emitChange();
+    this.setState({checkState: checkState});
   }
   allChecked(checked) {
-    var articles = this.articles;
+    var articles = this.getState("articles");
     var checkState = {};
     for (let i = 0; i < articles.length; i++) {
       checkState[articles[i].id] = checked;
     }
-    this.checkState = checkState;
-    this.emitChange();
+    this.setState({checkState: checkState});
   }
   fetchSingleArticle(id) {
     var that = this;
@@ -106,8 +108,7 @@ class ArticleStore extends BaseStore {
           for (let i in articles) {
             if (articles[i].id == id) {
               articles[i] = dt.data;
-              that.articles = articles;
-              that.emitChange();
+              that.setState({articles: articles});
               break;
             }
           }
@@ -128,7 +129,12 @@ class ArticleStore extends BaseStore {
           that.current = dt.data.current;
           that.total = dt.data.total;
           that.checkState = {};
-          that.emitChange();
+          that.setState({
+            articles: dt.data.data,
+            current: dt.data.current,
+            total: dt.data.total,
+            checkState: {}
+          })
         }
       }
     });
@@ -141,8 +147,7 @@ class ArticleStore extends BaseStore {
       dataType: 'json',
       success: function (dt) {
         if (dt.code == 0) {
-          that.categories = dt.data;
-          that.emitChange();
+          that.setState({categories: dt.data});
         }
       }
     })
@@ -158,10 +163,11 @@ class ArticleStore extends BaseStore {
     this.fetchArticles();
   }
   handleDeleteArticle(id) {
-    this.delVisible = true;
-    this.delArticleId = id;
-    this.isgroup = false;
-    this.emitChange();
+    this.setState({
+      delVisible: true,
+      delArticleId: id,
+      isgroup: false
+    })
   }
   deleteArticleConfirm() {
     var that = this;
@@ -175,17 +181,17 @@ class ArticleStore extends BaseStore {
       success: function (dt) {
         if (dt.code == 0) {
           //
-          that.delVisible = false;
-          that.delArticleId = -1;
-          that.emitChange();
+          that.setState({
+            delVisible: false,
+            delArticleId: -1
+          });
           that.fetchArticles();
         }
       }
     })
   }
   deleteArticleCancel() {
-    this.delVisible = false;
-    this.emitChange();
+    this.setState({delVisible: false});
   }
   filterOptionChange(title, value) {
     if (title == 'groupope') {
@@ -196,7 +202,7 @@ class ArticleStore extends BaseStore {
   }
   groupOpeChange(title, value) {
     var that = this;
-    var checkState = this.checkState;
+    var checkState = this.getState("checkState");
     var ids = [];
     for (let key in checkState) {
       if (checkState[key]) ids.push(key);
@@ -208,16 +214,18 @@ class ArticleStore extends BaseStore {
         that.articleStateChange(ids, value, true);
         break;
       case 'move':
-        that.moveArticleId = ids;
-        that.isgroup = true;
-        that.moveVisible = true;
-        that.emitChange();
+        that.setState({
+          moveArticleId: ids,
+          isgroup: true,
+          moveVisible: true
+        })
         break;
       case 'del':
-        that.delArticleId = ids;
-        that.isgroup = true;
-        that.delVisible = true;
-        that.emitChange();
+        that.setState({
+          delArticleId: ids,
+          isgroup: true,
+          delVisible: true
+        })
         break;
       default:
         break;
@@ -228,31 +236,17 @@ class ArticleStore extends BaseStore {
     this.articleGroupChange(this.moveArticleId, gid, false);
   }
   moveCategoryCancel() {
-    this.moveVisible = false;
-    this.emitChange();
+    this.setState({moveVisible: false});
   }
   handleMoveCategory(id) {
-    this.moveArticleId = id;
-    this.isgroup = false;
-    this.moveVisible = true;
-    this.emitChange();
+    this.setState({
+      moveArticleId: id,
+      isgroup: false,
+      moveVisible: true
+    })
   }
   getAll() {
-    return {
-      articles: this.articles,
-      current: this.current,
-      total: this.total,
-      checkState: this.checkState,
-      // delete dialog
-      delVisible: this.delVisible,
-      delArticleId: this.delArticleId,
-      // move dialog
-      moveVisible: this.moveVisible,
-      categories: this.categories,
-      moveArticleId: this.moveArticleId,
-      // group operation
-      isgroup: this.isgroup
-    }
+    return this.getState();
   }
 }
 

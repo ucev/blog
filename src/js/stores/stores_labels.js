@@ -3,11 +3,13 @@ const BaseStore = require('./stores_base');
 class LabelStore extends BaseStore {
   constructor() {
     super();
-    this.current = 0;
-    this.total = 0;
-    this.orderby = 'id';
-    this.orderDirect = 'asc';
-    this.labels = [];
+    this.setState({
+      current: 0,
+      total: 0,
+      orderby: 'id',
+      orderDirect: 'asc',
+      labels: []
+    }, false);
     this.filter = {
       start: 0
     };
@@ -35,24 +37,19 @@ class LabelStore extends BaseStore {
       success: function (dt) {
         if (dt.code == 0) {
           var returnData = dt.data;
-          that.current = returnData.current;
-          that.total = returnData.total;
-          that.orderby = orderby;
-          that.orderDirect = orderDirect;
-          that.labels = returnData.data;
-          that.emitChange();
+          that.setState({
+            current: returnData.current,
+            total: returnData.total,
+            orderby: orderby,
+            orderDirect: orderDirect,
+            labels: returnData.data
+          })
         }
       }
     })
   }
   getAll() {
-    return {
-      current: this.current,
-      total: this.total,
-      orderby: this.orderby,
-      orderDirect: this.orderDirect,
-      labels: this.labels
-    }
+    return this.getState();
   }
 };
 

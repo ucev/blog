@@ -3,30 +3,33 @@ const BaseStore = require('./stores_base');
 class CategoryStore extends BaseStore {
   constructor() {
     super();
-    this.categories = [];
-    this.addVisible = false;
-    this.addType = 'add';
-    this.addData = {};
-    this.delVisible = false
+    this.setState({
+      categories: [],
+      addVisible: false,
+      addType: 'add',
+      addData: {},
+      delVisible: false
+    }, false);
 
     this.addTitle = {
       add: '添加类别',
       modify: '修改类别'
     }
   } 
-  addCategoryDivStateChange(visible, type = this.addType, data = {}) {
-    this.addVisible = visible;
-    this.addType = type;
-    this.addData = data;
-    this.emitChange();
+  addCategoryDivStateChange(visible, type = this.getState("addType"), data = {}) {
+    this.setState({
+      addVisible: visible,
+      addType: type,
+      addData: data
+    })
   }
   addCategoryConfirm(data) {
     var url = '';
-    if (this.addType == 'add') {
+    if (this.getState("addType") == 'add') {
       url = '/admin/datas/categories/add';
-    } else if (this.addType = 'modify') {
+    } else if (this.getState("addType") == 'modify') {
       url = '/admin/datas/categories/modify';
-      data.id = this.addData.id;
+      data.id = this.getState("addData").id;
     }
     var that = this;
     $.ajax({
@@ -46,45 +49,41 @@ class CategoryStore extends BaseStore {
     this.addCategoryDivStateChange(false);
   }
   addCategoryValueChange(data) {
-    this.addData = data;
-    this.emitChange();
+    this.setState({addData: data});
   }
   deleteCategoryConfirm() {
     var that = this;
     $.ajax({
       url: '/admin/datas/categories/delete',
       data: {
-        id: that.delCategoryId
+        id: that.getState("delCategoryId")
       },
       type: 'post',
       dataType: 'json',
       success: function (dt) {
         if (dt.code == 0) {
-          that.delVisible = false;
-          that.delCategoryId = -1;
+          that.setState({
+            delVisible: false,
+            delCategoryId: -1
+          })
           //
-          that.emitChange();
           that.fetchCategoryData();
         }
       }
     })
   }
   deleteCategoryCancel() {
-    this.delVisible = false;
-    this.emitChange();
+    this.setState({delVisible: false});
   }
   deleteCategoryHandle(id) {
-    this.delVisible = true;
-    this.delCategoryId = id;
-    this.emitChange();
+    this.setState({delVisible: true, delCategoryId: id});
   }
   handleCategoryOrderChange(id, order) {
-    var categories = this.categories;
+    var categories = this.getState("categories");
     for (var i in categories) {
       if (categories[i].id == id) {
         categories[i].mainorder = order;
-        this.categories = categories;
-        this.emitChange();
+        this.setState({categories: categories});
         break;
       }
     }
@@ -114,21 +113,15 @@ class CategoryStore extends BaseStore {
       dataType: 'json',
       success: function (dt) {
         if (dt.code == 0) {
+          // ?
           localStorage.setItem('categories', JSON.stringify(dt.data));
-          that.categories = dt.data;
-          that.emitChange();
+          that.setState({"categories": dt.data});
         }
       }
     })
   }
   getAll() {
-    return {
-      categories: this.categories,
-      addVisible: this.addVisible,
-      addType: this.addType,
-      addData: this.addData,
-      delVisible: this.delVisible
-    }
+    return this.getState();
   }
 };
 
