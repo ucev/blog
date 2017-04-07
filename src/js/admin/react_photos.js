@@ -6,8 +6,10 @@ const InputDialog = require("../components/dialogs/input_dialog.js");
 const OptionDialog = require("../components/dialogs/option_dialog.js");
 const TableNavLink = require("../components/table_foot_nav.js");
 
-const PhotoActions = require('../actions/actions_photos');
-const PhotoStores = require('../stores/stores_photos');
+var PhotoActions = null;
+var PhotoStores = null;
+
+const PhotoListener = require('../flux/photo_listener');
 
 class PhotoFlowOperationBar extends React.Component {
   constructor(props) {
@@ -372,6 +374,11 @@ class PhotoGroupBar extends React.Component {
 class PhotoArea extends React.Component {
   constructor(props) {
     super(props);
+
+    var listener = PhotoListener();
+    PhotoActions = listener.getAction();
+    PhotoStores = listener.getStore();
+
     this.state = PhotoStores.getAll();
     this.__onChange = this.__onChange.bind(this);
   }

@@ -10,8 +10,9 @@ const TableBody = require('../components/tables/table_body');
 const TableFoot = require('../components/tables/table_foot');
 const TableNavLink = require("../components/table_foot_nav.js");
 
-const ArticleAction = require('../actions/actions_article');
-const ArticleStore = require('../stores/stores_article');
+var ArticleAction = null;
+var ArticleStore = null;
+const ArticleListener = require('../flux/article_listener');
 
 class FilterInput extends React.Component {
   constructor(props) {
@@ -22,7 +23,7 @@ class FilterInput extends React.Component {
     if (e.which == 13) {
       var title = this.props.title;
       var value = e.target.value;
-      ArticleAction.handleFilterChange(title, value);
+      ArticleAction.filterOptionChange(title, value);
     }
   }
   render() {
@@ -43,7 +44,7 @@ class FilterSelect extends React.Component {
   handleChange(e) {
     var title = this.props.title;
     var value = e.target.value;
-    ArticleACtion.filterOptionChange(title, value);
+    ArticleAction.filterOptionChange(title, value);
   }
   render() {
     const options = this.props.options.map((opt) => {
@@ -193,6 +194,10 @@ class ArticleLayout extends React.Component {
       {value: 'move', title: '移动'},
       {value: 'del', title: '删除'}
     ];
+    var listener = new ArticleListener();
+    ArticleAction = listener.getAction();
+    ArticleStore = listener.getStore();
+
     this.state = ArticleStore.getAll();
     this.__onChange = this.__onChange.bind(this);
   }
@@ -217,7 +222,7 @@ class ArticleLayout extends React.Component {
     return (
       <div>
         <div className = 'table-filter-bar table-filter-bar-top'>
-	        <button className = 'operation-button' onClick = {ArticleAction.addArticle}>添加文章</button>
+	        <button className = 'operation-button' onClick = {ArticleAction.addArticle.bind(ArticleAction)}>添加文章</button>
       	  <FilterInput title = 'label' label = '标签'/>
       	  <FilterInput title = 'category' label = '类别'/>
 	        <FilterSelect title = 'state' label = '状态' options = {this.stateOptions}/>
@@ -226,9 +231,9 @@ class ArticleLayout extends React.Component {
         <div className = 'table-filter-bar table-filter-bar-bottom'>
        	  <FilterSelect title = 'groupope' options = {this.opeOptions} reset = {groupopeReset} defaultVal = '-1'/>
         </div>
-        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {ArticleAction.pageChange} />
-        <ConfirmDialog title = '确认删除?' confirm = {ArticleAction.deleteArticleConfirm} cancel = {ArticleAction.deleteArticleCancel} visible = {this.state.delVisible} />
-        <OptionDialog title = '移动文章分组' optionItems = {this.state.categories} visible = {this.state.moveVisible} confirm = {ArticleAction.moveCategoryConfirm} cancel = {ArticleAction.moveCategoryCancel} />
+        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {ArticleAction.pageChange.bind(ArticleAction)} />
+        <ConfirmDialog title = '确认删除?' confirm = {ArticleAction.deleteArticleConfirm.bind(ArticleAction)} cancel = {ArticleAction.deleteArticleCancel.bind(ArticleAction)} visible = {this.state.delVisible} />
+        <OptionDialog title = '移动文章分组' optionItems = {this.state.categories} visible = {this.state.moveVisible} confirm = {ArticleAction.moveCategoryConfirm.bind(ArticleAction)} cancel = {ArticleAction.moveCategoryCancel.bind(ArticleAction)} />
       </div>
     );
   }

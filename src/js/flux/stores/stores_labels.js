@@ -15,6 +15,7 @@ class LabelStore extends BaseStore {
     };
   }
   handlePageChange(i) {
+    console.log('store label, page change');
     this.filter.start = i;
     this.fetchLabelData(this.orderby, this.orderDirect);
   }
@@ -53,4 +54,4 @@ class LabelStore extends BaseStore {
   }
 };
 
-module.exports = new LabelStore();
+module.exports = LabelStore;

@@ -415,4 +415,4 @@ class PhotoStore extends BaseStore {
   }
 };
 
-module.exports = new PhotoStore();
+module.exports = PhotoStore;

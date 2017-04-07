@@ -125,4 +125,4 @@ class CategoryStore extends BaseStore {
   }
 };
 
-module.exports = new CategoryStore();
+module.exports = CategoryStore;

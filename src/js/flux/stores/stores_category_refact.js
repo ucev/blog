@@ -125,4 +125,4 @@ class CategoryRefactStore extends BaseStore {
   }
 };
 
-module.exports = new CategoryRefactStore();
+module.exports = CategoryRefactStore;

@@ -174,7 +174,7 @@ class ArticleStore extends BaseStore {
     $.ajax({
       url: '/admin/datas/articles/delete',
       data: {
-        id: that.delArticleId
+        id: that.getState("delArticleId")
       },
       type: 'post',
       dataType: 'json',
@@ -196,8 +196,8 @@ class ArticleStore extends BaseStore {
   filterOptionChange(title, value) {
     if (title == 'groupope') {
       this.groupOpeChange(title,value);
-    } else if (title == '') {
-      handleFilterChange(title, value);
+    } else if (title != '') {
+      this.handleFilterChange(title, value);
     }
   }
   groupOpeChange(title, value) {
@@ -233,7 +233,7 @@ class ArticleStore extends BaseStore {
   }
   //category
   moveCategoryConfirm(gid) {
-    this.articleGroupChange(this.moveArticleId, gid, false);
+    this.articleGroupChange(this.getState("moveArticleId"), gid, false);
   }
   moveCategoryCancel() {
     this.setState({moveVisible: false});
@@ -250,4 +250,4 @@ class ArticleStore extends BaseStore {
   }
 }
 
-module.exports = new ArticleStore();
+module.exports = ArticleStore;

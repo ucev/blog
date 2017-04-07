@@ -7,8 +7,10 @@ const TableBody = require('../components/tables/table_body');
 const TableFoot = require('../components/tables/table_foot');
 const TableNavLink = require("../components/table_foot_nav.js");
 
-const LabelAction = require('../actions/actions_labels');
-const LabelStore = require('../stores/stores_labels');
+var LabelAction = null;
+var LabelStore = null;
+
+const LabelListener = require('../flux/label_listener');
 
 // 这个扩展是从网上复制过来的
 Date.prototype.format = function (fmt) { //author: meizz
@@ -46,7 +48,7 @@ class LabelTableLabel extends React.Component {
       {name: 'addtime', val: '添加日期'}
     ];
     return (
-      <TableLabel key = {1} type = 'label' labels = {labels} orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {LabelAction.orderChange} />
+      <TableLabel key = {1} type = 'label' labels = {labels} orderby = {this.props.orderby} orderDirect = {this.props.orderDirect} orderChange = {LabelAction.orderChange.bind(LabelAction)} />
     )
   }
 }
@@ -93,6 +95,11 @@ class LabelTable extends React.Component {
 class LabelLayout extends React.Component {
   constructor(props) {
     super(props);
+
+    var listener = new LabelListener();
+    LabelAction = listener.getAction();
+    LabelStore = listener.getStore();
+
     this.state = LabelStore.getAll();
     this.__onChange = this.__onChange.bind(this);
   }
@@ -110,7 +117,7 @@ class LabelLayout extends React.Component {
     return (
       <div id = 'label-table-div'>
         <LabelTable labels = {this.state.labels} orderby = {this.state.orderby} orderDirect = {this.state.orderDirect}/>
-        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {LabelAction.pageChange} />
+        <TableNavLink page = {this.state.current} total = {this.state.total} pagechange = {LabelAction.pageChange.bind(LabelAction)} />
       </div>
     );
   }

@@ -10,8 +10,10 @@ const TableBody = require('../components/tables/table_body');
 const TableFoot = require('../components/tables/table_foot');
 const TableNavLink = require("../components/table_foot_nav.js");
 
-const CategoryActions = require('../actions/actions_category');
-const CategoryStore = require('../stores/stores_category');
+var CategoryActions = null;
+var CategoryStore = null;
+
+const CategoryListener = require('../flux/category_listener');
 
 class OperationBar extends React.Component {
   constructor(props) {
@@ -124,11 +126,16 @@ class CategoryTable extends React.Component {
 class CategoryLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = CategoryStore.getAll();
     this.addTitle = {
       add: '添加类别',
       modify: '修改类别'
     }
+    
+    var listener = new CategoryListener();
+    CategoryActions = listener.getAction();
+    CategoryStore = listener.getStore();
+
+    this.state = CategoryStore.getAll();
     this.__onChange = this.__onChange.bind(this);
   }
   componentDidMount() {
@@ -148,8 +155,8 @@ class CategoryLayout extends React.Component {
       <div>
         <OperationBar/>
         <CategoryTable categories = {categories}/>
-        <AddCategoryDialog type = {addType} title = {this.addTitle[addType]} data = {this.state.addData} categories = {categories} visible = {this.state.addVisible} confirm = {CategoryActions.addCategoryConfirm} cancel = {CategoryActions.addCategoryCancel} valueChange = {CategoryActions.addCategoryValueChange} />
-        <ConfirmDialog title = '确认删除此类别?' visible = {this.state.delVisible} confirm = {CategoryActions.deleteCategoryConfirm} cancel = {CategoryActions.deleteCategoryCancel} />
+        <AddCategoryDialog type = {addType} title = {this.addTitle[addType]} data = {this.state.addData} categories = {categories} visible = {this.state.addVisible} confirm = {CategoryActions.addCategoryConfirm.bind(CategoryActions)} cancel = {CategoryActions.addCategoryCancel.bind(CategoryActions)} valueChange = {CategoryActions.addCategoryValueChange.bind(CategoryActions)} />
+        <ConfirmDialog title = '确认删除此类别?' visible = {this.state.delVisible} confirm = {CategoryActions.deleteCategoryConfirm.bind(CategoryActions)} cancel = {CategoryActions.deleteCategoryCancel.bind(CategoryActions)} />
       </div>
     );
   }

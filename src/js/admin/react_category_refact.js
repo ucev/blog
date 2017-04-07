@@ -1,8 +1,10 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const CategoryRefactActions = require('../actions/actions_category_refact');
-const CategoryRefactStore = require('../stores/stores_category_refact');
+var CategoryRefactActions = null;
+var CategoryRefactStore = null;
+
+const CategoryRefactListener = require('../flux/category_refact_listener');
 
 class DetailArea extends React.Component {
   constructor(props) {
@@ -159,6 +161,11 @@ class CategoryTree extends React.Component {
 class CategoryRefactArea extends React.Component {
   constructor(props) {
     super(props);
+
+    var listener = new CategoryRefactListener();
+    CategoryRefactActions = listener.getAction();
+    CategoryRefactStore = listener.getStore();
+    
     this.state = CategoryRefactStore.getAll();
     this.__onChange = this.__onChange.bind(this);
   }
