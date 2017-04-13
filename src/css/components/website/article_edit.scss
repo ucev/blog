@@ -29,6 +29,7 @@
 #edit-area,
 #display-area {
   -moz-box-flex: 1;
+  //z-index: 1000;
   width: 50%;
   height: 100%;
   overflow: scroll;
@@ -40,6 +41,16 @@
 
 .CodeMirror {
   height: 100%;
+}
+
+.editor-toolbar.fullscreen,
+.editor-preview-active-side,
+.CodeMirror-fullscreen {
+  z-index: 1000;
+}
+
+.editor-preview-side {
+  background-color: white;
 }
 
 .op-bar {

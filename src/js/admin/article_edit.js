@@ -70,17 +70,7 @@ function photoImgOnLoad(e) {
   img.setAttribute('height', nh + 'px');
 }
 
-const markdown_editor_config = {
-  element: document.getElementById("md-editor"),
-  indentWithTabs: false,
-  status: false,
-  spellChecker: false,
-  drawImage: drawImage,
-  drawLink: drawLink
-};
-
 function submitArticle(e) {
-  console.log('submit');
   $('#submit').unbind('click');
   var content = simplemde.value();
   var descp = getContentDescription(content);
@@ -119,78 +109,6 @@ function getContentDescription(content) {
   content = markdown.render(content);
   var p = content.match(/(<p[\s\S]*?>)([\s\S]*?)(<\/p>)/);
   return p ? p[2] : '';
-}
-// 这个是粘贴过来的,
-function injectLineNumbers(tokens, idx, options, env, slf) {
-  if (tokens[idx].map && tokens[idx].level === 0) {
-    line = tokens[idx].map[0];
-    tokens[idx].attrJoin('class', 'lidne');
-    tokens[idx].attrSet('data-line', String(line));
-  }
-  return slf.renderToken(tokens, idx, options, env, slf);
-}
-//这个是我根据原函数的思想自己修改的
-function buildScrollMap() {
-  var lineHeightMap = [],
-    scrollMap = [],
-    nonEmptyList = [],
-    i, mirror = simplemde.codemirror;
-  var $target = $("#display-area");
-  /**
-   * 这个由于我对javascript的宽高度量一直比较模糊
-   * 现在还不能正确的使用scrollHeight, clientHeight等
-   * 等搞清楚了再来修改
-   * 先做一个记号 😊 
-   */
-  var offset = $target.scrollTop() - $target.offset().top;
-  var lineCount = mirror.doc.lineCount();
-  var firstLine = mirror.heightAtLine(0);
-  for (i = 0; i < lineCount; i++) {
-    lineHeightMap.push(Math.floor(mirror.heightAtLine(i) - firstLine));
-  }
-  for (i = 0; i < lineCount; i++) {
-    scrollMap.push(-1);
-  }
-  nonEmptyList.push(0);
-  scrollMap[0] = 0;
-  $(".line").each((index, ele) => {
-    var $ele = $(ele),
-      _line = $ele.data('line');
-    if (_line != 0) nonEmptyList.push(_line);
-    scrollMap[_line] = Math.floor($ele.offset().top + offset);
-  });
-  scrollMap[lineCount] = $target[0].scrollHeight;
-  nonEmptyList.push(lineCount);
-
-  var pos = 0;
-  for (i = 1; i <= lineCount; i++) {
-    if (scrollMap[i] != -1) {
-      pos++;
-      continue;
-    }
-    var a = nonEmptyList[pos];
-    var b = nonEmptyList[pos + 1];
-    scrollMap[i] = Math.floor((scrollMap[b] * (i - a) + scrollMap[a] * (b - i)) / (b - a));
-  }
-  // scrollmap[0]
-  scrollMap[0] = 0;
-
-  return {
-    lineHeightMap: lineHeightMap,
-    scrollMap: scrollMap
-  };
-}
-
-function myDebounce(func, idle) {
-  var last;
-  return function () {
-    var ctx = this,
-      args = arguments;
-    if (last) clearTimeout(last);
-    last = setTimeout(function () {
-      func.apply(ctx, args);
-    }, idle);
-  }
 }
 
 function fetchGroupData() {
@@ -275,7 +193,6 @@ function openUploadImgDialog() {
 
 function uploadImgInputChange(e) {
   var file = $("#upload-img-input")[0].files[0];
-  console.log(file);
   var gid = $("#choose-photo-div").attr('data-curr-gid');
   var fd = new FormData();
   fd.append('file', file);
@@ -294,71 +211,33 @@ function uploadImgInputChange(e) {
   })
 }
 
+markdown = markdownit();
+const markdown_editor_config = {
+  element: document.getElementById("md-editor"),
+  indentWithTabs: false,
+  status: false,
+  spellChecker: false,
+  drawImage: drawImage,
+  drawLink: drawLink
+};
+
+//markdown.use(markdownItClassy);
 simplemde = new SimpleMDE(markdown_editor_config);
 cm = simplemde.codemirror;
-markdown = markdownit();
-markdown.use(markdownItClassy);
-markdown.renderer.rules.paragraph_open = markdown.renderer.rules.heading_open =
-  markdown.renderer.rules.ordered_list_open = markdown.renderer.rules.bullet_list_open =
-  markdown.renderer.rules.table_open = injectLineNumbers;
+cm.scrollTo(0, 0);
 
-$('#display-area').html(markdown.render(simplemde.value()));
 $("#submit").click(submitArticle);
 addLabel(current_labels.split(','));
 fetchGroupData();
 
-// 绑定事件监听器
-var syncSrcScroll = myDebounce(function () {
-  var $target = $('#display-area');
-  var toffset = Math.ceil($target.scrollTop());
-  var smap = buildScrollMap();
-  var lineHeightMap = smap.lineHeightMap;
-  var scrollMap = smap.scrollMap;
-  var pos, i, lineCount = lineHeightMap.length;
-  for (i = 0; i < lineCount; i++) {
-    if (scrollMap[i] > toffset) {
-      pos = i - 1;
-      break;
-    }
-  }
-  if (pos >= 0) {
-    simplemde.codemirror.scrollTo(0, lineHeightMap[pos]);
-  } else {
-    simplemde.codemirror.scrollTo(0, 0);
-  }
-}, 600);
-var syncResScroll = myDebounce(function (line = undefined) {
-  var pos = 0;
-  var smap = buildScrollMap();
-  var lineHeightMap = smap.lineHeightMap,
-    scrollMap = smap.scrollMap;
-  if (line != undefined) {
-    pos = line;
-  } else {
-    var etop = simplemde.codemirror.getScrollInfo().top;
-    var smap = buildScrollMap();
-    var lineHeightMap = smap.lineHeightMap,
-      scrollMap = smap.scrollMap;
-    var lineCount = lineHeightMap.length,
-      i;
-    for (i = 0; i < lineCount; i++) {
-      if (lineHeightMap[i] > etop) {
-        pos = i - 1;
-        break;
-      }
-    }
-  }
-  $("#display-area").scrollTop(scrollMap[pos]);
-}, 100);
+/*
 $("#display-area").on("touchstart mouseover", function () {
   simplemde.codemirror.off('scroll', syncResScroll);
   $('#display-area').on('scroll', syncSrcScroll);
 });
 $("#edit-area").on('mouseover', function () {
   $('#display-area').off('scroll');
-  simplemde.codemirror.on('scroll', () => {
-    syncResScroll();
-  });
+  simplemde.codemirror.on('scroll', syncResScroll);
 });
 $("#edit-area").on('mouseout', function () {
   simplemde.codemirror.off('scroll', syncResScroll);
@@ -367,24 +246,21 @@ simplemde.codemirror.on('change', function (instance, changeObj) {
   var line = changeObj.to.line;
   var size = instance.doc.size;
   var toPos;
-  /**
-   * 当然这里有更好的改法，这里用了最方便实现的方法
-   * 先标记一下 😊
-   */
+  // 当然这里有更好的改法，这里用了最方便实现的方法
   if (line > size - 2) {
     toPos = size - 1;
   } else {
     toPos = line;
   }
   $("#display-area").html(markdown.render(simplemde.value()));
-  syncResScroll(toPos);
-});
+  syncResScroll(false);
+});*/
 
-simplemde.codemirror.on("drop", function(instance, e) {
+simplemde.codemirror.on("drop", function (instance, e) {
   var dt = e.dataTransfer;
   if (!dt) return;
   var f = dt.files[0];
-  if(!/image/.test(f.type)){
+  if (!/image/.test(f.type)) {
     return;
   }
   var fd = new FormData();
@@ -404,9 +280,9 @@ simplemde.codemirror.on("drop", function(instance, e) {
   e.preventDefault();
   e.stopPropagation();
 });
-$(document).on("drop", function(e) {
+$(document).on("drop", function (e) {
   e.preventDefault();
 });
-$(document).on("dragover", function(e) {
+$(document).on("dragover", function (e) {
   e.preventDefault();
 });
