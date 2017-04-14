@@ -38,6 +38,7 @@
 .CodeMirror-fullscreen {
   z-index: 1000; }
 
+.editor-preview,
 .editor-preview-side {
   background-color: white; }
 
@@ -96,7 +97,7 @@ button#submit {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 150;
+  z-index: 1500;
   width: 800px;
   height: 500px;
   margin-left: calc((100% - 800px) / 2);
@@ -178,7 +179,7 @@ button#submit {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 150;
+  z-index: 1500;
   width: 300px;
   height: 140px;
   margin-left: calc((100% - 300px) / 2);

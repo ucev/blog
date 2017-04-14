@@ -1,8 +1,6 @@
 var simplemde = null;
 var markdown = null;
 var cm = null;
-var __drawImage = null;
-var __drawLink = null;
 
 var labels = [];
 var labelCount = 0;
@@ -43,15 +41,13 @@ function addLabel(lbs) {
   });
 })();
 
-function drawLink(cb) {
-  __drawLink = cb;
+function drawLink() {
   $("#insert-url-div").show();
   $("#insert-url-div-input").val("");
   $("#insert-url-div-input").focus();
 }
 
-function drawImage(cb) {
-  __drawImage = cb;
+function drawImage() {
   $("#choose-photo-div").show();
 }
 
@@ -109,98 +105,6 @@ function getContentDescription(content) {
   content = markdown.render(content);
   var p = content.match(/(<p[\s\S]*?>)([\s\S]*?)(<\/p>)/);
   return p ? p[2] : '';
-}
-// 这个是粘贴过来的,
-function injectLineNumbers(tokens, idx, options, env, slf) {
-  if (tokens[idx].map && tokens[idx].level === 0) {
-    line = tokens[idx].map[0];
-    tokens[idx].attrJoin('class', 'line');
-    tokens[idx].attrSet('data-line', String(line));
-  }
-  return slf.renderToken(tokens, idx, options, env, slf);
-}
-//这个是我根据原函数的思想自己修改的
-function buildScrollMap() {
-  var lineHeightMap = [],
-    scrollMap = [],
-    nonEmptyList = [],
-    i, mirror = simplemde.codemirror;
-  var $target = $("#display-area");
-  var offset = $target.scrollTop() - $target.offset().top;
-  var lineCount = mirror.doc.lineCount();
-
-  /**
-   * 因为 SimpleMDE 在某些情况下会隐藏工具栏，排除工具栏可见与否对布局的干扰
-   */
-  var firstLine, firstLineHeight;
-  if (mirror.heightAtLine(0) == 135) {
-    firstLine = 1;
-    firstLineHeight = mirror.heightAtLine(1);
-  } else {
-    firstLine = 0;
-    firstLineHeight = mirror.heightAtLine(0);
-  }
-  /**
-   * lineHeightMap[i] 第i行的顶部到编辑区顶点的距离, 如果把每一行看作一个独立的div的话，那lineHeight[i] 就相当于offsetTop
-   * 由于编辑区顶部插入图标的缘故，第0行空了出来
-   */
-  for (var i = firstLine; i <= lineCount; i++) {
-    lineHeightMap.push(Math.floor(mirror.heightAtLine(i) - firstLineHeight));
-  }
-  /**
-   * scrollMap[i] 第i个解析行到display区顶部的距离, 即$ele.offset().top() - $target.offset().top() + $target.scrollTop()
-   */
-  for (i = 0; i <= lineCount; i++) {
-    scrollMap.push(-1);
-  }
-  /**
-   * nonEmptyList[i] 设置滚动的标记， 以第一行为起点
-   */
-  nonEmptyList.push(0);
-  scrollMap[0] = 0;
-  $(".line").each((index, ele) => {
-    var $ele = $(ele);
-    /**
-     * 因为markdownit是从line0开始了，行号加一进行修补
-     */
-    var _line = Number($ele.data('line'));
-    if (_line != 0) nonEmptyList.push(_line);
-    scrollMap[_line] = Math.floor($ele.offset().top + offset);
-  });
-  scrollMap[lineCount] = $target[0].scrollHeight;
-  if (nonEmptyList[nonEmptyList.length - 1] != lineCount) {
-    nonEmptyList.push(lineCount);
-  }
-
-  var pos = 0;
-  for (i = 1; i <= lineCount; i++) {
-    if (scrollMap[i] != -1) {
-      pos++;
-      continue;
-    }
-    var a = nonEmptyList[pos];
-    var b = nonEmptyList[pos + 1];
-    scrollMap[i] = Math.floor((scrollMap[b] * (i - a) + scrollMap[a] * (b - i)) / (b - a));
-  }
-  // scrollmap[0]
-  scrollMap[0] = 0;
-
-  return {
-    lineHeightMap: lineHeightMap,
-    scrollMap: scrollMap
-  };
-}
-
-function myDebounce(func, idle) {
-  var last;
-  return function () {
-    var ctx = this,
-      args = arguments;
-    if (last) clearTimeout(last);
-    last = setTimeout(function () {
-      func.apply(ctx, args);
-    }, idle);
-  }
 }
 
 function fetchGroupData() {
@@ -265,13 +169,13 @@ function onGroupItemClick(target) {
 function onPhotoItemClick(target) {
   $("#choose-photo-div").hide();
   var imgsrc = $($(target).find('img')[0]).attr('src');
-  __drawImage(imgsrc);
+  simplemde.__drawImage(imgsrc);
 }
 
 function onInsertUrlConfirmClick() {
   var url = $("#insert-url-div-input").val();
   $("#insert-url-div").hide();
-  __drawLink(url);
+  simplemde.__drawLink(url);
 }
 
 function onInsertUrlCancelClick() {
@@ -303,7 +207,6 @@ function uploadImgInputChange(e) {
   })
 }
 
-
 markdown = markdownit();
 const markdown_editor_config = {
   element: document.getElementById("md-editor"),
@@ -311,107 +214,17 @@ const markdown_editor_config = {
   status: false,
   spellChecker: false,
   drawImage: drawImage,
-  drawLink: drawLink,
-  //previewRender: markdown.render
+  drawLink: drawLink
 };
 
-markdown.use(markdownItClassy);
-markdown.renderer.rules.paragraph_open = markdown.renderer.rules.heading_open =
-  markdown.renderer.rules.ordered_list_open = markdown.renderer.rules.bullet_list_open =
-  markdown.renderer.rules.table_open = injectLineNumbers;
+//markdown.use(markdownItClassy);
 simplemde = new SimpleMDE(markdown_editor_config);
 cm = simplemde.codemirror;
 cm.scrollTo(0, 0);
 
-$('#display-area').html(markdown.render(simplemde.value()));
 $("#submit").click(submitArticle);
 addLabel(current_labels.split(','));
 fetchGroupData();
-/*
-// 绑定事件监听器
-var syncSrcScroll = myDebounce(function () {
-  var $target = $('#display-area');
-  var scrollHeight = $target[0].scrollHeight;
-  var scrollTop = $target.scrollTop();
-  var height = $target.height() + parseInt($target.css("padding-top")) + parseInt($target.css("padding-bottom"));
-  var offsetPercent = scrollTop / (scrollHeight - height);
-  var viewportOffset = height * offsetPercent;
-  var offset = scrollTop + viewportOffset;
-  var smap = buildScrollMap();
-  var lineHeightMap = smap.lineHeightMap;
-  var scrollMap = smap.scrollMap;
-  var pos, i, lineCount = lineHeightMap.length;
-  for (i = 0; i <= lineCount; i++) {
-    if (scrollMap[i] > offset) {
-      pos = i - 1;
-      break;
-    }
-  }
-  if (offset >= scrollMap[scrollMap.length - 1]) {
-    pos = scrollMap.length - 1;
-  }
-  if (pos > 0) {
-    var scrollInfo = simplemde.codemirror.getScrollInfo();
-    simplemde.codemirror.scrollTo(0, lineHeightMap[pos] - (1 - offsetPercent) * scrollInfo.clientHeight);
-  } else {
-    simplemde.codemirror.scrollTo(0, 0);
-  }
-}, 600);
-var syncResScroll = myDebounce(function (instance) {
-  var pos = -1;
-  var smap = buildScrollMap();
-  var lineHeightMap = smap.lineHeightMap,
-    scrollMap = smap.scrollMap;
-
-  var scrollInfo = simplemde.codemirror.getScrollInfo();
-  var baseOffset = scrollInfo.top;
-  var offsetPercent = scrollInfo.top / (scrollInfo.height - scrollInfo.clientHeight);
-  var $target = $("#display-area");
-  var resOffset = $target.height() * (1 - offsetPercent);
-  // 修复滚动中不能滚动到底的bug
-  var viewportOffset = scrollInfo.clientHeight * offsetPercent;
-  var offset = baseOffset + viewportOffset;
-  var smap = buildScrollMap();
-  var lineHeightMap = smap.lineHeightMap,
-    scrollMap = smap.scrollMap;
-  var lineCount = lineHeightMap.length,
-    i;
-  for (i = 0; i <= lineCount; i++) {
-    if (lineHeightMap[i] >= offset) {
-      pos = i > 0 ? i - 1 : 0;
-      break;
-    }
-  }
-  if (pos == -1) {
-    pos = scrollMap.length - 1;
-  }
-  $target.scrollTop(scrollMap[pos] - resOffset);
-}, 100);
-
-$("#display-area").on("touchstart mouseover", function () {
-  simplemde.codemirror.off('scroll', syncResScroll);
-  $('#display-area').on('scroll', syncSrcScroll);
-});
-$("#edit-area").on('mouseover', function () {
-  $('#display-area').off('scroll');
-  simplemde.codemirror.on('scroll', syncResScroll);
-});
-$("#edit-area").on('mouseout', function () {
-  simplemde.codemirror.off('scroll', syncResScroll);
-});
-simplemde.codemirror.on('change', function (instance, changeObj) {
-  var line = changeObj.to.line;
-  var size = instance.doc.size;
-  var toPos;
-  // 当然这里有更好的改法，这里用了最方便实现的方法
-  if (line > size - 2) {
-    toPos = size - 1;
-  } else {
-    toPos = line;
-  }
-  $("#display-area").html(markdown.render(simplemde.value()));
-  syncResScroll(false);
-});*/
 
 simplemde.codemirror.on("drop", function (instance, e) {
   var dt = e.dataTransfer;
@@ -431,7 +244,7 @@ simplemde.codemirror.on("drop", function (instance, e) {
     contentType: false,
     success: function (dt) {
       var imgsrc = dt.data;
-      S(simplemde, imgsrc);
+      simplemde.__drawImage(imgsrc);
     }
   });
   e.preventDefault();
