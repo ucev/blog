@@ -28,6 +28,7 @@ const website_info = {
   port: 3000,
   // if the website is in debug mode, for login or other function
   debug: true,
+  log_level: '',
   // session used when in debug mode
   debug_session: 1
 }
