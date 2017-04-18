@@ -2,11 +2,11 @@ var config = require('../config/base.config');
 const log4js = require('log4js');
 
 if (config.website_info.debug) {
-log4js.configure({
-  appenders: [
-    {type: 'console'}
-  ]
-});
+  log4js.configure({
+    appenders: [
+      { type: 'console' }
+    ]
+  });
 } else {
   log4js.configure({
     appenders: [

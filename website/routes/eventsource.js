@@ -6,6 +6,7 @@ const ReadWriteLock = require('rwlock');
 const __lock = new ReadWriteLock();
 const path = require('path');
 const archiver = require('archiver');
+const moment = require('moment');
 const multiparty = require('multiparty');
 
 const __root_dir = '../public/docs';
@@ -33,7 +34,7 @@ function dirExists(dirpath) {
 
 router.post('/outputArticle/download', (req, res, next) => {
   var token = req.body.token;
-  var date = new Date().format('yyyyMMdd');
+  var date = moment().format('YYYYMMDD');
   var filepath = path.join(__dirname, __root_dir, date, token + '.zip');
   res.download(filepath);
 })
@@ -42,7 +43,7 @@ router.get('/outputArticle', (req, res, next) => {
   var token = req.query.token;
   var openid = req.session.openid;
   res.type('text/event-stream');
-  var date = new Date().format('yyyyMMdd');
+  var date = moment().format('YYYYMMDD');
   var targetDir = path.join(__dirname, __root_dir, date);
   var pdir = dirExists(targetDir);
   pdir.then(() => {
