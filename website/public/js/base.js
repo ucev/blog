@@ -1,8 +1,8 @@
 function isMobile() {
   return !($("body").width() > 800);
 }
-$(document).ready(function(){
-  (function() {
+$(document).ready(function () {
+  (function () {
     const searchInput = $('#website-search-input');
     const searchInputDiv = $('#website-search-input-div');
     const hideInputImg = $('#website-hide-input-img');
@@ -23,7 +23,13 @@ $(document).ready(function(){
       $(searchInputDiv).width(300);
       $(hideInputImg).fadeIn("slow");
     }
-    $(showInputImg).click(function(e) {
+    function showImg(src) {
+      $(`<div class='img-cover'><img class='img-cover-img' src=${src}><span onclick='javascript: window.open("${src}")' class='img-cover-show-origin'>查看原图</span></div>`).appendTo($("body"));
+      $(".img-cover").on("click", "img", function (e) {
+        $(".img-cover").remove();
+      })
+    }
+    $(showInputImg).click(function (e) {
       if (isMobile()) {
         location.href = '/mobiles/search';
       } else {
@@ -32,21 +38,21 @@ $(document).ready(function(){
         }
       }
     });
-    $(hideInputImg).click(function(e) {
+    $(hideInputImg).click(function (e) {
       hideSearchInput();
     });
-    $(searchInput).keydown(function(e) {
+    $(searchInput).keydown(function (e) {
       if (e.which == 13) {
         var searchParam = $(searchInput).val();
         location.href = '/articles/search?args=' + encodeURIComponent(searchParam);
       }
     });
-    $('#mobile-search-input-img').click(function(e) {
+    $('#mobile-search-input-img').click(function (e) {
       var searchParam = $("#mobile-search-input").val();
       location.href = '/articles/search?args=' + encodeURIComponent(searchParam);
     })
 
-    $(categoryImg).click(function(e) {
+    $(categoryImg).click(function (e) {
       var state = $(this).data('state');
       if (state == 'hide') {
         $(this).data('state', 'show');
@@ -64,15 +70,19 @@ $(document).ready(function(){
     })
 
     // code area
-    $("pre").click(function(e) {
-      $(this).attr({contenteditable: true});
+    $("pre").click(function (e) {
+      $(this).attr({ contenteditable: true });
     })
-    $("pre").dblclick(function(e) {
-      $(this).attr({contenteditable: true});
+    $("pre").dblclick(function (e) {
+      $(this).attr({ contenteditable: true });
       document.execCommand("selectAll");
     })/*
     $("pre").blur(function(e) {
       $(".code-editable").removeClass("code-editable");
     })*/
+    // article img resize
+    $(".markdown-display").on("click", "img", function (e) {
+      showImg($(this).attr("src"));
+    });
   })();
 });
