@@ -650,7 +650,7 @@ body {
     font-size: 0.6rem;
     font-weight: 200;
     color: #bdbdbd;
-    cursor: pointer; }
+    text-decoration: none; }
   .load-more-div {
     height: 50px;
     line-height: 50px;
@@ -937,9 +937,6 @@ body {
 
 .markdown-display img {
   max-width: 300px; }
-
-.markdown-display img.fullsize {
-  max-width: 100%; }
 
 @media screen and (max-width: 800px) {
   .markdown-display ol,

@@ -24,7 +24,7 @@ $(document).ready(function () {
       $(hideInputImg).fadeIn("slow");
     }
     function showImg(src) {
-      $(`<div class='img-cover'><img class='img-cover-img' src=${src}><span onclick='javascript: window.open("${src}")' class='img-cover-show-origin'>查看原图</span></div>`).appendTo($("body"));
+      $(`<div class='img-cover'><img class='img-cover-img' src=${src}><a class='img-cover-show-origin' href='${src}' target="_blank" >查看原图</a></div>`).appendTo($("body"));
       $(".img-cover").on("click", "img", function (e) {
         $(".img-cover").remove();
       })
