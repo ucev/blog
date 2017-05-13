@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const moment = require('moment');
 
 const Table = require('../components/tables/table');
 const TableLabel = require('../components/tables/table_label');
@@ -11,23 +12,6 @@ var LabelAction = null;
 var LabelStore = null;
 
 const LabelListener = require('../flux/label_listener');
-
-// 这个扩展是从网上复制过来的
-Date.prototype.format = function (fmt) { //author: meizz
-  var o = {
-    "M+": this.getMonth() + 1, //月份
-    "d+": this.getDate(), //日
-    "h+": this.getHours(), //小时
-    "m+": this.getMinutes(), //分
-    "s+": this.getSeconds(), //秒
-    "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-    "S": this.getMilliseconds() //毫秒
-  };
-  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o)
-      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-    return fmt;
-};
 
 class LabelTableLabel extends React.Component {
   constructor(props) {
@@ -59,7 +43,7 @@ class LabelRow extends React.Component {
   }
   render() {
     const label = this.props.label;
-    var addtime = new Date(label.addtime * 1000).format('yyyy-MM-dd');
+    var addtime = moment.unix(label.addtime).format('YYYY-MM-DD');
     return (
       <tr key = {label.id} className = 'content-row-data'>
         <td className = 'content-row-index-data'>{label.id}</td>

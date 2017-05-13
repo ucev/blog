@@ -8,7 +8,6 @@ function label_dispatcher(store) {
         store.handleOrderChange(action.orderBy, action.orderDirect);
         break;
       case "PAGE_CHANGE":
-        console.log('dispatcher, page change');
         store.handlePageChange(action.page);
         break;
       default:

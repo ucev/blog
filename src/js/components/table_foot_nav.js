@@ -27,8 +27,8 @@ class TableNavLink extends React.Component {
     this.props.pagechange(pg);
   }
   getRenderData() {
-    const page = this.props.page;
-    const total = this.props.total;
+    const page = Number(this.props.page);
+    const total = Number(this.props.total);
     var start = page < 5 ? 0 : page - 5;
     var len;
     if (start + 10 <= total) {

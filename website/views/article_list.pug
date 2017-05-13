@@ -10,7 +10,7 @@ mixin article_item(itemData)
     div.article-item-li-content #{itemData.descp}
     div.article-item-li-bottom-info
       span.article-item-li-pageview 阅读量(#{itemData.pageview})
-      span.article-item-li-addtime #{new Date(itemData.modtime * 1000).format('yyyy-MM-dd hh:mm:ss')}
+      span.article-item-li-addtime #{moment.unix(itemData.modtime).format('YYYY-MM-DD HH:mm:ss')}
       
 block banner-block
   include website_banner

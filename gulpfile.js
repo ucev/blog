@@ -81,6 +81,10 @@ gulp.task("css", ["sass"], function() {
     .pipe(gulp.dest("./website/public/css"));
 })
 
+gulp.task("auto", ["scripts", "css"], function() {
+  gulp.watch(["./src/js/**/*.js"], ["scripts"]);
+})
+
 gulp.task("default", ["scripts", "css"]);
 
 //var watcher = gulp.watch(["./src/js/**/*.js"], ["scripts"])
