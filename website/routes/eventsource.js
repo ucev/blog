@@ -24,7 +24,7 @@ function dirExists(dirpath) {
           } else {
             resolve();
           }
-        }) 
+        })
       } else {
         resolve();
       }
@@ -49,34 +49,32 @@ router.get('/outputArticle', (req, res, next) => {
   pdir.then(() => {
     var targetZip = fs.createWriteStream(path.join(targetDir, token + '.zip'));
     var archive = archiver('zip', {
-      zlib: {level: 9}
+      zlib: { level: 9 }
     })
-    targetZip.on('close', function() {
+    targetZip.on('close', function () {
       res.end('data:succ\n\n');
       return;
     })
     archive.pipe(targetZip);
-    __articles.getall(
-      (arts) => {
-        var lockKey = 'dump article';
-        var len = arts.length;
-        for (var i = 0; i < len; i++) {
-          (function(pos) {
-            var art = arts[pos];
-            //__lock.writeLock(lockKey, function(cb) {
-              archive.append(art.content, {name: art.title + '.md'});
-              //cb();
-              if (pos == len - 1) {
-                archive.finalize();
-              }
-            //});
-          })(i);
-        }
-      },
+    __articles.getall().then((arts) => {
+      var lockKey = 'dump article';
+      var len = arts.length;
+      for (var i = 0; i < len; i++) {
+        (function (pos) {
+          var art = arts[pos];
+          //__lock.writeLock(lockKey, function(cb) {
+          archive.append(art.content, { name: art.title + '.md' });
+          //cb();
+          if (pos == len - 1) {
+            archive.finalize();
+          }
+          //});
+        })(i);
+      }
+    }).catch(
       () => {
         res.send('data:fail\n\n');
-      }
-    )
+      })
   }).catch(() => {
     res.send('data:fail\n\n');
   })
@@ -88,13 +86,13 @@ router.post('/importArticle', (req, res, next) => {
     files = files.files;
     var addtime = Math.floor(new Date().getTime() / 1000);
     var ps = files.map((f) => {
-      return (function(f) {
+      return (function (f) {
         var fname = f.originalFilename;
         var title = fname.substr(0, fname.indexOf('.md'));
         var fpath = f.path;
         return new Promise((resolve, reject) => {
           var content = '';
-          var rs = fs.createReadStream(fpath, {encoding: 'utf8'});
+          var rs = fs.createReadStream(fpath, { encoding: 'utf8' });
           rs.on('data', (chunk) => {
             content += chunk;
           })
@@ -109,14 +107,12 @@ router.post('/importArticle', (req, res, next) => {
               addtime: addtime,
               modtime: addtime,
               add: true
-            },
-            () => {
-              resolve({'tp': 'succ', 'title': fname});
-            },
-            () => {
-              resolve({'tp': 'fail', 'title': fname});
             }
-            )
+            ).then(() => {
+              resolve({ 'tp': 'succ', 'title': fname });
+            }).catch(() => {
+              resolve({ 'tp': 'fail', 'title': fname });
+            })
           })
         })
       })(f);
@@ -135,12 +131,12 @@ router.post('/importArticle', (req, res, next) => {
       }
       __log.debug(succ);
       if (allSucc) {
-        res.json({code: 0, msg: '导入成功', data: succ});
+        res.json({ code: 0, msg: '导入成功', data: succ });
       } else {
-        res.json({code: 1, msg: '导入失败', data: succ});
+        res.json({ code: 1, msg: '导入失败', data: succ });
       }
     }).catch(() => {
-      res.json({code: 1, msg: '添加失败', data: []});
+      res.json({ code: 1, msg: '添加失败', data: [] });
     })
   })
 })

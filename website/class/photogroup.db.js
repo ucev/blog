@@ -15,7 +15,7 @@ class PhotoGroups {
     this.dbconfig = configs.database_config;
   }
 
-  add(datas, succ, fail) {
+  add(datas) {
     var name = datas.name;
     var addtime = datas.addtime;
     var conn = mysql.createConnection(this.dbconfig);
@@ -28,16 +28,12 @@ class PhotoGroups {
         }
       )
     })
-    add.then(() => {
-      succ();
-    }).catch(() => {
-      fail();
-    }).finally(() => {
+    return add.finally(() => {
       conn.end((err) => {});
     })
   }
 
-  delete(gid, succ, fail) {
+  delete(gid) {
     if (gid < 2) {
       fail();
       return;
@@ -49,7 +45,7 @@ class PhotoGroups {
         resolve();
       })
     })
-    del.then(() => {
+    return del.then(() => {
       return new Promise((resolve, reject) => {
         conn.query(`update photos set photogroup = 1 where photogroup = ?`, [gid],
           (err, results, fields) => {
@@ -76,19 +72,17 @@ class PhotoGroups {
       })
     }).then(() => {
       conn.commit((err) => {
-        if (err) {throw err;return;}
+        if (err) {throw err;}
         conn.end((err) => {});
-        succ();
       })
     }).catch((err) => {
       conn.rollback((err) => {
         conn.end((err) => {});
       })
-      fail();
     })
   }
 
-  get(succ, fail) {
+  get() {
     var conn = mysql.createConnection(this.dbconfig);
     var queryfields = ['id', 'name', 'count'];
     var allgroup = {'id': -1, name: '全部分组', count: 0};
@@ -98,18 +92,18 @@ class PhotoGroups {
         resolve(results);
       })
     })
-    gt.then((data) => {
+    return gt.then((data) => {
       var cnt = data.reduce((sum, i) => (sum += i.count), 0);
       allgroup.count = cnt;
-      succ([allgroup, ...data]);
+      return Promise.resolve([allgroup, ...data]);
     }).catch(() => {
-      fail([allgroup]);
+      return Promise.reject([allgroup]);
     }).finally(() => {
       conn.end((err) => {});
     })
   }
 
-  rename(datas, succ, fail) {
+  rename(datas) {
     var id = datas.id;
     var name = datas.name;
     var conn = mysql.createConnection(this.dbconfig);
@@ -121,11 +115,7 @@ class PhotoGroups {
         }
       )
     })
-    rename.then(() => {
-      succ();
-    }).catch(() => {
-      fail();
-    }).finally(() => {
+    return rename.finally(() => {
       conn.end((err) => {});
     })
   }

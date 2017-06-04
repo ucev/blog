@@ -20,7 +20,7 @@ class Photos {
     this.dbconfig = configs.database_config;
   }
 
-  add(datas, succ, fail) {
+  add(datas) {
     var file = datas.file;
     var name = datas.name;
     var addtime = datas.addtime;
@@ -42,7 +42,7 @@ class Photos {
         }
       )
     });
-    add.then(() => {
+    return add.then(() => {
       return new Promise((resolve, reject) => {
         conn.query(`select count(*) as cnt from ${this.dbname} where photogroup = ?`, [photogroup],
           (err, results, fields) => {
@@ -61,16 +61,14 @@ class Photos {
         )
       })
     }).then(() => {
-      succ();
     }).catch(() => {
       fs.unlink(newpath, (err) => {});
-      fail();
     }).finally(() => {
       conn.end((err) => {});
     })
   }
 
-  delete(ids, succ, fail) {
+  delete(ids) {
     var conn = mysql.createConnection(this.dbconfig);
     var del = new Promise((resolve, reject) => {
       conn.beginTransaction((err) => {
@@ -78,7 +76,7 @@ class Photos {
         resolve();
       })
     })
-    del.then(() => {
+    return del.then(() => {
       return new Promise((resolve, reject) => {
         conn.query(`delete from ${this.dbname} where id in ?`, [[ids]],
           (err, results, fields) => {
@@ -98,14 +96,15 @@ class Photos {
       conn.commit((err) => {
         if (err) {throw err;}
         conn.end((err) => {});
-        succ();
       })
     }).catch(() => {
-      fail();
+      conn.rollback(() => {
+        conn.end(() => {});
+      })
     })
   }
 
-  get({where = {}} = {}, succ, fail) {
+  get({where = {}} = {}) {
     var conn = mysql.createConnection(this.dbconfig);
     var whereSql = '';
     var whereParams = [];
@@ -122,16 +121,12 @@ class Photos {
         }
       )
     })
-    gt.then((data) => {
-      succ(data);
-    }).catch(() => {
-      fail();
-    }).finally(() => {
+    return gt.finally(() => {
       conn.end((err) => {});
     })
   }
 
-  move(datas, succ, fail) {
+  move(datas) {
     var ids = datas.ids;
     var photogroup = datas.photogroup;
     var conn = mysql.createConnection(this.dbconfig);
@@ -141,7 +136,7 @@ class Photos {
         resolve();
       })
     })
-    move.then(() => {
+    return move.then(() => {
       return new Promise((resolve, reject) => {
         conn.query(`update ${this.dbname} set photogroup = ? where id in ?`, [photogroup, [ids]],
           (err, results, fields) => {
@@ -161,13 +156,11 @@ class Photos {
       conn.commit((err) => {
         if (err) {throw err;}
         conn.end((err) => {});
-        succ();
       })
     }).catch(() => {
       conn.rollback((err) => {
         conn.end((err) => {});
       })
-      fail();
     })
   }
 
@@ -183,11 +176,7 @@ class Photos {
         }
       )
     })
-    rename.then(() => {
-      succ();
-    }).catch(() => {
-      fail();
-    }).finally(() => {
+    return rename.finally(() => {
       conn.end((err) => {});
     })
   }

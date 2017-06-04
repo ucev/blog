@@ -56,14 +56,11 @@ router.get('/categories', (req, res, next) => {
       avatar: req.session.avatar
     })
   }
-  __categories.get(
-    (dt) => {
-      responde(dt);
-    },
-    () => {
-      responde([]);
-    }
-  )
+  __categories.get().then((dt) => {
+    responde(dt);
+  }).catch(() => {
+    responde([]);
+  })
 });
 
 router.get('/categories/refact/:id', (req, res, next) => {
@@ -84,10 +81,8 @@ router.get('/articles/add', (req, res, next) => {
       }
     )
   }
-  __labels.getNames(
-    response,
-    response
-  )
+  __labels.getNames().then(response)
+  .catch(response);
 });
 
 router.post('/articles/add', (req, res, next) => {
@@ -106,14 +101,12 @@ router.post('/articles/add', (req, res, next) => {
       addtime: addtime,
       modtime: addtime,
       add: true
-    },
-    () => {
-      res.json({code: 0, msg: '添加成功'});
-    },
-    () => {
-      res.json({code: 1, msg: '添加失败'});
     }
-  )
+  ).then(() => {
+      res.json({code: 0, msg: '添加成功'});
+  }).catch(() => {
+      res.json({code: 1, msg: '添加失败'});
+  })
 });
 
 router.get('/articles/modify', (req, res, next) => {
@@ -137,17 +130,16 @@ router.get('/articles/modify', (req, res, next) => {
     __articles.getsingle(
       {
         id: id
-      },
-      (article) => {
-        __labels.getNames(
-          (labels) => {response(article, labels);},
-          (labels) => {response(article, labels);}
-        )
-      },
-      () => {
-        res.redirect('/admin');
       }
-    )
+    ).then((article) => {
+      __labels.getNames().then((labels) => {
+        response(article, labels);
+      }).catch((labels) => {
+        response(article, labels);
+      })
+    }).catch(() => {
+      res.redirect('/admin');
+    })
   }
 });
 
@@ -168,14 +160,12 @@ router.post('/articles/modify', (req, res, next) => {
       modtime: modtime,
       id: id,
       add: false
-    },
-    () => {
-      res.json({code: 0, msg: '更新成功'});
-    },
-    () => {
-      res.json({code: 1, msg: '更新失败'});
     }
-  )
+  ).then(() => {
+      res.json({code: 0, msg: '更新成功'});
+  }).catch(() => {
+      res.json({code: 1, msg: '更新失败'});
+  })
 });
 
 router.get('/tools', (req, res, next) => {
@@ -203,10 +193,8 @@ router.get('/', (req, res, next) => {
   }
   var today = enterControl.clearDateTime(new Date());
   today = Math.floor(today.getTime() / 1000);
-  __fluxrecord.fluxOfToday(
-    today,
-    response,
-    function() {
+  __fluxrecord.fluxOfToday(today).then(response)
+  .catch(() => {
       var data = {};
       data.pv = 0;
       data.uv = 0;
@@ -215,8 +203,7 @@ router.get('/', (req, res, next) => {
         data.pvPerHour.push(0);
       }
       response(data);
-    }
-  )
+    })
 });
 
 module.exports = router;

@@ -8,8 +8,8 @@ class Labels {
     this.dbconfig = configs.database_config;
     this.step = configs.query_config.step;
   }
- 
-  get({start, orderby = {lb: 'id', asc: 'asc'}}, succ, fail) {
+
+  get({ start, orderby = { lb: 'id', asc: 'asc' } }) {
     var returnData = {
       total: 0,
       current: start,
@@ -39,40 +39,37 @@ class Labels {
       returnData.data = data;
     })
     var p = Promise.all([gc, gt]);
-    p.then(() => {
-      succ(returnData);
+    return p.then(() => {
+      return Promise.resolve(returnData);
     }).catch(() => {
-      fail([]);
+      return Promise.reject([]);
     }).finally(() => {
-      conn.end((err) => {});
+      conn.end((err) => { });
     })
   }
 
-  getall({orderby = {lb: 'id', asc: 'asc'}, queryfields = ['*']}, succ, fail) {
+  getall({ orderby = { lb: 'id', asc: 'asc' }, queryfields = ['*'] }) {
     var conn = mysql.createConnection(this.dbconfig);
     var ga = new Promise((resolve, reject) => {
       conn.query(`select ?? from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)}`, [[queryfields]], (err, results, fields) => {
-        if (err) {throw err; reject();}
+        if (err) { reject(); }
         resolve(results);
       })
     })
-    ga.then((labels) => {
-      succ(labels);
+    return ga.then((labels) => {
+      return Promise.resolve(labels);
     }).catch((err) => {
       __log.debug(err);
-      fail();
+    }).finally(() => {
+      conn.end(() => { });
     })
   }
 
-  getNames(succ, fail) {
-    this.getall(
-      {},
-      function(labels) {
-        var l = labels.map((label) => (label.name));
-        succ(l);
-      },
-      fail
-    )
+  getNames() {
+    return this.getall({}).then((labels) => {
+      var l = labels.map((label) => (label.name));
+      return Promise.resolve(l);
+    });
   }
 
   __queryorder(asc) {

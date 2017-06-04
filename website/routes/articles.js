@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const Articles =  require('../class/article.db');
-const __articles =  new Articles();
+const Articles = require('../class/article.db');
+const __articles = new Articles();
 const Categories = require('../class/category.db');
 const __categories = new Categories();
 
@@ -13,10 +13,10 @@ var enterControl = require('./entercontrol');
 
 
 const __markdown = require('markdown-it')({
-    html: true,
-    linkify: true,
-    typographer: true
-  });
+  html: true,
+  linkify: true,
+  typographer: true
+});
 
 const configs = require('../config/base.config');
 
@@ -34,13 +34,13 @@ function __pager(current, total) {
   }
   var pagerParams = [];
   if (current != 0) {
-    pagerParams.push({page: current - 1, title: '上一页'});
+    pagerParams.push({ page: current - 1, title: '上一页' });
   }
   for (var i = 1; i <= len; i++) {
-    pagerParams.push({page: start + i - 1, title: start + i});
+    pagerParams.push({ page: start + i - 1, title: start + i });
   }
   if (current + 1 < total) {
-    pagerParams.push({page: current + 1, title: '下一页'});
+    pagerParams.push({ page: current + 1, title: '下一页' });
   }
   return pagerParams;
 }
@@ -55,15 +55,13 @@ router.get('/category/:cid', (req, res, next) => {
     {
       id: cid,
       queryfields: ['preface']
-    },
-    (data) => {
-      __log.debug('preposition ' + JSON.stringify(data));
-      res.redirect(`/articles/category/${cid}/${data.preface}`);
-    },
-    () => {
-      res.redirect('/articles/category/${cid}/0');
     }
-  )
+  ).then((data) => {
+    __log.debug('preposition ' + JSON.stringify(data));
+    res.redirect(`/articles/category/${cid}/${data.preface}`);
+  }).catch(() => {
+    res.redirect('/articles/category/${cid}/0');
+  })
 })
 
 router.get('/category/:cid/:id', (req, res, next) => {
@@ -82,27 +80,21 @@ router.get('/category/:cid/:id', (req, res, next) => {
       debug: configs.website_info.debug
     })
   }
-  __categories.getTree(
-    cid,
-    (tree) => {
-      tree = tree[0];
-      __articles.getsingle(
-        {
-          id: aid,
-          queryfields: ['title', 'content']
-        },
-        (art) => {
-          responde(tree, art);
-        },
-        () => {
-          responde(tree, {});
-        }
-      )
-    },
-    () => {
-      responde({}, {});
-    }
-  )
+  __categories.getTree(cid).then((tree) => {
+    tree = tree[0]
+    __articles.getsingle(
+      {
+        id: aid,
+        queryfields: ['title', 'content']
+      }
+    ).then((art) => {
+      responde(tree, art);
+    }).catch(() => {
+      responde(tree, {});
+    })
+  }).catch(() => {
+    responde({}, {});
+  })
 })
 
 router.get('/category', (req, res, next) => {
@@ -113,35 +105,28 @@ router.get('/category', (req, res, next) => {
       categories: cats
     });
   }
-  __categories.get(
-    (cats) => {
-      responde(cats);
-    },
-    () => {
-      responde([]);;
-    }
-  )
+  __categories.get().then((cats) => {
+    responde(cats);
+  }).catch(() => {
+    responde([]);;
+  })
 });
 
 router.use('/view/:id', enterControl.userControl);
 router.get('/view/:id', (req, res, next) => {
   var id = req.params.id;
-  __articles.view(
-    id,
-    (article) => {
-      res.render('article', {
-          title: article.title,
-          websiteInfo: configs.website_info,
-          md: __markdown.render(article.content),
-          aid: id,
-          debug: configs.website_info.debug
-        }
-      )
-    },
-    () => {
-      res.redirect('/');
+  __articles.view(id).then((article) => {
+    res.render('article', {
+      title: article.title,
+      websiteInfo: configs.website_info,
+      md: __markdown.render(article.content),
+      aid: id,
+      debug: configs.website_info.debug
     }
-  )
+    )
+  }).catch(() => {
+    res.redirect('/');
+  })
 });
 
 router.get('/search', (req, res, next) => {
@@ -156,26 +141,24 @@ router.get('/search', (req, res, next) => {
   __log.debug(args);
   __articles.getByCond(
     {
-      where: {args: args},
+      where: { args: args },
       start: start,
       queryfields: ['id', 'title', 'pageview', 'modtime', 'descp', 'label']
-    },
-    (arts) => {
-      __log.debug(arts);
-      res.render('article_search', {
-        title: '文章查找',
-        websiteInfo: configs.website_info,
-        datas: arts.data,
-        current: arts.current,
-        pager: __pager(arts.current, arts.total),
-        pagerurl: `?args=${args}&p=`,
-        args: args
-      })
-    },
-    () => {
-      res.redirect('/articles');
     }
-  )
+  ).then((arts) => {
+    __log.debug(arts);
+    res.render('article_search', {
+      title: '文章查找',
+      websiteInfo: configs.website_info,
+      datas: arts.data,
+      current: arts.current,
+      pager: __pager(arts.current, arts.total),
+      pagerurl: `?args=${args}&p=`,
+      args: args
+    })
+  }).catch(() => {
+    res.redirect('/articles');
+  })
 })
 
 router.use('/data', clientAjax);
@@ -197,21 +180,16 @@ router.get('/', (req, res, next) => {
     {
       where: {},
       start: start,
-    },
-    (arts) => {
-      __categories.get(
-        (cats) => {
-          response(arts, cats);
-        },
-        () => {
-          response(arts, []);
-        }
-      )
-    },
-    () => {
-      res.redirect('/');
     }
-  )
+  ).then((arts) => {
+    __categories.get().then((cats) => {
+      response(arts, cats);
+    }).catch(() => {
+      response(arts, []);
+    })
+  }).catch(() => {
+    res.redirect('/');
+  })
 });
 
 

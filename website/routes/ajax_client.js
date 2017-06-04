@@ -10,14 +10,12 @@ router.get('/articles/get', (req, res, next) => {
   var where = {
     state: 'on'
   };
-  __articles.getByCond({where: where, start: start, queryfields: ['id', 'title', 'pageview', 'modtime', 'descp']}, 
-    function(r) {
-      res.json({code: 0, msg: '获取成功', data: r});
-    },
-    function() {
-      res.json({code: 1, msg: '获取失败'});
-    }
-  )
+  __articles.getByCond({ where: where, start: start, queryfields: ['id', 'title', 'pageview', 'modtime', 'descp'] }
+  ).then((r) => {
+    res.json({ code: 0, msg: '获取成功', data: r });
+  }).catch(() => {
+    res.json({ code: 1, msg: '获取失败' });
+  })
 });
 
 router.get('/articles/search', (req, res, next) => {
@@ -28,14 +26,12 @@ router.get('/articles/search', (req, res, next) => {
     state: 'on',
     args: args
   };
-  __articles.getByCond({where: where, start: start, queryfields: ['id', 'title', 'pageview', 'label', 'modtime', 'descp']}, 
-    function(r) {
-      res.json({code: 0, msg: '获取成功', data: r});
-    },
-    function() {
-      res.json({code: 1, msg: '获取失败'});
-    }
-  )
+  __articles.getByCond({ where: where, start: start, queryfields: ['id', 'title', 'pageview', 'label', 'modtime', 'descp'] }
+  ).then((r) => {
+    res.json({ code: 0, msg: '获取成功', data: r });
+  }).catch(() => {
+    res.json({ code: 1, msg: '获取失败' });
+  })
 });
 
 module.exports = router;

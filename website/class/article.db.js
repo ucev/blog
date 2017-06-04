@@ -19,10 +19,10 @@ class Articles {
     this.lock = new ReadWriteLock();
   }
 
-  add(datas, succ, fail) {
+  add(datas) {
     if (datas.add) {
       var dt = {
-        title: datas.title, 
+        title: datas.title,
         content: datas.content,
         descp: datas.descp,
         label: datas.label,
@@ -30,7 +30,7 @@ class Articles {
         modtime: datas.addtime,
         category: 0 // 默认值
       }
-      this.__add(dt, succ, fail);
+      return this.__add(dt);
     } else {
       var id = datas.id;
       var dt = {
@@ -40,65 +40,60 @@ class Articles {
         label: datas.label,
         modtime: datas.modtime,
       }
-      this.__modify(id, dt, succ, fail);
+      return this.__modify(id, dt);
     }
   }
 
-  delete(ids, succ, fail) {
+  delete(ids) {
     var targetLabel = '';
     var conn = mysql.createConnection(this.dbconfig);
     var del = new Promise((resolve, reject) => {
       conn.beginTransaction((err) => {
-        if (err) {throw err;reject(err)};
+        if (err) { reject(err) };
         resolve();
       })
     })
-    del.then(() => {
+    return del.then(() => {
       this.__updateLabelsOnDeleteArticle(conn, ids);
     }).then(() => {
       return new Promise((resolve, reject) => {
         conn.query(`delete from ${this.dbname} where id in ?`, [[ids]],
           (err, results, fields) => {
-            if (err) {throw err;reject(err);};
+            if (err) { reject(err); };
             resolve();
           }
         )
       })
     }).then(() => {
-      conn.commit((err) => {
-        if (err) {throw err; return;}
-        conn.end((err) => {});
-        succ();
+      return new Promise((resolve, reject) => {
+        conn.commit((err) => {
+          if (err) { reject(); }
+          conn.end((err) => { });
+          resolve();
+        })
       })
     }).catch((err) => {
       conn.rollback((err) => {
-        conn.end((err) =>{});
+        conn.end((err) => { });
       })
-      fail();
     })
   }
 
-  getsingle({id = 0, queryfields} = {}, succ, fail) {
+  getsingle({ id = 0, queryfields } = {}) {
     queryfields = queryfields ? queryfields : ['*'];
     var conn = mysql.createConnection(this.dbconfig);
     var query = new Promise((resolve, reject) => {
       conn.query(`select ?? from ${this.dbname} where id = ?`, [queryfields, id], (err, results, fields) => {
-        if (err) {reject()};
+        if (err) { reject() };
         resolve(results[0]);
       })
     });
-    query.then(
-      (res) => {
-        succ(res);
-      }
-    ).catch((err) => {
-      fail();
-    }).finally(() => {
-      conn.end((err) => {});
+    return query.finally(() => {
+      conn.end((err) => { });
     });
   }
 
-  getByCond({where = {}, start = 0, client = true, queryfields = ['*']} = {}, succ = function(){}, fail= function(){}) {
+  getByCond({ where = {}, start = 0, client = true, queryfields = ['*'] } = {}) {
     var returnData = {
       total: 0,
       current: start,
@@ -126,7 +121,7 @@ class Articles {
       whereSql += (` AND state = 'on' `);
     }
     var queryCount = new Promise((resolve, reject) => {
-      conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`, 
+      conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`,
         [...whereArgs], (err, results, fields) => {
           if (err) {
             reject();
@@ -149,20 +144,17 @@ class Articles {
     queryData.then((data) => {
       returnData.data = data;
     })
-    var query = Promise.all([queryCount, queryData]).then(
+    return Promise.all([queryCount, queryData]).then(
       () => {
-        succ(returnData);
+        return Promise.resolve(returnData);
       }
     ).catch((err) => {
-      fail();
     }).finally(() => {
-      conn.end((err) => {
-        }
-      )
+      conn.end((err) => { })
     })
   }
 
-  getall(succ, fail) {
+  getall() {
     var conn = mysql.createConnection(this.dbconfig);
     var p = new Promise((resolve, reject) => {
       conn.query(`select title, content from ${this.dbname} order by id asc`, (err, results, fields) => {
@@ -170,52 +162,50 @@ class Articles {
         resolve(results);
       })
     })
-    p.then((arts) => {
-      succ(arts);
+    return p.then((arts) => {
+      return Promise.resolve(arts);
     }).catch((err) => {
       __log.debug(err);
-      fail();
     }).finally(() => {
-      conn.end((err) => {});
+      conn.end((err) => { });
     })
   }
 
-  move(ids, gid, succ, fail) {
+  move(ids, gid) {
     var conn = mysql.createConnection(this.dbconfig);
     var update = new Promise((resolve, reject) => {
-        conn.beginTransaction((err) => {
-          if (err) {reject()};
-          conn.query(`update ${this.dbname} set category = ? where id in ?`,
-            [gid, [ids]], (err, results, fields) => {
-              if (err) {reject()};
-              resolve();
-            }
-          )
-        })
-      }
+      conn.beginTransaction((err) => {
+        if (err) { reject() };
+        conn.query(`update ${this.dbname} set category = ? where id in ?`,
+          [gid, [ids]], (err, results, fields) => {
+            if (err) { reject() };
+            resolve();
+          }
+        )
+      })
+    }
     )
-    update.then(() => {
+    return update.then(() => {
       return new Promise((resolve, reject) => {
         conn.query(RECOUNT_ARTICLE_GROUP_SQL, (err, results, fields) => {
-          if (err) {reject()};
+          if (err) { reject() };
           resolve();
         })
       })
     }).then(() => {
-      conn.commit((err) =>{
-        conn.end((err) => {});
-        succ();
+      conn.commit((err) => {
+        if (err) throw err;
+        conn.end((err) => { });
       });
     }).catch((err) => {
       conn.rollback((err) => {
-        conn.end((err) => {});
+        conn.end((err) => { });
       })
-      fail();
     }).finally(() => {
     })
   }
 
-  updateState(ids, state, succ, fail) {
+  updateState(ids, state) {
     var conn = mysql.createConnection(this.dbconfig);
     var update = new Promise((resolve, reject) => {
       conn.query(`update ${this.dbname} set state = ? where id in ?`,
@@ -226,76 +216,69 @@ class Articles {
         }
       )
     });
-    update.then(() => {
-      succ();
-    }).catch(() => {
-      fail();
-    }).finally(() => {
+   return update.finally(() => {
       conn.end((err) => {
 
       })
     })
   }
 
-  updateOrder({id, ord}, succ, fail) {
+  updateOrder({ id, ord }) {
     if (Number(ord) < 0) {
-      fail();
+      return Promise.reject();
     }
     var conn = mysql.createConnection(this.dbconfig);
     var order = new Promise((resolve, reject) => {
       conn.query(`update ${this.dbname} set suborder = ? where id = ?`, [ord, id], (err, results, fields) => {
-        if (err) {throw err; reject();}
+        if (err) { reject(); }
         resolve();
       })
     })
-    order.then(() => {
-      succ();
-    }).catch((err) => {
-      fail();
+    return order.finally(() => {
+      conn.end(() => {});
     })
   }
 
-  view(id, succ, fail) {
+  view(id) {
     var conn = mysql.createConnection(this.dbconfig);
     var article;
     var view = new Promise((resolve, reject) => {
       conn.query(`select * from ${this.dbname} where id = ?`, [id],
         (err, results, fields) => {
-          if (err) {reject();}
+          if (err) { reject(); }
           resolve(results[0]);
         }
       )
     })
-    view.then((data) => {
-        article = data;
-        var labels = article.label;
-        var uplabel = this.__updateLabels(conn, labels, configs.label_hotmark_rule.view);
-        var uppv = this.__increasePageView(conn, id);
-        return Promise.all([uplabel, uppv]);
-      }
+    return view.then((data) => {
+      article = data;
+      var labels = article.label;
+      var uplabel = this.__updateLabels(conn, labels, configs.label_hotmark_rule.view);
+      var uppv = this.__increasePageView(conn, id);
+      return Promise.all([uplabel, uppv]);
+    }
     ).then(() => {
-      succ(article);
+      return Promise.resolve(article);
     }).catch((err) => {
       // 暂时没有用
-      fail();
     }).finally(() => {
-      conn.end((err) => {});
+      conn.end((err) => { });
     })
   }
 
-  __add(datas, succ, fail) {
+  __add(datas) {
     var conn = mysql.createConnection(this.dbconfig);
     var add = new Promise((resolve, reject) => {
       conn.beginTransaction((err) => {
-        if (err) {reject();}
+        if (err) { reject(); }
         resolve();
       })
     })
-    add.then(() => {
+    return add.then(() => {
       return new Promise((resolve, reject) => {
         conn.query(`insert into ${this.dbname} set ?`, [datas],
           (err, results, fields) => {
-            if (err) {reject()};
+            if (err) { reject() };
             resolve();
           }
         )
@@ -303,22 +286,23 @@ class Articles {
     }).then(() => {
       return this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, true, true);
     }).then(() => {
-      conn.commit((err) => {
-        if (err) {throw err; return;}
-        conn.end((err) => {});
-        succ();
+      return new Promise((resolve, reject) => {
+        conn.commit((err) => {
+          if (err) { reject(); }
+          conn.end((err) => { });
+          resolve();
+        })
       })
     }).catch((err) => {
       __log.debug(err);
       conn.rollback((err) => {
-        conn.end((err) => {});
+        conn.end((err) => { });
       })
       __log.debug('reject');
-      fail();
     })
   }
 
-  __modify(id, datas, succ, fail) {
+  __modify(id, datas) {
     var oldLabels = [];
     var conn = mysql.createConnection(this.dbconfig);
     var modify = new Promise((resolve, reject) => {
@@ -327,7 +311,7 @@ class Articles {
         resolve();
       })
     })
-    modify.then(() => {
+    return modify.then(() => {
       return new Promise((resolve, reject) => {
         conn.query(`select label from ${this.dbname} where id = ?`, [id],
           (err, results, fields) => {
@@ -341,7 +325,7 @@ class Articles {
       return new Promise((resolve, reject) => {
         conn.query(`update ${this.dbname} set ? where id = ?`, [datas, id],
           (err, results, fields) => {
-            if (err) {reject()};
+            if (err) { reject() };
             resolve();
           }
         )
@@ -349,23 +333,24 @@ class Articles {
     }).then(() => {
       return this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, false, true, oldLabels);
     }).then(() => {
-      conn.commit((err) => {
-        if (err) {throw err;return;}
-        conn.end((err) => {});
-        succ();
+      return new Promise((resolve, reject) => {
+        conn.commit((err) => {
+          if (err) { reject(); }
+          conn.end((err) => { });
+          resolve();
+        })
       })
     }).catch((err) => {
       conn.rollback((err) => {
-        conn.end((err) => {})
+        conn.end((err) => { })
       })
-      fail();
     })
   }
 
   __updateLabelsOnDeleteArticle(conn, ids) {
     var p1 = new Promise((resolve, reject) => {
       conn.query(`select label from ${this.dbname} where id in ?`, [[ids]], (err, results, fields) => {
-        if (err) {throw err;reject()};
+        if (err) { reject() };
         var labelObj = {};
         var labels = [].concat(...(results.map((row) => (row.label.split(',')))));
         labels.forEach((label) => {
@@ -383,7 +368,7 @@ class Articles {
       for (var label in labels) {
         var p = new Promise((resolve, reject) => {
           conn.query(`update labels set articles = if (articles - ? > 0, articles - ?, 0) where name = ?`, [labels[label], labels[label], label], (err, results, fields) => {
-            if (err) {throw err;reject()};
+            if (err) { throw err; reject() };
             resolve();
           })
         })
@@ -405,13 +390,13 @@ class Articles {
       }
       var sql = 'insert into labels(name, hotmark, addtime) values ';
       var addtime = Math.floor(new Date().getTime() / 1000);
-      var tip = '(?, ' + conn.escape(sval) + ', ' + conn.escape(addtime) +')';
+      var tip = '(?, ' + conn.escape(sval) + ', ' + conn.escape(addtime) + ')';
       for (var i = 0; i < len - 1; i++) {
         sql += tip + ',';
       }
       sql += tip;
       conn.query(sql, labels, (err, results, fields) => {
-        if (err && isRej) {reject();}
+        if (err && isRej) { reject(); }
         resolve();
       })
     })
@@ -424,7 +409,7 @@ class Articles {
       }
       conn.query('update labels set hotmark = hotmark + ? where name in ?',
         [sval, [labels]], (err, results, fields) => {
-          if (err && isRej) {reject();}
+          if (err && isRej) { reject(); }
           resolve();
         }
       )
@@ -434,7 +419,7 @@ class Articles {
   __updateLabels(conn, labels, sval, /*是否更新已经存在的标签*/upOld = true, /*是否产生错误*/isRej = false, /*更新之前的label*/oldLabels = []) {
     var p1 = new Promise((resolve, reject) => {
       conn.query(`select name from labels`, (err, results, fields) => {
-        if (err && isRej) {reject()};
+        if (err && isRej) { reject() };
         var _eLabels = results.map((label) => (label.name));
         resolve(_eLabels);
       })
@@ -447,9 +432,9 @@ class Articles {
       }
       if (typeof labels == 'string')
         labels = labels.split(',');
-      var labelsNew = [], 
-          labelsExists = [],    // label 存在，且 article 没有这个label 
-          labelsExistsOld = []; // label 存在，且 article 有这个 label 
+      var labelsNew = [],
+        labelsExists = [],    // label 存在，且 article 没有这个label 
+        labelsExistsOld = []; // label 存在，且 article 有这个 label 
       labels.forEach((label) => {
         if (_eLabels.indexOf(label) == -1) {
           labelsNew.push(label);
