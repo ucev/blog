@@ -347,7 +347,7 @@ class PhotoGroupBar extends React.Component {
     super(props);
   }
 
-  render() {
+  render() { 
     var opebarImg = this.props.opeImgVisible ? '/images/icons/ic_cancel_black_24dp_2x.png' :'/images/icons/ic_arrow_drop_down_circle_black_24dp_2x.png';
     var groupItems = this.props.groups.map((group) => (
       <PhotoGroupItem group = {group} gid = {this.props.gid} opeImgVisible = {this.props.opeImgVisible}/>
@@ -356,12 +356,12 @@ class PhotoGroupBar extends React.Component {
     return (
       <div id = 'photo-group-div'>
         <div className = 'photo-group-operation-bar'>
-          <div id = 'add-new-photo-group-div' onClick = {PhotoActions.groupShowAddDialog}>新建分组</div>
-          <InputDialog title = '新建分组' centerScreen = {false} visible = {this.props.addVisible} confirm = {PhotoActions.groupAddConfirm} cancel = {PhotoActions.groupAddCancel}/>
+          <div id = 'add-new-photo-group-div' onClick = {PhotoActions.groupShowAddDialog.bind(PhotoActions)}>新建分组</div>
+          <InputDialog title = '新建分组' centerScreen = {false} visible = {this.props.addVisible} confirm = {PhotoActions.groupAddConfirm.bind(PhotoActions)} cancel = {PhotoActions.groupAddCancel.bind(PhotoActions)}/>
         </div>
         <div className = 'photo-group-operation-bar'>
           <div id = 'photo-group-opebar-title-div' >图片组</div>
-          <img id = 'photo-group-opebar-img' src = {opebarImg} onClick = {PhotoActions.groupOpeImgStateToggle}/>
+          <img id = 'photo-group-opebar-img' src = {opebarImg} onClick = {PhotoActions.groupOpeImgStateToggle.bind(PhotoActions)}/>
         </div>
         <ul id = 'photo-group-items-ul'>
           {groupItems}
@@ -375,9 +375,11 @@ class PhotoArea extends React.Component {
   constructor(props) {
     super(props);
 
-    var listener = PhotoListener();
+    var listener = new PhotoListener();
     PhotoActions = listener.getAction();
     PhotoStores = listener.getStore();
+    console.log(PhotoActions);
+    console.log(PhotoStores);
 
     this.state = PhotoStores.getAll();
     this.__onChange = this.__onChange.bind(this);

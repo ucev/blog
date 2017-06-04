@@ -136,7 +136,7 @@ class ArticleRow extends React.Component {
         <td className='content-row-checkbox-data'><input type='checkbox' checked = {checked} onChange = {this.handleCheckStateChange}/></td>
         <td className='content-row-index-data' onClick = {this.handleIndexClick}>{this.props.index + 1}</td>
         <td className='content-row-title-data' style={topStatus}><a href={url}>{article.title}</a></td>
-        <td className='content-row-category-data'>{article.category}</td>
+        <td className='content-row-category-data'>{article.categoryname}</td>
         <td className='content-row-label-data'>{article.label}</td>
         <td className='content-row-status-data'>{articleState}</td>
         <td className='content-row-pageview-data'>{article.pageview}</td>
@@ -219,7 +219,18 @@ class ArticleLayout extends React.Component {
      * 先做一个标记
      */
     var groupopeReset = true;
-    return (
+    var categories = {};
+    this.state.categories.forEach((category) => {
+      categories[category.id] = category.name;
+    })
+    console.log(categories);
+    var articles = this.state.articles.map((article) => {
+      var cid = article.category;
+      console.log(cid);
+      article.categoryname = categories[cid];
+      return article;
+    })
+    return ( 
       <div>
         <div className = 'table-filter-bar table-filter-bar-top'>
 	        <button className = 'operation-button' onClick = {ArticleAction.addArticle.bind(ArticleAction)}>添加文章</button>
@@ -227,7 +238,7 @@ class ArticleLayout extends React.Component {
       	  <FilterInput title = 'category' label = '类别'/>
 	        <FilterSelect title = 'state' label = '状态' options = {this.stateOptions}/>
         </div>
-        <ArticleTable articles = {this.state.articles} checkState = {this.state.checkState}/>
+        <ArticleTable articles = {articles} checkState = {this.state.checkState}/>
         <div className = 'table-filter-bar table-filter-bar-bottom'>
        	  <FilterSelect title = 'groupope' options = {this.opeOptions} reset = {groupopeReset} defaultVal = '-1'/>
         </div>
