@@ -64,6 +64,7 @@ typings/
 
 # express app config files
 *.config.js
+*.config.yaml
 
 # tools
 tools/mysql/src/configs.js
