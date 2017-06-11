@@ -1,1 +1,0 @@
-require('./src/dumpdata')(function(){console.log("finish");});

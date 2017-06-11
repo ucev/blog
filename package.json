@@ -4,8 +4,10 @@
   "description": "This website is built for learing nodejs.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src/js -d website/public/js"
+    "build": "babel src/js -d website/public/js",
+    "createdb": "mysql-creator ./website/config/database.config.yaml",
+    "start": "supervisor ./website/class ./website/routes ./website/views ./website/app.js ./website/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
     "express": "^4.15.3",
     "express-generator": "^4.14.1",
     "moment": "^2.18.1",
+    "mysql-creator": "^0.3.3",
     "rwlock": "^5.0.0"
   },
   "devDependencies": {
@@ -43,7 +46,7 @@
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.0",
-    "gulp-uglify": "^2.1.0",
+    "gulp-uglify": "^3.0.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "vinyl-buffer": "^1.0.0",

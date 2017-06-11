@@ -86,8 +86,3 @@ gulp.task("auto", ["scripts", "css"], function() {
 })
 
 gulp.task("default", ["scripts", "css"]);
-
-//var watcher = gulp.watch(["./src/js/**/*.js"], ["scripts"])
-//watcher.on("change", function() {
-//  console.log("change");
-//})

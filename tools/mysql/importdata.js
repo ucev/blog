@@ -1,1 +1,0 @@
-require('./src/importdata')(function(){console.log('finish');});
