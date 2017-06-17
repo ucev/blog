@@ -223,10 +223,8 @@ class ArticleLayout extends React.Component {
     this.state.categories.forEach((category) => {
       categories[category.id] = category.name;
     })
-    console.log(categories);
     var articles = this.state.articles.map((article) => {
       var cid = article.category;
-      console.log(cid);
       article.categoryname = categories[cid];
       return article;
     })

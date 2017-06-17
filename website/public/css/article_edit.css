@@ -9,9 +9,8 @@
   margin-left: 10%; }
 
 #edit-body {
-  display: -moz-box;
-  display: -webkit-box;
-  -moz-box-orient: horizontal;
+  display: flex;
+  flex-direction: row;
   height: 500px;
   border: 1px solid black; }
 
@@ -22,7 +21,8 @@
 
 #edit-area,
 #display-area {
-  -moz-box-flex: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
   width: 50%;
   height: 100%;
   overflow: scroll; }
@@ -114,16 +114,18 @@ button#submit {
   border-bottom: 1px solid #BDBDBD; }
 
 #choose-photo-div-main-div {
-  display: -moz-box;
-  -moz-box-orient: horizontal;
+  display: flex;
+  flex-direction: row;
   width: 100%;
   height: 450px; }
 
 #choose-photo-div-groups {
+  flex-shrink: 0;
   width: 150px; }
 
 #choose-photo-div-right-div {
-  -moz-box-flex: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
   border-left: 1px solid #BDBDBD; }
 
 #choose-photo-div-upload-div {

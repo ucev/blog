@@ -16,7 +16,7 @@ class PhotoFlowOperationBar extends React.Component {
     super(props);
     this.handleUploadButtonClick = this.handleUploadButtonClick.bind(this);
     this.handleUploadInputChange = this.handleUploadInputChange.bind(this);
-    
+
     // Dialog Visibility
     this.hideMoveDialog = this.hideMoveDialog.bind(this);
     this.showMoveDialog = this.showMoveDialog.bind(this);
@@ -98,19 +98,19 @@ class PhotoFlowOperationBar extends React.Component {
     };
     return (
       <div>
-        <div className = 'photo-operation-bar' id = 'photo-operation-bar-first'>
-          <button id = 'upload-image-button' className='operation-button' onClick = {this.handleUploadButtonClick} >上传图片</button>
-          <input ref = {(input) => {this.uploadInput = input;}} id = 'upload-image-input' type = 'file' accept="image/*" style = {uploadInputStyles} onChange = {this.handleUploadInputChange} />
+        <div className='photo-operation-bar' id='photo-operation-bar-first'>
+          <button id='upload-image-button' className='operation-button' onClick={this.handleUploadButtonClick} >上传图片</button>
+          <input ref={(input) => { this.uploadInput = input; }} id='upload-image-input' type='file' accept="image/*" style={uploadInputStyles} onChange={this.handleUploadInputChange} />
         </div>
-        <div className = 'photo-operation-bar' id = 'photo-operation-bar-second'>
-          <input type='checkbox' onChange = {this.handleAllCheckChanged}/><label>全选</label>
-          <div id = 'photo-flow-opebar-move-div'>
-            <button id = 'photo-flow-opebar-move-button' className = 'operation-button operation-button-confirm' onClick = {this.moveButtonClick}>移动分组</button>
-            <OptionDialog title = "移动分组" optionItems = {this.props.groups} centerScreen = {false} visible = {this.props.moveVisible} confirm = {this.handleMoveConfirm} cancel = {this.handleMoveCancel}/>
+        <div className='photo-operation-bar' id='photo-operation-bar-second'>
+          <input type='checkbox' onChange={this.handleAllCheckChanged} /><label>全选</label>
+          <div id='photo-flow-opebar-move-div'>
+            <button id='photo-flow-opebar-move-button' className='operation-button operation-button-confirm' onClick={this.moveButtonClick}>移动分组</button>
+            <OptionDialog title="移动分组" optionItems={this.props.groups} centerScreen={false} visible={this.props.moveVisible} confirm={this.handleMoveConfirm} cancel={this.handleMoveCancel} />
           </div>
-          <div id = 'photo-flow-opebar-del-div'>
-            <button id = 'photo-flow-opebar-del-button' className = 'operation-button operation-button-cancel' onClick = {this.delButtonClick}>删除</button>
-            <ConfirmDialog title = '确认删除?' centerScreen = {false} visible = {this.props.delVisible} confirm = {this.handleDelConfirm} cancel = {this.handleDelCancel}/>
+          <div id='photo-flow-opebar-del-div'>
+            <button id='photo-flow-opebar-del-button' className='operation-button operation-button-cancel' onClick={this.delButtonClick}>删除</button>
+            <ConfirmDialog title='确认删除?' centerScreen={false} visible={this.props.delVisible} confirm={this.handleDelConfirm} cancel={this.handleDelCancel} />
           </div>
         </div>
       </div>
@@ -195,37 +195,39 @@ class PhotoItem extends React.Component {
   photoOnLoad(e) {
     var img = e.target;
     var a = new Image();
+    a.onload = function () {
+      var sw = a.width;
+      var sh = a.height;
+      var min = sw < sh ? sw : sh;
+      var scale = min / 200;
+      var nw = sw / scale;
+      var nh = sh / scale;
+      img.style.width = nw + 'px';
+      img.style.height = nh + 'px';
+    };
     a.src = img.src;
-    var sw = a.width;
-    var sh = a.height;
-    var min = sw < sh ? sw : sh;
-    var scale = min / 200;
-    var nw = sw / scale;
-    var nh = sh / scale;
-    img.style.width = nw + 'px';
-    img.style.height = nh + 'px';
   }
   render() {
     var photo = this.props.photo;
     var photoSrc = '/images/blog/' + photo.name;
     var checked = photo.checked ? "checked" : "";
     return (
-      <li className = 'photo-flow-item-li'>
-        <div className = 'photo-flow-item-li-img-div'>
-          <img className = 'photo-flow-item-li-img' src= {photoSrc} onLoad = {this.photoOnLoad}></img>
+      <li className='photo-flow-item-li'>
+        <div className='photo-flow-item-li-img-div'>
+          <img className='photo-flow-item-li-img' src={photoSrc} onLoad={this.photoOnLoad}></img>
         </div>
-        <div className = 'photo-flow-item-name-div'>
-          <input className = 'photo-flow-item-name-checkbox' type='checkbox' value = {photo.id} checked = {checked} onChange = {this.handlePhotoCheck}/>
-          <span className = 'photo-flow-item-name-span'>{photo.title}</span>
+        <div className='photo-flow-item-name-div'>
+          <input className='photo-flow-item-name-checkbox' type='checkbox' value={photo.id} checked={checked} onChange={this.handlePhotoCheck} />
+          <span className='photo-flow-item-name-span'>{photo.title}</span>
         </div>
-        <div className = 'photo-flow-item-li-ope-bar'>
-          <li className = 'photo-flow-item-ope-img photo-flow-item-mode-edit' onClick = {this.showInputDialog}></li>
-          <li className = 'photo-flow-item-ope-img photo-flow-item-mode-swap' onClick = {this.showMoveDialog}></li>
-          <li className = 'photo-flow-item-ope-img photo-flow-item-mode-del' onClick = {this.showDelDialog}></li>
+        <div className='photo-flow-item-li-ope-bar'>
+          <li className='photo-flow-item-ope-img photo-flow-item-mode-edit' onClick={this.showInputDialog}></li>
+          <li className='photo-flow-item-ope-img photo-flow-item-mode-swap' onClick={this.showMoveDialog}></li>
+          <li className='photo-flow-item-ope-img photo-flow-item-mode-del' onClick={this.showDelDialog}></li>
         </div>
-        <InputDialog title = '编辑名称' centerScreen = {false} confirm = {this.handleInputConfirm} cancel = {this.handleInputCancel} visible = {photo.inputVisible}/>
-        <OptionDialog title = '移动分组' optionItems = {this.props.groups} confirm = {this.handleMoveConfirm} cancel = {this.handleMoveCancel} visible = {photo.moveVisible} centerScreen = {false} />
-        <ConfirmDialog title = '确认删除?' centerScreen = {false} confirm = {this.handleDelConfirm} cancel = {this.handleDelCancel} visible = {photo.delVisible} />
+        <InputDialog title='编辑名称' centerScreen={false} confirm={this.handleInputConfirm} cancel={this.handleInputCancel} visible={photo.inputVisible} />
+        <OptionDialog title='移动分组' optionItems={this.props.groups} confirm={this.handleMoveConfirm} cancel={this.handleMoveCancel} visible={photo.moveVisible} centerScreen={false} />
+        <ConfirmDialog title='确认删除?' centerScreen={false} confirm={this.handleDelConfirm} cancel={this.handleDelCancel} visible={photo.delVisible} />
       </li>
     );
   }
@@ -238,12 +240,12 @@ class PhotoFlow extends React.Component {
 
   render() {
     const items = this.props.photos.map((photo) => {
-      return <PhotoItem photo = {photo} groups = {this.props.groups} />
+      return <PhotoItem photo={photo} groups={this.props.groups} />
     });
     return (
-      <div id = 'photo-flow-div'>
-        <PhotoFlowOperationBar groups = {this.props.groups} moveVisible = {this.props.pfobMoveVisible} delVisible = {this.props.pfobDelVisible}/>
-        <ul id = 'photo-flow-items-ul'>
+      <div id='photo-flow-div'>
+        <PhotoFlowOperationBar groups={this.props.groups} moveVisible={this.props.pfobMoveVisible} delVisible={this.props.pfobDelVisible} />
+        <ul id='photo-flow-items-ul'>
           {items}
         </ul>
       </div>
@@ -269,7 +271,7 @@ class PhotoGroupItem extends React.Component {
     this.handleDeleteGroup = this.handleDeleteGroup.bind(this);
     this.handleRenameGroup = this.handleRenameGroup.bind(this);
   }
-  showInputDialog(){
+  showInputDialog() {
     var group = this.props.group;
     PhotoActions.groupItemShowInputDialog(group.id);
   }
@@ -277,7 +279,7 @@ class PhotoGroupItem extends React.Component {
     var group = this.props.group;
     PhotoActions.groupItemHideInputDialog(group.id);
   }
-  showDelDialog(){
+  showDelDialog() {
     var group = this.props.group;
     PhotoActions.groupItemShowDeleteDialog(group.id);
   }
@@ -325,18 +327,18 @@ class PhotoGroupItem extends React.Component {
     var imgSrc = '/images/icons/ic_close_black_24dp_2x.png';
     if (gid < 2) {
       return (
-        <li className = {classes}>
-          <span className = 'photo-group-item-li-title-span' data-gid = {group.id} onClick = {this.handleGroupItemClick}>{group.name}({group.count})</span>
+        <li className={classes}>
+          <span className='photo-group-item-li-title-span' data-gid={group.id} onClick={this.handleGroupItemClick}>{group.name}({group.count})</span>
         </li>
       );
     }
     return (
-      <li className = {classes}>
-        <span className = 'photo-group-item-li-title-span' onClick = {this.handleGroupItemClick}>{group.name}({group.count})</span>
-        <img className = 'photo-group-item-li-ope-img' src = '/images/icons/ic_mode_edit_black_24dp_2x.png' style = {opeImgStyles} onClick = {this.handleRenameGroup}/>
-        <img className = 'photo-group-item-li-ope-img' src = '/images/icons/ic_close_black_24dp_2x.png' style = {opeImgStyles} onClick = {this.handleDeleteGroup}/>
-        <InputDialog title = '编辑名称' centerScreen = {false} confirm = {this.handleInputConfirm} cancel = {this.handleInputCancel} visible = {group.inputVisible}/>
-        <ConfirmDialog title = '确认删除?' centerScreen = {false} confirm = {this.handleDelConfirm} cancel = {this.handleDelCancel} visible = {group.delVisible} />
+      <li className={classes}>
+        <span className='photo-group-item-li-title-span' onClick={this.handleGroupItemClick}>{group.name}({group.count})</span>
+        <img className='photo-group-item-li-ope-img' src='/images/icons/ic_mode_edit_black_24dp_2x.png' style={opeImgStyles} onClick={this.handleRenameGroup} />
+        <img className='photo-group-item-li-ope-img' src='/images/icons/ic_close_black_24dp_2x.png' style={opeImgStyles} onClick={this.handleDeleteGroup} />
+        <InputDialog title='编辑名称' centerScreen={false} confirm={this.handleInputConfirm} cancel={this.handleInputCancel} visible={group.inputVisible} />
+        <ConfirmDialog title='确认删除?' centerScreen={false} confirm={this.handleDelConfirm} cancel={this.handleDelCancel} visible={group.delVisible} />
       </li>
     );
   }
@@ -347,23 +349,23 @@ class PhotoGroupBar extends React.Component {
     super(props);
   }
 
-  render() { 
-    var opebarImg = this.props.opeImgVisible ? '/images/icons/ic_cancel_black_24dp_2x.png' :'/images/icons/ic_arrow_drop_down_circle_black_24dp_2x.png';
+  render() {
+    var opebarImg = this.props.opeImgVisible ? '/images/icons/ic_cancel_black_24dp_2x.png' : '/images/icons/ic_arrow_drop_down_circle_black_24dp_2x.png';
     var groupItems = this.props.groups.map((group) => (
-      <PhotoGroupItem group = {group} gid = {this.props.gid} opeImgVisible = {this.props.opeImgVisible}/>
+      <PhotoGroupItem group={group} gid={this.props.gid} opeImgVisible={this.props.opeImgVisible} />
     ));
     var key = new Date().getTime();
     return (
-      <div id = 'photo-group-div'>
-        <div className = 'photo-group-operation-bar'>
-          <div id = 'add-new-photo-group-div' onClick = {PhotoActions.groupShowAddDialog.bind(PhotoActions)}>新建分组</div>
-          <InputDialog title = '新建分组' centerScreen = {false} visible = {this.props.addVisible} confirm = {PhotoActions.groupAddConfirm.bind(PhotoActions)} cancel = {PhotoActions.groupAddCancel.bind(PhotoActions)}/>
+      <div id='photo-group-div'>
+        <div className='photo-group-operation-bar'>
+          <div id='add-new-photo-group-div' onClick={PhotoActions.groupShowAddDialog.bind(PhotoActions)}>新建分组</div>
+          <InputDialog title='新建分组' centerScreen={false} visible={this.props.addVisible} confirm={PhotoActions.groupAddConfirm.bind(PhotoActions)} cancel={PhotoActions.groupAddCancel.bind(PhotoActions)} />
         </div>
-        <div className = 'photo-group-operation-bar'>
-          <div id = 'photo-group-opebar-title-div' >图片组</div>
-          <img id = 'photo-group-opebar-img' src = {opebarImg} onClick = {PhotoActions.groupOpeImgStateToggle.bind(PhotoActions)}/>
+        <div className='photo-group-operation-bar'>
+          <div id='photo-group-opebar-title-div' >图片组</div>
+          <img id='photo-group-opebar-img' src={opebarImg} onClick={PhotoActions.groupOpeImgStateToggle.bind(PhotoActions)} />
         </div>
-        <ul id = 'photo-group-items-ul'>
+        <ul id='photo-group-items-ul'>
           {groupItems}
         </ul>
       </div>
@@ -378,8 +380,6 @@ class PhotoArea extends React.Component {
     var listener = new PhotoListener();
     PhotoActions = listener.getAction();
     PhotoStores = listener.getStore();
-    console.log(PhotoActions);
-    console.log(PhotoStores);
 
     this.state = PhotoStores.getAll();
     this.__onChange = this.__onChange.bind(this);
@@ -398,8 +398,8 @@ class PhotoArea extends React.Component {
   render() {
     return (
       <div id='photo-div'>
-        <PhotoFlow key = {this.state.key} gid = {this.state.gid} groups = {this.state.groups} photos = {this.state.photos} pfobMoveVisible = {this.state.pfobMoveVisible} pfobDelVisible = {this.state.pfobDelVisible}/>
-        <PhotoGroupBar key = {this.state.key + 100} gid = {this.state.gid} groups = {this.state.groups} addVisible = {this.state.groupAddVisible} opeImgVisible = {this.state.groupOpeImgVisible}/>
+        <PhotoFlow key={this.state.key} gid={this.state.gid} groups={this.state.groups} photos={this.state.photos} pfobMoveVisible={this.state.pfobMoveVisible} pfobDelVisible={this.state.pfobDelVisible} />
+        <PhotoGroupBar key={this.state.key + 100} gid={this.state.gid} groups={this.state.groups} addVisible={this.state.groupAddVisible} opeImgVisible={this.state.groupOpeImgVisible} />
       </div>
     );
   }

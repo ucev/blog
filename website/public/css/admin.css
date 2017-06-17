@@ -338,8 +338,8 @@ td {
   text-decoration: inherit; }
 
 #refact-area {
-  display: -moz-box;
-  -moz-box-orient: horizontal;
+  display: flex;
+  flex-direction: row;
   width: 100%; }
 
 #refact-tree-area {
@@ -399,7 +399,8 @@ td {
   background-color: #BDBDBD; }
 
 #refact-detail-area {
-  -moz-box-flex: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
   padding: 30px 30px 30px 80px; }
 
 #refact-article-brief-area-descp {
