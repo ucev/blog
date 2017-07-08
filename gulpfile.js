@@ -83,6 +83,7 @@ gulp.task("css", ["sass"], function() {
 
 gulp.task("auto", ["scripts", "css"], function() {
   gulp.watch(["./src/js/**/*.js"], ["scripts"]);
+  gulp.watch(["./src/js/admin/article_edit.js"], ["actionscripts"])
 })
 
 gulp.task("default", ["scripts", "css"]);

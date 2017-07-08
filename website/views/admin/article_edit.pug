@@ -15,6 +15,7 @@ block main-body-block
         label#label-label 标签
         input#label-input-area(placeholder='输入标签' maxlength=10)
         div#labels-area
+        ul#label-hints
       div.op-bar#upload-image-div
         button.operation-button#submit 发布文章
         //button.operation-button#save 保存文章
@@ -47,6 +48,8 @@ block main-body-block
     <li class='choose-photo-div-photo-item-li' onClick = 'onPhotoItemClick(this)'>
       <img class='choose-photo-div-photo-item-img' data-id='<%= id %>' src='<%= imgsrc %>' alt='图片' onload='photoImgOnLoad(this)' />
     </li>
+  script#label-hint-item-tpl(type='text/html').
+    <li class="label-hint-item" onclick="labelHintItemClick(this)"><%= label %></li>
 
 block append jsscript-block
   script(src='/js/simplemde.min.js?' + new Date().getTime())
@@ -55,4 +58,4 @@ block append jsscript-block
   script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
   script(src='/prism.js')
   script const labels_exists = JSON.parse( `!{labels}` ); const this_article_id = `#{id}`; const current_labels = `#{current_labels}`;const this_type = `#{type}`;
-  script(src='/js/article_edit.js')
+  script(src='/js/article_edit.js?' + new Date().getTime())

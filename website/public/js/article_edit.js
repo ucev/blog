@@ -7,6 +7,7 @@ var labelCount = 0;
 const labelTpl = $("#label-tpl").html();
 const photoGroupTpl = $("#photo-group-tpl").html();
 const photoItemTpl = $("#photo-item-tpl").html();
+const labelHintItemTpl = $("#label-hint-item-tpl").html();
 
 function deleteLabel(i) {
   let id = '#label-div-' + i;
@@ -37,8 +38,12 @@ function addLabel(lbs) {
       let l = $('#label-input-area').val();
       addLabel(l);
       $('#label-input-area').val('');
+      e.preventDefault();
     }
   });
+  $('#label-input-area').keyup((e) => {
+    labelChange(e.target.value);
+  })
 })();
 
 function drawLink() {
@@ -49,6 +54,24 @@ function drawLink() {
 
 function drawImage() {
   $("#choose-photo-div").show();
+}
+
+function labelChange(curlabel) {
+  var $target = $("#label-hints"),
+    reg = new RegExp(curlabel);
+  $target.empty();
+  if (curlabel.trim().length == 0) return;
+  var arr = labels_exists.filter(f => reg.test(f));
+  arr.forEach((l) => {
+    $(template(labelHintItemTpl, {label: l})).appendTo($target);
+  })
+}
+
+function labelHintItemClick(e) {
+  var label = e.innerText;
+  addLabel(label);
+  $("#label-input-area").val("");
+  labelChange("");
 }
 
 function photoImgOnLoad(e) {
@@ -98,7 +121,6 @@ function submitArticle(e) {
     }
   });
 }
-
 
 // 取 content 中第一个段落(<p></p>)中的内容
 function getContentDescription(content) {

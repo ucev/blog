@@ -208,3 +208,23 @@ button#submit {
 
 #insert-url-div .operation-button-confirm {
   margin-left: 57px; }
+
+#article-labels {
+  position: relative; }
+
+#label-hints {
+  position: absolute;
+  left: 90px;
+  top: 10px;
+  list-style-type: none;
+  background-color: white;
+  padding: 0; }
+
+.label-hint-item {
+  height: 25px;
+  line-height: 25px;
+  padding: 0 10px;
+  cursor: pointer; }
+
+.label-hint-item:hover {
+  background-color: #E0E0E0; }

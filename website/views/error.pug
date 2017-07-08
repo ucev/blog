@@ -14,7 +14,7 @@ html
           tr
             th 详情
             td #{message}
-        //pre #{error.stack}
+        //- pre #{error.stack}
       else
         if error.status == 404
           img(src='/images/error404.png').error-img
