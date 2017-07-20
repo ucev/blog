@@ -33,6 +33,7 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/', (req, res, next) => {
+  console.log("------------ index");
   res.redirect('/articles');
 })
 

@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const AppContainer = require('react-hot-loader').AppContainer;
 
 const Articles = require('./admin/react_articles.js');
 const Categories = require('./admin/react_categories.js');
@@ -7,39 +8,33 @@ const CategoriesRefact = require('./admin/react_category_refact.js');
 const Labels = require('./admin/react_labels.js');
 const Photos = require('./admin/react_photos.js');
 
-function adminArticlesInit() {
+const render = (Component, ele) => {
   ReactDOM.render(
-    <Articles />,
-    document.getElementById('table-div')
-  );
+    <AppContainer>
+      <Component />
+    </AppContainer>,
+    document.getElementById(ele)
+  )
+};
+
+function adminArticlesInit() {
+  render(Articles, 'table-div');
 }
 
 function adminCategoriesInit() {
-  ReactDOM.render(
-    <Categories />,
-    document.getElementById('table-div')
-  );
+  render(Categories, 'table-div');
 }
 
 function adminCategoryRefactInit() {
-  ReactDOM.render(
-    <CategoriesRefact />,
-    document.getElementById('reform-area')
-  );
+  render(CategoriesRefact, 'reform-area');
 }
 
 function adminLabelsInit() {
-  ReactDOM.render(
-    <Labels />,
-    document.getElementById('table-div')
-  );
+  render(Labels, 'table-div');
 }
 
 function adminPhotosInit() {
-  ReactDOM.render(
-    <Photos />,
-    document.getElementById('photos-target-div')
-  );
+  render(Photos, 'photos-target-div');
 }
 
 module.exports = {

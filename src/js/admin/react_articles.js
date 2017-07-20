@@ -31,6 +31,7 @@ class FilterInput extends React.Component {
       <div className = 'table-filter-item'>
         <label className = 'table-filter-item-label'>{this.props.label}</label>
         <input className = 'table-filter-item-input' onKeyDown = {this.handleChange} />
+        <span>AB_Hh</span>
       </div>
     );
   }
@@ -232,9 +233,9 @@ class ArticleLayout extends React.Component {
       <div>
         <div className = 'table-filter-bar table-filter-bar-top'>
 	        <button className = 'operation-button' onClick = {ArticleAction.addArticle.bind(ArticleAction)}>添加文章</button>
-      	  <FilterInput title = 'label' label = '标签'/>
-      	  <FilterInput title = 'category' label = '类别'/>
-	        <FilterSelect title = 'state' label = '状态' options = {this.stateOptions}/>
+      	  <FilterInput key = 'label' title = 'label' label = '标签'/>
+      	  <FilterInput key = 'category' title = 'category' label = '类别'/>
+	        <FilterSelect key = 'state' title = 'state' label = '状态' options = {this.stateOptions}/>
         </div>
         <ArticleTable articles = {articles} checkState = {this.state.checkState}/>
         <div className = 'table-filter-bar table-filter-bar-bottom'>

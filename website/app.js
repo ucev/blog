@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var process = require('process');
 var favicon = require('serve-favicon');
 //var logger = require('morgan');
 var logger = require('./utils/log4js');
@@ -34,7 +35,13 @@ Promise.prototype.finally = function (callback) {
   );
 };
 
-var app = express();
+var app, devServer;
+if (process.env.NODE_ENV == 'DEV') {
+  devServer = require('./server/server.dev');
+  app = devServer.app;
+} else {
+  devServer = app = express();
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -97,6 +104,10 @@ app.use(function(err, req, res, next) {
   res.render('error', {debug: DEBUG_MODE, err: err});
 });
 
-app.listen(configs.website_info.port);
+if (process.env.NODE_ENV == 'DEV') {
+  devServer.listen(configs.website_info.port);
+} else {
+  app.listen(configs.website_info.port);
+}
 
 module.exports = app;

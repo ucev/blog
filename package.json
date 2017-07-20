@@ -4,11 +4,11 @@
   "description": "This website is built for learing nodejs.",
   "main": "index.js",
   "scripts": {
-    "build": "babel src/js -d website/public/js",
+    "build": "webpack --env=prod --progress --profile --colors",
     "createdb": "mysql-creator ./website/config/database.config.yaml",
+    "dev": "NODE_ENV=DEV node ./website/app.js",
     "start": "supervisor ./website/class ./website/routes ./website/views ./website/app.js ./website/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "wp": "webpack --env=prod --progress --profile --colors"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -17,52 +17,40 @@
   "keywords": [
     "learn",
     "nodejs",
-    "demo"
+    "demo",
+    "blog"
   ],
   "author": "张帅",
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.3",
-    "express-generator": "^4.14.1",
+    "express-generator": "^4.15.0",
     "moment": "^2.18.1",
-    "mysql-creator": "^0.3.4",
+    "mysql-creator": "^0.3.5",
     "rwlock": "^5.0.0"
   },
   "devDependencies": {
-    "babel": "^6.23.0",
-    "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
-    "babel-plugin-react": "^1.0.0",
-    "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
-    "babelify": "^7.3.0",
-    "browserify": "^14.4.0",
-    "cross-env": "^5.0.1",
+    "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "flux": "^3.1.2",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
-    "gulp-browserify": "^0.5.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-header": "^1.8.8",
-    "gulp-pug": "^3.3.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-replace": "^0.6.1",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.0",
-    "gulp-uglify": "^3.0.0",
+    "fs": "0.0.1-security",
+    "module": "^1.2.5",
     "node-sass": "^4.5.3",
+    "pug": "^2.0.0-rc.2",
+    "raw-loader": "^0.5.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-hot-loader": "^3.0.0-beta.7",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "webpack": "^3.1.0",
-    "webpack-dev-server": "^2.5.1"
+    "webpack": "^3.2.0",
+    "webpack-dev-server": "^2.5.1",
+    "webpack-merge": "^4.1.0"
   }
 }

@@ -9,7 +9,7 @@ class ArticleItem extends React.Component {
   render() {
     var article = this.props.article;
     return (
-      <li className = 'article-item-li' date-id = {article.id}>
+      <li className = 'article-item-li' data-id = {article.id}>
         <h3 className = 'article-item-li-title'>
           <a href = {'/articles/view/' + article.id}>{article.title}</a>
         </h3>

@@ -38,7 +38,7 @@ class CategoryLabel extends React.Component {
   }
   render() {
     var labels = [
-      {name: 'index', val: '序号'},
+      {name: 'index', val: '序号1'},
       {name: 'name', val: '名称'},
       {name: 'parent', val: '父节点'},
       {name: 'descp', val: '描述'},

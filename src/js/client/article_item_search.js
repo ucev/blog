@@ -55,7 +55,7 @@ class ArticleItem extends React.Component {
     var article = this.props.article;
     var title = this.genTitle(article.id, article.title, this.props.query);
     return (
-      <li className = 'article-item-li' date-id = {article.id}>
+      <li className = 'article-item-li' data-id = {article.id}>
         <h3 className = 'article-item-li-title'>
           {title}
           <SearchLabels labels = {article.label.split(',')} query = {this.props.query} />
