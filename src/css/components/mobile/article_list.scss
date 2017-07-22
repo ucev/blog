@@ -8,7 +8,7 @@
 .article-item-li {
   padding: 10px;
   border-bottom: 1px solid #E0E0E0;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 .article-item-li-title {
@@ -54,9 +54,11 @@
 .article-item-li-title mark {
   color: red;
   background-color: inherit;
-}
+} 
 
 .article-item-li-content {
+  max-height: 105px;
+  overflow: hidden;
   font-size: 0.6rem;
   color: #424242;
 }

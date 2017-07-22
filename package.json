@@ -4,7 +4,7 @@
   "description": "This website is built for learing nodejs.",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --env=prod --progress --profile --colors",
+    "build": "NODE_ENV=production webpack --progress --profile --colors",
     "createdb": "mysql-creator ./website/config/database.config.yaml",
     "dev": "NODE_ENV=DEV node ./website/app.js",
     "start": "supervisor ./website/class ./website/routes ./website/views ./website/app.js ./website/app.js",

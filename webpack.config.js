@@ -30,9 +30,17 @@ module.exports = [{
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
+      output: {
+        comments: false
+      },
       compress: {
         warnings: false,
         drop_console: false
+      }
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       }
     })
   ]

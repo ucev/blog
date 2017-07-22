@@ -22,6 +22,11 @@ footer {
   line-height: 24px;
 }
 
+.footer-item > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .footer-item img {
   width: 24px;
 }
