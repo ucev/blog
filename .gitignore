@@ -63,8 +63,8 @@ typings/
 *.swo
 
 # express app config files
-*.config.js
-*.config.yaml
+website/config/*.config.js
+website/config/*.config.yaml
 
 # tools
 tools/mysql/src/configs.js
