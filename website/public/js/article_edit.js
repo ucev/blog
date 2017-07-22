@@ -1,7 +1,6 @@
 var simplemde = null;
 var markdown = null;
 var cm = null;
-
 var labels = [];
 var labelCount = 0;
 const labelTpl = $("#label-tpl").html();
