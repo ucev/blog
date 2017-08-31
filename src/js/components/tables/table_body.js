@@ -1,17 +1,12 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-class TableBody extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    return (
-      <tbody>
-        {this.props.children}
-      </tbody>
-    );
-  }
+var TableBody = (props) => {
+  return (
+    <tbody>
+      {props.children}
+    </tbody>
+  )
 }
 
 module.exports = TableBody;

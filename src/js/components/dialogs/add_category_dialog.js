@@ -44,11 +44,7 @@ class AddCategoryDialog extends React.Component {
     var parent = data.parent ? data.parent : '';
     var descp = data.descp ? data.descp : '';
     var categoryItems = this.props.categories.map((category) => {
-      if (category.id == parent) {
-        return (<option value = {category.id} selected>{category.name}</option>);
-      } else {
-        return (<option value = {category.id}>{category.name}</option>);
-      }
+      return (<option value = {category.id}>{category.name}</option>);
     });
     var styles;
     if (this.props.visible) {
@@ -74,7 +70,7 @@ class AddCategoryDialog extends React.Component {
           </li>
           <li className = 'add-category-div-item' id = 'add-category-div-parent'>
             <label className = 'add-category-div-item-label'>父节点</label>
-            <select ref = {(select) => {this.parentSelect = select;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent' data-title = 'parent' onChange = {this.valueChange}>
+            <select ref = {(select) => {this.parentSelect = select;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent' value = {parent} data-title = 'parent' onChange = {this.valueChange}>
               {categoryItems}
             </select>
           </li>
