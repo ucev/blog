@@ -1,6 +1,8 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 
+import LazyLoader from 'react-lazyload';
+
 const ConfirmDialog = require("../components/dialogs/confirm_dialog.js");
 const InputDialog = require("../components/dialogs/input_dialog.js");
 const OptionDialog = require("../components/dialogs/option_dialog.js");
@@ -214,17 +216,19 @@ class PhotoItem extends React.Component {
     return (
       <li className='photo-flow-item-li'>
         <div className='photo-flow-item-li-img-div'>
-          <img className='photo-flow-item-li-img' src={photoSrc} onLoad={this.photoOnLoad}></img>
+          <LazyLoader>
+            <img className='photo-flow-item-li-img' src={photoSrc} onLoad={this.photoOnLoad} />
+          </LazyLoader>
         </div>
         <div className='photo-flow-item-name-div'>
           <input className='photo-flow-item-name-checkbox' type='checkbox' value={photo.id} checked={checked} onChange={this.handlePhotoCheck} />
           <span className='photo-flow-item-name-span'>{photo.title}</span>
         </div>
-        <div className='photo-flow-item-li-ope-bar'>
+        <ul className='photo-flow-item-li-ope-bar'>
           <li className='photo-flow-item-ope-img photo-flow-item-mode-edit' onClick={this.showInputDialog}></li>
           <li className='photo-flow-item-ope-img photo-flow-item-mode-swap' onClick={this.showMoveDialog}></li>
           <li className='photo-flow-item-ope-img photo-flow-item-mode-del' onClick={this.showDelDialog}></li>
-        </div>
+        </ul>
         <InputDialog title='编辑名称' centerScreen={false} confirm={this.handleInputConfirm} cancel={this.handleInputCancel} visible={photo.inputVisible} />
         <OptionDialog title='移动分组' optionItems={this.props.groups} confirm={this.handleMoveConfirm} cancel={this.handleMoveCancel} visible={photo.moveVisible} centerScreen={false} />
         <ConfirmDialog title='确认删除?' centerScreen={false} confirm={this.handleDelConfirm} cancel={this.handleDelCancel} visible={photo.delVisible} />
@@ -239,9 +243,9 @@ class PhotoFlow extends React.Component {
   }
 
   render() {
-    const items = this.props.photos.map((photo) => {
-      return <PhotoItem photo={photo} groups={this.props.groups} />
-    });
+    const items = this.props.photos.map(photo => 
+      <PhotoItem key = {photo.id}  photo={photo} groups={this.props.groups} />
+    );
     return (
       <div id='photo-flow-div'>
         <PhotoFlowOperationBar groups={this.props.groups} moveVisible={this.props.pfobMoveVisible} delVisible={this.props.pfobDelVisible} />
@@ -351,9 +355,9 @@ class PhotoGroupBar extends React.Component {
 
   render() {
     var opebarImg = this.props.opeImgVisible ? '/images/icons/ic_cancel_black_24dp_2x.png' : '/images/icons/ic_arrow_drop_down_circle_black_24dp_2x.png';
-    var groupItems = this.props.groups.map((group) => (
-      <PhotoGroupItem group={group} gid={this.props.gid} opeImgVisible={this.props.opeImgVisible} />
-    ));
+    var groupItems = this.props.groups.map(group => 
+      <PhotoGroupItem key={group.id} group={group} gid={this.props.gid} opeImgVisible={this.props.opeImgVisible} />
+    );
     var key = new Date().getTime();
     return (
       <div id='photo-group-div'>

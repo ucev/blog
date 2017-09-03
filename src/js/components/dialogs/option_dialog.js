@@ -40,7 +40,7 @@ class OptionDialog extends React.Component {
     var groupItems = this.props.optionItems.map((group) => {
       if (group.id == -1) return '';
       return (
-        <li className = 'option-dialog-option-li'>
+        <li className = 'option-dialog-option-li' key = {group.id}>
           <input type = 'radio' name = 'photogroup' value = {group.id} onChange = {this.handleGroupChange}/>
           <label>{group.name}</label>
         </li>
