@@ -31,7 +31,6 @@ class FilterInput extends React.Component {
       <div className = 'table-filter-item'>
         <label className = 'table-filter-item-label'>{this.props.label}</label>
         <input className = 'table-filter-item-input' onKeyDown = {this.handleChange} />
-        <span>AB_Hh</span>
       </div>
     );
   }
