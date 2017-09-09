@@ -22,6 +22,7 @@ block append jsscript-block
         $(this).next().hide()
       }
       $(this).toggleClass('extensible-fence-btn-hidden')
+      e.stopPropagation()
     })
 
 block append stylesheet-block
