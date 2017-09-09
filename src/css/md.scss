@@ -93,7 +93,6 @@
     padding: 0 5px;
   }
   pre {
-    border: 1px solid #CCCCCC;
     line-height: 1.25em;
     overflow: auto;
     padding: 6px 10px;
@@ -117,6 +116,28 @@
   }
   img {
     max-width: 300px;
+  }
+  .extensible-fence {
+    position: relative;
+    width: 100%;
+    min-height: 30px;
+    border-radius: 3px;
+    background-color: black;
+  }
+  .extensible-fence-btn {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    z-index: 10;
+    background-image: url(/images/icons/ic_remove_black_18dp_1x.png);
+    background-size: 10px 10px;
+    cursor: pointer;
+  }
+  .extensible-fence-btn-hidden {
+    background-image: url(/images/icons/ic_add_black_18dp_1x.png)
   }
   @media screen and (min-width: 800px) {}
   @media screen and (max-width: 800px) {

@@ -17,6 +17,7 @@ const __markdown = require('markdown-it')({
   linkify: true,
   typographer: true
 });
+__markdown.use(require('markdown-it-extensible-fence'))
 
 const configs = require('../config/base.config');
 
