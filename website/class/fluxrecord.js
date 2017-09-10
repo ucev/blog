@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('promise-mysql');
 const configs = require('../config/base.config.js');
 
 class FluxRecord {
@@ -8,51 +8,35 @@ class FluxRecord {
     this.dbconfig = configs.database_config;
   }
 
-  fluxOfToday(day) {
-    var conn = mysql.createConnection(this.dbconfig);
+  async fluxOfToday(day) {
     var fluxData, pvPerHour;
-    var flux = new Promise((resolve, reject) => {
-      conn.beginTransaction((err) => {
-        if (err) reject();
-        resolve();
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.beginTransaction()
+      var results = await conn.query(`select * from ${this.today_tbname} where time > ?`, [day])
+      var pv, uv, ip
+      pv = results.length;
+      var uvs = [], ips = [], _pvPerHour = [];
+      for (var i = 0; i < 24; i++) {
+        _pvPerHour[i] = 0;
+      }
+      results.forEach((row) => {
+        _pvPerHour[Math.ceil((row.time - day) / 3600)]++;
+        if (uvs.indexOf(row.uv) == -1) {
+          uvs.push(row.uv);
+        }
+        if (ips.indexOf(row.ip) == -1) {
+          ips.push(row.ip);
+        }
       })
-    })
-    return flux.then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`select * from ${this.today_tbname} where time > ?`, [day], (err, results, fields) => {
-          var pv, uv, ip;
-          pv = results.length;
-          var uvs = [], ips = [], _pvPerHour = [];
-          for (var i = 0; i < 24; i++) {
-            _pvPerHour[i] = 0;
-          }
-          results.forEach((row) => {
-            _pvPerHour[Math.ceil((row.time - day) / 3600)]++;
-            if (uvs.indexOf(row.uv) == -1) {
-              uvs.push(row.uv);
-            }
-            if (ips.indexOf(row.ip) == -1) {
-              ips.push(row.ip);
-            }
-          })
-          uv = uvs.length;
-          ip = ips.length;
-          fluxData = { pv: pv, uv: uv, ip: ip };
-          pvPerHour = _pvPerHour;
-          resolve();
-        })
-      })
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`select count(*) from ${this.his_tbname} where date = ?`,
-          [day], (err, results, fields) => {
-            resolve(results.length != 0);
-          }
-        )
-      })
-    }).then((exists) => {
-      var querysql, querydata;
-      if (!exists) {
+      uv = uvs.length;
+      ip = ips.length;
+      fluxData = { pv: pv, uv: uv, ip: ip };
+      pvPerHour = _pvPerHour;
+      var datecnt = await conn.query(`select count(*) from ${this.his_tbname} where date = ?`,
+          [day])
+      var querysql, querydata
+      if (datacnt.length == 0) {
         querysql = `insert into visithistory set ?`;
         fluxData.date = day;
         querydata = fluxData;
@@ -60,45 +44,36 @@ class FluxRecord {
         querysql = `update visithistory set ? where date = ?`;
         querydata = [fluxData, day];
       }
-      return new Promise((resolve, reject) => {
-        conn.query(querysql, querydata, (err, results, fields) => {
-          if (err) reject();
-          resolve();
-        })
-      })
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.commit((err) => {
-          if (err) { reject() };
-          conn.end((err) => { });
-          var returnVal = fluxData;
-          returnVal.pvPerHour = pvPerHour;
-          resolve(returnVal);
-        })
-      })
-    }).catch((err) => {
-      conn.rollback((err) => {
-        conn.end((err) => { });
-      })
-    })
+      await conn.query(querysql, querydata)
+      await conn.commit()
+      conn.end()
+      var returnVal = fluxData
+      returnVal.pvPerHour = pvPerHour
+      return Promise.resolve(returnVal)
+    } catch (err) {
+      await conn.rollback()
+      conn.end()
+      return Promise.reject()
+    }
   }
 
-  visit(datas) {
+  async visit(datas) {
     var usercookie = datas.usercookie;
     var ip = datas.ip;
     var time = datas.time;
-    var conn = mysql.createConnection(this.dbconfig);
-    var visit = new Promise((resolve, reject) => {
-      conn.query(`insert into ${this.today_tbname} set ?`, {
-        usercookie: usercookie, ip: ip, time: time
-      }, (err, results, fields) => {
-        resolve();
-      }
-      )
-    })
-    visit.finally(() => {
-      conn.end((err) => { });
-    })
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.query(`insert into ${this.today_tbname} set ?`, {
+              usercookie: usercookie,
+              ip: ip,
+              time: time
+      })
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
+    }
   }
 }
 

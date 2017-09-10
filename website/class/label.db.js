@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('promise-mysql');
 const configs = require('../config/base.config.js');
 const __log = require('../utils/log');
 
@@ -9,67 +9,49 @@ class Labels {
     this.step = configs.query_config.step;
   }
 
-  get({ start, orderby = { lb: 'id', asc: 'asc' } }) {
+  async get({ start, orderby = { lb: 'id', asc: 'asc' } }) {
     var returnData = {
       total: 0,
       current: start,
       data: []
     };
     var conn = mysql.createConnection(this.dbconfig);
-    var gc = new Promise((resolve, reject) => {
-      conn.query(`select count(*) as cnt from ${this.dbname}`, (err, results, fields) => {
-        if (err) reject();
-        resolve(results[0].cnt);
-      })
-    })
-    gc.then((total) => {
-      returnData.total = Math.ceil(total / this.step);
-    })
-    var gt = new Promise((resolve, reject) => {
-      start = start * configs.query_config.step;
-      __log.debug(JSON.stringify(orderby));
+    try {
+      var lcnt = await conn.query(`select count(*) as cnt from ${this.dbname}`)[0].cnt
+      returnData.total = Math.ceil(lcnt / this.step)
+      start = start * configs.query_config.step
       var sql = `select * from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)} limit ?, ?`;
-      __log.debug(sql);
-      conn.query(sql, [/*orderby.lb, orderby.asc, */start, this.step], (err, results, fields) => {
-        if (err) reject();
-        resolve(results);
-      })
-    })
-    gt.then((data) => {
+      var data = await conn.query(sql, [/*orderby.lb, orderby.asc, */start, this.step])
       returnData.data = data;
-    })
-    var p = Promise.all([gc, gt]);
-    return p.then(() => {
+      conn.end()
       return Promise.resolve(returnData);
-    }).catch(() => {
-      return Promise.reject([]);
-    }).finally(() => {
-      conn.end((err) => { });
-    })
+    } catch (err) {
+      conn.end()
+      return Promise.reject({})
+    }
   }
 
-  getall({ orderby = { lb: 'id', asc: 'asc' }, queryfields = ['*'] }) {
+  async getall({ orderby = { lb: 'id', asc: 'asc' }, queryfields = ['*'] }) {
     var conn = mysql.createConnection(this.dbconfig);
-    var ga = new Promise((resolve, reject) => {
-      conn.query(`select ?? from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)}`, [[queryfields]], (err, results, fields) => {
-        if (err) { reject(); }
-        resolve(results);
-      })
-    })
-    return ga.then((labels) => {
+    try {
+      var labels = await conn.query(`select ?? from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)}`, [[queryfields]])
+      conn.end()
       return Promise.resolve(labels);
-    }).catch((err) => {
-      __log.debug(err);
-    }).finally(() => {
-      conn.end(() => { });
-    })
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
+    }
   }
 
   getNames() {
-    return this.getall({}).then((labels) => {
-      var l = labels.map((label) => (label.name));
-      return Promise.resolve(l);
-    });
+    try {
+      return this.getall({}).then((labels) => {
+        var l = labels.map((label) => (label.name));
+        return Promise.resolve(l);
+      });
+    } catch (err) {
+      return Promise.resolve([])
+    }
   }
 
   __queryorder(asc) {

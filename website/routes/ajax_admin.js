@@ -1,7 +1,9 @@
-const express = require('express');
-const router = express.Router();
+const router = new require('koa-router')()
 const multiparty = require('multiparty');
 const path = require('path');
+const busboy = require('koa-busboy')
+
+const uploader = busboy()
 
 const Articles = require('../class/article.db');
 const __articles = new Articles();
@@ -26,50 +28,50 @@ function emptyString(str) {
   return (str === '' || str === '-1') ? '' : str;
 }
 
-function getCategoryRefactItemDetail(res, id, type) {
-  __articles.getsingle(
-    {
-      id: id,
-      queryfields: ['id', 'title', 'descp', 'suborder']
-    }
-  ).then((art) => {
+// 😢 
+async function getCategoryRefactItemDetail(ctx, id, type) {
+  try {
+    var art = await __articles.getsingle({
+            id: id,
+            queryfields: ['id', 'title', 'descp', 'suborder']
+          })
     art.type = type;
-    res.json({ code: 0, msg: '请求成功', data: art });
-  }).catch(() => {
-    res.json({ code: 1, msg: '请求失败' })
-  })
+    ctx.body = { code: 0, msg: '请求成功', data: art }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '请求失败' }
+  }
 }
 
-router.post('/articles/delete', (req, res, next) => {
-  var ids = req.body.id;
-  ids = ids.split(',');
-  __log.debug('here');
-  __articles.delete(ids)
-    .then(() => {
-      res.json({ code: 0, msg: '删除成功' });
-    }).catch(() => {
-      res.json({ code: 1, msg: '删除失败' });
-    })
+router.post('/articles/delete', async (ctx, next) => {
+  var request = ctx.request.body
+  var ids = request.id
+  ids = ids.split(',')
+  __log.debug('here')
+  try {
+    await __articles.delete(ids)
+    ctx.body = { code: 0, msg: '删除成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '删除失败' }
+  }
 })
 
-router.get('/articles/get', (req, res, next) => {
-  if (req.query.id != undefined) {
-    const id = req.query.id;
-    __articles.getsingle(
-      {
-        id: id,
-        queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
-      }
-    ).then((r) => {
-      res.json({ code: 0, msg: '请求成功', data: r });
-    }).then(() => {
-      res.json({ code: 1, msg: '请求失败' });
-    })
+router.get('/articles/get', async (ctx, next) => {
+  if (ctx.query.id != undefined) {
+    try {
+      const id = ctx.query.id;
+      var res = await __articles.getsingle({
+                  id: id,
+                  queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
+                })
+      ctx.body = { code: 0, msg: '请求成功', data: res}
+    } catch (err) {
+      ctx.body = { code: 1, msg: '请求失败' }
+    }
   } else {
-    const start = strToNum(req.query.start);
-    const state = emptyString(req.query.state);
-    const category = strToNum(emptyString(req.query.category));
-    const label = emptyString(req.query.label);
+    const start = strToNum(ctx.query.start);
+    const state = emptyString(ctx.query.state);
+    const category = strToNum(emptyString(ctx.query.category));
+    const label = emptyString(ctx.query.label);
     var where = {};
     if (state) {
       where.state = state;
@@ -80,336 +82,333 @@ router.get('/articles/get', (req, res, next) => {
     if (label) {
       where.label = label;
     }
-    __articles.getByCond({ where: where, start: start, client: false, queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview'] }
-    ).then((r) => {
-      res.json({ code: 0, msg: '获取成功', data: r });
-    }).catch(() => {
-      res.json({ code: 1, msg: '获取失败' });
-    })
+    try {
+      var res = await __articles.getByCond({
+                  where: where,
+                  start: start,
+                  client: false,
+                  queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
+                })
+      ctx.body = { code: 0, msg: '获取成功', data: res}
+    } catch (err) {
+      ctx.body = { code: 1, msg: '获取失败' }
+    }
   }
-});
+})
 
-router.get('/articles/move', (req, res, next) => {
-  var ids = req.query.id;
+router.get('/articles/move', async (ctx, next) => {
+  var ids = ctx.query.id;
   __log.debug(ids);
   ids = ids.split(',');
-  var gid = req.query.gid;
-  __articles.move(
-    ids, gid
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '更新失败' });
-  })
+  var gid = ctx.query.gid;
+  try {
+    await __articles.move(ids, gid)
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '更新失败' }
+  }
 })
 
-router.get('/articles/order', (req, res, next) => {
-  var id = req.query.id;
-  var ord = req.query.order;
-  __articles.updateOrder(
-    {
-      id: id,
-      ord: ord
-    }
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '更新失败' });
-  })
+router.get('/articles/order', async (ctx, next) => {
+  var id = ctx.query.id;
+  var ord = ctx.query.order;
+  try {
+    await __articles.updateOrder({
+            id: id,
+            ord: ord
+          })
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '更新失败' }
+  }
 })
 
-router.get('/articles/state', (req, res, next) => {
-  var ids = req.query.id;
+router.get('/articles/state', async (ctx, next) => {
+  var ids = ctx.query.id;
   ids = ids.split(',');
-  const state = req.query.state;
-  __articles.updateState(
-    ids, state
-  ).then((r) => {
-    res.json({ code: 0, msg: '更新成功', data: r });
-  }).catch(() => {
-    res.json({ code: 1, msg: '更新失败' });
-  })
-});
-
-router.post('/categories/add', (req, res, next) => {
-  var name = req.body.name;
-  var parent = req.body.parent;
-  parent = strToNum(parent);
-  var descp = req.body.descp;
-  var addtime = Math.floor(new Date().getTime() / 1000);
-  __categories.add({
-    name: name,
-    parent: parent,
-    descp: descp,
-    addtime: addtime
+  const state = ctx.query.state;
+  try {
+    var res = await __articles.updateState(ids, state)
+    ctx.body = { code: 0, msg: '更新成功', data: r }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '更新失败' }
   }
-  ).then(() => {
-    res.json({ code: 0, msg: '添加成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '添加失败' });
-  })
 })
 
-router.post('/categories/delete', (req, res, next) => {
-  var id = req.body.id;
+router.post('/categories/add', async (ctx, next) => {
+  var request = ctx.request.body
+  var name = request.name
+  var parent = request.parent
+  parent = strToNum(parent)
+  var descp = request.descp
+  var addtime = Math.floor(new Date().getTime() / 1000)
+  try {
+    await __categories.add({
+            name: name,
+            parent: parent,
+            descp: descp,
+            addtime: addtime
+          })
+    ctx.body = { code: 0, msg: '添加成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '添加失败' }
+  }
+})
+
+router.post('/categories/delete', async (ctx, next) => {
+  var request = ctx.request.body
+  var id = request.id
   if (id < 1) {
-    res.json({ code: 1, msg: '更新失败' });
-    return;
+    return ctx.body = { code: 1, msg: '更新失败' }
   }
-  __categories.delete(
-    id
-  ).then(() => {
-    res.json({ code: 0, msg: '删除成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '删除失败' });
-  })
+  try {
+    await __categories.delete(id)
+    ctx.body = { code: 0, msg: '删除成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '删除失败' }
+  }
 })
 
-router.post('/categories/modify', (req, res, next) => {
-  var id = strToNum(req.body.id);
-  var data = {};
-  var name = req.body.name;
-  if (req.body.name) {
-    data.name = req.body.name;
+router.post('/categories/modify', async (ctx, next) => {
+  var request = ctx.request.body
+  var id = strToNum(request.id)
+  var data = {}
+  var name = request.name
+  if (request.name) {
+    data.name = request.name;
   }
   // 错误检查
-  if (req.body.parent) {
-    data.parent = req.body.parent;
+  if (request.parent) {
+    data.parent = request.parent;
   }
-  if (req.body.descp) {
-    data.descp = req.body.descp;
+  if (request.descp) {
+    data.descp = request.descp;
   }
-  if (req.body.order) {
-    data.mainorder = req.body.order;
+  if (request.order) {
+    data.mainorder = request.order;
   }
-  __categories.update(
-    {
-      id: id,
-      data: data
-    }
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '更新失败' });
-  })
+  try {
+    await __categories.update({
+            id: id,
+            data: data
+          })
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '更新失败' }
+  }
 })
 
-router.get('/categories/get', (req, res, next) => {
-  __categories.get().then((r) => {
-    res.json({ code: 0, msg: '获取成功', data: r });
-  }).catch(() => {
-    res.json({ code: 0, msg: '获取成功', data: [] });
-  })
-});
-
-router.get('/categories/preface', (req, res, next) => {
-  var category = req.query.category;
-  var preface = req.query.preface;
-  var isSet = req.query.isSet === 'true';
-  __log.debug(req.query);
-  __categories.setPreface(
-    {
-      id: category,
-      preface: preface,
-      isSet: isSet
-    }
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '更新失败' })
-  })
+router.get('/categories/get', async (ctx, next) => {
+  try {
+    var res = await __categories.get()
+    ctx.body = { code: 0, msg: '获取成功', data: res}
+  } catch (err) {
+    ctx.body = { code: 0, msg: '获取成功', data: [] }
+  }
 })
 
-router.get('/categories/refact/get', (req, res, next) => {
-  var type = req.query.type;
-  var id = req.query.id;
+router.get('/categories/preface', async (ctx, next) => {
+  var category = ctx.query.category
+  var preface = ctx.query.preface
+  var isSet = ctx.query.isSet === 'true'
+  __log.debug(ctx.query)
+  try {
+    await __categories.setPreface({
+            id: category,
+            preface: preface,
+            isSet: isSet
+          })
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '更新失败' }
+  }
+})
+
+router.get('/categories/refact/get', async (ctx, next) => {
+  var type = ctx.query.type;
+  var id = ctx.query.id;
   if (type == 'dir') {
-    __categories.getById(
-      {
-        id: id
-      }
-    ).then((cat) => {
-      getCategoryRefactItemDetail(res, cat.preface, type);
-    }).catch(() => {
-      res.json({ code: 1, msg: '获取失败' });
-    })
+    try {
+      var cat = await __categories.getById({
+              id: id
+            })
+      await getCategoryRefactItemDetail(ctx, cat.preface, type);
+    } catch (err) {
+      ctx.body = { code: 1, msg: '获取失败' }
+    }
   } else {
-    getCategoryRefactItemDetail(res, id, type);
+    await getCategoryRefactItemDetail(ctx, id, type);
   }
 })
 
-router.get('/categories/tree', (req, res, next) => {
-  var id = req.query.id;
-  __categories.getTree(
-    id
-  ).then((tree) => {
-    __log.debug(JSON.stringify(tree));
-    res.json({ code: 0, msg: '获取成功', data: tree });
-  }).catch(() => {
-    res.json({ code: 0, msg: '获取失败', data: [] });
-  })
+router.get('/categories/tree', async (ctx, next) => {
+  var id = ctx.query.id;
+  try {
+    var tree = await __categories.getTree(id)
+    __log.debug(JSON.stringify(tree))
+    ctx.body = { code: 0, msg: '获取成功', data: tree }
+  } catch (err) {
+    ctx.body = { code: 0, msg: '获取失败', data: [] }
+  }
 })
 
-router.get('/labels/get', (req, res, next) => {
-  var queryData = {};
-  var start = req.query.start ? req.query.start : 0;
+router.get('/labels/get', async (ctx, next) => {
+  var queryData = {}
+  var start = ctx.query.start ? ctx.query.start : 0;
   queryData.start = start;
-  if (req.query.orderby) {
-    var lb = req.query.orderby;
-    var asc = req.query.asc ? req.query.asc : 'asc';
+  if (ctx.query.orderby) {
+    var lb = ctx.query.orderby;
+    var asc = ctx.query.asc ? ctx.query.asc : 'asc';
     queryData['orderby'] = {
       lb: lb,
       asc: asc
     }
   }
-  __labels.get(queryData).then((r) => {
-    res.json({ code: 0, msg: '获取成功', data: r });
-  }).catch(() => {
-    res.json({ code: 1, msg: '获取失败' });
-  })
-});
+  try {
+    var res = await __labels.get(queryData)
+    ctx.body = { code: 0, msg: '获取成功', data: res }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '获取失败' }
+  }
+})
 
-router.get('/photos/get', (req, res, next) => {
+router.get('/photos/get', async (ctx, next) => {
   var where = {};
-  if (req.query.id != undefined) {
-    where.id = strToNum(req.query.id);
+  if (ctx.query.id != undefined) {
+    where.id = strToNum(ctx.query.id);
   } else {
-    if (req.query.gid != -1) {
-      where.photogroup = strToNum(req.query.gid);
+    if (ctx.query.gid != -1) {
+      where.photogroup = strToNum(ctx.query.gid);
     }
   }
-  __photos.get(
-    {
-      where: where
-    }
-  ).then((r) => {
-    res.json({ code: 0, msg: '请求成功', data: r });
-  }).catch(() => {
-    res.json({ code: 1, msg: '请求失败' });
-  })
-});
+  try {
+    var res = await __photos.get({
+            where: where
+          })
+    ctx.body = { code: 0, msg: '请求成功', data: r }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '请求失败' }
+  }
+})
 
-router.post('/photos/add', (req, res, next) => {
-  var form = new multiparty.Form();
-  form.parse(req, (err, fields, files) => {
-    const gid = fields.gid < 1 ? 1 : fields.gid;
-    const tempfile = files.file[0].path;
-    var dt = new Date();
-    const addtime = Math.floor((dt.getTime() / 1000));
-    const newname = dt.getFullYear() + dt.getTime() + path.extname(tempfile);
+// 😢 
+router.post('/photos/add', uploader, async (ctx, next) => {
+  var request = ctx.request.body
+  const gid = request.gid < 1 ? 1 : request.gid
+  const tempfile = ctx.request.files[0]
+  var dt = new Date();
+  const addtime = Math.floor((dt.getTime() / 1000));
+  const newname = dt.getFullYear() + dt.getTime() + path.extname(tempfile);
+  try {
+    await __photos.add({
+            photogroup: gid,
+            addtime: addtime,
+            name: newname,
+            file: tempfile
+          })
+    ctx.body = { code: 0, msg: '添加成功', data: `/images/blog/${newname}` }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '添加失败' }
+  }
+})
 
-    __photos.add(
-      {
-        photogroup: gid, addtime: addtime, name: newname, file: tempfile
-      }
-    ).then(() => {
-      res.json({ code: 0, msg: '添加成功', data: `/images/blog/${newname}` });
-    }).catch(() => {
-      res.json({ code: 1, msg: '添加失败' });
-    })
-  });
-});
-
-router.get('/photos/delete', (req, res, next) => {
-  var photos = req.query.photos;
-  photos = photos.split(',');
-  photos = photos.map((i) => (strToNum(i)));
-  __photos.delete(
-    photos
-  ).then(() => {
-    res.json({ code: 0, msg: '操作成功' });
-  }).catch(() => {
+router.get('/photos/delete', async (ctx, next) => {
+  var photos = ctx.query.photos
+  photos = photos.split(',')
+  photos = photos.map((i) => (strToNum(i)))
+  try {
+    await __photos.delete(photos)
+    ctx.body = { code: 0, msg: '操作成功' }
+  } catch (err) {
     // 成功或失败都更新
-    res.json({ code: 0, msg: '操作失败' });
-  })
-});
+    ctx.body = { code: 0, msg: '操作失败' }
+  }
+})
 
-router.get('/photos/move', (req, res, next) => {
-  var photos = req.query.photos;
-  photos = photos.split(',');
-  photos = photos.map((i) => (strToNum(i)));
-  var gid = strToNum(req.query.gid);
+router.get('/photos/move', async (ctx, next) => {
+  var photos = ctx.query.photos
+  photos = photos.split(',')
+  photos = photos.map((i) => (strToNum(i)))
+  var gid = strToNum(ctx.query.gid)
   gid = gid < 1 ? 1 : gid;
-  __photos.move(
-    {
-      ids: photos, photogroup: gid
-    }
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
+  try {
+    await __photos.move({
+            ids: photos,
+            photogroup: gid
+          })
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
     // 成功与否都刷新
-    res.json({ code: 0, msg: '更新失败' });
-  })
-});
-
-router.get('/photos/rename', (req, res, next) => {
-  var id = strToNum(req.query.id);
-  var title = req.query.title;
-  __photos.rename(
-    {
-      id: id, title: title
-    }
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '更新失败' });
-  })
-});
-
-router.get('/photogroup/get', (req, res, next) => {
-  __photogroups.get().then((r) => {
-    res.json({ code: 0, msg: '获取成功', data: r });
-  }).catch((r) => {
-    // 成功与否都刷新
-    res.json({ code: 0, msg: '获取失败', data: r });
-  })
-});
-
-router.get('/photogroup/modify', (req, res, next) => {
-  const groupname = req.query.groupname;
-  const addtime = Math.floor((new Date().getTime()) / 1000);
-  __photogroups.add(
-    {
-      name: groupname, addtime: addtime
-    }
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
-    // 成功与否都刷新
-    res.json({ code: 0, msg: '更新失败' })
-  })
-});
-
-router.get('/photogroup/remove', (req, res, next) => {
-  var gid = req.query.gid;
-  if (gid < 2) {
-    res.json({ code: 0, msg: '删除成功' });
-    return;
+    ctx.body = { code: 0, msg: '更新失败' }
   }
-  __photogroups.delete(gid).then(() => {
-    res.json({ code: 0, msg: '操作成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '操作失败' });
-  })
-});
+})
 
-router.get('/photogroup/rename', (req, res, next) => {
-  var gid = req.query.gid;
-  if (gid < 2) {
-    res.json({ code: 1, msg: '更新失败' });
-    return;
+router.get('/photos/rename', async (ctx, next) => {
+  var id = strToNum(ctx.query.id)
+  var title = ctx.query.title
+  try {
+    await __photos.rename({
+            id: id, title: title
+          })
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '更新失败' }
   }
-  var name = req.query.name;
-  __photogroups.rename(
-    {
-      id: gid,
-      name: name
-    }
-  ).then(() => {
-    res.json({ code: 0, msg: '更新成功' });
-  }).catch(() => {
-    res.json({ code: 1, msg: '更新失败' });
-  })
+})
+
+router.get('/photogroup/get', async (ctx, next) => {
+  try {
+    var res = await __photogroups.get()
+    ctx.body = { code: 0, msg: '获取成功', data: res }
+  } catch (err) {
+    // 成功与否都刷新
+    ctx.body = { code: 0, msg: '获取失败', data: err }
+  }
+})
+
+router.get('/photogroup/modify', async (ctx, next) => {
+  const groupname = ctx.query.groupname
+  const addtime = Math.floor((new Date().getTime()) / 1000)
+  try {
+    await __photogroups.add({
+            name: groupname,
+            addtime: addtime
+          })
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
+    // 成功与否都刷新
+    ctx.body = { code: 0, msg: '更新失败' }
+  }
+})
+
+router.get('/photogroup/remove', async (ctx, next) => {
+  var gid = ctx.query.gid;
+  if (gid < 2) {
+    return ctx.body = { code: 0, msg: '删除成功' }
+  }
+  try {
+    await __photogroups.delete(gid)
+    ctx.body = { code: 0, msg: '操作成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '操作失败' }
+  }
+})
+
+router.get('/photogroup/rename', async (ctx, next) => {
+  var gid = ctx.query.gid;
+  if (gid < 2) {
+    return ctx.body = { code: 1, msg: '更新失败' }
+  }
+  var name = ctx.query.name;
+  try {
+    await __photogroups.rename({
+            id: gid,
+            name: name
+          })
+    ctx.body = { code: 0, msg: '更新成功' }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '更新失败' }
+  }
 })
 
 module.exports = router;

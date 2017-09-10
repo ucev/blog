@@ -25,35 +25,36 @@ function getCookieExpire() {
   return d.getTime();
 }
 
-function userControl(req, res, next) {
-  var ip = req.ip;
-  var usercookie = req.cookies.usercookie;
+async function userControl(ctx, next) {
+  var ip = ctx.ip;
+  var usercookie = ctx.cookies.get('usercookie');
   if (!usercookie) {
     var key = ip + ':' + new Date().getTime() + Math.floor(Math.random() * 1000);
     usercookie = md5(key);
-    res.cookie('usercookie', usercookie, {path: '/', expire: getCookieExpire});
+    ctx.cookies.set('usercookie', usercookie, {path: '/', expire: getCookieExpire()});
   }
   var time = Math.floor(new Date().getTime() / 1000);
-  __fluxrecord.visit({
-      usercookie: usercookie,
-      ip: ip,
-      time: time
-    }
-  )
-  next();
+  try {
+    __fluxrecord.visit({
+            usercookie: usercookie,
+            ip: ip,
+            time: time
+          })
+  } catch (err) {}
+  return next();
 }
 
-function adminControl(req, res, next) {
+async function adminControl(ctx, next) {
   var this_session = undefined;
   if (configs.website_info.debug) {
     this_session = configs.website_info.debug_session;
   } else {
     this_session = configs.qqlogin.allowed_openid;
   }
-  if (req.session.openid == this_session) {
+  if (ctx.session.openid == this_session) {
     next();
   } else {
-    res.redirect('/login');
+    ctx.redirect('/login');
   }
 }
 

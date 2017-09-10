@@ -1,6 +1,29 @@
-var express = require('express');
-var path = require('path');
-var process = require('process');
+const Koa = require('koa')
+const path = require('path')
+const process = require('process')
+
+const koaStatic = require('koa-static')
+const Router = require('koa-router')
+const views = require('koa-views')
+const bodyparser = require('koa-bodyparser')
+const onerror = require('koa-onerror')
+const json = require('koa-json')
+const logger = require('koa-logger')
+const session = require('koa-session') 
+
+const configs = require('./config/base.config')
+
+const index = require('./routes/index')
+const articles = require('./routes/articles')
+const admin = require('./routes/admin')
+const mobiles = require('./routes/mobiles')
+const users = require('./routes/users')
+const login = require('./routes/login')
+const es = require('./routes/eventsource')
+
+var enterControl = require('./routes/entercontrol')
+
+/*
 var favicon = require('serve-favicon');
 //var logger = require('morgan');
 var logger = require('./utils/log4js');
@@ -8,21 +31,11 @@ var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 
-var admin = require('./routes/admin');
-var articles = require('./routes/articles');
-var index = require('./routes/index');
-var mobiles = require('./routes/mobiles');
-var users = require('./routes/users');
-var login = require('./routes/login');
-var es = require('./routes/eventsource');
-
-var enterControl = require('./routes/entercontrol');
-
-var configs = require('./config/base.config');
 var mail = require('./utils/mail');
 const __log = require('./utils/log');
 
 const DEBUG_MODE = configs.website_info.debug;
+*/
 
 /**
  * 用到的扩展😊 
@@ -36,49 +49,63 @@ Promise.prototype.finally = function (callback) {
 };
 
 var app, devServer;
+/*
 if (process.env.NODE_ENV == 'DEV') {
   devServer = require('./server/server.dev');
   app = devServer.app;
 } else {
   devServer = app = express();
-}
+}*/
+devServer = app = new Koa()
 
+onerror(app)
+
+app.use(bodyparser({
+  enableTypes:['json', 'form', 'text']
+}))
+app.use(json())
+app.use(logger())
+app.use(session(configs.session, app))
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
+app.use(views(path.join(__dirname, 'views'), {
+  extension: 'pug'
+}))
 
 // uncomment after placing your favicon in /public
-app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
+//app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
 //app.use(logger('dev'));
+/*
 app.use(logger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(cookieSession(configs.session));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieSession(configs.session));*/
 
-// nodejs modules
-app.use(express.static(path.join(__dirname, 'node_modules/chart.js/dist')));
-app.use(express.static(path.join(__dirname, 'node_modules/prismjs')))
-app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
-app.use(express.static(path.join(__dirname, 'node_modules/markdown-it/dist')));
-app.use(express.static(path.join(__dirname, 'node_modules/markdown-it-classy/dist')));
-app.use(express.static(path.join(__dirname, 'node_modules/react/dist')));
-app.use(express.static(path.join(__dirname, 'node_modules/react-dom/dist')));
-//app.use(express.static(path.join(__dirname, 'node_modules/simplemde')));
-app.use(express.static(path.join(__dirname, 'node_modules/template_js')));
-app.use(express.static(path.join(__dirname, 'node_modules/jquery/dist')));
+// static files
+app.use(koaStatic(path.join(__dirname, 'public')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/chart.js/dist')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/prismjs')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it/dist')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it-classy/dist')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/react/dist')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/react-dom/dist')));
+//app.use(koaStatic(path.join(__dirname, 'node_modules/simplemde')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
 
-app.use('/admin', enterControl.adminControl);
-app.use('/admin', admin);
-app.use('/articles', articles);
-app.use('/mobiles', mobiles);
-app.use('/users', users);
-app.use('/login', login);
-app.use('/es', es);
-app.use('/', index);
 
+const router = new Router()
+router.use('/articles', articles.routes(), articles.allowedMethods())
+router.use('/admin', admin.routes(), admin.allowedMethods())
+router.use('/mobiles', mobiles.routes(), mobiles.allowedMethods())
+router.use('/users', users.routes(), users.allowedMethods())
+router.use('/login', login.routes(), login.allowedMethods())
+router.use('/es', es.routes(), es.allowedMethods())
+app.use(router.routes())
+app.use(index.routes(), index.allowedMethods())
+
+/*
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -104,11 +131,13 @@ app.use(function(err, req, res, next) {
   res.status(err.status);
   res.render('error', {debug: DEBUG_MODE, err: err});
 });
-
+*/
+/*
 if (process.env.NODE_ENV == 'DEV') {
   devServer.listen(configs.website_info.port);
 } else {
   app.listen(configs.website_info.port);
-}
+}*/
+///app.listen(configs.website_info.port)
 
 module.exports = app;

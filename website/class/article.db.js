@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('promise-mysql');
 const configs = require('../config/base.config.js');
 const ReadWriteLock = require('rwlock');
 const __log = require('../utils/log');
@@ -79,27 +79,25 @@ class Articles {
     })
   }
 
-  getsingle({ id = 0, queryfields } = {}) {
+  async getsingle({ id = 0, queryfields } = {}) {
     queryfields = queryfields ? queryfields : ['*'];
-    var conn = mysql.createConnection(this.dbconfig);
-    var query = new Promise((resolve, reject) => {
-      conn.query(`select ?? from ${this.dbname} where id = ?`, [queryfields, id], (err, results, fields) => {
-        if (err) { reject() };
-        resolve(results[0]);
-      })
-    });
-    return query.finally(() => {
-      conn.end((err) => { });
-    });
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      var article = conn.query(`select ?? from ${this.dbname} where id = ?`, [queryfields, id])[0]
+      conn.end()
+      return Promise.resolve(article)
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
+    }
   }
 
-  getByCond({ where = {}, start = 0, client = true, queryfields = ['*'] } = {}) {
+  async getByCond({ where = {}, start = 0, client = true, queryfields = ['*'] } = {}) {
     var returnData = {
       total: 0,
       current: start,
       data: []
     };
-    var conn = mysql.createConnection(this.dbconfig);
     var whereArgs = [];
     var whereSql = '';
     // 对模糊搜索的支持
@@ -120,315 +118,191 @@ class Articles {
     if (client) {
       whereSql += (` AND state = 'on' `);
     }
-    var queryCount = new Promise((resolve, reject) => {
-      conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`,
-        [...whereArgs], (err, results, fields) => {
-          if (err) {
-            reject();
-          }
-          resolve(results[0].cnt);
-        }
-      )
-    })
-    queryCount.then((total) => {
-      returnData.total = Math.ceil(total / this.step);
-    });
-    var queryData = new Promise((resolve, reject) => {
-      conn.query(`select ?? from ${this.dbname} where 1 ${whereSql} order by id desc limit ?, ?`,
-        [queryfields, ...whereArgs, start * this.step, this.step], (err, results, fields) => {
-          if (err) reject();
-          resolve(results);
-        }
-      )
-    })
-    queryData.then((data) => {
+    var conn = await mysql.createConnection(this.dbconfig)
+    try {
+      var totalcnt = await conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`, [...whereArgs])[0].cnt
+      returnData.total = Math.ceil(totalcnt / this.step)
+      var data = await conn.query(`select ?? from ${this.dbname} where 1 ${whereSql} order by id desc limit ?, ?`, [queryfields, ...whereArgs, start * this.step, this.step])
       returnData.data = data;
-    })
-    return Promise.all([queryCount, queryData]).then(
-      () => {
-        return Promise.resolve(returnData);
-      }
-    ).catch((err) => {
-    }).finally(() => {
-      conn.end((err) => { })
-    })
-  }
-
-  getall() {
-    var conn = mysql.createConnection(this.dbconfig);
-    var p = new Promise((resolve, reject) => {
-      conn.query(`select title, content from ${this.dbname} order by id asc`, (err, results, fields) => {
-        if (err) reject();
-        resolve(results);
-      })
-    })
-    return p.then((arts) => {
-      return Promise.resolve(arts);
-    }).catch((err) => {
-      __log.debug(err);
-    }).finally(() => {
-      conn.end((err) => { });
-    })
-  }
-
-  move(ids, gid) {
-    var conn = mysql.createConnection(this.dbconfig);
-    var update = new Promise((resolve, reject) => {
-      conn.beginTransaction((err) => {
-        if (err) { reject() };
-        conn.query(`update ${this.dbname} set category = ? where id in ?`,
-          [gid, [ids]], (err, results, fields) => {
-            if (err) { reject() };
-            resolve();
-          }
-        )
-      })
+      conn.end()
+      return Promise.resolve(returnData)
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
     }
-    )
-    return update.then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(RECOUNT_ARTICLE_GROUP_SQL, (err, results, fields) => {
-          if (err) { reject() };
-          resolve();
-        })
-      })
-    }).then(() => {
-      conn.commit((err) => {
-        if (err) throw err;
-        conn.end((err) => { });
-      });
-    }).catch((err) => {
-      conn.rollback((err) => {
-        conn.end((err) => { });
-      })
-    }).finally(() => {
-    })
   }
 
-  updateState(ids, state) {
-    var conn = mysql.createConnection(this.dbconfig);
-    var update = new Promise((resolve, reject) => {
-      conn.query(`update ${this.dbname} set state = ? where id in ?`,
-        [state, [ids]],
-        (err, results, fields) => {
-          if (err) reject();
-          resolve();
-        }
-      )
-    });
-   return update.finally(() => {
-      conn.end((err) => {
-
-      })
-    })
+  async getall() {
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      var arts = await conn.query(`select title, content from ${this.dbname} order by id asc`)
+      conn.end()
+      return Promise.resolve(arts)
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
+    }
   }
 
-  updateOrder({ id, ord }) {
+  async move(ids, gid) {
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.beginTransaction()
+      await conn.query(`update ${this.dbname} set category = ? where id in ?`, [gid, [ids]])
+      await conn.query(RECOUNT_ARTICLE_GROUP_SQL)
+      await conn.commit()
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      await conn.rollback()
+      conn.end()
+      return Promise.reject()
+    }
+  }
+
+  async updateState(ids, state) {
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.query(`update ${this.dbname} set state = ? where id in ?`, [state, [ids]])
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
+    }
+  }
+
+  async updateOrder({ id, ord }) {
     if (Number(ord) < 0) {
       return Promise.reject();
     }
-    var conn = mysql.createConnection(this.dbconfig);
-    var order = new Promise((resolve, reject) => {
-      conn.query(`update ${this.dbname} set suborder = ? where id = ?`, [ord, id], (err, results, fields) => {
-        if (err) { reject(); }
-        resolve();
-      })
-    })
-    return order.finally(() => {
-      conn.end(() => {});
-    })
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.query(`update ${this.dbname} set suborder = ? where id = ?`, [ord, id])
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      conn.end()
+      return Promise.resolve()
+    }
   }
 
-  view(id) {
-    var conn = mysql.createConnection(this.dbconfig);
-    var article;
-    var view = new Promise((resolve, reject) => {
-      conn.query(`select * from ${this.dbname} where id = ?`, [id],
-        (err, results, fields) => {
-          if (err) { reject(); }
-          resolve(results[0]);
-        }
-      )
-    })
-    return view.then((data) => {
-      article = data;
+  async view(id) {
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      var article = conn.query(`select * from ${this.dbname} where id = ?`, [id])[0]
       var labels = article.label;
       var uplabel = this.__updateLabels(conn, labels, configs.label_hotmark_rule.view);
       var uppv = this.__increasePageView(conn, id);
-      return Promise.all([uplabel, uppv]);
+      await Promise.all([uplabel, uppv]);
+      conn.end()
+      return Promise.resolve(article)
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
     }
-    ).then(() => {
-      return Promise.resolve(article);
-    }).catch((err) => {
-      // 暂时没有用
-    }).finally(() => {
-      conn.end((err) => { });
-    })
   }
 
-  __add(datas) {
-    var conn = mysql.createConnection(this.dbconfig);
-    var add = new Promise((resolve, reject) => {
-      conn.beginTransaction((err) => {
-        if (err) { reject(); }
-        resolve();
-      })
-    })
-    return add.then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`insert into ${this.dbname} set ?`, [datas],
-          (err, results, fields) => {
-            if (err) { reject() };
-            resolve();
-          }
-        )
-      })
-    }).then(() => {
-      return this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, true, true);
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.commit((err) => {
-          if (err) { reject(); }
-          conn.end((err) => { });
-          resolve();
-        })
-      })
-    }).catch((err) => {
-      __log.debug(err);
-      conn.rollback((err) => {
-        conn.end((err) => { });
-      })
-      __log.debug('reject');
-    })
+  async __add(datas) {
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.beginTransaction()
+      await conn.query(`insert into ${this.dbname} set ?`, [datas])
+      await this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, true, true);
+      await conn.commit()
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      await conn.rollback()
+      conn.end()
+      return Promise.reject()
+    }
   }
 
-  __modify(id, datas) {
+  async __modify(id, datas) {
     var oldLabels = [];
-    var conn = mysql.createConnection(this.dbconfig);
-    var modify = new Promise((resolve, reject) => {
-      conn.beginTransaction((err) => {
-        if (err) reject();
-        resolve();
-      })
-    })
-    return modify.then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`select label from ${this.dbname} where id = ?`, [id],
-          (err, results, fields) => {
-            if (err) reject();
-            oldLabels = results[0].label.split(',');
-            resolve();
-          }
-        )
-      })
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`update ${this.dbname} set ? where id = ?`, [datas, id],
-          (err, results, fields) => {
-            if (err) { reject() };
-            resolve();
-          }
-        )
-      })
-    }).then(() => {
-      return this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, false, true, oldLabels);
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.commit((err) => {
-          if (err) { reject(); }
-          conn.end((err) => { });
-          resolve();
-        })
-      })
-    }).catch((err) => {
-      conn.rollback((err) => {
-        conn.end((err) => { })
-      })
-    })
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.beginTransaction()
+      var results = conn.query(`select label from ${this.dbname} where id = ?`, [id])
+      oldLabels = results[0].label.split(',');
+      await conn.query(`update ${this.dbname} set ? where id = ?`, [datas, id])
+      await this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, false, true, oldLabels);
+      await conn.commit()
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      await conn.rollback()
+      conn.end()
+      return Promise.reject()
+    }
   }
 
-  __updateLabelsOnDeleteArticle(conn, ids) {
-    var p1 = new Promise((resolve, reject) => {
-      conn.query(`select label from ${this.dbname} where id in ?`, [[ids]], (err, results, fields) => {
-        if (err) { reject() };
-        var labelObj = {};
-        var labels = [].concat(...(results.map((row) => (row.label.split(',')))));
-        labels.forEach((label) => {
-          if (label in labelObj) {
-            labelObj[label] += 1;
-          } else {
-            labelObj[label] = 1;
-          }
-        })
-        resolve(labelObj);
-      })
-    })
-    return p1.then((labels) => {
-      var ps = [];
-      for (var label in labels) {
-        var p = new Promise((resolve, reject) => {
-          conn.query(`update labels set articles = if (articles - ? > 0, articles - ?, 0) where name = ?`, [labels[label], labels[label], label], (err, results, fields) => {
-            if (err) { throw err; reject() };
-            resolve();
-          })
-        })
-      }
-      return Promise.all(ps);
-    }).catch((err) => {
-      __log.debug(err);
-    })
-  }
-
-  __insertNewLabels(conn, labels, sval, /*是否报告错误*/isRej) {
-    return new Promise((resolve, reject) => {
-      labels = labels.filter((label) => {
-        return label.trim() != '';
-      })
-      var len = labels.length;
-      if (len == 0) {
-        resolve();
-      }
-      var sql = 'insert into labels(name, hotmark, addtime) values ';
-      var addtime = Math.floor(new Date().getTime() / 1000);
-      var tip = '(?, ' + conn.escape(sval) + ', ' + conn.escape(addtime) + ')';
-      for (var i = 0; i < len - 1; i++) {
-        sql += tip + ',';
-      }
-      sql += tip;
-      conn.query(sql, labels, (err, results, fields) => {
-        if (err && isRej) { reject(); }
-        resolve();
-      })
-    })
-  }
-
-  __updateExistingLabels(conn, labels, sval, /*是否报告错误*/isRej) {
-    return new Promise((resolve, reject) => {
-      if (labels.length == 0) {
-        resolve();
-      }
-      conn.query('update labels set hotmark = hotmark + ? where name in ?',
-        [sval, [labels]], (err, results, fields) => {
-          if (err && isRej) { reject(); }
-          resolve();
+  async __updateLabelsOnDeleteArticle(conn, ids) {
+    try {
+      var results = await conn.query(`select label from ${this.dbname} where id in ?`, [[ids]])
+      var labelObj = {};
+      var labels = [].concat(...(results.map((row) => (row.label.split(',')))));
+      labels.forEach((label) => {
+        if (label in labelObj) {
+          labelObj[label] += 1;
+        } else {
+          labelObj[label] = 1;
         }
-      )
-    })
+      })
+      labels = Object.getOwnPropertyNames(labelObj)
+      var ps = labels.map((label) => {
+        var data = labelObj[label]
+        return conn.query(`update labels set articles = if (articles - ? > 0, articles - ?, 0) where name = ?`, [data, data, label])
+      })
+      return Promise.all(ps);
+    } catch (err) {
+      return Promise.reject()
+    }
   }
 
-  __updateLabels(conn, labels, sval, /*是否更新已经存在的标签*/upOld = true, /*是否产生错误*/isRej = false, /*更新之前的label*/oldLabels = []) {
-    var p1 = new Promise((resolve, reject) => {
-      conn.query(`select name from labels`, (err, results, fields) => {
-        if (err && isRej) { reject() };
-        var _eLabels = results.map((label) => (label.name));
-        resolve(_eLabels);
-      })
+  async __insertNewLabels(conn, labels, sval, /*是否报告错误*/isRej) {
+    labels = labels.filter((label) => {
+      return label.trim() != '';
     })
-    return p1.then((_eLabels) => {
+    var len = labels.length;
+    if (len == 0) {
+      return Promise.resolve()
+    }
+    var sql = 'insert into labels(name, hotmark, addtime) values '
+    var addtime = Math.floor(new Date().getTime() / 1000)
+    var tip = '(?, ' + conn.escape(sval) + ', ' + conn.escape(addtime) + ')';
+    for (var i = 0; i < len - 1; i++) {
+      sql += tip + ',';
+    }
+    sql += tip;
+    try {
+      await conn.query(sql, labels)
+      return Promise.resolve()
+    } catch (err) {
+      return Promise.reject()
+    }
+  }
+
+  async __updateExistingLabels(conn, labels, sval, /*是否报告错误*/isRej) {
+    if (labels.length == 0) {
+      return Promise.resolve()
+    }
+    try {
+      await conn.query('update labels set hotmark = hotmark + ? where name in ?', [sval, [labels]])
+      return Promise.resolve()
+    } catch (err) {
+      return Promise.reject()
+    }
+  }
+
+  // 需要再详查
+  async __updateLabels(conn, labels, sval, /*是否更新已经存在的标签*/upOld = true, /*是否产生错误*/isRej = false, /*更新之前的label*/oldLabels = []) {
+    try {
+      var results = conn.query(`select name from labels`)
+      var _eLabels = results.map((label) => (label.name));
       if (labels == '' || labels == undefined) {
-        return new Promise((resolve, reject) => {
-          resolve();
-        })
+        return Promise.resolve()
       }
       if (typeof labels == 'string')
         labels = labels.split(',');
@@ -452,18 +326,13 @@ class Articles {
         promises.push(this.__updateExistingLabels(conn, labelsExistsOld, sval, isRej));
       }
       return Promise.all(promises);
-    })
+    } catch (error) {
+      return Promise.reject()
+    }
   }
 
   __increasePageView(conn, id) {
-    return new Promise((resolve, reject) => {
-      conn.query(`update ${this.dbname} set pageview = pageview + 1 where id = ?`, [id],
-        (err, results, fields) => {
-          // 😊
-          resolve();
-        }
-      )
-    })
+    return conn.query(`update ${this.dbname} set pageview = pageview + 1 where id = ?`, [id])
   }
 }
 

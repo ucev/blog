@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('promise-mysql');
 const configs = require('../config/base.config.js');
 
 const RECOUNT_PHOTO_GROUP_SQL = `
@@ -15,109 +15,69 @@ class PhotoGroups {
     this.dbconfig = configs.database_config;
   }
 
-  add(datas) {
+  async add(datas) {
     var name = datas.name;
     var addtime = datas.addtime;
-    var conn = mysql.createConnection(this.dbconfig);
-    var add = new Promise((resolve, reject) => {
-      conn.query(`insert into ${this.dbname} set ?`, {
-          name: name, addtime: addtime
-        }, (err, results, fields) => {
-          if (err) reject();
-          resolve();
-        }
-      )
-    })
-    return add.finally(() => {
-      conn.end((err) => {});
-    })
-  }
-
-  delete(gid) {
-    if (gid < 2) {
-      fail();
-      return;
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.query(`insert into ${this.dbname} set ?`, {
+            name: name, addtime: addtime
+          })
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
     }
-    var conn = mysql.createConnection(this.dbconfig);
-    var del = new Promise((resolve, reject) => {
-      conn.beginTransaction((err) => {
-        if (err) reject();
-        resolve();
-      })
-    })
-    return del.then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`update photos set photogroup = 1 where photogroup = ?`, [gid],
-          (err, results, fields) => {
-            if (err) reject();
-            resolve();
-          }
-        )
-      })
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`delete from ${this.dbname} where id = ?`, [gid],
-          (err, results, fields) => {
-            if (err) reject();
-            resolve();
-          }
-        )
-      })
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(RECOUNT_PHOTO_GROUP_SQL, (err, results, fields) => {
-          if (err) reject();
-          resolve();
-        })
-      })
-    }).then(() => {
-      conn.commit((err) => {
-        if (err) {throw err;}
-        conn.end((err) => {});
-      })
-    }).catch((err) => {
-      conn.rollback((err) => {
-        conn.end((err) => {});
-      })
-    })
   }
 
-  get() {
-    var conn = mysql.createConnection(this.dbconfig);
+  async delete(gid) {
+    if (gid < 2) {
+      return Promise.reject()
+    }
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.beginTransaction()
+      await conn.query(`update photos set photogroup = 1 where photogroup = ?`, [gid])
+      await conn.query(`delete from ${this.dbname} where id = ?`, [gid])
+      await conn.query(RECOUNT_PHOTO_GROUP_SQL)
+      await conn.commit()
+      await conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      await conn.rollback()
+      await conn.end()
+      return Promise.reject()
+    }
+  }
+
+  async get() {
+    var conn = await mysql.createConnection(this.dbconfig);
     var queryfields = ['id', 'name', 'count'];
     var allgroup = {'id': -1, name: '全部分组', count: 0};
-    var gt = new Promise((resolve, reject) => {
-      conn.query(`select ?? from ${this.dbname}`, [[queryfields]], (err, results, fields) => {
-        if (err) reject();
-        resolve(results);
-      })
-    })
-    return gt.then((data) => {
+    try {
+      var data = conn.query(`select ?? from ${this.dbname}`, [[queryfields]])
       var cnt = data.reduce((sum, i) => (sum += i.count), 0);
       allgroup.count = cnt;
+      conn.end()
       return Promise.resolve([allgroup, ...data]);
-    }).catch(() => {
+    } catch (err) {
       return Promise.reject([allgroup]);
-    }).finally(() => {
-      conn.end((err) => {});
-    })
+    }
   }
 
-  rename(datas) {
+  async rename(datas) {
     var id = datas.id;
     var name = datas.name;
-    var conn = mysql.createConnection(this.dbconfig);
-    var rename = new Promise((resolve, reject) => {
-      conn.query(`update ${this.dbname} set name = ? where id = ?`, [name, id],
-        (err, results, fields) => {
-          if (err) reject();
-          resolve();
-        }
-      )
-    })
-    return rename.finally(() => {
-      conn.end((err) => {});
-    })
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.query(`update ${this.dbname} set name = ? where id = ?`, [name, id])
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      conn.end()
+      return Promise.reject()
+    }
   }
 
 }

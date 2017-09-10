@@ -1,5 +1,4 @@
-const express = require('express');
-const router = express.Router();
+const router = new require('koa-router')()
 const __log = require('../utils/log');
 const fs = require('fs');
 const ReadWriteLock = require('rwlock');
@@ -7,7 +6,8 @@ const __lock = new ReadWriteLock();
 const path = require('path');
 const archiver = require('archiver');
 const moment = require('moment');
-const multiparty = require('multiparty');
+const busboy = require('koa-busboy')
+const uploader = busboy()
 
 const __root_dir = '../public/docs';
 
@@ -22,68 +22,63 @@ function dirExists(dirpath) {
           if (err) {
             reject();
           } else {
-            resolve();
+            resolve(true);
           }
         })
       } else {
-        resolve();
+        resolve(true);
       }
     })
   })
 }
 
-router.post('/outputArticle/download', (req, res, next) => {
-  var token = req.body.token;
-  var date = moment().format('YYYYMMDD');
-  var filepath = path.join(__dirname, __root_dir, date, token + '.zip');
-  res.download(filepath);
+router.post('/outputArticle/download', async (ctx, next) => {
+  var request = ctx.request.body
+  var token = request.token
+  var date = moment().format('YYYYMMDD')
+  var filepath = path.join(__dirname, __root_dir, date, token + '.zip')
+  return ctx.attachment(filepath)
 })
 
-router.get('/outputArticle', (req, res, next) => {
-  var token = req.query.token;
-  var openid = req.session.openid;
-  res.type('text/event-stream');
-  var date = moment().format('YYYYMMDD');
-  var targetDir = path.join(__dirname, __root_dir, date);
-  var pdir = dirExists(targetDir);
-  pdir.then(() => {
+router.get('/outputArticle', async (ctx, next) => {
+  try {
+    var token = ctx.query.token
+    var openid = ctx.session.openid
+    res.type = 'text/event-stream'
+    var date = moment().format('YYYYMMDD')
+    var targetDir = path.join(__dirname, __root_dir, date);
+    var pdir = await dirExists(targetDir)
     var targetZip = fs.createWriteStream(path.join(targetDir, token + '.zip'));
     var archive = archiver('zip', {
       zlib: { level: 9 }
     })
     targetZip.on('close', function () {
-      res.end('data:succ\n\n');
-      return;
+      return ctx.body = 'data:succ\n\n'
     })
     archive.pipe(targetZip);
-    __articles.getall().then((arts) => {
-      var lockKey = 'dump article';
-      var len = arts.length;
-      for (var i = 0; i < len; i++) {
-        (function (pos) {
-          var art = arts[pos];
-          //__lock.writeLock(lockKey, function(cb) {
-          archive.append(art.content, { name: art.title + '.md' });
-          //cb();
-          if (pos == len - 1) {
-            archive.finalize();
-          }
-          //});
-        })(i);
-      }
-    }).catch(
-      () => {
-        res.send('data:fail\n\n');
-      })
-  }).catch(() => {
-    res.send('data:fail\n\n');
-  })
+    var arts = await __articles.getall()
+    var lockKey = 'dump article';
+    var len = arts.length;
+    for (var i = 0; i < len; i++) {
+      (function (pos) {
+        var art = arts[pos];
+        //__lock.writeLock(lockKey, function(cb) {
+        archive.append(art.content, { name: art.title + '.md' });
+        //cb();
+        if (pos == len - 1) {
+          archive.finalize();
+        }
+        //});
+      })(i);
+    }
+  } catch (err) {
+    ctx.body = 'data:fail\n\n'
+  }
 });
 
-router.post('/importArticle', (req, res, next) => {
-  var form = new multiparty.Form();
-  form.parse(req, (err, fields, files) => {
-    files = files.files;
+router.post('/importArticle', uploader, async (ctx, next) => {
+  try {
+    var files = ctx.request.files
     var addtime = Math.floor(new Date().getTime() / 1000);
     var ps = files.map((f) => {
       return (function (f) {
@@ -100,15 +95,14 @@ router.post('/importArticle', (req, res, next) => {
           })
           rs.on('end', () => {
             __articles.add({
-              title: title,
-              content: content,
-              descp: '',
-              label: '',
-              addtime: addtime,
-              modtime: addtime,
-              add: true
-            }
-            ).then(() => {
+                    title: title,
+                    content: content,
+                    descp: '',
+                    label: '',
+                    addtime: addtime,
+                    modtime: addtime,
+                    add: true
+            }).then(() => {
               resolve({ 'tp': 'succ', 'title': fname });
             }).catch(() => {
               resolve({ 'tp': 'fail', 'title': fname });
@@ -117,28 +111,26 @@ router.post('/importArticle', (req, res, next) => {
         })
       })(f);
     })
-    var pall = Promise.all(ps);
-    pall.then((datas) => {
-      __log.debug(datas);
-      var succ = [];
-      var allSucc = true;
-      for (var dt of datas) {
-        if (dt.tp == 'succ') {
-          succ.push(dt.title);
-        } else {
-          allSucc = false;
-        }
-      }
-      __log.debug(succ);
-      if (allSucc) {
-        res.json({ code: 0, msg: '导入成功', data: succ });
+    var datas = await Promise.all(ps);
+    __log.debug(datas);
+    var succ = [];
+    var allSucc = true;
+    for (var dt of datas) {
+      if (dt.tp == 'succ') {
+        succ.push(dt.title);
       } else {
-        res.json({ code: 1, msg: '导入失败', data: succ });
+        allSucc = false;
       }
-    }).catch(() => {
-      res.json({ code: 1, msg: '添加失败', data: [] });
-    })
-  })
+    }
+    __log.debug(succ);
+    if (allSucc) {
+      ctx.body = { code: 0, msg: '导入成功', data: succ }
+    } else {
+      ctx.body = { code: 1, msg: '导入失败', data: succ }
+    }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '添加失败', data: [] }
+  }
 })
 
 module.exports = router;

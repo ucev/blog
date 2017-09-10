@@ -1,5 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const KoaRouter = require('koa-router')
+const router = new KoaRouter()
 
 const Articles = require('../class/article.db');
 const __articles = new Articles();
@@ -10,7 +10,6 @@ const __log = require('../utils/log');
 
 const clientAjax = require('./ajax_client');
 var enterControl = require('./entercontrol');
-
 
 const __markdown = require('markdown-it')({
   html: true,
@@ -50,105 +49,98 @@ function __searchStyleTitle(title, args) {
   return title.replace(new RegExp('(' + args + ')'), '<strong>$1</strong>')
 }
 
-router.get('/category/:cid', (req, res, next) => {
-  var cid = req.params.cid;
-  __categories.getById(
-    {
-      id: cid,
-      queryfields: ['preface']
-    }
-  ).then((data) => {
-    __log.debug('preposition ' + JSON.stringify(data));
-    res.redirect(`/articles/category/${cid}/${data.preface}`);
-  }).catch(() => {
-    res.redirect('/articles/category/${cid}/0');
-  })
+router.get('/category/:cid', async (ctx, next) => {
+  var cid = ctx.params.cid
+  try {
+    var data = await __categories.getById({
+          id: cid,
+          queryfields: ['preface']
+        })
+    ctx.redirect(`/articles/category/${cid}/${data.preface}`)
+  } catch (err) {
+    ctx.redirect(`/articles/category/${cid}/0`);
+  }
 })
 
-router.get('/category/:cid/:id', (req, res, next) => {
-  var cid = req.params.cid;
-  var aid = req.params.id;
-  function responde(tree, article) {
-    __log.debug(tree);
+router.get('/category/:cid/:id', async (ctx, next) => {
+  var cid = ctx.params.cid;
+  var aid = ctx.params.id;
+  function response(tree, article) {
+    console.log(tree)
+    console.log(article)
     var content = __markdown.render(article.content ? article.content : '');
-    res.render('category', {
-      title: article.title ? article.title : (tree.title ? tree.title : '未知类别'),
-      websiteInfo: configs.website_info,
-      tree: tree,
-      content: content,
-      aid: aid,
-      cid: cid,
-      debug: configs.website_info.debug
-    })
+    return ctx.render('category', {
+            title: article.title ? article.title : (tree.title ? tree.title : '未知类别'),
+            websiteInfo: configs.website_info,
+            tree: tree,
+            content: content,
+            aid: aid,
+            cid: cid,
+            debug: configs.website_info.debug
+          })
   }
-  __categories.getTree(cid).then((tree) => {
-    tree = tree[0]
-    __articles.getsingle(
-      {
-        id: aid,
-        queryfields: ['title', 'content']
-      }
-    ).then((art) => {
-      responde(tree, art);
-    }).catch(() => {
-      responde(tree, {});
+  var tree = {}, art = {}
+  try {
+    tree = await __categories.getTree(cid)[0]
+    art = await __articles.getsingle({
+      id: aid,
+      queryfields: ['title', 'content']
     })
-  }).catch(() => {
-    responde({}, {});
-  })
+    await response(tree, art)
+  } catch (err) {
+    await response(tree, art)
+  }
 })
 
-router.get('/category', (req, res, next) => {
+router.get('/category', async (ctx, next) => {
   function responde(cats) {
-    res.render('category_list', {
-      title: '文章类别',
-      websiteInfo: configs.website_info,
-      categories: cats
-    });
+    return ctx.render('category_list', {
+            title: '文章类别',
+            websiteInfo: configs.website_info,
+            categories: cats
+          })
   }
-  __categories.get().then((cats) => {
-    responde(cats);
-  }).catch(() => {
-    responde([]);;
-  })
-});
+  try {
+    var cats = __categories.get()
+    await responde(cats)
+  } catch (err) {
+    await responde([])
+  }
+})
 
-router.use('/view/:id', enterControl.userControl);
-router.get('/view/:id', (req, res, next) => {
-  var id = req.params.id;
-  __articles.view(id).then((article) => {
-    res.render('article', {
-      title: article.title,
-      websiteInfo: configs.website_info,
-      md: __markdown.render(article.content),
-      aid: id,
-      debug: configs.website_info.debug
-    }
-    )
-  }).catch(() => {
-    res.redirect('/');
-  })
-});
+// 😢 for later
+router.get('/view/:id', enterControl.userControl, async (ctx, next) => {
+  var id = ctx.params.id
+  try {
+    var article = await __articles.view(id)
+    await ctx.render('article', {
+            title: article.title,
+            websiteInfo: configs.website_info,
+            md: __markdown.render(article.content),
+            aid: id,
+            debug: configs.website_info.debug
+          })
+  } catch (err) {
+    ctx.redirect('/')
+  }
+})
 
-router.get('/search', (req, res, next) => {
-  var start = req.query.p ? req.query.p : 0;
+router.get('/search', async (ctx, next) => {
+  var start = ctx.query.p ? ctx.query.p : 0
   // 查找的参数
-  var args = req.query.args;
-  console.log(args);
+  var args = ctx.query.args
+  console.log(args)
   if (args == undefined || args.trim() == '') {
-    res.redirect('/articles');
-    return;
+    return ctx.redirect('/articles')
   }
   __log.debug(args);
-  __articles.getByCond(
-    {
-      where: { args: args },
-      start: start,
-      queryfields: ['id', 'title', 'pageview', 'modtime', 'descp', 'label']
-    }
-  ).then((arts) => {
-    __log.debug(arts);
-    res.render('article_search', {
+  try {
+    var arts = await __articles.getByCond({
+          where: { args: args },
+          start: start,
+          queryfields: ['id', 'title', 'pageview', 'modtime', 'descp', 'label']
+        })
+    await ctx.render('article_search', {
       title: '文章查找',
       websiteInfo: configs.website_info,
       datas: arts.data,
@@ -157,17 +149,17 @@ router.get('/search', (req, res, next) => {
       pagerurl: `?args=${args}&p=`,
       args: args
     })
-  }).catch(() => {
-    res.redirect('/articles');
-  })
+  } catch (err) {
+    ctx.redirect('/articles')
+  }
 })
 
-router.use('/data', clientAjax);
+router.use('/data', clientAjax.routes(), clientAjax.allowedMethods())
 
-router.get('/', (req, res, next) => {
-  var start = req.query.p ? req.query.p : 0;
+router.get('/', async (ctx, next) => {
+  var start = ctx.query.p ? ctx.query.p : 0;
   function response(arts, cats) {
-    res.render('article_list', {
+    return ctx.render('article_list', {
       title: '文章列表',
       websiteInfo: configs.website_info,
       datas: arts.data,
@@ -177,21 +169,20 @@ router.get('/', (req, res, next) => {
       pagerurl: '?p='
     })
   }
-  __articles.getByCond(
-    {
-      where: {},
-      start: start,
+  try {
+    var arts = await __articles.getByCond({
+          where: {},
+          start: start
+        })
+    try {
+      var cats = await __categories.get()
+      await response(arts, cats)
+    } catch (err) {
+      await response(arts, [])
     }
-  ).then((arts) => {
-    __categories.get().then((cats) => {
-      response(arts, cats);
-    }).catch(() => {
-      response(arts, []);
-    })
-  }).catch(() => {
-    res.redirect('/');
-  })
+  } catch (err) {
+    ctx.redirect('/')
+  }
 });
 
-
-module.exports = router;
+module.exports = router
