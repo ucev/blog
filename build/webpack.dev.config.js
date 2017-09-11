@@ -141,6 +141,11 @@ copyJs('base.js'),
   ]
 }]
 
+
+/**
+ * 单个 compiler 可以热重载，多个会无限重载，待修复
+ * 还要把 style 的打包整合起来
+ */ 
 module.exports = [{
   name: "react-component-struct",
   entry: {
@@ -196,7 +201,7 @@ module.exports = [{
   resolve: {
     extensions: ['.js']
   }
-},
+},/*
 {
   name: "raw-jsfile",
   entry: {
@@ -232,5 +237,5 @@ module.exports = [{
       filename: '[name].js'
     })
   ]
-}
+}*/
 ]
