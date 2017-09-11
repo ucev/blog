@@ -1,0 +1,20 @@
+extends base_layout
+
+block body-block
+  include website_banner
+  div.website-container
+    block body-article-block
+      div.struct-main-content
+        div#article-search-hint-div
+          div#hint-param-article-search-div 查找结果
+          a#quit-article-search-div(href='/articles') 返回
+        div#articles-list-area
+    block article-leftside-block
+      aside.struct-sidebar-left
+    block article-rightside-block
+      aside.struct-sidebar-right
+
+block append jsscript-block
+  script(src = '/js/client_struct.min.js?' + time)
+  script.
+    MyStructs.initArticleListSearch();

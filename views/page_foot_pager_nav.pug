@@ -1,0 +1,12 @@
+block page_foot_pager_nav
+  mixin page_foot_pager_nav_li(current, page, title, pagerurl)
+    if (current != page)
+      li.article-list-pager-li
+        a(href= pagerurl + page) #{title}
+    else
+      li.article-list-pager-li.article-list-pager-li-current
+        a(href= pagerurl + page) #{title}
+  ul#article-list-pager-ul
+    each pgparams in pager
+      +page_foot_pager_nav_li(current, pgparams.page, pgparams.title, pagerurl)
+    

@@ -1,0 +1,38 @@
+extends base_layout
+  
+mixin categoryListArticleItem(data, depth)
+  if aid == data.id
+    li(class = 'category-tree-article-li category-tree-article-li-current')
+      a(href = '/articles/category/' + cid + '/' + data.id style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+  else 
+    li.category-tree-article-li
+      a(href = '/articles/category/' + cid + '/' + data.id style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+mixin categoryListCategoryItem(data, depth)
+  li.category-tree-category-li
+    div.category-tree-category-title-div
+      span.category-tree-category-title
+        a(href = '/articles/category/' + cid style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+    ul.category-tree-category-ul
+      each item in data.childs
+        if item.type == 'dir'
+          +categoryListCategoryItem(item, depth + 1)
+        else
+          +categoryListArticleItem(item, depth + 1)
+
+block banner-block
+  include website_banner
+
+block struct-main
+  div.struct-main-content#category-content-area
+    div.markdown-display#category-article-div !{content}
+    include comment
+
+block struct-leftside-block
+  aside.struct-sidebar-left
+    ul.category-tree-category-ul
+      +categoryListCategoryItem(tree, 0)
+
+block append jsscript-block
+  script(src='/markdown-it.min.js')
+  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
+  script(src='/prism.js')

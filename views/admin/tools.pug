@@ -1,0 +1,127 @@
+extends base_layout
+
+block main-body-block
+  div.main#admin-tool-wrapper
+    div#admin-tool-wrapper-title 实用工具
+    div.admin-tool-div#output-article-div
+      div.admin-tool-div-title 导出文章
+      div.admin-tool-div-ab-div
+        button.admin-tool-div-action-button#output-article-button 导出文章
+    div.admin-tool-div#input-article-div
+      div.admin-tool-div-title 导入文章
+      div.admin-tool-choose-article-div
+        button#choose-article-button 选择文件
+        ul#article-chosen-ul
+        input#choose-article-input(type='file' accept='text/markdown' multiple='multiple' style='display: none')
+      div.admin-tool-div-ab-div
+        button.admin-tool-div-action-button#input-article-button 导入文章
+    input#token-input(type='hidden', value = token )
+    form#download-form(method='post', action='/es/outputArticle/download' target='_blank' style='display: none;')
+      input(type='hidden',  name='token', value = token)
+    div.message-dialog.message-dialog-top#message-dialog-div
+    div.cover-layer#progressing-layer
+      div#progressing-div
+        i.fa.fa-spinner.fa-spin.fa-2x#cover-progressing-icon(aria-hidden="true")
+    script#article-chosen-tpl(type='text/html').
+      <li class = 'article-chosen-li'>
+        <i class="fa fa-times delete-chosen-article" aria-hidden="true" onclick = "deleteArticle(this)" data-name = "<%= title %>"></i>
+        <div class = 'article-chosen-li-title'><%= title %></div>
+      </li>
+
+block append jsscript-block
+    script.
+      var __files = new Map();
+      var hideTimeout = null;
+      $progressingLayer = $("#progressing-layer");
+      $mdiv = $("#message-dialog-div");
+      var articleChosenTpl = $("#article-chosen-tpl").html();
+      function showMessageDialog(msg, type) {
+        $progressingLayer.hide();
+        if (hideTimeout) {
+          clearTimeout(hideTimeout);
+        }
+        $mdiv.removeClass('message-dialog-positive');
+        $mdiv.removeClass('message-dialog-alert');
+        $mdiv.addClass(`message-dialog-${type}`);
+        $mdiv.text(msg);
+        $mdiv.show();
+        hideTimeout = setTimeout(function() {
+          $mdiv.hide();
+          hideTimeout = null;
+        }, 1000)
+      }
+      $('#output-article-button').click(() => {
+        var token = $('#token-input').val();
+        $progressingLayer.show();
+        var es = new EventSource('/es/outputArticle?token=' + token);
+        es.onmessage = function(e) {
+          es.close();
+          $progressingLayer.hide();
+          if (e.data == 'succ') {
+            $('#download-form').submit();
+          } else {
+            showMessageDialog('导出失败', 'alert');
+          }
+        }
+        es.onerror = function() {
+          //
+          es.close();
+          showMessageDialog('导出失败', 'alert');
+        }
+      });
+      $('#input-article-button').click(() => {
+        var fd = new FormData();
+        for (let f of __files) {
+          fd.append('files', f[1]);
+        }
+        $progressingLayer.show();
+        $.ajax({
+          url: '/es/importArticle',
+          data: fd,
+          type: 'post',
+          processData: false,
+          contentType: false,
+          dataType: 'json',
+          success: function(dt) {
+            if (dt.code == 0) {
+              __files.clear();
+              showMessageDialog(dt.msg, 'positive');
+              setTimeout(function() {
+                location.reload();
+              }, 1000);
+            } else {
+              showMessageDialog(dt.msg, 'alert');
+              for (var fn of dt.data) {
+                __files.delete(fn);
+              }
+              addChosenArticle();
+            }
+          },
+          error: function() {
+            showMessageDialog('导入失败', 'alert');
+          },
+        })
+      })
+      $('#choose-article-button').click(() => {
+        $('#choose-article-input').click();
+      })
+      $('#choose-article-input').change(() => {
+        var files = $('#choose-article-input')[0].files;
+        var len = files.length;
+        for (let i = 0; i < len; i++) {
+          __files.set(files[i].name, files[i]);
+        }
+        addChosenArticle();
+      })
+      function deleteArticle(e) {
+        var name = e.getAttribute('data-name');
+        __files.delete(name);
+        addChosenArticle();
+      }
+      function addChosenArticle() {
+        $acu = $("#article-chosen-ul");
+        $acu.empty();
+        for (let f of __files) {
+          $(template(articleChosenTpl, {title: f[1].name})).appendTo($acu);
+        }
+      }

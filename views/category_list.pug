@@ -1,0 +1,17 @@
+extends base_layout
+
+mixin category_item(category)
+  li.category-item-li
+    div.category-item-title-div
+      a(href='#') #{category.name}
+    div.category-item-descp-div
+      div #{category.descp}
+
+block banner-block
+  include website_banner
+
+block struct-main
+  div.struct-main-content
+    ul#categories-list-ul
+      each category in categories
+        +category_item(category)
