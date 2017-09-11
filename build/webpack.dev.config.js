@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const port = require('../config/base.config').website_info.port;
 
-
+/*
 function copyJs(fname) {
   return {
     entry: [
@@ -139,7 +139,7 @@ copyJs('base.js'),
       filename: '[name].css'
     })
   ]
-}]
+}]*/
 
 
 /**
