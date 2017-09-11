@@ -10,6 +10,7 @@ const onerror = require('koa-onerror')
 const json = require('koa-json')
 const logger = require('koa-logger')
 const session = require('koa-session') 
+const koaConvert = require('koa-convert')
 
 const configs = require('./config/base.config')
 
@@ -48,15 +49,8 @@ Promise.prototype.finally = function (callback) {
   );
 };
 
-var app, devServer;
-/*
-if (process.env.NODE_ENV == 'DEV') {
-  devServer = require('./server/server.dev');
-  app = devServer.app;
-} else {
-  devServer = app = express();
-}*/
-devServer = app = new Koa()
+var app
+app = new Koa()
 
 onerror(app)
 
@@ -74,12 +68,6 @@ app.use(views(path.join(__dirname, 'views'), {
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
 //app.use(logger('dev'));
-/*
-app.use(logger);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(cookieSession(configs.session));*/
 
 // static files
 app.use(koaStatic(path.join(__dirname, 'public')));
@@ -132,12 +120,9 @@ app.use(function(err, req, res, next) {
   res.render('error', {debug: DEBUG_MODE, err: err});
 });
 */
-/*
+
 if (process.env.NODE_ENV == 'DEV') {
-  devServer.listen(configs.website_info.port);
-} else {
-  app.listen(configs.website_info.port);
-}*/
-///app.listen(configs.website_info.port)
+  app.use(koaConvert(require('./server/server.dev.js')))
+}
 
 module.exports = app;

@@ -66,11 +66,9 @@ router.get('/category/:cid/:id', async (ctx, next) => {
   var cid = ctx.params.cid;
   var aid = ctx.params.id;
   function response(tree, article) {
-    console.log(tree)
-    console.log(article)
-    var content = __markdown.render(article.content ? article.content : '');
+    var content = __markdown.render(article && article.content ? article.content : '');
     return ctx.render('category', {
-            title: article.title ? article.title : (tree.title ? tree.title : '未知类别'),
+            title: 'ab',
             websiteInfo: configs.website_info,
             tree: tree,
             content: content,
@@ -81,15 +79,15 @@ router.get('/category/:cid/:id', async (ctx, next) => {
   }
   var tree = {}, art = {}
   try {
-    tree = await __categories.getTree(cid)[0]
+    tree = await __categories.getTree(cid)
     art = await __articles.getsingle({
       id: aid,
       queryfields: ['title', 'content']
     })
-    await response(tree, art)
   } catch (err) {
-    await response(tree, art)
+    console.log(err)
   }
+  await response(tree, art)
 })
 
 router.get('/category', async (ctx, next) => {
@@ -121,6 +119,7 @@ router.get('/view/:id', enterControl.userControl, async (ctx, next) => {
             debug: configs.website_info.debug
           })
   } catch (err) {
+    console.log(err)
     ctx.redirect('/')
   }
 })
@@ -169,20 +168,16 @@ router.get('/', async (ctx, next) => {
       pagerurl: '?p='
     })
   }
+  var arts = [], cats = []
   try {
-    var arts = await __articles.getByCond({
+    arts = await __articles.getByCond({
           where: {},
           start: start
         })
-    try {
-      var cats = await __categories.get()
-      await response(arts, cats)
-    } catch (err) {
-      await response(arts, [])
-    }
+    cats = await __categories.get()
   } catch (err) {
-    ctx.redirect('/')
   }
+  await response(arts, cats)
 });
 
 module.exports = router

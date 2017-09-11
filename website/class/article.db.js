@@ -44,55 +44,39 @@ class Articles {
     }
   }
 
-  delete(ids) {
+  async delete(ids) {
     var targetLabel = '';
-    var conn = mysql.createConnection(this.dbconfig);
-    var del = new Promise((resolve, reject) => {
-      conn.beginTransaction((err) => {
-        if (err) { reject(err) };
-        resolve();
-      })
-    })
-    return del.then(() => {
-      this.__updateLabelsOnDeleteArticle(conn, ids);
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.query(`delete from ${this.dbname} where id in ?`, [[ids]],
-          (err, results, fields) => {
-            if (err) { reject(err); };
-            resolve();
-          }
-        )
-      })
-    }).then(() => {
-      return new Promise((resolve, reject) => {
-        conn.commit((err) => {
-          if (err) { reject(); }
-          conn.end((err) => { });
-          resolve();
-        })
-      })
-    }).catch((err) => {
-      conn.rollback((err) => {
-        conn.end((err) => { });
-      })
-    })
+    var conn = await mysql.createConnection(this.dbconfig);
+    try {
+      await conn.beginTransaction()
+      await this.__updateLabelsOnDeleteArticle(conn, ids)
+      await conn.query(`delete from ${this.dbname} where id in ?`, [[ids]])
+      await conn.commit()
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      await conn.rollback()
+      conn.end()
+      return Promise.reject(err)
+    }
   }
 
   async getsingle({ id = 0, queryfields } = {}) {
     queryfields = queryfields ? queryfields : ['*'];
     var conn = await mysql.createConnection(this.dbconfig);
     try {
-      var article = conn.query(`select ?? from ${this.dbname} where id = ?`, [queryfields, id])[0]
+      var results = await conn.query(`select ?? from ${this.dbname} where id = ?`, [queryfields, id])
+      var article = results[0]
       conn.end()
       return Promise.resolve(article)
     } catch (err) {
       conn.end()
-      return Promise.reject()
+      return Promise.reject(err)
     }
   }
 
   async getByCond({ where = {}, start = 0, client = true, queryfields = ['*'] } = {}) {
+    var conn = await mysql.createConnection(this.dbconfig)
     var returnData = {
       total: 0,
       current: start,
@@ -118,9 +102,9 @@ class Articles {
     if (client) {
       whereSql += (` AND state = 'on' `);
     }
-    var conn = await mysql.createConnection(this.dbconfig)
     try {
-      var totalcnt = await conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`, [...whereArgs])[0].cnt
+      var results = await conn.query(`select count(*) as cnt from articles where 1 ${whereSql}`, [...whereArgs])
+      var totalcnt = results[0].cnt
       returnData.total = Math.ceil(totalcnt / this.step)
       var data = await conn.query(`select ?? from ${this.dbname} where 1 ${whereSql} order by id desc limit ?, ?`, [queryfields, ...whereArgs, start * this.step, this.step])
       returnData.data = data;
@@ -128,7 +112,7 @@ class Articles {
       return Promise.resolve(returnData)
     } catch (err) {
       conn.end()
-      return Promise.reject()
+      return Promise.reject(err)
     }
   }
 
@@ -190,7 +174,8 @@ class Articles {
   async view(id) {
     var conn = await mysql.createConnection(this.dbconfig);
     try {
-      var article = conn.query(`select * from ${this.dbname} where id = ?`, [id])[0]
+      var results = await conn.query(`select * from ${this.dbname} where id = ?`, [id])
+      var article = results[0]
       var labels = article.label;
       var uplabel = this.__updateLabels(conn, labels, configs.label_hotmark_rule.view);
       var uppv = this.__increasePageView(conn, id);
@@ -199,7 +184,7 @@ class Articles {
       return Promise.resolve(article)
     } catch (err) {
       conn.end()
-      return Promise.reject()
+      return Promise.reject(err)
     }
   }
 
@@ -224,7 +209,7 @@ class Articles {
     var conn = await mysql.createConnection(this.dbconfig);
     try {
       await conn.beginTransaction()
-      var results = conn.query(`select label from ${this.dbname} where id = ?`, [id])
+      var results = await conn.query(`select label from ${this.dbname} where id = ?`, [id])
       oldLabels = results[0].label.split(',');
       await conn.query(`update ${this.dbname} set ? where id = ?`, [datas, id])
       await this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, false, true, oldLabels);
@@ -299,7 +284,7 @@ class Articles {
   // 需要再详查
   async __updateLabels(conn, labels, sval, /*是否更新已经存在的标签*/upOld = true, /*是否产生错误*/isRej = false, /*更新之前的label*/oldLabels = []) {
     try {
-      var results = conn.query(`select name from labels`)
+      var results = await conn.query(`select name from labels`)
       var _eLabels = results.map((label) => (label.name));
       if (labels == '' || labels == undefined) {
         return Promise.resolve()
@@ -327,7 +312,7 @@ class Articles {
       }
       return Promise.all(promises);
     } catch (error) {
-      return Promise.reject()
+      return Promise.reject(error)
     }
   }
 

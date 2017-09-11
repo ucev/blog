@@ -83,9 +83,9 @@ class Categories {
       var arts = results.map((art) => {
         return { title: art.title, id: art.id, seq: art.suborder, type: 'art' }
       })
-      return Promise.resolve(results)
+      return Promise.resolve(arts)
     } catch (err) {
-      return Promise.resolve([])
+      return Promise.resolve(err)
     }
   }
 
@@ -113,12 +113,12 @@ class Categories {
         prefaces.add(d.preface);
         if (!ids.has(id)) {
           ids.add(id);
-          return this.__getTree(d, conn, ids, prefaces);
+          return that.__getTree(d, conn, ids, prefaces);
         }
       })
       return Promise.all(subdirs)
     } catch (err) {
-      return Promise.reject()
+      return Promise.reject(err)
     }
   }
 
@@ -132,12 +132,12 @@ class Categories {
       var cats = dir;
       idGets.add(dir.id);
       prefaces.add(dir.preface);
-      await this.__getTree(dir, conn, idGets, prefaces);
+      await this.__getTree(dir, conn, idGets, prefaces)
       conn.end()
-      return Promise.resolve([cats]);
+      return Promise.resolve(cats);
     } catch (err) {
       conn.end()
-      return Promise.reject()
+      return Promise.reject(err)
     }
   }
 

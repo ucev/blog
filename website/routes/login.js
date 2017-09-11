@@ -7,6 +7,7 @@ const __log = require('../utils/log')
 
 // 错误处理
 router.get('/redirect', async (ctx, next) => {
+  console.log('redirect')
   try {
     var code = ctx.query.code
     var state = ctx.query.state

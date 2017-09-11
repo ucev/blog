@@ -15,9 +15,10 @@ class Labels {
       current: start,
       data: []
     };
-    var conn = mysql.createConnection(this.dbconfig);
+    var conn = await mysql.createConnection(this.dbconfig);
     try {
-      var lcnt = await conn.query(`select count(*) as cnt from ${this.dbname}`)[0].cnt
+      var results = await conn.query(`select count(*) as cnt from ${this.dbname}`)
+      var lcnt = results[0].cnt
       returnData.total = Math.ceil(lcnt / this.step)
       start = start * configs.query_config.step
       var sql = `select * from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)} limit ?, ?`;
@@ -27,7 +28,7 @@ class Labels {
       return Promise.resolve(returnData);
     } catch (err) {
       conn.end()
-      return Promise.reject({})
+      return Promise.reject(err)
     }
   }
 

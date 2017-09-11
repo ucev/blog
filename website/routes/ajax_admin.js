@@ -1,5 +1,4 @@
 const router = new require('koa-router')()
-const multiparty = require('multiparty');
 const path = require('path');
 const busboy = require('koa-busboy')
 
@@ -264,10 +263,11 @@ router.get('/labels/get', async (ctx, next) => {
       asc: asc
     }
   }
-  try {
+  try { 
     var res = await __labels.get(queryData)
     ctx.body = { code: 0, msg: '获取成功', data: res }
   } catch (err) {
+    console.log(err)
     ctx.body = { code: 1, msg: '获取失败' }
   }
 })
