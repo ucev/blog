@@ -71,27 +71,8 @@ app.use(views(path.join(__dirname, 'views'), {
 
 // hmr
 if (process.env.NODE_ENV == 'DEV') {
-  const webpack = require('webpack')
   const koaWebpack = require('koa-webpack')
-  const koaWebpackMiddleware = require('koa-webpack-middleware')
-  const webpackDevMiddleware = koaWebpackMiddleware.devMiddleware
-  const webpackHotMiddleware = koaWebpackMiddleware.hotMiddleware
-
-  const config = require('./build/webpack.dev.config')/*
-  const compiler = webpack(config)
-  const wdm = webpackDevMiddleware(compiler, {
-    watchOptions: {
-      aggregateTimeout: 300,
-      poll: true
-    },
-    reload: true,
-    publicPath: '/',
-    stats: {
-      color: true
-    }
-  })*/
-  // app.use(koaConvert(wdm))
-  // app.use(koaConvert(webpackHotMiddleware(compiler)))
+  const config = require('./build/webpack.dev.config')
   app.use(koaWebpack({
     config: config,
     dev: {
@@ -99,6 +80,9 @@ if (process.env.NODE_ENV == 'DEV') {
       stats: {
         color: true
       }
+    },
+    hot: {
+      reload: true
     }
   }))
 }
