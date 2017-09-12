@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@learn.ilovecrystal.com.cn:/var/www/learn/nodejs"
+    "url": "git@github.com:ucev/blog.git"
   },
   "keywords": [
     "learn",
