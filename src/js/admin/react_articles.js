@@ -29,7 +29,7 @@ class FilterInput extends React.Component {
   render() {
     return (
       <div className = 'table-filter-item'>
-        <label className = 'table-filter-item-label'>{this.props.label}</label>
+        <label className = 'table-filter-item-label'>(FDB){this.props.label}</label>
         <input className = 'table-filter-item-input' onKeyDown = {this.handleChange} />
       </div>
     );

@@ -77,6 +77,6 @@ testlib/*
 dist/*
 
 # blogs upload images
-website/public/images/blog/*
-website/public/docs/*
-website/log/*
+public/images/blog/*
+public/docs/*
+log/*

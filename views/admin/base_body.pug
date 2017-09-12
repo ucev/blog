@@ -1,0 +1,14 @@
+body
+  include website_banner
+  include left_nav_bar
+  block main-body-block
+    div.main
+      h1 #{title}
+  - var pug_cur_time = new Date().getTime();
+  block jsscript-block
+    script(src='/jquery.min.js')
+    script(src='/Chart.min.js')
+    script(src='/template.js')
+    script(src='/js/my_struct.min.js')
+    script(src='/js/base.js')
+    script(src='/js/admin.js')
