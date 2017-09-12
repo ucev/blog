@@ -63,15 +63,14 @@ typings/
 *.swo
 
 # express app config files
-website/config/*.config.js
-website/config/*.config.yaml
+config/*.config.js
+config/*.config.yaml
 
 # tools
 tools/mysql/src/configs.js
 
 # tests
 test/*
-testlib/*
 
 # dist
 dist/*
