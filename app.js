@@ -24,18 +24,16 @@ const es = require('./routes/eventsource')
 
 var enterControl = require('./routes/entercontrol')
 
+const DEBUG_MODE = configs.website_info.debug
+
+const mail = require('./utils/mail')
+
 /*
-var favicon = require('serve-favicon');
 //var logger = require('morgan');
 var logger = require('./utils/log4js');
-var cookieParser = require('cookie-parser');
-var cookieSession = require('cookie-session');
-var bodyParser = require('body-parser');
 
-var mail = require('./utils/mail');
 const __log = require('./utils/log');
 
-const DEBUG_MODE = configs.website_info.debug;
 */
 
 /**
@@ -54,11 +52,11 @@ app = new Koa()
 
 onerror(app)
 
+app.use(logger())
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
 app.use(json())
-app.use(logger())
 app.use(session(configs.session, app))
 // view engine setup
 app.use(views(path.join(__dirname, 'views'), {
@@ -101,6 +99,27 @@ app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')));
 app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
 
 
+// 404/ 500...
+app.use(async (ctx, next) => {
+  try {
+    await next()
+    if (parseInt(ctx.status) == 404) {
+      var err = new Error('Not Found')
+      err.code = 404
+    }
+  } catch (error) {
+    error.code = error.code || 500
+    error.url = ctx.originalUrl
+    if (error.code != 404) {
+      try {
+        mail.error_report(ctx.originalUrl, error.message)
+      } catch (err) {
+      }
+    }
+    await ctx.render('error', {debug: DEBUG_MODE, error: error})
+  }
+})
+
 const router = new Router()
 router.use('/articles', articles.routes(), articles.allowedMethods())
 router.use('/admin', admin.routes(), admin.allowedMethods())
@@ -110,35 +129,6 @@ router.use('/login', login.routes(), login.allowedMethods())
 router.use('/es', es.routes(), es.allowedMethods())
 app.use(router.routes())
 app.use(index.routes(), index.allowedMethods())
-
-/*
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  err.url = req.originalUrl;
-  err.status = err.status || 500;
-
-  __log.debug("URL: ", req.originalUrl);
-  __log.debug("ERR MSG: " , err.message);
-  if (err.status != 404) {
-    mail.error_report(req.originalUrl, err.message);
-  }
-
-  // render the error page
-  res.status(err.status);
-  res.render('error', {debug: DEBUG_MODE, err: err});
-});
-*/
-
 
 app.listen(configs.website_info.port)
 

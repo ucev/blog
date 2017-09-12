@@ -5,3 +5,9 @@ To config the webiste, copy base.config_origin.js in directory website/config to
 
 
 database can be built with scripts under tools/mysql
+
+## To Do
+* logger 需要修改
+* error handler 需要调整
+* css 整合入相应的 js 文件中
+* webpack 的配置文件需要整合

@@ -7,14 +7,14 @@ html
         table.error-table
           tr
             th 错误码
-            td #{error.status}
+            td #{error.code}
           tr
             th 网址
             td #{error.url}
           tr
             th 详情
-            td #{message}
-        //- pre #{error.stack}
+            td #{error.message}
+        pre #{error.stack}
       else
         if error.status == 404
           img(src='/images/error404.png').error-img
@@ -24,4 +24,7 @@ html
         style.
           html {
             background-color: #F6F6F6;
+          }
+          pre {
+            font-size: 12px;
           }
