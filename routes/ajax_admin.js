@@ -372,6 +372,7 @@ router.get('/photogroup/get', async (ctx, next) => {
 router.get('/photogroup/modify', async (ctx, next) => {
   const groupname = ctx.query.groupname
   const addtime = Math.floor((new Date().getTime()) / 1000)
+  console.log(groupname)
   try {
     await __photogroups.add({
             name: groupname,
@@ -379,6 +380,7 @@ router.get('/photogroup/modify', async (ctx, next) => {
           })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
+    console.log(err)
     // 成功与否都刷新
     ctx.body = { code: 0, msg: '更新失败' }
   }

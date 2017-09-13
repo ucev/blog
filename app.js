@@ -36,17 +36,6 @@ const __log = require('./utils/log');
 
 */
 
-/**
- * 用到的扩展😊 
- */
-Promise.prototype.finally = function (callback) {
-  let P = this.constructor;
-  return this.then(
-    value  => P.resolve(callback()).then(() => value),
-    reason => P.resolve(callback()).then(() => { throw reason })
-  );
-};
-
 var app
 app = new Koa()
 
@@ -104,13 +93,13 @@ app.use(async (ctx, next) => {
   try {
     await next()
     if (parseInt(ctx.status) == 404) {
-      var err = new Error('Not Found')
-      err.code = 404
+      ctx.throw('Not Found', 404)
     }
   } catch (error) {
-    error.code = error.code || 500
+    console.log(error)
+    error.status = error.status || 500
     error.url = ctx.originalUrl
-    if (error.code != 404) {
+    if (error.status != 404) {
       try {
         mail.error_report(ctx.originalUrl, error.message)
       } catch (err) {
