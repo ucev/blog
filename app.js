@@ -41,6 +41,7 @@ app = new Koa()
 
 onerror(app)
 
+app.keys = ['ab', 'cd']
 app.use(logger())
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -100,7 +101,7 @@ app.use(async (ctx, next) => {
     error.url = ctx.originalUrl
     if (error.status != 404) {
       try {
-        mail.error_report(ctx.originalUrl, error.message)
+        //mail.error_report(ctx.originalUrl, error.message)
       } catch (err) {
       }
     }
@@ -110,6 +111,7 @@ app.use(async (ctx, next) => {
 
 const router = new Router()
 router.use('/articles', articles.routes(), articles.allowedMethods())
+router.use('/admin', enterControl.adminControl)
 router.use('/admin', admin.routes(), admin.allowedMethods())
 router.use('/mobiles', mobiles.routes(), mobiles.allowedMethods())
 router.use('/users', users.routes(), users.allowedMethods())

@@ -52,7 +52,7 @@ async function adminControl(ctx, next) {
     this_session = configs.qqlogin.allowed_openid;
   }
   if (ctx.session.openid == this_session) {
-    next();
+    await next();
   } else {
     ctx.redirect('/login');
   }
