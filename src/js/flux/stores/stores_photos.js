@@ -292,6 +292,7 @@ class PhotoStore extends BaseStore {
       contentType: false,
       dataType: 'json',
       success: function (dt) {
+        that.fetchPhotoGroups();
         that.fetchGroupPhotos();
       },
       error: function (err) {
@@ -311,6 +312,7 @@ class PhotoStore extends BaseStore {
       type: 'get',
       dataType: 'json',
       success: function (dt) {
+        that.fetchPhotoGroups();
         that.fetchGroupPhotos();
       }
     })

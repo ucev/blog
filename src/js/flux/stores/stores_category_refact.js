@@ -74,10 +74,9 @@ class CategoryRefactStore extends BaseStore {
       dataType: 'json',
       success: function (dt) {
         if (dt.code == 0) {
-          var data = dt.data;
-          var root = data[0];
+          var root = dt.data;
           var tid = that.getState("category") == -1 ? root.id : that.getState("category");
-          that.setState({tree: data});
+          that.setState({tree: root});
           that.__getRefactDetail(
             'dir',
             tid,

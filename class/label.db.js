@@ -23,7 +23,7 @@ class Labels {
       start = start * configs.query_config.step
       var sql = `select * from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)} limit ?, ?`;
       var data = await conn.query(sql, [/*orderby.lb, orderby.asc, */start, this.step])
-      returnData.data = data;
+      returnData.data = Array.from(data);
       conn.end()
       return Promise.resolve(returnData);
     } catch (err) {
@@ -36,7 +36,7 @@ class Labels {
 
   async getall({ orderby = { lb: 'id', asc: 'asc' }, queryfields = ['*'] }) {
     try {
-      var conn = mysql.createConnection(this.dbconfig)
+      var conn = await mysql.createConnection(this.dbconfig)
       var labels = await conn.query(`select ?? from ${this.dbname} order by ${conn.escapeId(orderby.lb)} ${this.__queryorder(orderby.asc)}`, [[queryfields]])
       conn.end()
       return Promise.resolve(labels);
@@ -52,9 +52,9 @@ class Labels {
     try {
       var labels = await this.getall({})
       var lnames = labels.map((label) => (label.name))
-      return Promise.resolve(l)
+      return Promise.resolve(lnames)
     } catch (err) {
-      return Promise.resolve(err)
+      return Promise.reject(err)
     }
   }
 

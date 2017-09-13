@@ -90,7 +90,7 @@ class CategoryRow extends React.Component {
       </ul>
     );
     return (
-      <tr key = {category.id} className = 'content-row-data category-row-data'>
+      <tr className = 'content-row-data category-row-data'>
         <td className = 'category-row-index-data'>{category.id}</td>
         <td className = 'category-row-name-data'><a href = {'/articles/category/' + category.id}>{category.name}</a></td>
         <td className = 'category-row-parent-data'>{category.parent}</td>
@@ -109,7 +109,7 @@ class CategoryTable extends React.Component {
   }
   render() {
     var categories = this.props.categories.map((category) => (
-      <CategoryRow category = {category}/>
+      <CategoryRow key = {category.id} category = {category}/>
     ));
     return (
       <Table type = 'category'>

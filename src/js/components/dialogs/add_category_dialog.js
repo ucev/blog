@@ -44,7 +44,7 @@ class AddCategoryDialog extends React.Component {
     var parent = data.parent ? data.parent : '';
     var descp = data.descp ? data.descp : '';
     var categoryItems = this.props.categories.map((category) => {
-      return (<option value = {category.id}>{category.name}</option>);
+      return (<option key = {category.id} value = {category.id}>{category.name}</option>);
     });
     var styles;
     if (this.props.visible) {

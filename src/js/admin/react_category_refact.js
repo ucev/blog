@@ -73,7 +73,7 @@ class ArticleItemLi extends React.Component {
   render() {
     var depth = this.props.depth;
     var styles = {
-      'padding-left': (depth * 20 + 20) + 'px'
+      paddingLeft: (depth * 20 + 20) + 'px'
     }
     var article = this.props.article;
     var articleClass = 'category-tree-article-li';
@@ -101,16 +101,16 @@ class CategoryItemLi extends React.Component {
   render() {
     var depth = this.props.depth;
     var styles = {
-      'padding-left': (depth * 20 + 20) + 'px'
+      paddingLeft: (depth * 20 + 20) + 'px'
     }
     var category = this.props.category;
     var content;
     if (category.childs) {
       var content = category.childs.map((child) => {
         if (child.type == 'dir') {
-          return <CategoryItemLi category = {child}  categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {depth + 1}/>
+          return <CategoryItemLi key = {`categoroy_${child.id}`} category = {child}  categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {depth + 1}/>
         } else {
-          return <ArticleItemLi article = {child} cid = {category.id} articleId = {this.props.articleId} depth = {depth + 1}/>
+          return <ArticleItemLi key = {`article_${child.id}`} article = {child} cid = {category.id} articleId = {this.props.articleId} depth = {depth + 1}/>
         }
       })
     }
@@ -143,18 +143,13 @@ class CategoryTree extends React.Component {
     super(props);
   }
   render() {
-    var tree = this.props.tree;
-    if (tree.length) {
-      return (
-        <div id = 'refact-tree-area'>
-          <ul className = 'category-tree-category-ul'>
-            <CategoryItemLi category = {this.props.tree[0]} categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {0}/>
-          </ul>
-        </div>
-      );
-    } else {
-      return <div>EMPTY</div>
-    }
+    return (
+      <div id = 'refact-tree-area'>
+        <ul className = 'category-tree-category-ul'>
+          <CategoryItemLi category = {this.props.tree} categoryId = {this.props.categoryId} articleId = {this.props.articleId} cstate = {this.props.cstate} depth = {0}/>
+        </ul>
+      </div>
+    )
   }
 }
 

@@ -87,7 +87,6 @@ app.use(koaStatic(path.join(__dirname, 'node_modules/react-dom/dist')));
 app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')));
 app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
 
-
 // 404/ 500...
 app.use(async (ctx, next) => {
   try {

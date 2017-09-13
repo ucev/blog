@@ -137,10 +137,10 @@ class Categories {
       var results = await conn.query(`select * from ${this.dbname} where id = ?`, [id])
       var dir = results[0];
       var root = { title: dir.name, id: dir.id, seq: dir.suborder, type: 'dir' };
-      var cats = dir;
+      var cats = root;
       idGets.add(dir.id);
       prefaces.add(dir.preface);
-      await this.__getTree(dir, conn, idGets, prefaces)
+      await this.__getTree(cats, conn, idGets, prefaces)
       conn.end()
       return Promise.resolve(cats);
     } catch (err) {

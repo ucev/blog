@@ -244,7 +244,6 @@ router.get('/categories/tree', async (ctx, next) => {
   var id = ctx.query.id;
   try {
     var tree = await __categories.getTree(id)
-    __log.debug(JSON.stringify(tree))
     ctx.body = { code: 0, msg: '获取成功', data: tree }
   } catch (err) {
     ctx.body = { code: 0, msg: '获取失败', data: [] }
