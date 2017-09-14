@@ -7,12 +7,17 @@ const mysql_database_config = {
   charset: 'utf8mb4'
 };
 
-// configs for config 'cookie-session'
+// configs for config 'koa-session and built-in cookie'
 const session = {
-  name: '',
-  keys: [],
-  
-  maxAge: 24 * 60 * 60 * 1000
+  // name and key must be the same
+  name: 'koa:sess',
+  key: 'koa:sess',
+  keys: ['blog', 'bgs'],
+  maxAge: 24 * 60 * 60 * 1000,
+  overwrite: true,
+  httpOnly: true,
+  signed: true,
+  rolling: false
 };
 // base info of the website
 const website_info = {
@@ -30,7 +35,8 @@ const website_info = {
   debug: true,
   log_level: '',
   // session used when in debug mode
-  debug_session: 1
+  debug_session: 1,
+  debug_avatar: '/images/avatar.jpeg'
 }
 
 // config regulation for label's hotmark

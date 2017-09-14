@@ -45,12 +45,9 @@ async function userControl(ctx, next) {
 }
 
 async function adminControl(ctx, next) {
-  var this_session = undefined;
-  if (configs.website_info.debug) {
-    this_session = configs.website_info.debug_session;
-  } else {
-    this_session = configs.qqlogin.allowed_openid;
-  }
+  var this_session = configs.website_info.debug ?
+              configs.website_info.debug_session :
+              configs.qqlogin.allowed_openid
   if (ctx.session.openid == this_session) {
     await next();
   } else {

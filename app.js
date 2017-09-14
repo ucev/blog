@@ -41,7 +41,7 @@ app = new Koa()
 
 onerror(app)
 
-app.keys = ['ab', 'cd']
+app.keys = configs.session.keys
 app.use(logger())
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
@@ -60,9 +60,9 @@ app.use(views(path.join(__dirname, 'views'), {
 // hmr
 if (process.env.NODE_ENV == 'DEV') {
   const koaWebpack = require('koa-webpack')
-  const config = require('./build/webpack.dev.config')
+  const wp_config = require('./build/webpack.dev.config')
   app.use(koaWebpack({
-    config: config,
+    config: wp_config,
     dev: {
       publicPath: '/',
       stats: {
@@ -99,9 +99,9 @@ app.use(async (ctx, next) => {
     console.log(error)
     error.status = error.status || 500
     error.url = ctx.originalUrl
-    if (error.status != 404) {
+    if (error.status != 404 && !DEBUG_MODE) {
       try {
-        //mail.error_report(ctx.originalUrl, error.message)
+        mail.error_report(ctx.originalUrl, error.message)
       } catch (err) {
       }
     }

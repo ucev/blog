@@ -7,7 +7,6 @@ const __log = require('../utils/log')
 
 // 错误处理
 router.get('/redirect', async (ctx, next) => {
-  console.log('redirect')
   try {
     var code = ctx.query.code
     var state = ctx.query.state
@@ -28,6 +27,7 @@ router.get('/redirect', async (ctx, next) => {
     res = await request(url)
     res = JSON.parse(res)
     ctx.session.avatar = res.figureurl_qq_1
+    await next()
     ctx.redirect('/admin');
   } catch (err) {
     ctx.redirect('/')
@@ -36,13 +36,15 @@ router.get('/redirect', async (ctx, next) => {
 
 router.get('/logout', async (ctx, next) => {
   ctx.session.openid = undefined;
+  await next()
   ctx.redirect('/admin');
 })
 
 router.get('/', async (ctx, next) => {
   if (configs.website_info.debug) {
     ctx.session.openid = configs.website_info.debug_session;
-    ctx.session.avatar = '/images/avatar.jpeg';
+    ctx.session.avatar = configs.website_info.debug_avatar;
+    await next()
     ctx.redirect('/admin');
   } else {
     var url = `https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101383430&redirect_uri=${loginConfig.redirect_url}&state=${loginConfig.state}`;
