@@ -46,7 +46,7 @@ block main-body-block
     <li class='choose-photo-div-photo-group-li <%= current %>' data-gid='<%= gid %>' onclick='onGroupItemClick(this)'><%= name %>(<%= cnt %>)</li>
   script#photo-item-tpl(type='text/html').
     <li class='choose-photo-div-photo-item-li' onClick = 'onPhotoItemClick(this)'>
-      <img class='choose-photo-div-photo-item-img' data-id='<%= id %>' src='<%= imgsrc %>' alt='图片' onload='photoImgOnLoad(this)' />
+      <img class='choose-photo-div-photo-item-img' data-id='<%= id %>' width='100' height='100' src='<%= imgsrc %>' alt='图片' onload='photoImgOnLoad(this)' />
     </li>
   script#label-hint-item-tpl(type='text/html').
     <li class="label-hint-item" onclick="labelHintItemClick(this)"><%= label %></li>

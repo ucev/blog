@@ -290,7 +290,6 @@ router.get('/photos/get', async (ctx, next) => {
   }
 })
 
-// 😢 
 router.post('/photos/add', uploader, async (ctx, next) => {
   var request = ctx.request.body
   const gid = request.gid < 1 ? 1 : request.gid

@@ -77,15 +77,17 @@ function photoImgOnLoad(e) {
   var img = e;
   var imgsrc = img.src;
   var image = new Image();
+  image.onload = function() {
+    var ow = image.width;
+    var oh = image.height;
+    var small = ow < oh ? ow : oh;
+    var scale = small / 150;
+    var nw = ow / scale;
+    var nh = oh / scale;
+    img.setAttribute('width', nw + 'px');
+    img.setAttribute('height', nh + 'px');
+  }
   image.src = imgsrc;
-  var ow = image.width;
-  var oh = image.height;
-  var small = ow < oh ? ow : oh;
-  var scale = small / 150;
-  var nw = ow / scale;
-  var nh = oh / scale;
-  img.setAttribute('width', nw + 'px');
-  img.setAttribute('height', nh + 'px');
 }
 
 function submitArticle(e) {
@@ -210,18 +212,17 @@ function openUploadImgDialog() {
 
 function uploadImgInputChange(e) {
   var file = $("#upload-img-input")[0].files[0];
-  var gid = $("#choose-photo-div").attr('data-curr-gid');
+  var gid = $("#choose-photo-div").attr('data-curr-gid') || 0;
   var fd = new FormData();
   fd.append('file', file);
-  // default
   fd.append('gid', gid);
-  $.ajax({
+  $.ajax({ 
     url: '/admin/datas/photos/add',
     data: fd,
     type: 'post',
-    dataType: 'json',
     processData: false,
     contentType: false,
+    dataType: 'json',
     success: function (dt) {
       getGroupPhotos(gid);
     }

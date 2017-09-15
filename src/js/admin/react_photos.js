@@ -217,7 +217,7 @@ class PhotoItem extends React.Component {
       <li className='photo-flow-item-li'>
         <div className='photo-flow-item-li-img-div'>
           <LazyLoader>
-            <img className='photo-flow-item-li-img' src={photoSrc} onLoad={this.photoOnLoad} />
+            <img className='photo-flow-item-li-img' width = {100} height = {100} src={photoSrc} onLoad={this.photoOnLoad} />
           </LazyLoader>
         </div>
         <div className='photo-flow-item-name-div'>
