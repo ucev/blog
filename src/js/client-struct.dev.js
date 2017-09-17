@@ -1,10 +1,14 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+const AppContainer = require('react-hot-loader').AppContainer;
 
 const ArticleList = require('./client/article_list');
+
 function initArticleList() {
   ReactDOM.render(
-    <ArticleList />,
+    <AppContainer>
+      <ArticleList />
+    </AppContainer>,
     document.getElementById('articles-list-area')
   )
 }
@@ -19,7 +23,9 @@ function initArticleListSearch() {
     }
   }
   ReactDOM.render(
-    <ArticleList isSearch = {true} query = {params} />,
+    <AppContainer>
+      <ArticleList isSearch = {true} query = {params} />
+    </AppContainer>,
     document.getElementById('articles-list-area')
   )
 }

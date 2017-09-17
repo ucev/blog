@@ -10,9 +10,7 @@ const Photos = require('./admin/react_photos.js');
 
 const render = (Component, ele) => {
   ReactDOM.render(
-    <AppContainer>
-      <Component />
-    </AppContainer>,
+    <Component />,
     document.getElementById(ele)
   )
 };
