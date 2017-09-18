@@ -10,12 +10,12 @@ module.exports = [{
     [
       'react-hot-loader/patch',
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&reload=true&name=react_struct',
-      path.resolve(__dirname, '../src/js/client_struct.js')
+      path.resolve(__dirname, '../src/js/client-struct.dev.js')
     ],
     my_struct: [
       'react-hot-loader/patch',
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&reload=true&name=react_struct',
-      path.resolve(__dirname, '../src/js/my_struct.js')
+      path.resolve(__dirname, '../src/js/my-struct.dev.js')
     ]
   },
   output: {
@@ -94,7 +94,7 @@ module.exports = [{
       filename: '[name].js'
     })
   ]
-},
+},/*
 {
   name: '__css',
   entry: {
@@ -154,5 +154,5 @@ module.exports = [{
       }
     })
   ]
-}
+}*/
 ]

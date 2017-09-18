@@ -29,11 +29,8 @@ const DEBUG_MODE = configs.website_info.debug
 const mail = require('./utils/mail')
 
 /*
-//var logger = require('morgan');
 var logger = require('./utils/log4js');
-
 const __log = require('./utils/log');
-
 */
 
 var app

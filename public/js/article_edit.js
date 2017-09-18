@@ -116,8 +116,8 @@ function submitArticle(e) {
         $('#submit').click(submitArticle);
       }
     },
-    error: () => {
-      console.log('error');
+    error: (err) => {
+      console.log(err);
       $('#submit').click(submitArticle);
     }
   });
