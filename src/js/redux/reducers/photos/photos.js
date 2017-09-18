@@ -22,9 +22,9 @@ const photos = (state = [], action) => {
       return ps
     case PHOTOS.PHOTO_CHECK_STATE_CHANGE:
       var ps = [...state]
-      for (var p in ps) {
-        if (p.id === action.id) {
-          p.checked = action.checked
+      for (var i in ps) {
+        if (ps[i].id === action.id) {
+          ps[i].checked = action.checked
           break
         }
       }

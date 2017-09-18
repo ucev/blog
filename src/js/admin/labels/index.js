@@ -1,10 +1,10 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-const LabelTable = require('./label-table')
-const TableNavLink = require("./table-nav-link")
+import LabelTable from './label-table'
+import TableNavLink from "./table-nav-link"
 import { orderChange as _orderChange, fetchLabelData } from '../../redux/actions/labels'
 
 class LabelLayout extends React.Component {
@@ -28,4 +28,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   }
 })
 
-module.exports = connect(mapStateToProps, mapDispatchToProps)(LabelLayout)
+const _LabelLayout = connect(
+                       mapStateToProps,
+                       mapDispatchToProps
+                      )(LabelLayout)
+export default _LabelLayout

@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 var DialogFoot = (props) => {
   return (
@@ -9,4 +9,4 @@ var DialogFoot = (props) => {
   )
 }
 
-module.exports = DialogFoot;
+export default DialogFoot

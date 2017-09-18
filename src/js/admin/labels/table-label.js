@@ -1,10 +1,10 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-const TableLabel = require('../../components/tables/table_label')
-import { orderChange as _orderChange } from '../../redux/actions/labels'
+import TableLabel from '../../components/tables/table-label'
+import { orderChange } from '../../redux/actions/labels'
 
 const LabelTableLabel = ({orderby = 'id', orderDirect = 'asc', orderChange}) => {
   var labels = [
@@ -34,11 +34,12 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
     orderChange: (orderby, orderDirect) => {
-      dispatch(_orderChange(orderby, orderDirect))
+      dispatch(orderChange(orderby, orderDirect))
     }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LabelTableLabel)
+const _LabelTableLabel = connect(
+                           mapStateToProps,
+                           mapDispatchToProps
+                          )(LabelTableLabel)
+export default _LabelTableLabel

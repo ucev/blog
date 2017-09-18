@@ -1,13 +1,24 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const PhotoFlowOperationBar = require('./photo-flow-operation-bar')
+import PhotoFlowOperationBar from './photo-flow-operation-bar'
+import PhotoItem from './photo-item'
 
 const PhotoFlow = ({ photos, groups }) => {
   const items = photos.map(photo =>
-    <PhotoItem key={photo.id} photo={photo} groups={groups} />
-  );
+    <PhotoItem
+      key={photo.id}
+      photo={photo}
+      id={photo.id}
+      name={photo.name}
+      checked={photo.checked}
+      title={photo.title}
+      inputVisible={photo.inputVisible}
+      moveVisible={photo.moveVisible}
+      delVisible={photo.delVisible}
+    />
+  )
   return (
     <div id='photo-flow-div'>
       <PhotoFlowOperationBar />
@@ -15,7 +26,7 @@ const PhotoFlow = ({ photos, groups }) => {
         {items}
       </ul>
     </div>
-  );
+  )
 }
 
 const mapStateToProps = (state) => ({
@@ -25,7 +36,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({})
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PhotoFlow)
+const _PhotoFlow = connect(
+                     mapStateToProps,
+                     mapDispatchToProps
+                    )(PhotoFlow)
+export default _PhotoFlow

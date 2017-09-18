@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 var DialogOperationButton = (props) => {
   var classes = `dialog-operation-button dialog-${props.type}-button`;
@@ -8,4 +8,4 @@ var DialogOperationButton = (props) => {
   )
 }
 
-module.exports = DialogOperationButton;
+export default DialogOperationButton

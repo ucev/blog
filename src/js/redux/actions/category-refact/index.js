@@ -59,13 +59,11 @@ export const getCategoryTree = () => {
     var cid = state.cid
     var params = { id: cid }
     var url = '/admin/datas/categories/tree?' + urlEncode(params)
-    console.log(url)
     return fetch(url, { credentials: 'include' }).then(res => res.json())
              .then(res => {
                if (res.code !== 0) return
                var root = res.data
                var tid = state.category === -1 ? root.id : state.category
-               console.log(root)
                dispatch({
                  type: CATEGORY_REFACT.GET_CATEGORY_TREE,
                  tree: root
@@ -75,7 +73,6 @@ export const getCategoryTree = () => {
                  tid,
                  function (dt1) {
                    var detail = dt1.code === 0 ? dt1.data : {}
-                   console.log(detail)
                    dispatch({
                      type: CATEGORY_REFACT.GET_REFACT_DETAIL,
                      detail: detail,
@@ -94,7 +91,6 @@ export const getRefactDetail = (type, id, cid) => {
       type,
       id,
       function (dt) {
-        console.log("HERE")
         var detail = dt.code === 0 ? dt.data : {}
         var aid = (type === 'art' && detail.id) ? detail.id : -1
         dispatch({

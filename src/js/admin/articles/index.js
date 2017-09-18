@@ -1,13 +1,14 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const FilterInput = require('./filter-input')
-const FilterSelect = require('./filter-select')
-const ArticleTable = require('./article-table')
-const ConfirmDialog = require("../../components/dialogs/confirm_dialog.js");
-const OptionDialog = require("../../components/dialogs/option_dialog.js");
-const TableNavLink = require("../../components/table_foot_nav.js");
+import FilterInput from './filter-input'
+import FilterSelect from './filter-select'
+import ArticleTable from './article-table'
+import ConfirmDialog from "../../components/dialogs/confirm-dialog"
+import OptionDialog from "../../components/dialogs/option-dialog"
+import TableNavLink from "../../components/table-foot-nav"
+
 import {
   addArticle,
   deleteArticleCancel,
@@ -22,7 +23,6 @@ import {
 // 😢 
 class ArticleLayout extends React.Component {
   constructor(props) {
-    console.log('h1 ')
     super(props)
     this.stateOptions = [
       {value: '-1', title: '全部'},
@@ -42,17 +42,11 @@ class ArticleLayout extends React.Component {
     this.props.fetchCategories()
   }
   render() {
-    /**
-     * 这样感觉封装性稍差一点
-     * 以后更有体会了再来看看😊
-     * 先做一个标记
-     */
     var groupopeReset = true;
     var categories = {};
     this.props.categories.forEach((category) => {
       categories[category.id] = category.name;
     })
-    console.log(categories)
     return ( 
       <div>
         <div className = 'table-filter-bar table-filter-bar-top'>
@@ -83,11 +77,9 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchToProps = (dispatch) => ({
   deleteCancel: () => {
-    alert('del cancel')
     dispatch(deleteArticleCancel())
   },
   deleteConfirm: () => {
-    alert('del confirm')
     dispatch(deleteArticleConfirm())
   },
   fetchArticles: () => {
@@ -107,7 +99,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
+const _ArticleLayout = connect(
+            mapStateToProps,
   mapDispatchToProps
 )(ArticleLayout)
+export default _ArticleLayout

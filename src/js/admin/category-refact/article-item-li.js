@@ -1,5 +1,5 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import {
@@ -37,7 +37,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ArticleItemLi)
+const _ArticleItemLi = connect(
+                         mapStateToProps,
+                         mapDispatchToProps
+                        )(ArticleItemLi)
+export default _ArticleItemLi

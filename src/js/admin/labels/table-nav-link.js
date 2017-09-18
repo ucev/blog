@@ -1,9 +1,9 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-const TableNavLink = require("../../components/table_foot_nav.js")
+import TableNavLink from "../../components/table-foot-nav"
 import { pageChange } from '../../redux/actions/labels'
 
 const LabelNavLink = (current = 0, total = 0, pagechange) => (
@@ -31,7 +31,8 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LabelNavLink)
+const _LabelNavLink = connect(
+                        mapStateToProps,
+                        mapDispatchToProps
+                      )(LabelNavLink)
+export default _LabelNavLink

@@ -41,12 +41,11 @@ async function getCategoryRefactItemDetail(ctx, id, type) {
   }
 }
 
-router.post('/articles/delete', async (ctx, next) => {
-  var request = ctx.request.body
-  var ids = request.id
-  ids = ids.split(',')
-  __log.debug('here')
+router.post('/articles/delete', uploader, async (ctx, next) => {
   try {
+    var request = ctx.request.body
+    var ids = request.id
+    ids = ids.split(',')
     await __articles.delete(ids)
     ctx.body = { code: 0, msg: '删除成功' }
   } catch (err) {
@@ -95,11 +94,15 @@ router.get('/articles/get', async (ctx, next) => {
   }
 })
 
-router.get('/articles/move', async (ctx, next) => {
-  var ids = ctx.query.id;
+router.post('/articles/move', uploader, async (ctx, next) => {
+  var request = ctx.request.body
+  console.log(request)
+  var ids = request.id;
   __log.debug(ids);
   ids = ids.split(',');
-  var gid = ctx.query.gid;
+  var gid = request.gid;
+  console.log(ids)
+  console.log(gid)
   try {
     await __articles.move(ids, gid)
     ctx.body = { code: 0, msg: '更新成功' }
@@ -134,7 +137,7 @@ router.get('/articles/state', async (ctx, next) => {
   }
 })
 
-router.post('/categories/add', async (ctx, next) => {
+router.post('/categories/add', uploader, async (ctx, next) => {
   var request = ctx.request.body
   var name = request.name
   var parent = request.parent
@@ -154,7 +157,7 @@ router.post('/categories/add', async (ctx, next) => {
   }
 })
 
-router.post('/categories/delete', async (ctx, next) => {
+router.post('/categories/delete', uploader, async (ctx, next) => {
   var request = ctx.request.body
   var id = request.id
   if (id < 1) {
@@ -168,7 +171,7 @@ router.post('/categories/delete', async (ctx, next) => {
   }
 })
 
-router.post('/categories/modify', async (ctx, next) => {
+router.post('/categories/modify', uploader, async (ctx, next) => {
   var request = ctx.request.body
   var id = strToNum(request.id)
   var data = {}
@@ -397,12 +400,13 @@ router.get('/photogroup/remove', async (ctx, next) => {
   }
 })
 
-router.get('/photogroup/rename', async (ctx, next) => {
-  var gid = ctx.query.gid;
-  if (gid < 2) {
+router.post('/photogroup/rename', uploader, async (ctx, next) => {
+  var request = ctx.request.body
+  var gid = Number(request.gid)
+  if (gid < 1) {
     return ctx.body = { code: 1, msg: '更新失败' }
   }
-  var name = ctx.query.name;
+  var name = request.name;
   try {
     await __photogroups.rename({
             id: gid,
@@ -410,6 +414,7 @@ router.get('/photogroup/rename', async (ctx, next) => {
           })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
+    console.log(err)
     ctx.body = { code: 1, msg: '更新失败' }
   }
 })

@@ -1,11 +1,11 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const AddCategoryDialog = require('./add-category-dialog')
-const ConfirmDialog = require("./confirm-dialog")
-const OperationBar = require('./operation-bar')
-const CategoryTable = require('./category-table')
+import AddCategoryDialog from './add-category-dialog'
+import ConfirmDialog from "./confirm-dialog"
+import OperationBar from './operation-bar'
+import CategoryTable from './category-table'
 import {
   fetchCategoryData
 } from '../../redux/actions/categories'
@@ -33,7 +33,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryLayout)
+const _CategoryLayout = connect(
+                          mapStateToProps,
+                          mapDispatchToProps
+                        )(CategoryLayout)
+export default _CategoryLayout

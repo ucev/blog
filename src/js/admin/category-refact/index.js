@@ -1,9 +1,9 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const CategoryTree = require('./category-tree')
-const DetailArea = require('./detail-area')
+import CategoryTree from './category-tree'
+import DetailArea from './detail-area'
 import {
   getCategoryTree
 } from '../../redux/actions/category-refact'
@@ -31,7 +31,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryRefactArea)
+const _CategoryRefactArea = connect(
+                              mapStateToProps,
+                              mapDispatchToProps
+                            )(CategoryRefactArea)
+export default _CategoryRefactArea

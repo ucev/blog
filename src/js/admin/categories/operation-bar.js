@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import {
@@ -30,7 +30,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OperationBar)
+const _OperationBar = connect(
+                        mapStateToProps,
+                        mapDispatchToProps
+                      )(OperationBar)
+export default _OperationBar

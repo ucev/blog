@@ -1,25 +1,18 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const ArticleRow = require('./article-row')
-const ArticleTableLabel = require('./article-table-label')
-const Table = require('../../components/tables/table');
-const TableBody = require('../../components/tables/table_body');
-const TableFoot = require('../../components/tables/table_foot');
+import ArticleRow from './article-row'
+import ArticleTableLabel from './article-table-label'
+import Table from '../../components/tables/table'
+import TableBody from '../../components/tables/table-body'
+import TableFoot from '../../components/tables/table-foot'
 
-const ArticleTable = ({articles, categories, checkState}) => {
-    var allCheckState = articles.every(article => checkState[article.id])
-    articles = articles.map((article) => {
-      var cid = article.category;
-      article.categoryname = categories[cid];
-      return article;
-    })
-    console.log(articles) 
-    const articleRows = articles.map((article, index, arr) => (<ArticleRow key = {article.id} index = {index} checked = {checkState[article.id]} id = {article.id} title = {article.title} categoryname = {categories[article.cid]} label = {article.label} state = {article.state} top = {article.top} pageview = {article.pageview} />))
+const ArticleTable = ({articles, checkState}) => {
+    const articleRows = articles.map((article, index, arr) => (<ArticleRow key = {article.id} index = {index} checked = {checkState[article.id]} id = {article.id} title = {article.title} categoryname = {article.categoryname} label = {article.label} state = {article.state} top = {article.top} pageview = {article.pageview} />))
     return (
       <Table type = 'article'>
-        <ArticleTableLabel allCheckState = {allCheckState}/>
+        <ArticleTableLabel />
         <TableBody>
           { articleRows }
         </TableBody>
@@ -28,14 +21,23 @@ const ArticleTable = ({articles, categories, checkState}) => {
     );
 }
 
+function getArticles(articles, categories) {
+  var cats = {}
+  for (var c of categories) {
+    cats[c.id] = c.name
+  }
+  articles.forEach(article => article.categoryname = cats[article.category])
+  return articles
+}
+
 const mapStateToProps = (state) => ({
-  articles: state.articles,
-  categories: state.categories,
+  articles: getArticles(state.articles, state.categories),
   checkState: state.checkState
 })
 const mapDispatchToProps = (dispatch) => ({})
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ArticleTable)
+const _ArticleTable = connect(
+                        mapStateToProps,
+                        mapDispatchToProps
+                      )(ArticleTable)
+export default _ArticleTable

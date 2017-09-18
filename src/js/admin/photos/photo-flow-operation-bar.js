@@ -1,9 +1,9 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const ConfirmDialog = require("../../components/dialogs/confirm_dialog.js")
-const OptionDialog = require("../../components/dialogs/option_dialog.js")
+import ConfirmDialog from "../../components/dialogs/confirm-dialog"
+import OptionDialog from "../../components/dialogs/option-dialog"
 import {
   pfobDeleteDialogVisible,
   pfobMoveDialogVisible,
@@ -147,7 +147,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PhotoFlowOperationBar)
+const _PhotoFlowOperationBar = connect(
+                                 mapStateToProps,
+                                 mapDispatchToProps
+                                )(PhotoFlowOperationBar)
+export default _PhotoFlowOperationBar

@@ -1,5 +1,5 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import { 
@@ -38,7 +38,7 @@ class ArticleRow extends React.Component {
     }
   }
   handleCheckStateChange(e) {
-    var id = this.props.article.id;
+    var id = this.props.id;
     var checked = e.target.checked;
     this.props.checkState(id, checked)
   }
@@ -79,7 +79,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ArticleRow)
+const _ArticleRow = connect(
+                      mapStateToProps,
+                      mapDispatchToProps
+                    )(ArticleRow)
+export default _ArticleRow

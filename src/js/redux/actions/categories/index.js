@@ -33,7 +33,6 @@ export const addCategoryConfirm = (data) => {
                body: data
              }).then(res => res.json())
              .then((res) => {
-               console.log(res)
                if (res.code !== 0) return
                dispatch(addCategoryDivStateChange(false))
                dispatch(fetchCategoryData())

@@ -5,8 +5,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = [{
   entry: {
-    client_struct: path.resolve(__dirname, '../src/js/client_struct.js'),
-    my_struct: path.resolve(__dirname, '../src/js/my_struct.js')
+    client_struct: path.resolve(__dirname, '../src/js/client-struct.js'),
+    my_struct: path.resolve(__dirname, '../src/js/my-struct.js')
   },
   output: {
     library: 'MyStructs',

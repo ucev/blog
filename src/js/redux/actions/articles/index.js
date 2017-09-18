@@ -31,36 +31,39 @@ export const articleStateChange = (id, type, isgroup = false) => {
 
 export const articleGroupChange = (id, gid, isgroup = false) => {
   return (dispatch, getState) => {
-    var data = {
-      id: id,
-      gid: gid
-    }
-    var url = '/admin/datas/articles/move?' + urlEncode(data)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then((res) => {
-               if (res.code != 0) return
-               var state = getState()
-               if (state.isgroup) {
-                 dispatch(fetchArticles()).then(() => {
-                   dispatch({
-                     type: ARTICLES.MOVE_CATEGORY_STATE,
-                     moveVisible: false,
-                     moveArticleId: -1,
-                     isgroup: false
-                   })
-                 })
-               } else {
-                 dispatch(fetchSingleArticle(id)).then(() => {
-                   dispatch({
-                     type: ARTICLES.MOVE_CATEGORY_STATE,
-                     moveVisible: false,
-                     moveArticleId: -1
-                   })
-                 })
-               }
-             }).catch(err => {
-               console.log(err)
-             })
+    var fd = new FormData()
+    fd.append('id', id)
+    fd.append('gid', gid)
+    var url = '/admin/datas/articles/move'
+    return fetch(url, {
+              credentials: 'include',
+              method: 'POST',
+              body: fd
+            }).then(res => res.json())
+            .then((res) => {
+              if (res.code != 0) return
+              var state = getState()
+              if (state.isgroup) {
+                dispatch(fetchArticles()).then(() => {
+                  dispatch({
+                    type: ARTICLES.MOVE_CATEGORY_STATE,
+                    moveVisible: false,
+                    moveArticleId: -1,
+                    isgroup: false
+                  })
+                })
+              } else {
+                dispatch(fetchSingleArticle(id)).then(() => {
+                  dispatch({
+                    type: ARTICLES.MOVE_CATEGORY_STATE,
+                    moveVisible: false,
+                    moveArticleId: -1
+                  })
+                })
+              }
+            }).catch(err => {
+              console.log(err)
+            })
   }
 }
 
@@ -136,7 +139,6 @@ export const fetchArticles = (start) => {
 
 export const fetchCategories = () => {
   return (dispatch, getState) => {
-    console.log("h3")
     var url = '/admin/datas/categories/get'
     return fetch(url, {credentials: 'include'}).then(res => res.json())
              .then((res) => {
@@ -177,22 +179,28 @@ export const handleDeleteArticle = (id) => ({
 export const deleteArticleConfirm = () => {
   return (dispatch, getState) => {
     var state = getState()
-    var data = {
-      id: state.delArticleId
-    }
-    var url = '/admin/datas/articles/delete?' + urlEncode(data)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then((res) => {
-               if (res.code != 0) return
-               dispatch({
-                 type: ARTICLES.DELETE_ARTICLE_STATE,
-                 delVisible: false,
-                 delArticleId: -1
-               })
-               dispatch(fetchArticles())
-             }).catch(err => {
-               console.log(err)
-             })
+    var fd = new FormData()
+    fd.append('id', state.delArticleId)
+    var url = '/admin/datas/articles/delete'
+    console.log(url)
+    return fetch(url, {
+              credentials: 'include',
+              method: 'POST',
+              body: fd
+            }).then(res => res.json())
+            .then((res) => {
+              console.log(res) 
+              if (res.code != 0) return
+              console.log(res)
+              dispatch({
+                type: ARTICLES.DELETE_ARTICLE_STATE,
+                delVisible: false,
+                delArticleId: -1
+              })
+              dispatch(fetchArticles())
+            }).catch(err => {
+              console.log(err)
+            })
   }
 }
 

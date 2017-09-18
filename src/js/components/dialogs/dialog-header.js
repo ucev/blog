@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 var DialogHeader = (props) => {
   return (
@@ -9,4 +9,4 @@ var DialogHeader = (props) => {
   )
 }
 
-module.exports = DialogHeader;
+export default DialogHeader

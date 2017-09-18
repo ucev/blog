@@ -1,5 +1,5 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import {
@@ -73,7 +73,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryRow)
+const _CategoryRow = connect(
+                       mapStateToProps,
+                       mapDispatchToProps
+                      )(CategoryRow)
+export default _CategoryRow

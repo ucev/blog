@@ -1,8 +1,8 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const CategoryItemLi = require('./category-item-li')
+import CategoryItemLi from './category-item-li'
 
 const CategoryTree = ({ article, category, cstate, tree }) => {
   return (
@@ -23,7 +23,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({})
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryTree)
+const _CategoryTree = connect(
+                        mapStateToProps,
+                        mapDispatchToProps
+                      )(CategoryTree)
+export default _CategoryTree

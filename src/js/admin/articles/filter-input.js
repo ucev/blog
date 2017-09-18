@@ -1,5 +1,5 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import { filterOptionChange } from '../../redux/actions/articles'
@@ -33,7 +33,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FilterInput)
+const _FilterInput = connect(
+                       mapStateToProps,
+                       mapDispatchToProps
+                      )(FilterInput)
+export default _FilterInput

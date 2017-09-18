@@ -7,7 +7,7 @@ export const fetchPhotoGroups = () => {
     return fetch(url, {credentials: 'include'}).then(res => res.json())
              .then(res => {
                if (res.code !== 0) return
-               var groups = dt.data
+               var groups = res.data
                groups.forEach(group => {
                  group.inputVisible = false
                  group.delVisible = false
@@ -75,14 +75,16 @@ export const groupItemShowDeleteDialog = (gid) => ({
   gid: gid
 })
 
-export const groupItemHideInputDialog = (gid) => ({
-  type: PHOTOS.GROUP_ITEM_HIDE_INPUT,
-  gid: gid
+export const groupItemDeleteState = (gid, visible) => ({
+  type: PHOTOS.GROUP_ITEM_DELETE_STATE,
+  gid: gid,
+  visible: visible
 })
 
-export const groupItemShowInputDialog = (gid) => ({
-  type: PHOTOS.GROUP_ITEM_SHOW_INPUT,
-  gid: gid
+export const groupItemInputState = (gid, visible) => ({
+  type: PHOTOS.GROUP_ITEM_INPUT_STATE,
+  gid: gid,
+  visible: visible
 })
 
 export const groupItemClick = (gid) => {
@@ -112,13 +114,17 @@ export const groupItemDelete = (gid) => {
 
 export const groupItemRename = (gid, newname) => {
   return (dispatch, getState) => {
-    var params = {
-      gid: gid,
-      name: newname
-    }
-    var url = '/admin/datas/photogroup/rename?' + urlEncode(params)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
+    var fd = new FormData()
+    fd.append('gid', gid)
+    fd.append('name', newname)
+    var url = '/admin/datas/photogroup/rename'
+    return fetch(url, {
+              credentials: 'include',
+              method: 'POST',
+              body: fd
+            }).then(res => res.json())
              .then(res => {
+               console.log(res)
                if (res.code !== 0) return
                dispatch(fetchPhotoGroups())
              }).catch(err => {
@@ -139,22 +145,22 @@ export const fetchGroupPhotos = () => {
     }
     var url = '/admin/datas/photos/get?' + urlEncode(params)
     return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then(res => {
-               if (res.code !== 0) return
-               var photos = res.data
-               photos.forEach((photo) => {
-                 photo.checked = false
-                 photo.delVisible = false
-                 photo.inputVisible = false
-                 photo.moveVisible = false
-               })
-               dispatch({
-                 type: PHOTOS.FETCH_GROUP_PHOTOS,
-                 photos: photos
-               })
-             }).catch(err => {
-               console.log(err)
-             })
+            .then(res => {
+              if (res.code !== 0) return
+              var photos = res.data
+              photos.forEach((photo) => {
+                photo.checked = false
+                photo.delVisible = false
+                photo.inputVisible = false
+                photo.moveVisible = false
+              })
+              dispatch({
+                type: PHOTOS.FETCH_GROUP_PHOTOS,
+                photos: photos
+              })
+            }).catch(err => {
+              console.log(err)
+            })
   }
 }
 
@@ -177,7 +183,7 @@ export const fetchSinglePhoto = (id) => {
 
 export const photoCheckStateChange = (id, checked) => ({
   type: PHOTOS.PHOTO_CHECK_STATE_CHANGE,
-  id: id,
+  id: Number(id),
   checked: checked
 })
 
@@ -195,7 +201,7 @@ export const photoMoveGroup = (ids, newgid) => {
     var url = '/admin/datas/photos/move?' + urlEncode(params)
     return fetch(url, { credentials: 'include' }).then(res => res.json())
              .then(res => {
-               if (dt.code !== 0) return
+               if (res.code !== 0) return
                dispatch(fetchPhotoGroups())
                dispatch(fetchGroupPhotos())
              }).catch(err => {

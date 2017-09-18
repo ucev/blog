@@ -1,9 +1,9 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const InputDialog = require("../../components/dialogs/input_dialog.js")
-const PhotoGroupItem = require('./photo-group-item')
+import InputDialog from "../../components/dialogs/input-dialog"
+import PhotoGroupItem from './photo-group-item'
 import {
   groupAddCancel,
   groupAddConfirm,
@@ -11,14 +11,21 @@ import {
   groupShowAddDialog
 } from '../../redux/actions/photos'
 
-const PhotoGroupBar = ({ addVisible, opeImgVisible, gid, groupAddCancel, groupAddConfirm,
+const PhotoGroupBar = ({ addVisible, opeImgVisible, gid, groups, groupAddCancel, groupAddConfirm,
    groupOpeImgStateToggle, groupShowAddDialog }) => {
 
     var opebarImg = opeImgVisible ? '/images/icons/ic_cancel_black_24dp_2x.png' : '/images/icons/ic_arrow_drop_down_circle_black_24dp_2x.png';
-    var groupItems = groups.map(group => 
-      <PhotoGroupItem key={group.id} group={group} gid={gid} opeImgVisible={opeImgVisible} />
-    );
-    var key = new Date().getTime();
+    var groupItems = groups.map(group => (
+          <PhotoGroupItem
+            key={group.id}
+            gid={gid}
+            id={group.id}
+            name={group.name}
+            count={group.count}
+            inputVisible={group.inputVisible}
+            delVisible={group.delVisible}
+            opeImgVisible={opeImgVisible} />
+    ))
     return (
       <div id='photo-group-div'>
         <div className='photo-group-operation-bar'>
@@ -58,7 +65,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PhotoGroupItem)
+const _PhotoGroupBar = connect(
+                         mapStateToProps,
+                         mapDispatchToProps
+                        )(PhotoGroupBar)
+export default _PhotoGroupBar

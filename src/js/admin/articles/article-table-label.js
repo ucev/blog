@@ -1,8 +1,8 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const TableLabel = require('../../components/tables/table_label')
+import TableLabel from '../../components/tables/table-label'
 import { allChecked } from '../../redux/actions/articles'
 
 class ArticleTableLabel extends React.Component {
@@ -32,14 +32,17 @@ class ArticleTableLabel extends React.Component {
   }
 }
 
-const mapStateToProps = () => ({})
+const mapStateToProps = (state) => ({
+  allCheckState: state.articles.every(article => state.checkState[article.id])
+})
 const mapDispatchToProps = (dispatch) => ({
   checkAll: (checked) => {
     dispatch(allChecked(checked))
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ArticleTableLabel)
+const _ArticleTableLabel = connect(
+                             mapStateToProps,
+                             mapDispatchToProps
+                            )(ArticleTableLabel)
+export default _ArticleTableLabel

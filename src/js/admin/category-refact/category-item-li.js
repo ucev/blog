@@ -1,8 +1,8 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const ArticleItemLi = require('./article-item-li')
+import ArticleItemLi from './article-item-li'
 import {
   categoryExpandChange,
   getRefactDetail
@@ -72,7 +72,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryItemLi)
+const _CategoryItemLi = connect(
+                          mapStateToProps,
+                          mapDispatchToProps
+                        )(CategoryItemLi)
+export default _CategoryItemLi

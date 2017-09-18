@@ -1,7 +1,7 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-const TableLabel = require('../../components/tables/table_label')
+import TableLabel from '../../components/tables/table-label'
 
 class CategoryLabel extends React.Component {
   constructor(props) {
@@ -23,4 +23,4 @@ class CategoryLabel extends React.Component {
   }
 }
 
-module.exports = CategoryLabel
+export default CategoryLabel

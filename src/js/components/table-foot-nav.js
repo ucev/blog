@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 class TableNavLinkLi extends React.Component {
   constructor(props) {
@@ -57,4 +57,4 @@ class TableNavLink extends React.Component {
   }
 }
 
-module.exports = TableNavLink;
+export default TableNavLink

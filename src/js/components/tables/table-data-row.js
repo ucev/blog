@@ -1,7 +1,7 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-var TableDataRow = (props) => {
+const TableDataRow = (props) => {
   var datas = this.props.datas.map((data) => <td></td>)
   return (
     <tr className = 'content-row-data'>
@@ -10,4 +10,4 @@ var TableDataRow = (props) => {
   )
 }
 
-module.exports = TableDataRow;
+export default TableDataRow

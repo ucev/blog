@@ -1,7 +1,7 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-var Table = (props) => {
+const Table = (props) => {
   var classes = `content-table ${props.type}-content-table`;
   return (
     <table className = {classes}>
@@ -10,4 +10,4 @@ var Table = (props) => {
   )
 }
 
-module.exports = Table;
+export default Table

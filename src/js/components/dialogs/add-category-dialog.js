@@ -1,12 +1,12 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-const CancelButton = require('./dialog_cancel_button');
-const ConfirmButton = require('./dialog_confirm_button');
-const Dialog = require('./dialog');
-const DialogHeader = require('./dialog_header');
-const DialogBody = require('./dialog_body');
-const DialogFoot = require('./dialog_foot');
+import CancelButton from './dialog-cancel-button'
+import ConfirmButton from './dialog-confirm-button'
+import Dialog from './dialog'
+import DialogHeader from './dialog-header'
+import DialogBody from './dialog-body'
+import DialogFoot from './dialog-foot'
 
 class AddCategoryDialog extends React.Component {
   constructor(props) {
@@ -88,4 +88,4 @@ class AddCategoryDialog extends React.Component {
   }
 }
 
-module.exports = AddCategoryDialog;
+export default AddCategoryDialog

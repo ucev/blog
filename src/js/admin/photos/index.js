@@ -1,9 +1,9 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const PhotoFlow = require('./photo-flow')
-const PhotoGroupBar = require('./photo-group-bar')
+import PhotoFlow from './photo-flow'
+import PhotoGroupBar from './photo-group-bar'
 import {
   fetchGroupPhotos,
   fetchPhotoGroups
@@ -35,7 +35,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  fetchGroupPhotos,
-  fetchPhotoGroups
-)(PhotoArea)
+const _PhotoArea = connect(
+                     mapStateToProps,
+                     mapDispatchToProps
+                    )(PhotoArea)
+export default _PhotoArea

@@ -1,8 +1,8 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const Dialog = require("../../components/dialogs/confirm_dialog.js")
+import Dialog from "../../components/dialogs/confirm-dialog"
 import {
   deleteCategoryConfirm,
   deleteCategoryCancel
@@ -27,7 +27,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ConfirmDialog)
+const _ConfirmDialog = connect(
+                         mapStateToProps,
+                         mapDispatchToProps
+                        )(ConfirmDialog)
+export default _ConfirmDialog

@@ -1,6 +1,6 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
-const moment = require('moment')
+import React from 'react'
+import ReactDOM from 'react-dom'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 
 const LabelRow = ({label}) => {
@@ -26,4 +26,4 @@ LabelRow.propTypes = {
   })
 }
 
-module.exports = LabelRow
+export default LabelRow

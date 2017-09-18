@@ -1,95 +1,42 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import LazyLoader from 'react-lazyload';
+import LazyLoader from 'react-lazyload'
 
-const ConfirmDialog = require("../../components/dialogs/confirm_dialog.js");
-const InputDialog = require("../../components/dialogs/input_dialog.js");
-const OptionDialog = require("../../components/dialogs/option_dialog.js");
+import DeleteDialog from './photo-item-delete-dialog'
+import MoveGroupDialog from './photo-item-move-group-dialog'
+import RenameDialog from './photo-item-rename-dialog'
 import {
   photoCheckStateChange,
   photoDeleteDialogVisible,
-  photoDeleteSingle,
   photoInputDialogVisible,
   photoMoveDialogVisible,
-  photoMoveSingle,
-  photoRename
 } from '../../redux/actions/photos'
 
 class PhotoItem extends React.Component {
   constructor(props) {
     super(props);
     //Dialog Visibility
-    this.showInputDialog = this.showInputDialog.bind(this);
-    this.hideInputDialog = this.hideInputDialog.bind(this);
+    this.showRenameDialog = this.showRenameDialog.bind(this);
     this.showMoveDialog = this.showMoveDialog.bind(this);
-    this.hideMoveDialog = this.hideMoveDialog.bind(this);
-    this.showDelDialog = this.showDelDialog.bind(this);
-    this.hideDelDialog = this.hideDelDialog.bind(this);
+    this.showDeleteDialog = this.showDeleteDialog.bind(this);
     // CheckBox
     this.handlePhotoCheck = this.handlePhotoCheck.bind(this);
-    // InputDialog
-    this.handleInputConfirm = this.handleInputConfirm.bind(this);
-    this.handleInputCancel = this.handleInputCancel.bind(this);
-    // MoveDialog
-    this.handleMoveConfirm = this.handleMoveConfirm.bind(this);
-    this.handleMoveCancel = this.handleMoveCancel.bind(this);
     // DeleteDialog
-    this.handleDelConfirm = this.handleDelConfirm.bind(this);
-    this.handleDelCancel = this.handleDelCancel.bind(this);
     this.photoOnLoad = this.photoOnLoad.bind(this);
   }
-  showInputDialog(e) {
-    var photo = this.props.photo;
-    this.props.photoInputDialogVisible(photo.id, true);
-  }
-  hideInputDialog(e) {
-    var photo = this.props.photo;
-    this.props.photoInputDialogVisible(photo.id, false);
+  showRenameDialog(e) {
+    this.props.showRenameDialog(this.props.id);
   }
   showMoveDialog(e) {
-    var photo = this.props.photo;
-    this.props.photoMoveDialogVisible(photo.id, true);
+    this.props.showMoveDialog(this.props.id);
   }
-  hideMoveDialog(e) {
-    var photo = this.props.photo;
-    this.props.photoMoveDialogVisible(photo.id, false);
-  }
-  showDelDialog(e) {
-    var photo = this.props.photo;
-    this.props.photoDeleteDialogVisible(photo.id, true);
-  }
-  hideDelDialog(e) {
-    var photo = this.props.photo;
-    this.props.photoDeleteDialogVisible(photo.id, false);
+  showDeleteDialog(e) {
+    this.props.showDeleteDialog(this.props.id);
   }
   handlePhotoCheck(e) {
     this.props.photoCheckStateChange(e.target.value, e.target.checked);
-  }
-  handleInputConfirm(name) {
-    var photo = this.props.photo;
-    this.props.photoRename(photo.id, name);
-    this.hideInputDialog();
-  }
-  handleInputCancel() {
-    this.hideInputDialog();
-  }
-  handleMoveConfirm(newgid) {
-    var photo = this.props.photo;
-    this.props.photoMoveSingle(photo.id, newgid);
-    this.hideMoveDialog();
-  }
-  handleMoveCancel() {
-    this.hideMoveDialog();
-  }
-  handleDelConfirm() {
-    var photo = this.props.photo;
-    this.props.photoDeleteSingle(photo.id);
-    this.hideDelDialog();
-  }
-  handleDelCancel() {
-    this.hideDelDialog();
   }
   photoOnLoad(e) {
     var img = e.target;
@@ -107,9 +54,8 @@ class PhotoItem extends React.Component {
     a.src = img.src;
   }
   render() {
-    var photo = this.props.photo;
-    var photoSrc = '/images/blog/' + photo.name;
-    var checked = photo.checked ? "checked" : "";
+    var photoSrc = '/images/blog/' + this.props.name;
+    var checked = this.props.checked ? "checked" : "";
     return (
       <li className='photo-flow-item-li'>
         <div className='photo-flow-item-li-img-div'>
@@ -118,49 +64,43 @@ class PhotoItem extends React.Component {
           </LazyLoader>
         </div>
         <div className='photo-flow-item-name-div'>
-          <input className='photo-flow-item-name-checkbox' type='checkbox' value={photo.id} checked={checked} onChange={this.handlePhotoCheck} />
-          <span className='photo-flow-item-name-span'>{photo.title}</span>
+          <input className='photo-flow-item-name-checkbox' type='checkbox' value={this.props.id} checked={checked} onChange={this.handlePhotoCheck} />
+          <span className='photo-flow-item-name-span'>{this.props.title}</span>
         </div>
         <ul className='photo-flow-item-li-ope-bar'>
-          <li className='photo-flow-item-ope-img photo-flow-item-mode-edit' onClick={this.showInputDialog}></li>
+          <li className='photo-flow-item-ope-img photo-flow-item-mode-edit' onClick={this.showRenameDialog}></li>
           <li className='photo-flow-item-ope-img photo-flow-item-mode-swap' onClick={this.showMoveDialog}></li>
-          <li className='photo-flow-item-ope-img photo-flow-item-mode-del' onClick={this.showDelDialog}></li>
+          <li className='photo-flow-item-ope-img photo-flow-item-mode-del' onClick={this.showDeleteDialog}></li>
         </ul>
-        <InputDialog title='编辑名称' centerScreen={false} confirm={this.handleInputConfirm} cancel={this.handleInputCancel} visible={photo.inputVisible} />
-        <OptionDialog title='移动分组' optionItems={this.props.groups} confirm={this.handleMoveConfirm} cancel={this.handleMoveCancel} visible={photo.moveVisible} centerScreen={false} />
-        <ConfirmDialog title='确认删除?' centerScreen={false} confirm={this.handleDelConfirm} cancel={this.handleDelCancel} visible={photo.delVisible} />
+        <DeleteDialog id={this.props.id} visible={this.props.delVisible} />
+        <RenameDialog id={this.props.id} visible={this.props.inputVisible} />
+        <MoveGroupDialog id={this.props.id} visible={this.props.moveVisible} />
       </li>
-    );
+    )
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  groups: state.groups
+})
 
 const mapDispatchToProps = (dispatch) => ({
   photoCheckStateChange: (id, checked) => {
     dispatch(photoCheckStateChange(id, checked))
   },
-  photoDeleteDialogVisible: (id, visible) => {
-    dispatch(photoDeleteDialogVisible(id, visible))
+  showDeleteDialog: (id) => {
+    dispatch(photoDeleteDialogVisible(id, true))
   },
-  photoDeleteSingle: (id) => {
-    dispatch(photoDeleteSingle(id))
+  showRenameDialog: (id) => {
+    dispatch(photoInputDialogVisible(id, true))
   },
-  photoInputDialogVisible: (id, visible) => {
-    dispatch(photoInputDialogVisible(id, visible))
-  },
-  photoMoveDialogVisible: (id, visible) => {
-    dispatch(photoMoveDialogVisible(id, visible))
-  },
-  photoMoveSingle: (id, gid) => {
-    dispatch(photoMoveSingle(id, gid))
-  },
-  photoRename: (id, name) => {
-    dispatch(photoRename(id, name))
+  showMoveDialog: (id) => {
+    dispatch(photoMoveDialogVisible(id, true))
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PhotoItem)
+const _PhotoItem = connect(
+                     mapStateToProps,
+                     mapDispatchToProps
+                    )(PhotoItem)
+export default _PhotoItem

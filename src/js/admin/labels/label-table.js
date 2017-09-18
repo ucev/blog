@@ -1,13 +1,13 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-const LabelRow = require('./table-row')
-const LabelTableLabel = require('./table-label')
-const Table = require('../../components/tables/table')
-const TableBody = require('../../components/tables/table_body')
-const TableFoot = require('../../components/tables/table_foot')
+import LabelRow from './table-row'
+import LabelTableLabel from './table-label'
+import Table from '../../components/tables/table'
+import TableBody from '../../components/tables/table-body'
+import TableFoot from '../../components/tables/table-foot'
  
 const LabelTable = ({labels = []}) => {
   labels = Array.from(labels)
@@ -43,9 +43,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 })
 
-const LT = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LabelTable)
+const _LabelTable = connect(
+                      mapStateToProps,
+                      mapDispatchToProps
+                    )(LabelTable)
 
-module.exports = LT
+module.exports = _LabelTable

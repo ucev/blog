@@ -1,5 +1,5 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 class Dialog extends React.Component {
   constructor(props) {
@@ -31,4 +31,4 @@ Dialog.defaultProps = {
   styles: {}
 }
 
-module.exports = Dialog;
+export default Dialog

@@ -1,8 +1,8 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const Dialog = require('../../components/dialogs/add_category_dialog')
+import Dialog from '../../components/dialogs/add-category-dialog'
 import {
   addCategoryConfirm,
   addCategoryCancel,
@@ -37,7 +37,8 @@ const mapDispatchToProps = (dispatch) => ({
   }
 })
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddCategoryDialog)
+const _AddCategoryDialog = connect(
+                             mapStateToProps,
+                             mapDispatchToProps
+                            )(AddCategoryDialog)
+export default _AddCategoryDialog

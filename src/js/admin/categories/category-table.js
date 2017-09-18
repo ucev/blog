@@ -1,12 +1,12 @@
-const React = require('react')
-const ReactDOM = require('react-dom')
+import React from 'react'
+import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-const CategoryLabel = require('./category-label')
-const CategoryRow = require('./category-row')
-const Table = require('../../components/tables/table')
-const TableBody = require('../../components/tables/table_body')
-const TableFoot = require('../../components/tables/table_foot')
+import CategoryLabel from './category-label'
+import CategoryRow from './category-row'
+import Table from '../../components/tables/table'
+import TableBody from '../../components/tables/table-body'
+import TableFoot from '../../components/tables/table-foot'
 
 const CategoryTable = ({ categories }) => {
   var categories = categories.map((category) => (<CategoryRow key = {category.id} category = {category} />))
@@ -26,7 +26,8 @@ const mapStateToProps = (state) => ({
 })
 const mapDispatchToProps = (dispatch) => ({})
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CategoryTable)
+const _CategoryTable = connect(
+                         mapStateToProps,
+                         mapDispatchToProps
+                        )(CategoryTable)
+export default _CategoryTable
