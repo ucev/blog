@@ -1,6 +1,6 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const moment = require('moment');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import moment from 'moment'
 
 class ArticleItem extends React.Component {
   constructor(props) {
@@ -23,4 +23,4 @@ class ArticleItem extends React.Component {
   }
 }
 
-module.exports = ArticleItem;
+export default ArticleItem

@@ -1,32 +1,9 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const moment = require('moment');
+import React from 'react'
+import ReactDOM from 'react-dom'
+import moment from 'moment'
 
-class SearchLabel extends React.Component {
-  render() {
-    var label = this.props.label;
-    if (this.props.query && label.search(this.props.query) == -1) {
-      return <li className = 'article-item-li-label-li'>{label}</li>;
-    } else {
-      return <li className = 'article-item-li-label-li article-item-li-label-li-selected'>{label}</li>;
-    }
-  }
-}
-class SearchLabels extends React.Component {
-  render() {
-    var labels = this.props.labels.map((label) => {
-      if (label.trim() == '') {
-        return;
-      }
-      return <SearchLabel label = {label} query = {this.props.query} />
-    })
-    return (
-      <ul className = 'article-item-li-labels-ul'>
-        {labels}
-      </ul>
-    )
-  }
-}
+import SearchLabels from './search-labels'
+
 class ArticleItem extends React.Component {
   constructor(props) {
     super(props);
@@ -70,4 +47,4 @@ class ArticleItem extends React.Component {
   }
 }
 
-module.exports = ArticleItem;
+export default ArticleItem

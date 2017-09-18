@@ -1,8 +1,8 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const AppContainer = require('react-hot-loader').AppContainer;
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { AppContainer } from 'react-hot-loader'
 
-const ArticleList = require('./client/article_list');
+import ArticleList from './client/article-list'
 
 function initArticleList() {
   ReactDOM.render(

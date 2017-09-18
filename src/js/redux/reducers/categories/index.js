@@ -6,6 +6,7 @@ import addVisible from './add-visible'
 import categories from './categories'
 import delCategoryId from './del-category-id'
 import delVisible from './del-visible'
+import modifyId from './modify-id'
 
 var categoriesApp = combineReducers({
   addData,
@@ -13,7 +14,8 @@ var categoriesApp = combineReducers({
   addVisible,
   categories,
   delCategoryId,
-  delVisible
+  delVisible,
+  modifyId
 })
 
 export default categoriesApp

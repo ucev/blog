@@ -18,8 +18,12 @@ class AddCategoryDialog extends React.Component {
   valueChange(e) {
     var title = e.target.getAttribute('data-title');
     var value = e.target.value;
-    var data = this.props.data;
-    data[title] = value;
+    var data = {
+      name: this.props.name,
+      parent: this.props.parent,
+      descp: this.props.descp
+    }
+    data[title] = value
     this.props.valueChange(data);
   }
   addCategoryCancel(e) {
@@ -39,10 +43,6 @@ class AddCategoryDialog extends React.Component {
     e.preventDefault();
   }
   render() {
-    var data = this.props.data == {} ? {} : this.props.data;
-    var name = data.name ? data.name : '';
-    var parent = data.parent ? data.parent : '';
-    var descp = data.descp ? data.descp : '';
     var categoryItems = this.props.categories.map((category) => {
       return (<option key = {category.id} value = {category.id}>{category.name}</option>);
     });
@@ -50,13 +50,13 @@ class AddCategoryDialog extends React.Component {
     if (this.props.visible) {
       styles = {
         height: '300px',
-        'border-width': '1px',
+        borderWidth: '1px',
         opacity: 1
       }
     } else {
       styles = {
         height: '0',
-        'border-width': '0',
+        borderWidth: '0',
         opacity: 0
       }
     }
@@ -66,17 +66,17 @@ class AddCategoryDialog extends React.Component {
           <legend id = 'add-category-div-title'>{this.props.title}</legend>
           <li className = 'add-category-div-item' id = 'add-category-div-name'>
             <label className = 'add-category-div-item-label'>标题</label>
-            <input ref = {(input) => {this.nameInput = input;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-name' type='text' data-title = 'name' value = {name} onChange = {this.valueChange}/>
+            <input ref = {(input) => {this.nameInput = input;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-name' type='text' data-title = 'name' value = {this.props.name} onChange = {this.valueChange}/>
           </li>
           <li className = 'add-category-div-item' id = 'add-category-div-parent'>
             <label className = 'add-category-div-item-label'>父节点</label>
-            <select ref = {(select) => {this.parentSelect = select;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent' value = {parent} data-title = 'parent' onChange = {this.valueChange}>
+            <select ref = {(select) => {this.parentSelect = select;}} className = 'add-category-div-item-input' id = 'add-category-div-item-input-parent' value = {this.props.parent} data-title = 'parent' onChange = {this.valueChange}>
               {categoryItems}
             </select>
           </li>
           <li className = 'add-category-div-item' id = 'add-category-div-descp'>
             <label className = 'add-category-div-item-label'>描述</label>
-            <textarea ref = {(textarea) => {this.descpArea = textarea;}} className = 'add-category-div-item-textarea' id = 'add-category-div-item-input-descp' value = {descp} data-title = 'descp' onChange = {this.valueChange} />
+            <textarea ref = {(textarea) => {this.descpArea = textarea;}} className = 'add-category-div-item-textarea' id = 'add-category-div-item-input-descp' value = {this.props.descp} data-title = 'descp' onChange = {this.valueChange} />
           </li>
           <li className = 'add-category-div-item add-category-div-opebar'>
             <button className = 'operation-button operation-button-cancel' onClick = {this.addCategoryCancel}>取消</button>

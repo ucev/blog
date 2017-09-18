@@ -5,14 +5,17 @@ export const articleOrderChange = (newOrder, update = false) => {
   return (dispatch, getState) => {
     var state = getState()
     if (update) {
-      var params = {
-        id: state.detail.id,
-        order: newOrder
-      }
-      var url = '/admin/datas/articles/order?' + urlEncode(params)
-      return fetch(url, {credentials: 'include'}).then(res => res.json())
+      var fd = new FormData()
+      fd.append('id', state.detail.id)
+      fd.append('order', newOrder)
+      var url = '/admin/datas/articles/order'
+      return fetch(url, {
+                  credentials: 'include',
+                  method: 'POST',
+                  body: fd
+                }).then(res => res.json())
                .then((res) => {
-                 if (dt.code !== 0) return
+                 if (res.code !== 0) return
                  dispatch(getCategoryTree())
                }).catch(err => {
                  console.log(err)

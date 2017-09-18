@@ -9,7 +9,17 @@ import TableBody from '../../components/tables/table-body'
 import TableFoot from '../../components/tables/table-foot'
 
 const CategoryTable = ({ categories }) => {
-  var categories = categories.map((category) => (<CategoryRow key = {category.id} category = {category} />))
+  var categories = categories.map((category) => (
+    <CategoryRow
+      key = {category.id}
+      id = {category.id}
+      name = {category.name}
+      parent = {category.parent}
+      descp = {category.descp}
+      mainorder = {category.mainorder}
+      articlecnt = {category.articlecnt}
+    />
+  ))
   return (
     <Table type = 'category'>
       <CategoryLabel />

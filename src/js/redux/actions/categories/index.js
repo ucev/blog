@@ -5,32 +5,54 @@ const addTitle = {
   modify: '修改类别'
 }
 
-export const addCategoryDivStateChange = (visible, type, data = {}) => {
+export const addCategoryDivStateChange = (visible, type, id) => {
   return (dispatch, getState) => {
-    type = type || getState().addType
-    dispatch({
+    var state = getState()
+    type = type || state.addType
+    var s = {
       type: CATEGORIES.ADD_CATEGORY_DIV_STATE_CHANGE,
       addVisible: visible,
       addType: type,
-      addData: data
-    })
+      modifyId: type === 'add' || !visible ? -1 : id
+    }
+    if (type === 'modify') {
+      var cats = state.categories
+      for (var c of cats) {
+        if (c.id === id) {
+          var d = {
+            name: c.name,
+            parent: c.parent,
+            descp: c.descp
+          }
+          s.addData = d
+        }
+      }
+    } else {
+      s.addData = {}
+    }
+    dispatch(s)
   }
 }
 
-export const addCategoryConfirm = (data) => {
+export const addCategoryConfirm = () => {
   return (dispatch, getState) => {
     var url;
     var state = getState()
+    var data = state.addData
+    var fd = new FormData()
+    for (var k in data) {
+      fd.append(k, data[k])
+    }
     if (state.addType == 'add') {
       url = '/admin/datas/categories/add';
     } else if (state.addType == 'modify') {
       url = '/admin/datas/categories/modify';
-      data.id = this.getState("addData").id;
+      fd.append('id', state.modifyId)
     }
     return fetch(url, {
                credentials: 'include',
                method: 'post',
-               body: data
+               body: fd
              }).then(res => res.json())
              .then((res) => {
                if (res.code !== 0) return
@@ -58,7 +80,7 @@ export const deleteCategoryConfirm = () => {
     var fd = new FormData()
     fd.append('id', state.delCategoryId)
     return fetch(url, {
-               credentials: 'includes',
+               credentials: 'include',
                method: 'post',
                body: fd
               }).then(res => res.json())
@@ -99,7 +121,7 @@ export const updateCategoryOrder = (id, order) => {
     fd.append('id', id)
     fd.append('order', order)
     return fetch(url, {
-               credentials: 'includes',
+               credentials: 'include',
                method: 'post',
                body: fd
              }).then(res => res.json())

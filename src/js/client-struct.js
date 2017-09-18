@@ -1,7 +1,8 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-const ArticleList = require('./client/article_list');
+import ArticleList from './client/article-list'
+
 function initArticleList() {
   ReactDOM.render(
     <ArticleList />,

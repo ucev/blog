@@ -111,9 +111,10 @@ router.post('/articles/move', uploader, async (ctx, next) => {
   }
 })
 
-router.get('/articles/order', async (ctx, next) => {
-  var id = ctx.query.id;
-  var ord = ctx.query.order;
+router.post('/articles/order', uploader, async (ctx, next) => {
+  var request = ctx.request.body
+  var id = request.id;
+  var ord = request.order;
   try {
     await __articles.updateOrder({
             id: id,

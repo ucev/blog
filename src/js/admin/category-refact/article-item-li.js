@@ -13,24 +13,24 @@ class ArticleItemLi extends React.Component {
     this.onItemClicked = this.onItemClicked.bind(this);
   }
   onItemClicked (e) {
-    var article = this.props.article;
-    this.props.getDetail(article.id, this.props.cid)
+    this.props.getDetail(this.props.id, this.props.cid)
   }
   render() {
     var depth = this.props.depth;
     var styles = {
       paddingLeft: (depth * 20 + 20) + 'px'
     }
-    var article = this.props.article;
     var articleClass = 'category-tree-article-li';
-    if (article.id == this.props.articleId) {
+    if (this.props.id == this.props.currArticle) {
       articleClass += ' category-tree-article-li-current';
     }
-    return <li className = {articleClass} style = {styles} onClick = {this.onItemClicked} >{article.title}</li>
+    return <li className = {articleClass} style = {styles} onClick = {this.onItemClicked} >{this.props.title}</li>
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  currArticle: state.article
+})
 const mapDispatchToProps = (dispatch) => ({
   getDetail: (aid, cid) => {
     dispatch(getRefactDetail('art', aid, cid))

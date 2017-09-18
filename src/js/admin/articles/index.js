@@ -5,19 +5,16 @@ import { connect } from 'react-redux'
 import FilterInput from './filter-input'
 import FilterSelect from './filter-select'
 import ArticleTable from './article-table'
-import ConfirmDialog from "../../components/dialogs/confirm-dialog"
+import ArticleDeleteDialog from './article-delete-dialog'
+import ArticleMoveDialog from './article-move-dialog'
 import OptionDialog from "../../components/dialogs/option-dialog"
-import TableNavLink from "../../components/table-foot-nav"
+import TableNavLink from './table-nav-link'
+
 
 import {
   addArticle,
-  deleteArticleCancel,
-  deleteArticleConfirm,
-  fetchArticles as _fetchArticles,
-  fetchCategories as _fetchCategories,
-  handlePageChange,
-  moveCategoryCancel,
-  moveCategoryConfirm
+  fetchArticles,
+  fetchCategories,
 } from '../../redux/actions/articles'
 
 // 😢 
@@ -59,9 +56,9 @@ class ArticleLayout extends React.Component {
         <div className = 'table-filter-bar table-filter-bar-bottom'>
        	  <FilterSelect title = 'groupope' options = {this.opeOptions} reset = {groupopeReset} defaultVal = '-1'/>
         </div>
-        <TableNavLink page = {this.props.current} total = {this.props.total} pagechange = {this.props.pageChange} />
-        <ConfirmDialog title = '确认删除?' confirm = {this.props.deleteConfirm} cancel = {this.props.deleteCancel} visible = {this.props.delVisible} />
-        <OptionDialog title = '移动文章分组' optionItems = {this.props.categories} visible = {this.props.moveVisible} confirm = {this.props.moveConfirm} cancel = {this.props.moveCancel} />
+        <TableNavLink />
+        <ArticleDeleteDialog />
+        <ArticleMoveDialog />
       </div>
     );
   }
@@ -70,32 +67,13 @@ class ArticleLayout extends React.Component {
 const mapStateToProps = (state) => ({
   categories: state.categories,
   checkState: state.checkState,
-  current: state.current,
-  delVisible: state.delVisible,
-  moveVisible: state.moveVisible,
-  total: state.total,
 })
 const mapDispatchToProps = (dispatch) => ({
-  deleteCancel: () => {
-    dispatch(deleteArticleCancel())
-  },
-  deleteConfirm: () => {
-    dispatch(deleteArticleConfirm())
-  },
   fetchArticles: () => {
-    dispatch(_fetchArticles())
+    dispatch(fetchArticles())
   },
   fetchCategories: () => {
-    dispatch(_fetchCategories())
-  },
-  moveCancel: () => {
-    dispatch(moveCategoryCancel())
-  },
-  moveConfirm: (gid) => {
-    dispatch(moveCategoryConfirm(gid))
-  },
-  pageChange: (page) => {
-    dispatch(handlePageChange(page))
+    dispatch(fetchCategories())
   }
 })
 

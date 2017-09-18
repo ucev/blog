@@ -11,7 +11,15 @@ import TableFoot from '../../components/tables/table-foot'
  
 const LabelTable = ({labels = []}) => {
   labels = Array.from(labels)
-  const labelRows = labels.map(label => <LabelRow key = {label.id} label = {label} />)
+  const labelRows = labels.map(label => (
+    <LabelRow key = {label.id}
+       id = {label.id}
+       name = {label.name}
+       articles = {label.articles}
+       hotmark = {label.hotmark}
+       addtime = {label.addtime}
+    />
+  ))
   return (
     <Table type = 'label'>
       <LabelTableLabel />
