@@ -124,7 +124,6 @@ export const groupItemRename = (gid, newname) => {
               body: fd
             }).then(res => res.json())
              .then(res => {
-               console.log(res)
                if (res.code !== 0) return
                dispatch(fetchPhotoGroups())
              }).catch(err => {

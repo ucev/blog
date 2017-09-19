@@ -35,7 +35,6 @@ class CategoryItemLi extends React.Component {
     this.props.getDetail(this.props.id)
   }
   expandChange(e) {
-    console.log(`clicked  ${this.props.id}`)
     this.props.toggleExpandState(this.props.id)
     e.stopPropagation()
   }

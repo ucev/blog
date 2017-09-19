@@ -9,7 +9,11 @@ import {
 } from '../../redux/actions/articles'
 
 const ArticleDeleteDialog = ({ visible, deleteConfirm, deleteCancel }) => (
-  <ConfirmDialog title = '确认删除?' confirm = {deleteConfirm} cancel = {deleteCancel} visible = {visible} />
+  <ConfirmDialog
+    title = '确认删除?'
+    confirm = {deleteConfirm}
+    cancel = {deleteCancel}
+    visible = {visible} />
 )
 
 const mapStateToProps = (state) => ({

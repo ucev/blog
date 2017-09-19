@@ -7,25 +7,24 @@ import { filterOptionChange } from '../../redux/actions/articles'
 class FilterSelect extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
+    this.change = this.change.bind(this);
   }
-  handleChange(e) {
-    var title = this.props.title;
-    var value = e.target.value;
-    this.props.onChange(title, value)
+  change() {
+    var title = this.props.title
+    var value = this.select.value
+    this.props.change(title, value)
   }
   render() {
-    const options = this.props.options.map((opt) => {
-      if (this.props.reset == true && opt.value == -1) {
-        return <option value = {opt.value} selected = 'selected'>{opt.title}</option>
-      } else {
-        return <option value = {opt.value}>{opt.title}</option>
-      }
-    });
+    const options = this.props.options.map((opt) => (
+      <option value = {opt.value}>{opt.title}</option>
+    ))
     return (
       <div className = 'table-filter-item'>
         <label className = 'table-filter-item-label'>{this.props.label}</label>
-        <select className = 'table-filter-item-select' onChange = {this.handleChange} >
+        <select className = 'table-filter-item-select'
+            value = {this.props.value}
+            onChange = {this.change}
+            ref = {(select) => { this.select = select; }} >
           {options}
         </select>
       </div>
@@ -35,7 +34,7 @@ class FilterSelect extends React.Component {
 
 const mapStateToProps = () => ({})
 const mapDispatchToProps = (dispatch) => ({
-  onChange: (title, value) => {
+  change: (title, value) => {
     dispatch(filterOptionChange(title, value))
   }
 })

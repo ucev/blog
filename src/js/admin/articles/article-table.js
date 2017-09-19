@@ -9,7 +9,20 @@ import TableBody from '../../components/tables/table-body'
 import TableFoot from '../../components/tables/table-foot'
 
 const ArticleTable = ({articles, checkState}) => {
-    const articleRows = articles.map((article, index, arr) => (<ArticleRow key = {article.id} index = {index} checked = {checkState[article.id]} id = {article.id} title = {article.title} categoryname = {article.categoryname} label = {article.label} state = {article.state} top = {article.top} pageview = {article.pageview} />))
+    const articleRows = articles.map((article, index, arr) => (
+      <ArticleRow
+        key = {article.id}
+        index = {index}
+        checked = {checkState[article.id]}
+        id = {article.id}
+        title = {article.title}
+        categoryname = {article.categoryname}
+        label = {article.label}
+        state = {article.state}
+        top = {article.top}
+        pageview = {article.pageview} />
+      )
+    )
     return (
       <Table type = 'article'>
         <ArticleTableLabel />

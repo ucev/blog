@@ -1,5 +1,5 @@
 import { ARTICLES } from '../../action-types'
-import { urlEncode } from '../../utils'
+import { urlEncode, debounce, dispatchDebounce } from '../../utils'
 
 export const addArticle = () => {
   location.href = '/admin/articles/add';
@@ -70,7 +70,9 @@ export const articleGroupChange = (id, gid, isgroup = false) => {
 export const checkStateChange = (id, checked) => ({
   type: ARTICLES.CHECK_STATE_CHANGE,
   id: id,
-  checked: checked
+  checked: checked,
+  //
+  groupOpe: -1
 })
 
 export const allChecked = (checked) => {
@@ -81,7 +83,8 @@ export const allChecked = (checked) => {
     dispatch({
       type: ARTICLES.CHECK_STATE_CHANGE,
       id: ids,
-      checked: checked
+      checked: checked,
+      groupOpe: -1
     })
   }
 }
@@ -107,35 +110,35 @@ export const fetchSingleArticle = (id) => {
   }
 }
 
-export const fetchArticles = (start) => {
+export const fetchArticles = dispatchDebounce((start, options) => {
   return (dispatch, getState) => {
     var state = getState()
-    var data = {
-      start: start || getState().start
-    }
+    start = start || state.start
+    var data = Object.assign({}, options || state.filters)
+    data.start = start
+    var etag = Date.now()
     var url = '/admin/datas/articles/get?' + urlEncode(data)
-    console.log(url)
     return fetch(url, {credentials: 'include'}).then(res => res.json())
              .then((res) => {
                if (res.code !== 0) return
+               state = getState()
+               if (state.etag > etag) return
                res = res.data
-               console.log(res)
                var s = {
                  type: ARTICLES.FETCH_ARTICLES,
                  articles: res.data,
                  current: res.current,
                  total: res.total,
-                 checkState: {}
-               }
-               if (start) {
-                 s.start = start
+                 checkState: {},
+                 start: start,
+                 etag: etag
                }
                dispatch(s)
              }).catch((err) => {
                console.log(err)
              })
   }
-}
+}, 500)
 
 export const fetchCategories = () => {
   return (dispatch, getState) => {
@@ -143,7 +146,6 @@ export const fetchCategories = () => {
     return fetch(url, {credentials: 'include'}).then(res => res.json())
              .then((res) => {
                if (res.code != 0) return
-               console.log(res)
                dispatch({
                  type: ARTICLES.FETCH_CATEGORIES,
                  categories: res.data
@@ -160,13 +162,18 @@ export const handlePageChange = (start) => {
   }
 }
 
-// 😢 
 export const handleFilterChange = (label, value) => {
-  /*
-  if (this.filter[label] == value) return;
-  this.filter[label] = value;
-  this.filter.start = 0;
-  this.fetchArticles();*/
+  return (dispatch, getState) => {
+    var state = getState()
+    dispatch({
+      type: ARTICLES.FILTER_OPTION_CHANGE,
+      label: label,
+      value: value
+    })
+    var s = state.filters
+    s[label] = value
+    dispatch(fetchArticles(0, s))
+  }
 }
 
 export const handleDeleteArticle = (id) => ({
@@ -182,16 +189,13 @@ export const deleteArticleConfirm = () => {
     var fd = new FormData()
     fd.append('id', state.delArticleId)
     var url = '/admin/datas/articles/delete'
-    console.log(url)
     return fetch(url, {
               credentials: 'include',
               method: 'POST',
               body: fd
             }).then(res => res.json())
             .then((res) => {
-              console.log(res) 
               if (res.code != 0) return
-              console.log(res)
               dispatch({
                 type: ARTICLES.DELETE_ARTICLE_STATE,
                 delVisible: false,
@@ -210,7 +214,7 @@ export const deleteArticleCancel = () => ({
 })
 
 export const filterOptionChange = (title, value) => {
-  if (title == 'groupope') {
+  if (title == 'group-ope') {
     return groupOpeChange(title, value);
   } else if (title != '') {
     return handleFilterChange(title, value);
@@ -254,7 +258,8 @@ export const moveCategoryConfirm = (gid) => {
   return (dispatch, getState) => {
     var state = getState()
     var moveArticleId = state.moveArticleId
-    return dispatch(articleGroupChange(moveArticleId, gid, false))
+    dispatch(articleGroupChange(moveArticleId, gid, false))
+    dispatch(moveCategoryCancel())
   }
 }
 

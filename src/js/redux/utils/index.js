@@ -3,3 +3,31 @@ export const urlEncode = (obj) => {
   var arr = Object.getOwnPropertyNames(obj).map(k => encodeURIComponent(k) + '=' + encodeURIComponent(obj[k]))
   return arr.join('&')
 }
+
+export const debounce = function (func, delay) {
+  var timeout
+  return function() {
+    var args = arguments
+    var that = this
+    if (timeout) {
+      clearTimeout(timeout)
+      timeout = undefined
+    }
+    timeout = setTimeout(function() {
+      func.apply(that, args)
+    }, delay)
+  }
+}
+
+export const dispatchDebounce = function (func, delay) {
+  var timeout
+  return function() {
+    var args = arguments
+    var that = this
+    return (dispatch) => {
+      timeout = setTimeout(function() {
+        dispatch(func.apply(that, args))
+      }, delay)
+    }
+  }
+}

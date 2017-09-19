@@ -85,6 +85,22 @@ class Categories {
     }
   }
 
+  async getId(name) {
+    try {
+      var conn = await mysql.createConnection(this.dbconfig)
+      var results = await conn.query(`select id from ${this.dbname} where name like ?`, [`%${name}%`])
+      conn.end()
+      if (results[0]) {
+        return Promise.resolve(results[0].id)
+      }
+    } catch (err) {
+      if (conn) {
+        conn.end()
+      }
+      return Promise.reject(err)
+    }
+  }
+
   async __getTreeArticle(id, conn) {
     try {
       var results = await conn.query(`select * from ${this.tb_article} where category = ? order by suborder`, [id])

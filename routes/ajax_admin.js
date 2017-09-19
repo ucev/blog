@@ -68,7 +68,18 @@ router.get('/articles/get', async (ctx, next) => {
   } else {
     const start = strToNum(ctx.query.start);
     const state = emptyString(ctx.query.state);
-    const category = strToNum(emptyString(ctx.query.category));
+    var category = emptyString(ctx.query.category)
+    if (category) {
+      if (parseInt(category).toString() !== category) {
+        try {
+          category = await __categories.getId(category)
+        } catch (err) {
+          category = 0
+        }
+      } else {
+        category = strToNum(category)
+      }
+    }
     const label = emptyString(ctx.query.label);
     var where = {};
     if (state) {
@@ -96,13 +107,10 @@ router.get('/articles/get', async (ctx, next) => {
 
 router.post('/articles/move', uploader, async (ctx, next) => {
   var request = ctx.request.body
-  console.log(request)
   var ids = request.id;
   __log.debug(ids);
   ids = ids.split(',');
   var gid = request.gid;
-  console.log(ids)
-  console.log(gid)
   try {
     await __articles.move(ids, gid)
     ctx.body = { code: 0, msg: '更新成功' }
@@ -297,7 +305,6 @@ router.get('/photos/get', async (ctx, next) => {
 router.post('/photos/add', uploader, async (ctx, next) => {
   var request = ctx.request.body
   const gid = request.gid < 1 ? 1 : request.gid
-  console.log(ctx.request.files[0])
   const tempfile = ctx.request.files[0].path
   var dt = new Date();
   const addtime = Math.floor((dt.getTime() / 1000));
@@ -374,7 +381,6 @@ router.get('/photogroup/get', async (ctx, next) => {
 router.get('/photogroup/modify', async (ctx, next) => {
   const groupname = ctx.query.groupname
   const addtime = Math.floor((new Date().getTime()) / 1000)
-  console.log(groupname)
   try {
     await __photogroups.add({
             name: groupname,

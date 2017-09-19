@@ -7,29 +7,30 @@ import { filterOptionChange } from '../../redux/actions/articles'
 class FilterInput extends React.Component {
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
+    this.change = this.change.bind(this);
   }
-  handleChange(e) {
-    if (e.which == 13) {
-      var title = this.props.title
-      var value = e.target.value
-      this.props.onChange(title, value)
-    }
+  change(e) {
+    var label = this.props.label
+    var value = this.input.value
+    this.props.change(label, value)
   }
   render() {
     return (
       <div className = 'table-filter-item'>
-        <label className = 'table-filter-item-label'>{this.props.label}</label>
-        <input className = 'table-filter-item-input' onKeyDown = {this.handleChange} />
+        <label className = 'table-filter-item-label'>{this.props.title}</label>
+        <input className = 'table-filter-item-input'
+          value = {this.props.value}
+          onChange = {this.change}
+          ref = {(input) => {this.input = input; }} />
       </div>
-    );
+    )
   }
 }
 
 const mapStateToProps = () => ({})
 const mapDispatchToProps = (dispatch) => ({
-  onChange: (title, value) => {
-    dispatch(filterOptionChange(title, value))
+  change: (label, value) => {
+    dispatch(filterOptionChange(label, value))
   }
 })
 
