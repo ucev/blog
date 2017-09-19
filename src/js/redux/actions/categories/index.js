@@ -91,6 +91,7 @@ export const deleteCategoryConfirm = () => {
                   delVisible: false,
                   delCategoryId: -1
                 })
+                dispatch(fetchCategoryData())
               }).catch(err => {
                 console.log(err)
               })

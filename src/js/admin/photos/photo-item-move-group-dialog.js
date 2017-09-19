@@ -27,7 +27,13 @@ class PhotoItemMoveGroupDialog extends React.Component {
   }
   render() {
     return (
-      <OptionDialog title='移动分组' optionItems={this.props.groups} confirm={this.confirm} cancel={this.cancel} visible={this.props.visible} centerScreen={false} />
+      <OptionDialog
+        title='移动分组'
+        optionItems={this.props.groups}
+        confirm={this.confirm}
+        cancel={this.cancel}
+        visible={this.props.visible}
+        centerScreen={false} />
     )
   }
 }

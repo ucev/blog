@@ -41,8 +41,8 @@ class CategoryRow extends React.Component {
     var operationUl = (
       <ul className='content-operation-ul'>
         <li data-type = 'modify' onClick = {this.categoryOperationClick}>修改</li>
-        <li data-type='delete' onClick = {this.categoryOperationClick}>删除</li>
-        <li data-type='refact'><a href = {'/admin/categories/refact/' + this.props.id}>重构</a></li>
+        <li data-type = 'delete' onClick = {this.categoryOperationClick}>删除</li>
+        <li data-type = 'refact'><a href = {'/admin/categories/refact/' + this.props.id}>重构</a></li>
       </ul>
     )
     return (

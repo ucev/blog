@@ -322,9 +322,3 @@ export const pfobMoveDialogVisible = (visible) => ({
   type: PHOTOS.PFOB_MOVE_DIALOG_VISIBLE,
   visible: visible
 })
-
-export const refetch = () => {
-  this.setState({
-    key: Date.now()
-  });
-}

@@ -27,7 +27,12 @@ class PhotoItemRenameDialog extends React.Component {
   }
   render() {
     return (
-      <InputDialog title='编辑名称' centerScreen={false} confirm={this.confirm} cancel={this.cancel} visible={this.props.visible} />
+      <InputDialog
+        title='编辑名称'
+        centerScreen={false}
+        confirm={this.confirm}
+        cancel={this.cancel}
+        visible={this.props.visible} />
     )
   }
 }
