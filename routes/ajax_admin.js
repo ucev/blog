@@ -27,7 +27,6 @@ function emptyString(str) {
   return (str === '' || str === '-1') ? '' : str;
 }
 
-// 😢 
 async function getCategoryRefactItemDetail(ctx, id, type) {
   try {
     var art = await __articles.getsingle({

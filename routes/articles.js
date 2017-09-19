@@ -128,7 +128,6 @@ router.get('/search', async (ctx, next) => {
   var start = ctx.query.p ? ctx.query.p : 0
   // 查找的参数
   var args = ctx.query.args
-  console.log(args)
   if (args == undefined || args.trim() == '') {
     return ctx.redirect('/articles')
   }

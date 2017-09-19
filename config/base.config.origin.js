@@ -43,6 +43,7 @@ const website_info = {
 const label_hotmark_rule = {
   add: 5,
   view: 3,
+  // no action now 😢 
   query: 2
 }
 

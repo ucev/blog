@@ -114,7 +114,6 @@ router.get('/articles/modify', async (ctx, next) => {
         avatar: ctx.session.avatar,
         type: 'edit',
         id: article.id,
-        //content: encodeURIComponent(article.content),
         content: article.content,
         labels: JSON.stringify(labels),
         current_labels: article.label
@@ -161,6 +160,7 @@ router.post('/articles/modify', async (ctx, next) => {
           })
     ctx.body = {code: 0, msg: '更新成功'}
   } catch (err) {
+    console.log(err)
     ctx.body = {code: 1, msg: '更新失败'}
   }
 })

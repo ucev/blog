@@ -21,7 +21,6 @@ router.get('/redirect', async (ctx, next) => {
     res = res.match(/{[\s\S]*?}/)[0]
     res = JSON.parse(res)
     var openid = res.openid
-    //res.cookie('openid', openid, {path: '/'});
     ctx.session.openid = openid
     url = `https://graph.qq.com/user/get_user_info?access_token=${token}&oauth_consumer_key=${loginConfig.appid}&openid=${openid}`
     res = await request(url)

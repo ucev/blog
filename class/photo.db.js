@@ -131,7 +131,6 @@ class Photos {
     return new Promise((resolve, reject) => {
       fs.rename(fdata, fpath, (err) => {
         if (err) {
-          console.log(err)
           reject(err)
         }
         resolve()

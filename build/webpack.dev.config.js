@@ -58,7 +58,7 @@ module.exports = [{
   resolve: {
     extensions: ['.js']
   }
-},
+},/*
 {
   name: "raw-jsfile",
   entry: {
@@ -94,7 +94,7 @@ module.exports = [{
       filename: '[name].js'
     })
   ]
-},/*
+},
 {
   name: '__css',
   entry: {

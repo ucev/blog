@@ -138,7 +138,6 @@ export const fetchCategoryData = () => {
     return fetch(url, {credentials: 'include'}).then(res => res.json())
              .then((res) => {
                if (res.code !== 0) return
-               //localStorage.setItem('categories', JSON.stringify(dt.data))
                dispatch({
                  type: CATEGORIES.FETCH_CATEGORY_DATA,
                  categories: res.data

@@ -40,14 +40,13 @@ class Articles {
         label: datas.label,
         modtime: datas.modtime,
       }
-      return this.__modify(id, dt);
+      return this.__modify(id, dt)
     }
   }
 
   async delete(ids) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
-      var targetLabel = '';
       await conn.beginTransaction()
       await this.__updateLabelsOnDeleteArticle(conn, ids)
       await conn.query(`delete from ${this.dbname} where id in ?`, [[ids]])
@@ -191,7 +190,7 @@ class Articles {
       var results = await conn.query(`select * from ${this.dbname} where id = ?`, [id])
       var article = results[0]
       var labels = article.label
-      var uplabel = this.__updateLabels(conn, labels, configs.label_hotmark_rule.view)
+      var uplabel = this.__updateLabelHotmark(conn, labels, configs.label_hotmark_rule.view)
       var uppv = this.__increasePageView(conn, id)
       await Promise.all([uplabel, uppv])
       conn.end()
@@ -209,7 +208,7 @@ class Articles {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.beginTransaction()
       await conn.query(`insert into ${this.dbname} set ?`, [datas])
-      await this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, true, true);
+      await this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add);
       await conn.commit()
       conn.end()
       return Promise.resolve()
@@ -230,7 +229,7 @@ class Articles {
       var results = await conn.query(`select label from ${this.dbname} where id = ?`, [id])
       oldLabels = results[0].label.split(',');
       await conn.query(`update ${this.dbname} set ? where id = ?`, [datas, id])
-      await this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, false, true, oldLabels);
+      await this.__updateLabels(conn, datas.label, configs.label_hotmark_rule.add, oldLabels)
       await conn.commit()
       conn.end()
       return Promise.resolve()
@@ -243,6 +242,7 @@ class Articles {
     }
   }
 
+  // update labels when deleting articles
   async __updateLabelsOnDeleteArticle(conn, ids) {
     try {
       var results = await conn.query(`select label from ${this.dbname} where id in ?`, [[ids]])
@@ -266,7 +266,8 @@ class Articles {
     }
   }
 
-  async __insertNewLabels(conn, labels, sval, /*是否报告错误*/isRej) {
+  // add no-existed labels when adding/modifying articles
+  async __insertNewLabels(conn, labels, sval) {
     try {
       labels = labels.filter((label) => {
         return label.trim() != '';
@@ -275,9 +276,10 @@ class Articles {
       if (len == 0) {
         return Promise.resolve()
       }
-      var sql = 'insert into labels(name, hotmark, addtime) values '
+      var sql = 'insert into labels(name, articles, hotmark, addtime) values '
       var addtime = Math.floor(new Date().getTime() / 1000)
-      var tip = '(?, ' + conn.escape(sval) + ', ' + conn.escape(addtime) + ')';
+      sval = Number(sval)
+      var tip = '(?, 1, ' + conn.escape(sval) + ', ' + conn.escape(addtime) + ')'
       for (var i = 0; i < len - 1; i++) {
         sql += tip + ',';
       }
@@ -289,48 +291,64 @@ class Articles {
     }
   }
 
-  async __updateExistingLabels(conn, labels, sval, /*是否报告错误*/isRej) {
-    if (labels.length == 0) {
-      return Promise.resolve()
-    }
+  // add labels existed when modifying articles
+  async __increaseExistingLabels(conn, labels, sval) {
     try {
-      await conn.query('update labels set hotmark = hotmark + ? where name in ?', [sval, [labels]])
-      return Promise.resolve()
+      var ps = labels.map(label => conn.query(`update labels set articles = articles + 1, hotmark = hotmark + ? where name = ?`, [sval, label]))
+      return Promise.all(ps)
     } catch (err) {
       return Promise.reject(err)
     }
   }
 
-  // 需要再详查
-  async __updateLabels(conn, labels, sval, /*是否更新已经存在的标签*/upOld = true, /*是否产生错误*/isRej = false, /*更新之前的label*/oldLabels = []) {
+  // delete labels existed when modifying articles
+  async __decreaseExistingLabels(conn, labels) {
+    try {
+      var ps = labels.map(label => conn.query(`update labels set articles = if (articles - 1 > 0, articles - 1, 0) where name = ?`, [label]))
+      return Promise.all(ps)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  }
+
+  // update labels when adding/modifying articles
+  async __updateLabels(conn, labels, sval, oldLabels = []) {
     try {
       var results = await conn.query(`select name from labels`)
-      var _eLabels = results.map((label) => (label.name));
-      if (labels == '' || labels == undefined) {
-        return Promise.resolve()
+      var _eLabels = results.map((label) => (label.name))
+      if (typeof labels == 'string') {
+        labels = labels.split(',')
       }
-      if (typeof labels == 'string')
-        labels = labels.split(',');
-      var labelsNew = [],
-        labelsExists = [],    // label 存在，且 article 没有这个label 
-        labelsExistsOld = []; // label 存在，且 article 有这个 label 
+      var labelsToAdd = [],
+        labelsToIncrease = [],
+        labelsToDecrease = []
       labels.forEach((label) => {
-        if (_eLabels.indexOf(label) == -1) {
-          labelsNew.push(label);
-        } else if (oldLabels.indexOf(label) == -1) {
-          labelsExists.push(label);
-        } else {
-          labelsExistsOld.push(label);
+        if (_eLabels.indexOf(label) === -1) {
+          labelsToAdd.push(label)
+        } else if (oldLabels.indexOf(label) === -1) {
+          labelsToIncrease.push(label)
         }
       })
-      var promises = [];
-      // 插入新标签
-      promises.push(this.__insertNewLabels(conn, labelsNew, sval, isRej));
-      promises.push(this.__updateExistingLabels(conn, labelsExists, sval, isRej));
-      if (upOld) {
-        promises.push(this.__updateExistingLabels(conn, labelsExistsOld, sval, isRej));
-      }
+      labelsToDecrease = oldLabels.filter(label => labels.indexOf(label) === -1)
+      var promises = [
+        this.__insertNewLabels(conn, labelsToAdd, sval),
+        this.__increaseExistingLabels(conn, labelsToIncrease, sval),
+        this.__decreaseExistingLabels(conn, labelsToDecrease)
+      ]
       return Promise.all(promises)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  }
+
+  // update labels' hotmark when reading an article
+  async __updateLabelHotmark(conn, labels, sval) {
+    try {
+      if (typeof labels === 'string') {
+        labels = labels.split(',')
+      }
+      var ps = labels.map(label => conn.query(`update labels set hotmark = hotmark + ? where name = ?`, [sval, label]))
+      return Promise.all(ps)
     } catch (err) {
       return Promise.reject(err)
     }
