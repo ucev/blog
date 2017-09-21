@@ -35,30 +35,22 @@ const render = (Component, Reducer, ele) => {
    */
 };
 
-function adminArticlesInit () {
+export function articles () {
   render(Articles, articlesApp, 'table-div')
 }
 
-function adminCategoriesInit () {
+export function categories () {
   render(Categories, categoriesApp, 'table-div');
 }
 
-function adminCategoryRefactInit () {
+export function categoriesReact () {
   render(CategoryRefact, categoryRefactApp, 'reform-area')
 }
 
-function adminLabelsInit () {
+export function labels () {
   render(Labels, labelsApp, 'table-div')
 }
 
-function adminPhotosInit () {
+export function photos () {
   render(Photos, photosApp, 'photos-target-div')
-}
-
-module.exports = {
-  articles: adminArticlesInit,
-  categories: adminCategoriesInit,
-  categoriesRefact: adminCategoryRefactInit,
-  labels: adminLabelsInit,
-  photos: adminPhotosInit
 }

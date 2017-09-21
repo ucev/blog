@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom'
 
 import ArticleList from './client/article-list'
 
-function initArticleList() {
+export function initArticleList() {
   ReactDOM.render(
     <ArticleList />,
     document.getElementById('articles-list-area')
   )
 }
 
-function initArticleListSearch() {
+export function initArticleListSearch() {
   var query = decodeURIComponent(location.search.substr(1));
   query = query.split('&');
   var params = '';
@@ -23,9 +23,4 @@ function initArticleListSearch() {
     <ArticleList isSearch = {true} query = {params} />,
     document.getElementById('articles-list-area')
   )
-}
-
-module.exports = {
-  initArticleList: initArticleList,
-  initArticleListSearch: initArticleListSearch
 }

@@ -4,7 +4,7 @@ import { AppContainer } from 'react-hot-loader'
 
 import ArticleList from './client/article-list'
 
-function initArticleList() {
+export function initArticleList() {
   ReactDOM.render(
     <AppContainer>
       <ArticleList />
@@ -13,7 +13,7 @@ function initArticleList() {
   )
 }
 
-function initArticleListSearch() {
+export function initArticleListSearch() {
   var query = decodeURIComponent(location.search.substr(1));
   query = query.split('&');
   var params = '';
@@ -28,9 +28,4 @@ function initArticleListSearch() {
     </AppContainer>,
     document.getElementById('articles-list-area')
   )
-}
-
-module.exports = {
-  initArticleList: initArticleList,
-  initArticleListSearch: initArticleListSearch
 }
