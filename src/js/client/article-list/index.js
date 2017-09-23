@@ -14,10 +14,12 @@ class ArticleDiv extends React.Component {
     }
     this.getArticleData = this.getArticleData.bind(this);
     this.loadMore = this.loadMore.bind(this);
-    this.getArticleData();
   }
   loadMore() {
     this.getArticleData(false);
+  }
+  componentDidMount() {
+    this.getArticleData()
   }
   /**
    * 
@@ -34,6 +36,7 @@ class ArticleDiv extends React.Component {
     }
     fetch(url, {credentials: 'include'}).then(res => res.json())
       .then(res => {
+        console.log(res)
         if (res.code !== 0) return
         var data = res.data;
         var articles = that.state.articles;
@@ -42,6 +45,7 @@ class ArticleDiv extends React.Component {
         } else {
           articles = articles.concat(data.data);
         }
+        console.log(articles)
         that.setState({
           total: Number(data.total),
           current: Number(data.current) + 1,

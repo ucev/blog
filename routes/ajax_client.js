@@ -10,7 +10,11 @@ router.get('/articles/get', async (ctx, next) => {
     state: 'on'
   };
   try {
-    var res = await __articles.getByCond({ where: where, start: start, queryfields: ['id', 'title', 'pageview', 'modtime', 'descp'] })
+    var res = await __articles.getByCond({ 
+                where: where,
+                start: start,
+                queryfields: ['id', 'title', 'pageview', 'modtime', 'descp'] 
+              })
     ctx.body = { code: 0, msg: '获取成功', data: res }
   } catch (err) {
     console.log(err)

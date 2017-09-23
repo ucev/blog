@@ -43,7 +43,7 @@ export function categories () {
   render(Categories, categoriesApp, 'table-div');
 }
 
-export function categoriesReact () {
+export function categoriesRefact () {
   render(CategoryRefact, categoryRefactApp, 'reform-area')
 }
 
