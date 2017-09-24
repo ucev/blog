@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import ArticleRow from './article-row'
@@ -9,32 +8,32 @@ import TableBody from '../../components/tables/table-body'
 import TableFoot from '../../components/tables/table-foot'
 
 const ArticleTable = ({articles, checkState}) => {
-    const articleRows = articles.map((article, index, arr) => (
-      <ArticleRow
-        key = {article.id}
-        index = {index}
-        checked = {checkState[article.id]}
-        id = {article.id}
-        title = {article.title}
-        categoryname = {article.categoryname}
-        label = {article.label}
-        state = {article.state}
-        top = {article.top}
-        pageview = {article.pageview} />
-      )
-    )
-    return (
-      <Table type = 'article'>
-        <ArticleTableLabel />
-        <TableBody>
-          { articleRows }
-        </TableBody>
-        <TableFoot></TableFoot>
-      </Table>
-    );
+  const articleRows = articles.map((article, index) => (
+    <ArticleRow
+      key = {article.id}
+      index = {index}
+      checked = {checkState[article.id]}
+      id = {article.id}
+      title = {article.title}
+      categoryname = {article.categoryname}
+      label = {article.label}
+      state = {article.state}
+      top = {article.top}
+      pageview = {article.pageview} />
+  )
+  )
+  return (
+    <Table type = "article">
+      <ArticleTableLabel />
+      <TableBody>
+        { articleRows }
+      </TableBody>
+      <TableFoot></TableFoot>
+    </Table>
+  )
 }
 
-function getArticles(articles, categories) {
+function getArticles (articles, categories) {
   var cats = {}
   for (var c of categories) {
     cats[c.id] = c.name
@@ -47,10 +46,10 @@ const mapStateToProps = (state) => ({
   articles: getArticles(state.articles, state.categories),
   checkState: state.checkState
 })
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = () => ({})
 
 const _ArticleTable = connect(
-                        mapStateToProps,
-                        mapDispatchToProps
-                      )(ArticleTable)
+  mapStateToProps,
+  mapDispatchToProps
+)(ArticleTable)
 export default _ArticleTable

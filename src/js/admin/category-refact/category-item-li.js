@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import ArticleItemLi from './article-item-li'
@@ -25,26 +24,26 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 class CategoryItemLi extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.expandChange = this.expandChange.bind(this)
     this.handleCategoryClick = this.handleCategoryClick.bind(this)
     this.getChildNodes = this.getChildNodes.bind(this)
   }
-  handleCategoryClick() {
+  handleCategoryClick () {
     this.props.getDetail(this.props.id)
   }
-  expandChange(e) {
+  expandChange (e) {
     this.props.toggleExpandState(this.props.id)
     e.stopPropagation()
   }
-  getChildNodes() {
-    var depth = this.props.depth;
+  getChildNodes () {
+    var depth = this.props.depth
     var childs = this.props.childs
     var cstate = this.props.cstate
     if (!childs) return
     var __CLI = connect(mapStateToProps, mapDispatchToProps)(CategoryItemLi)
-    var content = childs.map(child => 
+    var content = childs.map(child =>
       child.type == 'dir' ?
         (
           <__CLI
@@ -55,43 +54,43 @@ class CategoryItemLi extends React.Component {
             expanded = {cstate[child.id] !== false}
             depth = {depth + 1}
           />)
-      :
+        :
         (
           <ArticleItemLi
-            key = {`article_${child.id}`} 
+            key = {`article_${child.id}`}
             id = {child.id}
             title = {child.title}
             article = {child}
-            cid = {this.props.id} 
+            cid = {this.props.id}
             depth = {depth + 1}
           />
-      )
+        )
     )
     return content
   }
-  render() {
-    var depth = this.props.depth;
+  render () {
+    var depth = this.props.depth
     var styles = {
       paddingLeft: (depth * 20 + 20) + 'px'
     }
     var content = this.getChildNodes()
-    var titleClass = 'category-tree-category-title';
+    var titleClass = 'category-tree-category-title'
     if (this.props.id == this.props.currCategory) {
-      titleClass += ' category-tree-category-title-current';
+      titleClass += ' category-tree-category-title-current'
     }
-    var articlesUlStyle = {};
-    var titleImage = '/images/icons/ic_expand_more_white_24dp_2x.png';
+    var articlesUlStyle = {}
+    var titleImage = '/images/icons/ic_expand_more_white_24dp_2x.png'
     if (this.props.expanded === false) {
-      articlesUlStyle.display = 'none';
-      titleImage = '/images/icons/ic_expand_less_white_24dp_2x.png';
+      articlesUlStyle.display = 'none'
+      titleImage = '/images/icons/ic_expand_less_white_24dp_2x.png'
     }
     return (
-      <li className = 'category-tree-category-li'>
-        <div className = 'category-tree-category-title-div'>
+      <li className = "category-tree-category-li">
+        <div className = "category-tree-category-title-div">
           <span className = {titleClass} onClick = {this.handleCategoryClick} style = {styles}>{this.props.title}</span>
-          <img className = 'category-tree-category-title-img' src = {titleImage} onClick = {this.expandChange}></img>
+          <img className = "category-tree-category-title-img" src = {titleImage} onClick = {this.expandChange}></img>
         </div>
-        <ul className = 'category-tree-category-ul' style = {articlesUlStyle}>
+        <ul className = "category-tree-category-ul" style = {articlesUlStyle}>
           {content}
         </ul>
       </li>

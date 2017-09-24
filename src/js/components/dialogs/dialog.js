@@ -1,27 +1,26 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
 class Dialog extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
   }
 
-  render() {
-    var centerScreen = !(this.props.centerScreen === false);
-    var classes = "dialog-div " + this.props.className;
+  render () {
+    var centerScreen = !(this.props.centerScreen === false)
+    var classes = 'dialog-div ' + this.props.className
     if (centerScreen) {
-      classes += " dialog-div-center-screen";
+      classes += ' dialog-div-center-screen'
     }
-    var styles = this.props.styles;
+    var styles = this.props.styles
     if (!this.props.visible)
-      styles.display = 'none';
+      styles.display = 'none'
     else
-      styles.display = 'block';
+      styles.display = 'block'
     return (
       <div className = {classes} style = {styles}>
         {this.props.children}
       </div>
-    );
+    )
   }
 }
 

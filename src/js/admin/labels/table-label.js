@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
@@ -15,7 +14,7 @@ const LabelTableLabel = ({orderby = 'id', orderDirect = 'asc', orderChange}) => 
     {name: 'addtime', val: '添加日期'}
   ]
   return (
-    <TableLabel key = {1} type = 'label' labels = {labels} orderby = {orderby} orderDirect = {orderDirect} orderChange = {orderChange} />
+    <TableLabel key = {1} type = "label" labels = {labels} orderby = {orderby} orderDirect = {orderDirect} orderChange = {orderChange} />
   )
 }
 
@@ -25,21 +24,21 @@ LabelTableLabel.propTypes = {
   orderChange: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
   return {
     orderby: state.orderby,
     orderDirect: state.orderDirect
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    orderChange: (orderby, orderDirect) => {
-      dispatch(orderChange(orderby, orderDirect))
-    }
+const mapDispatchToProps = (dispatch) => ({
+  orderChange: (orderby, orderDirect) => {
+    dispatch(orderChange(orderby, orderDirect))
+  }
 })
 
 const _LabelTableLabel = connect(
-                           mapStateToProps,
-                           mapDispatchToProps
-                          )(LabelTableLabel)
+  mapStateToProps,
+  mapDispatchToProps
+)(LabelTableLabel)
 export default _LabelTableLabel

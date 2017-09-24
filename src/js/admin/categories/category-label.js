@@ -1,13 +1,12 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
 import TableLabel from '../../components/tables/table-label'
 
 class CategoryLabel extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
   }
-  render() {
+  render () {
     var labels = [
       {name: 'index', val: '序号1'},
       {name: 'name', val: '名称'},
@@ -18,7 +17,7 @@ class CategoryLabel extends React.Component {
       {name: 'operation', val: '操作'}
     ]
     return (
-      <TableLabel key = {1} type = 'category' labels = {labels} />
+      <TableLabel key = {1} type = "category" labels = {labels} />
     )
   }
 }

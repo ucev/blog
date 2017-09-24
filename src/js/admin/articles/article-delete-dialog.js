@@ -1,8 +1,7 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import ConfirmDialog from "../../components/dialogs/confirm-dialog"
+import ConfirmDialog from '../../components/dialogs/confirm-dialog'
 import {
   deleteArticleCancel,
   deleteArticleConfirm
@@ -10,7 +9,7 @@ import {
 
 const ArticleDeleteDialog = ({ visible, deleteConfirm, deleteCancel }) => (
   <ConfirmDialog
-    title = '确认删除?'
+    title = "确认删除?"
     confirm = {deleteConfirm}
     cancel = {deleteCancel}
     visible = {visible} />
@@ -30,7 +29,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _ArticleDeleteDialog = connect(
-                               mapStateToProps,
-                               mapDispatchToProps
-                              )(ArticleDeleteDialog)
+  mapStateToProps,
+  mapDispatchToProps
+)(ArticleDeleteDialog)
 export default _ArticleDeleteDialog

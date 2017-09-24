@@ -1,20 +1,21 @@
 import { CATEGORIES } from '../../action-types'
 
 const categories = (state = [], action) => {
+  var cats, cat
   switch (action.type) {
-    case CATEGORIES.CATEGORY_ORDER_CHANGE:
-      var cats = [...state]
-      for (var cat of cats) {
-        if (cat.id === action.id) {
-          cat.mainorder = order
-          break
-        }
+  case CATEGORIES.CATEGORY_ORDER_CHANGE:
+    cats = [...state]
+    for (cat of cats) {
+      if (cat.id === action.id) {
+        cat.mainorder = action.order
+        break
       }
-      return cats
-    case CATEGORIES.FETCH_CATEGORY_DATA:
-      return action.categories
-    default:
-      return state
+    }
+    return cats
+  case CATEGORIES.FETCH_CATEGORY_DATA:
+    return action.categories
+  default:
+    return state
   }
 }
 

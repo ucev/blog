@@ -1,19 +1,17 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import moment from 'moment'
 
 import SearchLabel from './search-label'
 
 class SearchLabels extends React.Component {
-  render() {
+  render () {
     var labels = this.props.labels.map((label) => {
       if (label.trim() == '') {
-        return;
+        return
       }
       return <SearchLabel label = {label} query = {this.props.query} />
     })
     return (
-      <ul className = 'article-item-li-labels-ul'>
+      <ul className = "article-item-li-labels-ul">
         {labels}
       </ul>
     )

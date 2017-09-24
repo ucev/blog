@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import PhotoFlow from './photo-flow'
@@ -10,21 +9,21 @@ import {
 } from '../../redux/actions/photos'
 
 class PhotoArea extends React.Component {
-  componentDidMount() {
-    this.props.fetchPhotoGroups();
-    this.props.fetchGroupPhotos();
+  componentDidMount () {
+    this.props.fetchPhotoGroups()
+    this.props.fetchGroupPhotos()
   }
-  render() {
+  render () {
     return (
-      <div id='photo-div'>
+      <div id="photo-div">
         <PhotoFlow />
         <PhotoGroupBar />
       </div>
-    );
+    )
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch) => ({
   fetchGroupPhotos: () => {
@@ -36,7 +35,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _PhotoArea = connect(
-                     mapStateToProps,
-                     mapDispatchToProps
-                    )(PhotoArea)
+  mapStateToProps,
+  mapDispatchToProps
+)(PhotoArea)
 export default _PhotoArea

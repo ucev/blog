@@ -1,38 +1,37 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import ConfirmDialog from "../../components/dialogs/confirm-dialog"
+import ConfirmDialog from '../../components/dialogs/confirm-dialog'
 import {
   photoDeleteSingle,
   photoDeleteDialogVisible
 } from '../../redux/actions/photos'
 
 class PhotoItemDeleteDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.hide = this.hide.bind(this)
-    this.confirm = this.confirm.bind(this);
-    this.cancel = this.cancel.bind(this);
+    this.confirm = this.confirm.bind(this)
+    this.cancel = this.cancel.bind(this)
   }
-  hide(e) {
-    this.props.hide(this.props.id);
+  hide () {
+    this.props.hide(this.props.id)
   }
-  confirm() {
-    this.props.delete(this.props.id);
-    this.hide();
+  confirm () {
+    this.props.delete(this.props.id)
+    this.hide()
   }
-  cancel() {
-    this.hide();
+  cancel () {
+    this.hide()
   }
-  render() {
+  render () {
     return (
-      <ConfirmDialog title='确认删除?' centerScreen={false} confirm={this.confirm} cancel={this.cancel} visible={this.props.visible} />
+      <ConfirmDialog title="确认删除?" centerScreen={false} confirm={this.confirm} cancel={this.cancel} visible={this.props.visible} />
     )
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch) => ({
   delete: (id) => {
@@ -44,7 +43,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _PhotoItemDeleteDialog = connect(
-                                 mapStateToProps,
-                                 mapDispatchToProps
-                                )(PhotoItemDeleteDialog)
+  mapStateToProps,
+  mapDispatchToProps
+)(PhotoItemDeleteDialog)
 export default _PhotoItemDeleteDialog

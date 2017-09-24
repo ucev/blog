@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import Dialog from '../../components/dialogs/add-category-dialog'
@@ -53,7 +52,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _AddCategoryDialog = connect(
-                             mapStateToProps,
-                             mapDispatchToProps
-                            )(AddCategoryDialog)
+  mapStateToProps,
+  mapDispatchToProps
+)(AddCategoryDialog)
 export default _AddCategoryDialog

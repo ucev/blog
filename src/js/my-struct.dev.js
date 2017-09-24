@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { AppContainer } from 'react-hot-loader'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
@@ -33,14 +32,14 @@ const render = (Component, Reducer, ele) => {
   /**
    * <AppContainer></AppContainer>
    */
-};
+}
 
 export function articles () {
   render(Articles, articlesApp, 'table-div')
 }
 
 export function categories () {
-  render(Categories, categoriesApp, 'table-div');
+  render(Categories, categoriesApp, 'table-div')
 }
 
 export function categoriesRefact () {

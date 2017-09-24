@@ -1,11 +1,10 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import PhotoFlowOperationBar from './photo-flow-operation-bar'
 import PhotoItem from './photo-item'
 
-const PhotoFlow = ({ photos, groups }) => {
+const PhotoFlow = ({ photos }) => {
   const items = photos.map(photo =>
     <PhotoItem
       key={photo.id}
@@ -20,9 +19,9 @@ const PhotoFlow = ({ photos, groups }) => {
     />
   )
   return (
-    <div id='photo-flow-div'>
+    <div id="photo-flow-div">
       <PhotoFlowOperationBar />
-      <ul id='photo-flow-items-ul'>
+      <ul id="photo-flow-items-ul">
         {items}
       </ul>
     </div>
@@ -30,14 +29,13 @@ const PhotoFlow = ({ photos, groups }) => {
 }
 
 const mapStateToProps = (state) => ({
-  photos: state.photos,
-  groups: state.groups
+  photos: state.photos
 })
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = () => ({})
 
 const _PhotoFlow = connect(
-                     mapStateToProps,
-                     mapDispatchToProps
-                    )(PhotoFlow)
+  mapStateToProps,
+  mapDispatchToProps
+)(PhotoFlow)
 export default _PhotoFlow

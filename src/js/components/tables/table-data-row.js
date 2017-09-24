@@ -1,10 +1,9 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
 const TableDataRow = (props) => {
-  var datas = this.props.datas.map((data) => <td></td>)
+  var datas = props.datas.map(() => <td></td>)
   return (
-    <tr className = 'content-row-data'>
+    <tr className = "content-row-data">
       {datas}
     </tr>
   )

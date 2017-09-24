@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import FilterSelect from './filter-select'
@@ -13,9 +12,9 @@ const STATE_OPTIONS = [
 
 const StateFilter = ({ value }) => (
   <FilterSelect
-    key = 'state'
-    title = 'state'
-    label = '状态'
+    key = "state"
+    title = "state"
+    label = "状态"
     value = {value}
     options = {STATE_OPTIONS}/>
 )
@@ -24,10 +23,10 @@ const mapStateToProps = (state) => ({
   value: state.filters.state
 })
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = () => ({})
 
 const _StateFilter = connect(
-                       mapStateToProps,
-                       mapDispatchToProps
-                      )(StateFilter)
+  mapStateToProps,
+  mapDispatchToProps
+)(StateFilter)
 export default _StateFilter

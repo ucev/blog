@@ -1,7 +1,7 @@
 import { LABELS } from '../../action-types'
 import { urlEncode } from '../../utils'
 
-const __fetchData = (dispatch, getState) => {
+const __fetchData = (dispatch) => {
   return (orderby, orderDirect, start) => {
     var params = {
       orderby: orderby,
@@ -10,19 +10,21 @@ const __fetchData = (dispatch, getState) => {
     }
     var url = '/admin/datas/labels/get?' + urlEncode(params)
     return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then((res) => {
-               res = res.data
-                var data = {
-                  type: LABELS.FETCH_LABEL_DATA,
-                  current: +res.current,
-                  total: +res.total,
-                  orderby: orderby,
-                  orderDirect: orderDirect,
-                  labels: res.data,
-                  start: start
-                }
-                dispatch(data)
-             }).catch((err) => {})
+      .then((res) => {
+        res = res.data
+        var data = {
+          type: LABELS.FETCH_LABEL_DATA,
+          current: +res.current,
+          total: +res.total,
+          orderby: orderby,
+          orderDirect: orderDirect,
+          labels: res.data,
+          start: start
+        }
+        dispatch(data)
+      }).catch((err) => {
+        console.log(err)
+      })
   }
 }
 

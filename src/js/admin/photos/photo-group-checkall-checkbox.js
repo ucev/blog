@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import {
@@ -7,19 +6,20 @@ import {
 } from '../../redux/actions/photos'
 
 class PhotoGroupCheckAllCheckbox extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.change = this.change.bind(this)
   }
-  change() {
+  change () {
     this.props.change(this.input.checked)
   }
-  render() {
+  render () {
     return (
-      <input type='checkbox'
+      <input
+        type="checkbox"
         checked = {this.props.checked}
         onChange={this.change}
-        ref = {(input) => {this.input = input;}}/>
+        ref = {(input) => {this.input = input}}/>
     )
   }
 }
@@ -35,7 +35,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _PhotoGroupCheckAllCheckbox = connect(
-                                      mapStateToProps,
-                                      mapDispatchToProps
-                                    )(PhotoGroupCheckAllCheckbox)
+  mapStateToProps,
+  mapDispatchToProps
+)(PhotoGroupCheckAllCheckbox)
 export default _PhotoGroupCheckAllCheckbox

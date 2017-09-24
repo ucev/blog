@@ -1,15 +1,15 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import ConfirmDialog from "../../components/dialogs/confirm-dialog"
+import ConfirmDialog from '../../components/dialogs/confirm-dialog'
 import {
   pfobDeleteDialogVisible,
   photoDeleteByGroup
 } from '../../redux/actions/photos'
 
 const PhotoGroupDeleteDialog = ({ visible, confirm, cancel }) => (
-  <ConfirmDialog title='确认删除?'
+  <ConfirmDialog
+    title="确认删除?"
     centerScreen={false}
     visible={visible}
     confirm={confirm}
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _PhotoGroupDeleteDialog = connect(
-                                  mapStateToProps,
-                                  mapDispatchToProps
-                                )(PhotoGroupDeleteDialog)
+  mapStateToProps,
+  mapDispatchToProps
+)(PhotoGroupDeleteDialog)
 export default _PhotoGroupDeleteDialog

@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import CategoryLabel from './category-label'
@@ -9,7 +8,7 @@ import TableBody from '../../components/tables/table-body'
 import TableFoot from '../../components/tables/table-foot'
 
 const CategoryTable = ({ categories }) => {
-  var categories = categories.map((category) => (
+  var cats = categories.map((category) => (
     <CategoryRow
       key = {category.id}
       id = {category.id}
@@ -21,10 +20,10 @@ const CategoryTable = ({ categories }) => {
     />
   ))
   return (
-    <Table type = 'category'>
+    <Table type = "category">
       <CategoryLabel />
       <TableBody>
-        {categories}
+        {cats}
       </TableBody>
       <TableFoot />
     </Table>
@@ -34,10 +33,10 @@ const CategoryTable = ({ categories }) => {
 const mapStateToProps = (state) => ({
   categories: state.categories
 })
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = () => ({})
 
 const _CategoryTable = connect(
-                         mapStateToProps,
-                         mapDispatchToProps
-                        )(CategoryTable)
+  mapStateToProps,
+  mapDispatchToProps
+)(CategoryTable)
 export default _CategoryTable

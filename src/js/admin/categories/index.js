@@ -1,9 +1,8 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import AddCategoryDialog from './add-category-dialog'
-import ConfirmDialog from "./confirm-dialog"
+import ConfirmDialog from './confirm-dialog'
 import OperationBar from './operation-bar'
 import CategoryTable from './category-table'
 import {
@@ -11,10 +10,10 @@ import {
 } from '../../redux/actions/categories'
 
 class CategoryLayout extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.getData()
   }
-  render() {
+  render () {
     return (
       <div>
         <OperationBar/>
@@ -22,11 +21,11 @@ class CategoryLayout extends React.Component {
         <AddCategoryDialog />
         <ConfirmDialog />
       </div>
-    );
+    )
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = () => ({})
 const mapDispatchToProps = (dispatch) => ({
   getData: () => {
     dispatch(fetchCategoryData())
@@ -34,7 +33,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _CategoryLayout = connect(
-                          mapStateToProps,
-                          mapDispatchToProps
-                        )(CategoryLayout)
+  mapStateToProps,
+  mapDispatchToProps
+)(CategoryLayout)
 export default _CategoryLayout

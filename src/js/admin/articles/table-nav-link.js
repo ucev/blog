@@ -1,8 +1,9 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import TableNavLink from "../../components/table-foot-nav"
+import { handlePageChange } from '../../redux/actions/articles'
+
+import TableNavLink from '../../components/table-foot-nav'
 
 const ArticleTableNavLink = ({ page, total, pageChange }) => (
   <TableNavLink
@@ -16,14 +17,14 @@ const mapStateToProps = (state) => ({
   total: state.total
 })
 
-const mapDispatchToProps = (state) => ({
+const mapDispatchToProps = (dispatch) => ({
   pageChange: (page) => {
     dispatch(handlePageChange(page))
   }
 })
 
 const _ArticleTableNavLink = connect(
-                               mapStateToProps,
-                               mapDispatchToProps
-                              )(ArticleTableNavLink)
+  mapStateToProps,
+  mapDispatchToProps
+)(ArticleTableNavLink)
 export default _ArticleTableNavLink

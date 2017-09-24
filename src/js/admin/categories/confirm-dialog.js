@@ -1,8 +1,7 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import Dialog from "../../components/dialogs/confirm-dialog"
+import Dialog from '../../components/dialogs/confirm-dialog'
 import {
   deleteCategoryConfirm,
   deleteCategoryCancel
@@ -10,7 +9,7 @@ import {
 
 const ConfirmDialog = ({ visible, confirm, cancel }) => {
   return (
-    <Dialog title = '确认删除此类别?' visible = {visible} confirm = {confirm} cancel = {cancel} />
+    <Dialog title = "确认删除此类别?" visible = {visible} confirm = {confirm} cancel = {cancel} />
   )
 }
 
@@ -28,7 +27,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _ConfirmDialog = connect(
-                         mapStateToProps,
-                         mapDispatchToProps
-                        )(ConfirmDialog)
+  mapStateToProps,
+  mapDispatchToProps
+)(ConfirmDialog)
 export default _ConfirmDialog

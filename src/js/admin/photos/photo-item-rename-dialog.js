@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import InputDialog from '../../components/dialogs/input-dialog'
@@ -9,26 +8,26 @@ import {
 } from '../../redux/actions/photos'
 
 class PhotoItemRenameDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.hide = this.hide.bind(this)
-    this.confirm = this.confirm.bind(this);
-    this.cancel = this.cancel.bind(this);
+    this.confirm = this.confirm.bind(this)
+    this.cancel = this.cancel.bind(this)
   }
-  hide (e) {
-    this.props.hide(this.props.id);
+  hide () {
+    this.props.hide(this.props.id)
   }
   confirm (name) {
-    this.props.rename(this.props.id, name);
-    this.hide();
+    this.props.rename(this.props.id, name)
+    this.hide()
   }
   cancel () {
-    this.hide();
+    this.hide()
   }
-  render() {
+  render () {
     return (
       <InputDialog
-        title='编辑名称'
+        title="编辑名称"
         centerScreen={false}
         confirm={this.confirm}
         cancel={this.cancel}
@@ -37,7 +36,7 @@ class PhotoItemRenameDialog extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch) => ({
   hide: (id) => {
@@ -49,7 +48,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _PhotoItemRenameDialog = connect(
-                                 mapStateToProps,
-                                 mapDispatchToProps
-                                )(PhotoItemRenameDialog)
+  mapStateToProps,
+  mapDispatchToProps
+)(PhotoItemRenameDialog)
 export default _PhotoItemRenameDialog

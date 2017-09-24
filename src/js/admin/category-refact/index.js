@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import CategoryTree from './category-tree'
@@ -9,13 +8,13 @@ import {
 } from '../../redux/actions/category-refact'
 
 class CategoryRefactArea extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.init()
   }
 
-  render() {
+  render () {
     return (
-      <div id='refact-area'>
+      <div id="refact-area">
         <CategoryTree />
         <DetailArea />
       </div>
@@ -23,7 +22,7 @@ class CategoryRefactArea extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch) => ({
   init: () => {
@@ -32,7 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _CategoryRefactArea = connect(
-                              mapStateToProps,
-                              mapDispatchToProps
-                            )(CategoryRefactArea)
+  mapStateToProps,
+  mapDispatchToProps
+)(CategoryRefactArea)
 export default _CategoryRefactArea

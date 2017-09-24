@@ -1,20 +1,19 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
 import TableNavLinkLi from './table-nav-link-li'
 
 class TableNavLink extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.getRenderData = this.getRenderData.bind(this)
     this.handleClick = this.handleClick.bind(this)
   }
 
-  handleClick(pg) {
-    this.props.pagechange(pg);
+  handleClick (pg) {
+    this.props.pagechange(pg)
   }
 
-  getRenderData() {
+  getRenderData () {
     const page = Number(this.props.page)
     const total = Number(this.props.total)
     var start = page < 5 ? 0 : page - 5
@@ -31,38 +30,38 @@ class TableNavLink extends React.Component {
     var lis = []
     if (page != 0) {
       lis.push(<TableNavLinkLi
-                  page = {page - 1}
-                  current = {page}
-                  title='上一页'
-                  click = {this.handleClick} />
-        )
+        page = {page - 1}
+        current = {page}
+        title="上一页"
+        click = {this.handleClick} />
+      )
     }
     for (let i = 1; i <= len; i++) {
       lis.push(<TableNavLinkLi
-                  page = {start + i - 1}
-                  current = {page}
-                  title= {start + i}
-                  click = {this.handleClick} />
-        )
+        page = {start + i - 1}
+        current = {page}
+        title= {start + i}
+        click = {this.handleClick} />
+      )
     }
     if (page + 1 < total) {
       lis.push(<TableNavLinkLi
-                  page = {page + 1}
-                  current = {page}
-                  title = '下一页'
-                  click = {this.handleClick} />
-        )
+        page = {page + 1}
+        current = {page}
+        title = "下一页"
+        click = {this.handleClick} />
+      )
     }
     return lis
   }
 
-  render() {
-    const lis = this.getRenderData();
+  render () {
+    const lis = this.getRenderData()
     return (
-      <ul id = 'table-nav-ul' className = 'table-nav-ul'>
+      <ul id = "table-nav-ul" className = "table-nav-ul">
         {lis}
       </ul>
-    );
+    )
   }
 }
 

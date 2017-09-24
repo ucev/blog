@@ -1,8 +1,6 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import FilterSelect from './filter-select'
 import ArticleTable from './article-table'
 import ArticleDeleteDialog from './article-delete-dialog'
 import ArticleMoveDialog from './article-move-dialog'
@@ -16,21 +14,21 @@ import {
   fetchCategories
 } from '../../redux/actions/articles'
 
-// 😢 
+// 😢
 class ArticleLayout extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
-  componentDidMount() {
+  componentDidMount () {
     this.props.fetchArticles()
     this.props.fetchCategories()
   }
-  render() {
-    var categories = {};
+  render () {
+    var categories = {}
     this.props.categories.forEach((category) => {
-      categories[category.id] = category.name;
+      categories[category.id] = category.name
     })
-    return ( 
+    return (
       <div>
         <TopFilterBar />
         <ArticleTable />
@@ -39,7 +37,7 @@ class ArticleLayout extends React.Component {
         <ArticleDeleteDialog />
         <ArticleMoveDialog />
       </div>
-    );
+    )
   }
 }
 
@@ -57,7 +55,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _ArticleLayout = connect(
-                         mapStateToProps,
-                         mapDispatchToProps
-                        )(ArticleLayout)
+  mapStateToProps,
+  mapDispatchToProps
+)(ArticleLayout)
 export default _ArticleLayout

@@ -1,8 +1,8 @@
 import { ARTICLES } from '../../action-types'
-import { urlEncode, debounce, dispatchDebounce } from '../../utils'
+import { urlEncode, dispatchDebounce } from '../../utils'
 
 export const addArticle = () => {
-  location.href = '/admin/articles/add';
+  location.href = '/admin/articles/add'
 }
 
 export const modifyArticle = (id) => {
@@ -10,60 +10,60 @@ export const modifyArticle = (id) => {
 }
 
 export const articleStateChange = (id, type, isgroup = false) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     var data = {
       id: id,
       state: type
     }
     var url = '/admin/datas/articles/state?' + urlEncode(data)
     return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then((res) => {
-               if (isgroup) {
-                 return dispatch(fetchArticles())
-               } else {
-                 return dispatch(fetchSingleArticle(id))
-               }
-             }).catch(err => {
-               console.log(err)
-             })
+      .then(() => {
+        if (isgroup) {
+          return dispatch(fetchArticles())
+        } else {
+          return dispatch(fetchSingleArticle(id))
+        }
+      }).catch(err => {
+        console.log(err)
+      })
   }
 }
 
-export const articleGroupChange = (id, gid, isgroup = false) => {
+export const articleGroupChange = (id, gid) => {
   return (dispatch, getState) => {
     var fd = new FormData()
     fd.append('id', id)
     fd.append('gid', gid)
     var url = '/admin/datas/articles/move'
     return fetch(url, {
-              credentials: 'include',
-              method: 'POST',
-              body: fd
-            }).then(res => res.json())
-            .then((res) => {
-              if (res.code != 0) return
-              var state = getState()
-              if (state.isgroup) {
-                dispatch(fetchArticles()).then(() => {
-                  dispatch({
-                    type: ARTICLES.MOVE_CATEGORY_STATE,
-                    moveVisible: false,
-                    moveArticleId: -1,
-                    isgroup: false
-                  })
-                })
-              } else {
-                dispatch(fetchSingleArticle(id)).then(() => {
-                  dispatch({
-                    type: ARTICLES.MOVE_CATEGORY_STATE,
-                    moveVisible: false,
-                    moveArticleId: -1
-                  })
-                })
-              }
-            }).catch(err => {
-              console.log(err)
+      credentials: 'include',
+      method: 'POST',
+      body: fd
+    }).then(res => res.json())
+      .then((res) => {
+        if (res.code != 0) return
+        var state = getState()
+        if (state.isgroup) {
+          dispatch(fetchArticles()).then(() => {
+            dispatch({
+              type: ARTICLES.MOVE_CATEGORY_STATE,
+              moveVisible: false,
+              moveArticleId: -1,
+              isgroup: false
             })
+          })
+        } else {
+          dispatch(fetchSingleArticle(id)).then(() => {
+            dispatch({
+              type: ARTICLES.MOVE_CATEGORY_STATE,
+              moveVisible: false,
+              moveArticleId: -1
+            })
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
   }
 }
 
@@ -90,23 +90,23 @@ export const allChecked = (checked) => {
 }
 
 export const fetchSingleArticle = (id) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     var data = {
       id: id
     }
     var url = '/admin/datas/articles/get?' + urlEncode(data)
     return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then((res) => {
-               if (res.code != 0) return
-               var s = {
-                 type: ARTICLES.FETCH_SINGLE_ARTICLE,
-                 id: id,
-                 article: res.data
-               }
-               dispatch(s)
-             }).catch(err => {
-               console.log(err)
-             })
+      .then((res) => {
+        if (res.code != 0) return
+        var s = {
+          type: ARTICLES.FETCH_SINGLE_ARTICLE,
+          id: id,
+          article: res.data
+        }
+        dispatch(s)
+      }).catch(err => {
+        console.log(err)
+      })
   }
 }
 
@@ -119,45 +119,45 @@ export const fetchArticles = dispatchDebounce((start, options) => {
     var etag = Date.now()
     var url = '/admin/datas/articles/get?' + urlEncode(data)
     return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then((res) => {
-               if (res.code !== 0) return
-               state = getState()
-               if (state.etag > etag) return
-               res = res.data
-               var s = {
-                 type: ARTICLES.FETCH_ARTICLES,
-                 articles: res.data,
-                 current: res.current,
-                 total: res.total,
-                 checkState: {},
-                 start: start,
-                 etag: etag
-               }
-               dispatch(s)
-             }).catch((err) => {
-               console.log(err)
-             })
+      .then((res) => {
+        if (res.code !== 0) return
+        state = getState()
+        if (state.etag > etag) return
+        res = res.data
+        var s = {
+          type: ARTICLES.FETCH_ARTICLES,
+          articles: res.data,
+          current: res.current,
+          total: res.total,
+          checkState: {},
+          start: start,
+          etag: etag
+        }
+        dispatch(s)
+      }).catch((err) => {
+        console.log(err)
+      })
   }
 }, 500)
 
 export const fetchCategories = () => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     var url = '/admin/datas/categories/get'
     return fetch(url, {credentials: 'include'}).then(res => res.json())
-             .then((res) => {
-               if (res.code != 0) return
-               dispatch({
-                 type: ARTICLES.FETCH_CATEGORIES,
-                 categories: res.data
-               })
-             }).catch((err) => {
-               console.log(err)
-             })
+      .then((res) => {
+        if (res.code != 0) return
+        dispatch({
+          type: ARTICLES.FETCH_CATEGORIES,
+          categories: res.data
+        })
+      }).catch((err) => {
+        console.log(err)
+      })
   }
 }
 
 export const handlePageChange = (start) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     return dispatch(fetchArticles(start))
   }
 }
@@ -190,21 +190,21 @@ export const deleteArticleConfirm = () => {
     fd.append('id', state.delArticleId)
     var url = '/admin/datas/articles/delete'
     return fetch(url, {
-              credentials: 'include',
-              method: 'POST',
-              body: fd
-            }).then(res => res.json())
-            .then((res) => {
-              if (res.code != 0) return
-              dispatch({
-                type: ARTICLES.DELETE_ARTICLE_STATE,
-                delVisible: false,
-                delArticleId: -1
-              })
-              dispatch(fetchArticles())
-            }).catch(err => {
-              console.log(err)
-            })
+      credentials: 'include',
+      method: 'POST',
+      body: fd
+    }).then(res => res.json())
+      .then((res) => {
+        if (res.code != 0) return
+        dispatch({
+          type: ARTICLES.DELETE_ARTICLE_STATE,
+          delVisible: false,
+          delArticleId: -1
+        })
+        dispatch(fetchArticles())
+      }).catch(err => {
+        console.log(err)
+      })
   }
 }
 
@@ -215,9 +215,9 @@ export const deleteArticleCancel = () => ({
 
 export const filterOptionChange = (title, value) => {
   if (title == 'group-ope') {
-    return groupOpeChange(title, value);
+    return groupOpeChange(title, value)
   } else if (title != '') {
-    return handleFilterChange(title, value);
+    return handleFilterChange(title, value)
   }
 }
 
@@ -230,35 +230,35 @@ export const groupOpeChange = (title, value) => {
     }
     ids = ids.join(',')
     switch (value) {
-      case 'on':
-      case 'off':
-        return dispatch(articleStateChange(ids, value, true))
-      case 'move':
-        return dispatch({
-                 type: ARTICLES.MOVE_CATEGORY_STATE,
-                 moveArticleId: ids,
-                 isgroup: true,
-                 moveVisible: true
-               })
-      case 'del':
-        return dispatch({
-                 type: ARTICLE.DELETE_ARTICLE_STATE,
-                 delArticleId: ids,
-                 isgroup: true,
-                 delVisible: true
-               })
-      default:
-        break;
+    case 'on':
+    case 'off':
+      return dispatch(articleStateChange(ids, value, true))
+    case 'move':
+      return dispatch({
+        type: ARTICLES.MOVE_CATEGORY_STATE,
+        moveArticleId: ids,
+        isgroup: true,
+        moveVisible: true
+      })
+    case 'del':
+      return dispatch({
+        type: ARTICLES.DELETE_ARTICLE_STATE,
+        delArticleId: ids,
+        isgroup: true,
+        delVisible: true
+      })
+    default:
+      break
     }
   }
 }
 
-//category
+// category
 export const moveCategoryConfirm = (gid) => {
   return (dispatch, getState) => {
     var state = getState()
     var moveArticleId = state.moveArticleId
-    dispatch(articleGroupChange(moveArticleId, gid, false))
+    dispatch(articleGroupChange(moveArticleId, gid))
     dispatch(moveCategoryCancel())
   }
 }

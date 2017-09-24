@@ -1,49 +1,48 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 
 import ArticleList from './article-list'
 import QueryDataDiv from './query-data-div'
 
 class ArticleDiv extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       total: 0,
       current: 0,
       articles: []
     }
-    this.getArticleData = this.getArticleData.bind(this);
-    this.loadMore = this.loadMore.bind(this);
+    this.getArticleData = this.getArticleData.bind(this)
+    this.loadMore = this.loadMore.bind(this)
   }
-  loadMore() {
-    this.getArticleData(false);
+  loadMore () {
+    this.getArticleData(false)
   }
-  componentDidMount() {
+  componentDidMount () {
     this.getArticleData()
   }
   /**
-   * 
-   * @param {*} replace 
+   *
+   * @param {*} replace
    * replace -- where replace `articles` state
    */
-  getArticleData(replace = false) {
-    var that = this;
-    var url;
+  getArticleData (replace = false) {
+    var that = this
+    var url
     if (this.props.isSearch  === true) {
-      url = `/articles/data/articles/search?start=${that.state.current}&args=${that.props.query}`;
+      url = `/articles/data/articles/search?start=${that.state.current}&args=${that.props.query}`
     } else {
-      url = '/articles/data/articles/get?start=' + that.state.current;
+      url = '/articles/data/articles/get?start=' + that.state.current
     }
     fetch(url, {credentials: 'include'}).then(res => res.json())
       .then(res => {
         console.log(res)
         if (res.code !== 0) return
-        var data = res.data;
-        var articles = that.state.articles;
+        var data = res.data
+        var articles = that.state.articles
         if (replace === true) {
-          articles = data.data;
+          articles = data.data
         } else {
-          articles = articles.concat(data.data);
+          articles = articles.concat(data.data)
         }
         console.log(articles)
         that.setState({
@@ -53,13 +52,12 @@ class ArticleDiv extends React.Component {
         })
       })
   }
-  render() {
-    var addMoreVisible = this.state.total > this.state.current;
-    var articleList;
+  render () {
+    var addMoreVisible = this.state.total > this.state.current
     return (
       <div>
         <ArticleList key = {1} articles = {this.state.articles} isSearch = {this.props.isSearch} query = {this.props.query} />
-        <QueryDataDiv key = 'more' visible = {addMoreVisible} more = {this.loadMore} />
+        <QueryDataDiv key = "more" visible = {addMoreVisible} more = {this.loadMore} />
       </div>
     )
   }

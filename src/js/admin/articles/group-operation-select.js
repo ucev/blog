@@ -1,5 +1,4 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
 import FilterSelect from './filter-select'
@@ -14,7 +13,7 @@ const OPERATION_OPTIONS = [
 
 const GroupOperationSelect = ({ value }) => {
   return (
-    <FilterSelect title='group-ope' options={OPERATION_OPTIONS} value = {value} />
+    <FilterSelect title="group-ope" options={OPERATION_OPTIONS} value = {value} />
   )
 }
 
@@ -22,10 +21,10 @@ const mapStateToProps = (state) => ({
   value: state.groupOpe
 })
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = () => ({})
 
 const _GroupOperationSelect = connect(
-                                mapStateToProps,
-                                mapDispatchToProps
-                              )(GroupOperationSelect)
+  mapStateToProps,
+  mapDispatchToProps
+)(GroupOperationSelect)
 export default _GroupOperationSelect

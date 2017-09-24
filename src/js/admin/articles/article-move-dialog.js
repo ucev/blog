@@ -1,8 +1,7 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux'
 
-import OptionDialog from "../../components/dialogs/option-dialog"
+import OptionDialog from '../../components/dialogs/option-dialog'
 import {
   moveCategoryCancel,
   moveCategoryConfirm
@@ -10,7 +9,7 @@ import {
 
 const ArticleMoveDialog = ({ categories, visible, moveConfirm, moveCancel }) => (
   <OptionDialog
-    title = '移动文章分组'
+    title = "移动文章分组"
     optionItems = {categories}
     visible = {visible}
     confirm = {moveConfirm}
@@ -32,8 +31,8 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const _ArticleMoveDialog = connect(
-                             mapStateToProps,
-                             mapDispatchToProps
-                            )(ArticleMoveDialog)
+  mapStateToProps,
+  mapDispatchToProps
+)(ArticleMoveDialog)
 export default _ArticleMoveDialog
 

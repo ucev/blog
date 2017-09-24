@@ -2,10 +2,10 @@ import { ARTICLES } from '../../action-types'
 
 const groupOpe = (state = -1, action) => {
   switch(action.type) {
-    case ARTICLES.CHECK_STATE_CHANGE:
-      return action.groupOpe
-    default:
-      return state
+  case ARTICLES.CHECK_STATE_CHANGE:
+    return action.groupOpe
+  default:
+    return state
   }
 }
 
