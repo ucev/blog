@@ -8,7 +8,7 @@ import {
   groupAddConfirm,
   groupOpeImgStateToggle,
   groupShowAddDialog
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 const PhotoGroupBar = ({ addVisible, opeImgVisible, gid, groups, groupAddCancel, groupAddConfirm,
   groupOpeImgStateToggle, groupShowAddDialog }) => {
