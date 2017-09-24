@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 
 import LabelRow from './table-row'
 import LabelTableLabel from './table-label'
-import Table from '../../components/tables/table'
-import TableBody from '../../components/tables/table-body'
-import TableFoot from '../../components/tables/table-foot'
+import Table from '$components/tables/table'
+import TableBody from '$components/tables/table-body'
+import TableFoot from '$components/tables/table-foot'
 
 const LabelTable = ({labels = []}) => {
   labels = Array.from(labels)

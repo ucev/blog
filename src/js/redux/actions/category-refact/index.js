@@ -1,5 +1,5 @@
-import { CATEGORY_REFACT } from '../../action-types'
-import { urlEncode } from '../../utils'
+import { CATEGORY_REFACT } from '$redux/action-types'
+import { urlEncode } from '$utils'
 
 export const articleOrderChange = (newOrder, update = false) => {
   return (dispatch, getState) => {

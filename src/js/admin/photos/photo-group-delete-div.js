@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import PhotoGroupDeleteDialog from './photo-group-delete-dialog'
 import {
   pfobDeleteDialogVisible
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 const PhotoGroupDeleteDiv = ({ show }) => (
   <div id="photo-flow-opebar-del-div">

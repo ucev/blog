@@ -12,7 +12,7 @@ import BottomFilterBar from './filter-bar-bottom'
 import {
   fetchArticles,
   fetchCategories
-} from '../../redux/actions/articles'
+} from '$actions/articles'
 
 // 😢
 class ArticleLayout extends React.Component {

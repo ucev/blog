@@ -1,5 +1,5 @@
-import { LABELS } from '../../action-types'
-import { urlEncode } from '../../utils'
+import { LABELS } from '$redux/action-types'
+import { urlEncode } from '$utils'
 
 const __fetchData = (dispatch) => {
   return (orderby, orderDirect, start) => {

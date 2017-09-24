@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 
 import CategoryLabel from './category-label'
 import CategoryRow from './category-row'
-import Table from '../../components/tables/table'
-import TableBody from '../../components/tables/table-body'
-import TableFoot from '../../components/tables/table-foot'
+import Table from '$components/tables/table'
+import TableBody from '$components/tables/table-body'
+import TableFoot from '$components/tables/table-foot'
 
 const CategoryTable = ({ categories }) => {
   var cats = categories.map((category) => (

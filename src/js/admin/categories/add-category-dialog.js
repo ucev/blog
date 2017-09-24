@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import Dialog from '../../components/dialogs/add-category-dialog'
+import Dialog from '$components/dialogs/add-category-dialog'
 import {
   addCategoryConfirm,
   addCategoryCancel,
   addCategoryValueChange
-} from '../../redux/actions/categories'
+} from '$actions/categories'
 
 const ADD_TITLE = {
   add: '添加类别',

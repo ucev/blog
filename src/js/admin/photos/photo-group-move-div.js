@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import PhotoGroupMoveDialog from './photo-group-move-dialog'
 import {
   pfobMoveDialogVisible
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 const PhotoGroupMoveDiv = ({ show }) => (
   <div id="photo-flow-opebar-move-div">

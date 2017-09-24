@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { handlePageChange } from '../../redux/actions/articles'
+import { handlePageChange } from '$actions/articles'
 
-import TableNavLink from '../../components/table-foot-nav'
+import TableNavLink from '$components/table-foot-nav'
 
 const ArticleTableNavLink = ({ page, total, pageChange }) => (
   <TableNavLink

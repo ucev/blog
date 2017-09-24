@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import OptionDialog from '../../components/dialogs/option-dialog'
+import OptionDialog from '$components/dialogs/option-dialog'
 import {
   photoMoveDialogVisible,
   photoMoveSingle
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 class PhotoItemMoveGroupDialog extends React.Component {
   constructor (props) {

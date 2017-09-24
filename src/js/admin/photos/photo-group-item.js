@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import ConfirmDialog from '../../components/dialogs/confirm-dialog'
-import InputDialog from '../../components/dialogs/input-dialog'
+import ConfirmDialog from '$components/dialogs/confirm-dialog'
+import InputDialog from '$components/dialogs/input-dialog'
 import {
   groupItemClick,
   groupItemDelete,
   groupItemDeleteState,
   groupItemInputState,
   groupItemRename,
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 class PhotoGroupItem extends React.Component {
   constructor (props) {

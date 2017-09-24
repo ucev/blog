@@ -1,4 +1,4 @@
-import { LABELS } from '../../action-types'
+import { LABELS } from '$redux/action-types'
 
 const total = (state = 0, action) => {
   switch (action.type) {

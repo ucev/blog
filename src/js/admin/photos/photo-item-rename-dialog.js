@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import InputDialog from '../../components/dialogs/input-dialog'
+import InputDialog from '$components/dialogs/input-dialog'
 import {
   photoInputDialogVisible,
   photoRename
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 class PhotoItemRenameDialog extends React.Component {
   constructor (props) {

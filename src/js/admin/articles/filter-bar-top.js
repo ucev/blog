@@ -7,7 +7,7 @@ import StateFilter from './state-filter'
 
 import {
   addArticle
-} from '../../redux/actions/articles'
+} from '$actions/articles'
 
 const FilterBar = ({ add }) => (
   <div className = "table-filter-bar table-filter-bar-top">

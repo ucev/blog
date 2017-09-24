@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import InputDialog from '../../components/dialogs/input-dialog'
+import InputDialog from '$components/dialogs/input-dialog'
 import PhotoGroupItem from './photo-group-item'
 import {
   groupAddCancel,

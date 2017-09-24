@@ -1,6 +1,6 @@
 import React from 'react'
 
-import TableLabel from '../../components/tables/table-label'
+import TableLabel from '$components/tables/table-label'
 
 class CategoryLabel extends React.Component {
   constructor (props) {

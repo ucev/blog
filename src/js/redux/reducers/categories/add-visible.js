@@ -1,4 +1,4 @@
-import { CATEGORIES } from '../../action-types'
+import { CATEGORIES } from '$redux/action-types'
 
 const addVisible = (state = false, action) => {
   switch (action.type) {

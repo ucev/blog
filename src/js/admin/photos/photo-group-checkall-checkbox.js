@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {
   photoCheckStateChangeAll
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 class PhotoGroupCheckAllCheckbox extends React.Component {
   constructor (props) {

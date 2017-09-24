@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import Dialog from '../../components/dialogs/confirm-dialog'
+import Dialog from '$components/dialogs/confirm-dialog'
 import {
   deleteCategoryConfirm,
   deleteCategoryCancel
-} from '../../redux/actions/categories'
+} from '$actions/categories'
 
 const ConfirmDialog = ({ visible, confirm, cancel }) => {
   return (

@@ -5,7 +5,7 @@ import ArticleItemLi from './article-item-li'
 import {
   categoryExpandChange,
   getRefactDetail
-} from '../../redux/actions/category-refact'
+} from '$actions/category-refact'
 
 
 const mapStateToProps = (state) => ({

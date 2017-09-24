@@ -1,4 +1,4 @@
-import { ARTICLES } from '../../action-types'
+import { ARTICLES } from '$redux/action-types'
 
 const groupOpe = (state = -1, action) => {
   switch(action.type) {

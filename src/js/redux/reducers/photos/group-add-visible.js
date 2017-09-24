@@ -1,4 +1,4 @@
-import { PHOTOS } from '../../action-types'
+import { PHOTOS } from '$redux/action-types'
 
 const groupAddVisible = (state = false, action) => {
   switch (action.type) {

@@ -1,4 +1,4 @@
-import { ARTICLES } from '../../action-types'
+import { ARTICLES } from '$redux/action-types'
 
 const articles = (state = [], action) => {
   switch (action.type) {

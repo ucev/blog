@@ -1,5 +1,5 @@
-import { PHOTOS } from '../../action-types'
-import { urlEncode } from '../../utils'
+import { PHOTOS } from '$redux/action-types'
+import { urlEncode } from '$utils'
 
 export const fetchPhotoGroups = () => {
   return (dispatch) => {

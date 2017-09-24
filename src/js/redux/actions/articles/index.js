@@ -1,5 +1,5 @@
-import { ARTICLES } from '../../action-types'
-import { urlEncode, dispatchDebounce } from '../../utils'
+import { ARTICLES } from '$redux/action-types'
+import { urlEncode, dispatchDebounce } from '$utils'
 
 export const addArticle = () => {
   location.href = '/admin/articles/add'

@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import OptionDialog from '../../components/dialogs/option-dialog'
+import OptionDialog from '$components/dialogs/option-dialog'
 import {
   moveCategoryCancel,
   moveCategoryConfirm
-} from '../../redux/actions/articles'
+} from '$actions/articles'
 
 const ArticleMoveDialog = ({ categories, visible, moveConfirm, moveCancel }) => (
   <OptionDialog

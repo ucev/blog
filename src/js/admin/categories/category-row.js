@@ -5,7 +5,7 @@ import {
   addCategoryDivStateChange,
   deleteCategoryHandle,
   updateCategoryOrder
-} from '../../redux/actions/categories'
+} from '$actions/categories'
 
 class CategoryRow extends React.Component {
   constructor (props) {

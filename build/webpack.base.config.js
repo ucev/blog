@@ -3,6 +3,10 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 module.exports = [{
   entry: {
     client_struct: path.resolve(__dirname, '../src/js/client-struct.js'),
@@ -27,7 +31,16 @@ module.exports = [{
         }]
       }
     ]
-  }
+  },
+  resolve: {
+    alias: {
+      '$actions': resolve('src/js/redux/actions'),
+      '$components': resolve('src/js/components'),
+      '$reducers': resolve('src/js/redux/reducers'),
+      '$redux': resolve('src/js/redux'),
+      '$utils': resolve('src/js/redux/utils')
+    }
+  },
 }, {
   entry: {
     article_edit: path.resolve(__dirname, '../src/js/article_edit.js'),

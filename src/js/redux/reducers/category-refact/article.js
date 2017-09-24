@@ -1,4 +1,4 @@
-import { CATEGORY_REFACT } from '../../action-types'
+import { CATEGORY_REFACT } from '$redux/action-types'
 
 const article = (state = -1, action) => {
   switch (action.type) {

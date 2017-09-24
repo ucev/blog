@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {
   getRefactDetail
-} from '../../redux/actions/category-refact'
+} from '$actions/category-refact'
 
 
 class ArticleItemLi extends React.Component {

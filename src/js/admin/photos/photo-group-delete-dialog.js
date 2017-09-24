@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import ConfirmDialog from '../../components/dialogs/confirm-dialog'
+import ConfirmDialog from '$components/dialogs/confirm-dialog'
 import {
   pfobDeleteDialogVisible,
   photoDeleteByGroup
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 const PhotoGroupDeleteDialog = ({ visible, confirm, cancel }) => (
   <ConfirmDialog

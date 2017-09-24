@@ -1,4 +1,4 @@
-import { ARTICLES } from '../../action-types'
+import { ARTICLES } from '$redux/action-types'
 
 const delVisible = (state = false, action) => {
   switch (action.type) {

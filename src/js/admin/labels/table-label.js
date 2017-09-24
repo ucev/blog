@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import TableLabel from '../../components/tables/table-label'
-import { orderChange } from '../../redux/actions/labels'
+import TableLabel from '$components/tables/table-label'
+import { orderChange } from '$actions/labels'
 
 const LabelTableLabel = ({orderby = 'id', orderDirect = 'asc', orderChange}) => {
   var labels = [

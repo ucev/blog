@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 
 import ArticleRow from './article-row'
 import ArticleTableLabel from './article-table-label'
-import Table from '../../components/tables/table'
-import TableBody from '../../components/tables/table-body'
-import TableFoot from '../../components/tables/table-foot'
+import Table from '$components/tables/table'
+import TableBody from '$components/tables/table-body'
+import TableFoot from '$components/tables/table-foot'
 
 const ArticleTable = ({articles, checkState}) => {
   const articleRows = articles.map((article, index) => (

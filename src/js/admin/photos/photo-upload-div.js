@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {
   photoUpload
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 class PhotoUploadDiv extends React.Component {
   constructor (props) {

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import {
   addCategoryDivStateChange
-} from '../../redux/actions/categories'
+} from '$actions/categories'
 
 class OperationBar extends React.Component {
   constructor (props) {

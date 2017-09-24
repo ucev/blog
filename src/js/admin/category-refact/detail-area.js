@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import {
   categoryPrefaceChange,
   articleOrderChange,
-} from '../../redux/actions/category-refact'
+} from '$actions/category-refact'
 
 class DetailArea extends React.Component {
   constructor (props) {

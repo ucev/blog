@@ -6,7 +6,7 @@ import PhotoGroupBar from './photo-group-bar'
 import {
   fetchGroupPhotos,
   fetchPhotoGroups
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 class PhotoArea extends React.Component {
   componentDidMount () {

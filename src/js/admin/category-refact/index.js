@@ -5,7 +5,7 @@ import CategoryTree from './category-tree'
 import DetailArea from './detail-area'
 import {
   getCategoryTree
-} from '../../redux/actions/category-refact'
+} from '$actions/category-refact'
 
 class CategoryRefactArea extends React.Component {
   componentDidMount () {

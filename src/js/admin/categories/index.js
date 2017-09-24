@@ -7,7 +7,7 @@ import OperationBar from './operation-bar'
 import CategoryTable from './category-table'
 import {
   fetchCategoryData
-} from '../../redux/actions/categories'
+} from '$actions/categories'
 
 class CategoryLayout extends React.Component {
   componentDidMount () {

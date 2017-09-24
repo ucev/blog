@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import TableLabel from '../../components/tables/table-label'
-import { allChecked } from '../../redux/actions/articles'
+import TableLabel from '$components/tables/table-label'
+import { allChecked } from '$actions/articles'
 
 class ArticleTableLabel extends React.Component {
   constructor (props) {

@@ -1,4 +1,4 @@
-import { CATEGORY_REFACT } from '../../action-types'
+import { CATEGORY_REFACT } from '$redux/action-types'
 
 // categoryExpandState
 const cstate = (state = {}, action) => {
@@ -9,7 +9,7 @@ const cstate = (state = {}, action) => {
     return cs
   default:
     return state
-  } 
+  }
 }
 
 export default cstate

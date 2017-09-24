@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { filterOptionChange } from '../../redux/actions/articles'
+import { filterOptionChange } from '$actions/articles'
 
 class FilterSelect extends React.Component {
   constructor (props) {

@@ -7,7 +7,7 @@ import {
   checkStateChange,
   handleDeleteArticle,
   modifyArticle
-} from '../../redux/actions/articles'
+} from '$actions/articles'
 
 class ArticleRow extends React.Component {
   constructor (props) {

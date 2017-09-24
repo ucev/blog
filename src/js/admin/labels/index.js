@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import LabelTable from './label-table'
 import TableNavLink from './table-nav-link'
-import { fetchLabelData } from '../../redux/actions/labels'
+import { fetchLabelData } from '$actions/labels'
 
 class LabelLayout extends React.Component {
   componentDidMount () {

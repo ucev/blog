@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import OptionDialog from '../../components/dialogs/option-dialog'
+import OptionDialog from '$components/dialogs/option-dialog'
 import {
   pfobMoveDialogVisible,
   photoMoveByGroup,
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 const PhotoGroupMoveDialog = ({ groups, visible, confirm, cancel}) => (
   <OptionDialog

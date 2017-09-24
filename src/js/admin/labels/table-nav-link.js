@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import TableNavLink from '../../components/table-foot-nav'
-import { pageChange } from '../../redux/actions/labels'
+import TableNavLink from '$components/table-foot-nav'
+import { pageChange } from '$actions/labels'
 
 const LabelNavLink = (current = 0, total = 0, pagechange) => (
   <TableNavLink page = {current} total = {total} pagechange = {pagechange} />

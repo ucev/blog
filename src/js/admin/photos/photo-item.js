@@ -11,7 +11,7 @@ import {
   photoDeleteDialogVisible,
   photoInputDialogVisible,
   photoMoveDialogVisible,
-} from '../../redux/actions/photos'
+} from '$actions/photos'
 
 class PhotoItem extends React.Component {
   constructor (props) {

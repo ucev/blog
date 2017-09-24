@@ -1,4 +1,4 @@
-import { LABELS } from '../../action-types'
+import { LABELS } from '$redux/action-types'
 
 const orderby = (state = 'id', action) => {
   switch (action.type) {

@@ -1,4 +1,4 @@
-import { CATEGORIES } from '../../action-types'
+import { CATEGORIES } from '$redux/action-types'
 
 const delCategoryId = (state = -1, action) => {
   switch (action.type) {
