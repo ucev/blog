@@ -1,29 +1,27 @@
-const path = require('path');
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const port = require('../config/base.config').website_info.port;
+const path = require('path')
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const port = require('../config/base.config').website_info.port
+const merge = require('webpack-merge')
+const baseConfigs = require('./webpack.base.config')
 
-module.exports = [{
-  name: "react_struct",
-  entry: {
-    client_struct:
-    [
+var webpackConfig = []
+
+function convertToHotLoader(entry, name) {
+  var newEntry = {}
+  for (var k in entry) {
+    newEntry[k] = [
       'react-hot-loader/patch',
-      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&reload=true&name=react_struct',
-      path.resolve(__dirname, '../src/js/client-struct.dev.js')
-    ],
-    my_struct: [
-      'react-hot-loader/patch',
-      'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&reload=true&name=react_struct',
-      path.resolve(__dirname, '../src/js/my-struct.dev.js')
+      `webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&reload=true&name=${name}`,
+      entry[k]
     ]
-  },
-  output: {
-    library: 'MyStructs',
-    path: path.resolve(__dirname, '../public/js'),
-    publicPath: '/js',
-    filename: '[name].min.js'
-  },
+  }
+  return newEntry
+}
+
+webpackConfig[0] = merge(baseConfigs[0], {
+  name: 'react_struct',
+  entry: convertToHotLoader(baseConfigs[0].entry, this.name),
   devtool: 'inline-source-map',
   devServer: {
     contentBase: path.resolve(__dirname, '../public'),
@@ -31,20 +29,6 @@ module.exports = [{
     port: port,
     publicPath: '/',
     historyApiFallback: true
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: ['es2015', 'react']
-          }
-        }]
-      }
-    ]
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -58,43 +42,18 @@ module.exports = [{
   resolve: {
     extensions: ['.js']
   }
-},/*
-{
-  name: "raw-jsfile",
-  entry: {
-    article_edit: path.resolve(__dirname, '../src/js/article_edit.js'),
-    admin: path.resolve(__dirname, '../src/js/admin.js'),
-    base: path.resolve(__dirname, '../src/js/base.js')
-  },
-  output: {
-    path: path.resolve(__dirname, '../public/js'),
-    publicPath: '/js',
-    filename: '[name].js'
-  },
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: path.resolve(__dirname, '../public'),
-    hot: true,
-    port: port,
-    publicPath: '/',
-    historyApiFallback: true
-  },
-  module: {
-    rules: [{
-      test: /\.js$/,
-      use: ExtractTextPlugin.extract({
-        use: [{
-          loader: 'raw-loader'
-        }]
-      })
-    }]
-  },
-  plugins: [
-    new ExtractTextPlugin({
-      filename: '[name].js'
-    })
-  ]
-},
+})
+
+webpackConfig[1] = merge(baseConfigs[1])
+
+webpackConfig[2] = merge(baseConfigs[2], {
+  name: '__css',
+  entry: convertToHotLoader(baseConfigs[2].entry, this.name),
+})
+
+module.exports = webpackConfig
+
+/*
 {
   name: '__css',
   entry: {
@@ -155,4 +114,3 @@ module.exports = [{
     })
   ]
 }*/
-]

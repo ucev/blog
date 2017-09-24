@@ -1,33 +1,13 @@
-const path = require('path');
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path')
+const webpack = require('webpack')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const merge = require('webpack-merge')
+const baseConfigs = require('./webpack.base.config')
 
-module.exports = [{
-  entry: {
-    client_struct: path.resolve(__dirname, '../src/js/client-struct.js'),
-    my_struct: path.resolve(__dirname, '../src/js/my-struct.js')
-  },
-  output: {
-    library: 'MyStructs',
-    path: path.resolve(__dirname, '../public/js'),
-    publicPath: '/js',
-    filename: '[name].min.js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: ['es2015', 'react']
-          }
-        }]
-      }
-    ]
-  },
+var webpackConfig = []
+
+webpackConfig[0] = merge(baseConfigs[0], {
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
       output: {
@@ -44,45 +24,11 @@ module.exports = [{
       }
     })
   ]
-}, {
-  entry: {
-    article_edit: path.resolve(__dirname, '../src/js/article_edit.js'),
-    admin: path.resolve(__dirname, '../src/js/admin.js'),
-    base: path.resolve(__dirname, '../src/js/base.js')
-  },
-  output: {
-    path: path.resolve(__dirname, '../public/js'),
-    publicPath: '/js',
-    filename: '[name].js'
-  },
-  module: {
-    rules: [{
-      test: /\.js$/,
-      use: ExtractTextPlugin.extract({
-        use: [{
-          loader: 'raw-loader'
-        }]
-      })
-    }]
-  },
-  plugins: [
-    new ExtractTextPlugin({
-      filename: '[name].js'
-    })
-  ]
-}, {
-  entry: {
-    admin: path.resolve(__dirname, '../src/css/admin.scss'),
-    article_edit: path.resolve(__dirname, '../src/css/article_edit.scss'),
-    base: path.resolve(__dirname, '../src/css/base.scss'),
-    md: path.resolve(__dirname, '../src/css/md.scss')
-  },
-  output: {
-    library: 'Ope',
-    path: path.resolve(__dirname, '../public/css'),
-    publicPath: '/css',
-    filename: '[name].css'
-  },
+})
+
+webpackConfig[1] = merge(baseConfigs[1])
+
+webpackConfig[2] = merge(baseConfigs[2], {
   module: {
     rules: [{
       test: /\.scss$/,
@@ -97,10 +43,7 @@ module.exports = [{
         }]
       })
     }]
-  },
-  plugins: [
-    new ExtractTextPlugin({
-      filename: '[name].css'
-    })
-  ]
-}]
+  }
+})
+
+module.exports = webpackConfig
