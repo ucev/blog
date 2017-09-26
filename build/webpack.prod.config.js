@@ -28,7 +28,8 @@ webpackConfig[0] = merge(baseConfigs[0], {
 
 webpackConfig[1] = merge(baseConfigs[1])
 
-webpackConfig[2] = merge(baseConfigs[2], {
+// 疑问
+webpackConfig[2] = Object.assign(baseConfigs[2], {
   module: {
     rules: [{
       test: /\.scss$/,
@@ -43,7 +44,12 @@ webpackConfig[2] = merge(baseConfigs[2], {
         }]
       })
     }]
-  }
+  },
+  plugins: [
+    new ExtractTextPlugin({
+      filename: '[name].css'
+    })
+  ]
 })
 
 module.exports = webpackConfig

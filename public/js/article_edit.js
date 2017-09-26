@@ -9,14 +9,14 @@ const photoGroupTpl = $('#photo-group-tpl').html()
 const photoItemTpl = $('#photo-item-tpl').html()
 const labelHintItemTpl = $('#label-hint-item-tpl').html()
 
-function deleteLabel(i) {
+function deleteLabel (i) {
   let id = '#label-div-' + i
   let label = $(id).children('span').text()
   labels.splice(labels.indexOf(label), 1)
   $(id).remove()
 }
 
-function addLabel(lbs) {
+function addLabel (lbs) {
   if (typeof lbs == 'string') lbs = [lbs]
   for (let i in lbs) {
     let l = lbs[i]
@@ -46,17 +46,17 @@ function addLabel(lbs) {
   })
 })()
 
-function drawLink() {
+function drawLink () {
   $('#insert-url-div').show()
   $('#insert-url-div-input').val('')
   $('#insert-url-div-input').focus()
 }
 
-function drawImage() {
+function drawImage () {
   $('#choose-photo-div').show()
 }
 
-function labelChange(curlabel) {
+function labelChange (curlabel) {
   var $target = $('#label-hints'),
     reg = new RegExp(curlabel)
   $target.empty()
@@ -67,18 +67,18 @@ function labelChange(curlabel) {
   })
 }
 
-function labelHintItemClick(e) {
+function labelHintItemClick (e) {
   var label = e.innerText
   addLabel(label)
   $('#label-input-area').val('')
   labelChange('')
 }
 
-function photoImgOnLoad(e) {
+function photoImgOnLoad (e) {
   var img = e
   var imgsrc = img.src
   var image = new Image()
-  image.onload = function() {
+  image.onload = function () {
     var ow = image.width
     var oh = image.height
     var small = ow < oh ? ow : oh
@@ -91,7 +91,7 @@ function photoImgOnLoad(e) {
   image.src = imgsrc
 }
 
-function submitArticle() {
+function submitArticle () {
   $('#submit').unbind('click')
   var content = simplemde.value()
   var descp = getContentDescription(content)
@@ -125,13 +125,13 @@ function submitArticle() {
 }
 
 // 取 content 中第一个段落(<p></p>)中的内容
-function getContentDescription(content) {
+function getContentDescription (content) {
   content = markdown.render(content)
   var p = content.match(/(<p[\s\S]*?>)([\s\S]*?)(<\/p>)/)
   return p ? p[2] : ''
 }
 
-function fetchGroupData() {
+function fetchGroupData () {
   $.ajax({
     url: '/admin/datas/photogroup/get',
     type: 'get',
@@ -155,7 +155,7 @@ function fetchGroupData() {
   })
 }
 
-function getGroupPhotos(gid = -1) {
+function getGroupPhotos (gid = -1) {
   $.ajax({
     url: '/admin/datas/photos/get',
     data: {
@@ -182,7 +182,7 @@ function getGroupPhotos(gid = -1) {
 /**
  * 原本想合并😊
  */
-function onGroupItemClick(target) {
+function onGroupItemClick (target) {
   var gid = $(target).attr('data-gid')
   $('#choose-photo-div').attr('data-curr-gid', gid)
   $('.choose-photo-div-photo-group-li').removeClass('choose-photo-div-photo-group-li-current')
@@ -190,28 +190,28 @@ function onGroupItemClick(target) {
   getGroupPhotos(gid)
 }
 
-function onPhotoItemClick(target) {
+function onPhotoItemClick (target) {
   $('#choose-photo-div').hide()
   var imgsrc = $($(target).find('img')[0]).attr('src')
   simplemde.__drawImage(imgsrc)
 }
 
-function onInsertUrlConfirmClick() {
+function onInsertUrlConfirmClick () {
   var url = $('#insert-url-div-input').val()
   $('#insert-url-div').hide()
   simplemde.__drawLink(url)
 }
 
-function onInsertUrlCancelClick() {
+function onInsertUrlCancelClick () {
   $('#insert-url-div-input').val('')
   $('#insert-url-div').hide()
 }
 
-function openUploadImgDialog() {
+function openUploadImgDialog () {
   $('#upload-img-input').click()
 }
 
-function uploadImgInputChange() {
+function uploadImgInputChange () {
   var file = $('#upload-img-input')[0].files[0]
   var gid = $('#choose-photo-div').attr('data-curr-gid') || 0
   var fd = new FormData()
@@ -240,7 +240,7 @@ const markdown_editor_config = {
   drawLink: drawLink
 }
 
-//markdown.use(markdownItClassy);
+// markdown.use(markdownItClassy);
 simplemde = new SimpleMDE(markdown_editor_config)
 cm = simplemde.codemirror
 cm.scrollTo(0, 0)

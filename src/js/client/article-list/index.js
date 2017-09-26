@@ -44,7 +44,6 @@ class ArticleDiv extends React.Component {
         } else {
           articles = articles.concat(data.data)
         }
-        console.log(articles)
         that.setState({
           total: Number(data.total),
           current: Number(data.current) + 1,

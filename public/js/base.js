@@ -1,4 +1,4 @@
-function isMobile() {
+function isMobile () {
   return !($('body').width() > 800)
 }
 $(document).ready(function () {
@@ -12,16 +12,16 @@ $(document).ready(function () {
     const categoryUl = $('#article-categories-ul')
     const categoryTitle = $('#article-category-title-span')
 
-    function hideSearchInput() {
+    function hideSearchInput () {
       $(searchInput).val('')
       $(searchInputDiv).width(0)
       $(hideInputImg).fadeOut('slow')
     }
-    function showSearchInput() {
+    function showSearchInput () {
       $(searchInputDiv).width(300)
       $(hideInputImg).fadeIn('slow')
     }
-    function showImg(src) {
+    function showImg (src) {
       $(`<div class='img-cover'><img class='img-cover-img' src=${src}><a class='img-cover-show-origin' href='${src}' target="_blank" >查看原图</a></div>`).appendTo($('body'))
       $('.img-cover').on('click', 'img', function () {
         $('.img-cover').remove()

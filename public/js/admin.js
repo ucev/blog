@@ -1,6 +1,6 @@
 $(document).ready(() => {
   (() => {
-    function f() {
+    function f () {
       var w = $('#left-nav-div').width()
       if (w < 80) {
         $('#left-nav-div').width(100)
