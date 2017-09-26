@@ -33,7 +33,7 @@ class FluxRecord {
       ip = ips.length;
       fluxData = { pv: pv, uv: uv, ip: ip };
       pvPerHour = _pvPerHour;
-      var datecnt = await conn.query(`select count(*) from ${this.his_tbname} where date = ?`,
+      var datacnt = await conn.query(`select count(*) from ${this.his_tbname} where date = ?`,
           [day])
       var querysql, querydata
       if (datacnt.length == 0) {
