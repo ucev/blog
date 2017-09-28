@@ -149,17 +149,17 @@ export const publishArticle = () => {
       method: 'POST',
       body: fd
     }).then(res => res.json())
-    .then((res) => {
-      isPublishing = false
-      if (res.code === 0) {
-        location.href = '/admin/articles'
-      } else {
-        alert(res.msg)
-      }
-    }).catch(err => {
-      console.log(err)
-      isPublishing = false
-    })
+      .then((res) => {
+        isPublishing = false
+        if (res.code === 0) {
+          location.href = '/admin/articles'
+        } else {
+          alert(res.msg)
+        }
+      }).catch(err => {
+        console.log(err)
+        isPublishing = false
+      })
   }
 }
 
@@ -203,7 +203,7 @@ export const photoUploadReturnName = (file) => {
       }
       return Promise.resolve(res.data)
     }).catch((err) => {
-
+      console.log(err)
     })
 }
 

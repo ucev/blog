@@ -6,23 +6,22 @@ import {
 } from '$actions/article-edit'
 
 class Label extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.delete = this.delete.bind(this)
   }
-  delete() {
+  delete () {
     this.props.delete(this.props.label)
   }
-  render() {
+  render () {
     var labelExist = this.props.labelExist
     var label = this.props.label
-    var ord = this.props.ord
     var nclass = labelExist.indexOf(label) == -1 ? 'new' : 'existed'
     var classes = `label-div label-div-label-${nclass}`
     return (
       <div className={classes}>
         <span>{label}</span>
-        <img src='/images/icons/ic_clear_white_24dp_2x.png' onClick={this.delete} />
+        <img src="/images/icons/ic_clear_white_24dp_2x.png" onClick={this.delete} />
       </div>
     )
   }

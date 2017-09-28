@@ -13,14 +13,14 @@ import {
 } from '$actions/article-edit'
 
 class Editor extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.articleChange = this.articleChange.bind(this)
     this.imageDrop = this.imageDrop.bind(this)
     this.insertImage = this.insertImage.bind(this)
     this.insertUrl = this.insertUrl.bind(this)
   }
-  componentDidMount() {
+  componentDidMount () {
     this.editor = new SimpleMDE({
       element: this.textarea,
       indentWithTabs: false,
@@ -35,22 +35,23 @@ class Editor extends React.Component {
     document.addEventListener('drag', this.dragPreventDefault)
     document.addEventListener('dragover', this.dragPreventDefault)
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.editor.codemirror.off('change', this.articleChange)
     this.editor.codemirror.off('drop', this.imageDrop)
     document.removeEventListener('drag', this.dragPreventDefault)
     document.removeEventListener('dragover', this.dragPreventDefault)
   }
-  componentDidUpdate(prevProps, prevState) {
+  /* eslint-disable no-unused-vars */
+  componentDidUpdate (prevProps, prevState) {
     if (prevProps.article !== this.props.article) {
       this.editor.codemirror.setValue(this.props.article)
     }
   }
-  articleChange() {
+  articleChange () {
     var content = this.editor.codemirror.getValue()
     this.props.change(content)
   }
-  imageDrop(instance, e) {
+  imageDrop (instance, e) {
     var dt = e.dataTransfer
     if (!dt) {
       return
@@ -62,24 +63,24 @@ class Editor extends React.Component {
     e.preventDefault()
     e.stopPropagation()
   }
-  insertImage(url) {
+  insertImage (url) {
     this.props.hideInsertImageDialog()
     this.editor.__drawImage(url)
   }
-  insertUrl(url) {
+  insertUrl (url) {
     this.props.hideInsertUrlDialog()
     this.editor.__drawLink(url)
   }
-  dragPreventDefault(e) {
+  dragPreventDefault (e) {
     e.preventDefault()
   }
-  render() {
+  render () {
     return (
-      <div id = 'edit-body'>
-        <div id = 'edit-area'>
+      <div id = "edit-body">
+        <div id = "edit-area">
           <textarea
-            id = 'md-editor'
-            ref = {(ta) => { this.textarea = ta; }}
+            id = "md-editor"
+            ref = {(ta) => { this.textarea = ta }}
             onChange = {this.articleChange}></textarea>
         </div>
         <ChoosePhotoDialog confirm = {this.insertImage} />

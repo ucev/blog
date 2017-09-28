@@ -3,24 +3,24 @@ import { connect } from 'react-redux'
 
 import LabelHintItem from './label-hint-item'
 
-//const LabelHints = ({ labels, current }) => {
+// const LabelHints = ({ labels, current }) => {
 class LabelHints extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.hintClick = this.hintClick.bind(this)
   }
-  componentDidMount() {
+  componentDidMount () {
     this.list.addEventListener('click', this.hintClick)
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.list.removeEventListener('click', this.hintClick)
   }
-  hintClick(e) {
+  hintClick (e) {
     var target = e.target
     var label = target.innerText
     this.props.click(label)
   }
-  render() {
+  render () {
     var hints = []
     if (this.props.current != '') {
       var reg = new RegExp(this.props.current)
@@ -31,7 +31,7 @@ class LabelHints extends React.Component {
     return (
       <ul
         id="label-hints"
-        ref = {(list) => {this.list = list;}}>
+        ref = {(list) => {this.list = list}}>
         {hints}
       </ul>
     )
@@ -44,7 +44,7 @@ const mapStateToProps = (state) => ({
   labels: state.labelExist
 })
 
-const mapDispatchToProps = (dispatch) => ({})
+const mapDispatchToProps = () => ({})
 
 const _LabelHints = connect(
   mapStateToProps,

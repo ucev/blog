@@ -9,7 +9,7 @@ import {
 
 const InsertUrlDialog = ({ confirm, cancel, visible }) => (
   <InputDialog
-    title = '输入URL：'
+    title = "输入URL："
     confirm = {confirm}
     cancel = {cancel}
     visible = {visible} />

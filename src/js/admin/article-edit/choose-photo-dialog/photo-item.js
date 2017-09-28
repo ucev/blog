@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 
 import {
   getImageUrl,
@@ -7,14 +6,14 @@ import {
 } from '$actions/article-edit'
 
 class PhotoItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.choose = this.choose.bind(this)
   }
-  choose() {
+  choose () {
     this.props.confirm(getImageUrl(this.props.imgsrc))
   }
-  imgOnLoad(e) {
+  imgOnLoad (e) {
     var img = e
     var src = e.src
     var newimg = new Image()
@@ -28,17 +27,18 @@ class PhotoItem extends React.Component {
       img.setAttribute('width', nw + 'px')
       img.setAttribute('height', nh + 'px')
     }
+    newimg.src = src
   }
-  render() {
+  render () {
     var imgUrl = getImageUrl(this.props.imgsrc)
     return (
-      <li className='choose-photo-div-photo-item-li' onClick={this.choose}>
+      <li className="choose-photo-div-photo-item-li" onClick={this.choose}>
         <img
-          className='choose-photo-div-photo-item-img'
-          width='150'
-          height='150'
+          className="choose-photo-div-photo-item-img"
+          width="150"
+          height="150"
           src={imgUrl}
-          alt='图片'
+          alt="图片"
           onLoad={this.imgOnLoad} />
       </li>
     )

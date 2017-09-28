@@ -14,7 +14,7 @@ import articleEditApp from '$reducers/article-edit'
 import ArticleEdit from './admin/article-edit'
 import { urlParamParser } from '$utils'
 
-export function init({ ele, type }) {
+export function init ({ ele, type }) {
   var params = urlParamParser()
   var id = params.id
   var store = createStore(

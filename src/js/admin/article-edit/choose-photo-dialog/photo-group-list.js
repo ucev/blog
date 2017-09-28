@@ -3,18 +3,18 @@ import { connect } from 'react-redux'
 
 import PhotoGroupItem from './photo-group-item'
 
-//const PhotoGroupList = ({ groups }) => {
+// const PhotoGroupList = ({ groups }) => {
 class PhotoGroupList extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.list.addEventListener('scroll', this.listScroll)
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.list.removeEventListener('scroll', this.listScroll)
   }
-  listScroll(e) {
+  listScroll (e) {
     e.stopPropagation()
   }
-  render() {
+  render () {
     var gps = this.props.groups.map((g) => (
       <PhotoGroupItem
         key = {g.id}
@@ -25,7 +25,7 @@ class PhotoGroupList extends React.Component {
     return (
       <ul
         id = "choose-photo-div-photo-group-ul"
-        ref = {(list) => {this.list = list;}}>
+        ref = {(list) => {this.list = list}}>
         {gps}
       </ul>
     )

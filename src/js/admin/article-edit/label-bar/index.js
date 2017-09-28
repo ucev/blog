@@ -10,37 +10,37 @@ import {
 } from '$actions/article-edit'
 
 class LabelBar extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.addLabel = this.addLabel.bind(this)
     this.labelKeyDown = this.labelKeyDown.bind(this)
     this.labelTypingChange = this.labelTypingChange.bind(this)
   }
-  labelKeyDown(e) {
+  labelKeyDown (e) {
     if (e.which == 13) {
       var label = this.input.value
       this.props.add(label)
       this.input.value = ''
     }
   }
-  addLabel(label) {
+  addLabel (label) {
     this.props.add(label)
     this.input.value = ''
     this.props.getHint('')
   }
-  labelTypingChange() {
+  labelTypingChange () {
     this.props.getHint(this.input.value)
   }
-  render() {
+  render () {
     var lbs = this.props.labels.map((l, i) => (
       <Label label={l} key={i} />
     ))
     return (
-      <div id='article-labels' className='op-bar'>
-        <label id='label-label'>标签</label>
+      <div id="article-labels" className="op-bar">
+        <label id="label-label">标签</label>
         <input
           id = "label-input-area"
-          ref = {(input) => { this.input = input; }}
+          ref = {(input) => { this.input = input }}
           type = "text"
           placeholder = "输入标签"
           maxLength = {10}

@@ -3,18 +3,18 @@ import { connect } from 'react-redux'
 
 import PhotoItem from './photo-item'
 
-//const PhotoItemList = ({ photos, confirm }) => {
+// const PhotoItemList = ({ photos, confirm }) => {
 class PhotoItemList extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.list.addEventListener('scroll', this.listScroll)
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.list.removeEventListener('scroll', this.listScroll)
   }
-  listScroll(e) {
+  listScroll (e) {
     e.stopPropagation()
   }
-  render() {
+  render () {
     var ps = this.props.photos.map(p => (
       <PhotoItem
         key = {p.id}
@@ -24,7 +24,7 @@ class PhotoItemList extends React.Component {
     return (
       <ul
         id="choose-photo-div-photo-list-ul"
-        ref = {(list) => {this.list = list;}}>
+        ref = {(list) => {this.list = list}}>
         {ps}
       </ul>
     )

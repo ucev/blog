@@ -6,7 +6,7 @@ import {
 } from '$actions/article-edit'
 
 const PublishArticleButton = ({ publish }) => (
-  <button id="submit" className = 'operation-button' onClick = {publish}>发布文章</button>
+  <button id="submit" className = "operation-button" onClick = {publish}>发布文章</button>
 )
 
 const mapStateToProps = () => ({})

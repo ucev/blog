@@ -12,10 +12,10 @@ import {
 } from '$actions/article-edit'
 
 class ArticleEdit extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.init(this.props.type, this.props.id)
   }
-  render() {
+  render () {
     return (
       <div>
         <Editor />
