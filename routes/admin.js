@@ -1,6 +1,8 @@
 const router = new require('koa-router')()
 const enterControl = require('./entercontrol');
 const __log = require('../utils/log');
+const busboy = require('koa-busboy')
+const uploader = busboy()
 const md = require('markdown-it')({
   html: true,
   linkify: true,
@@ -63,22 +65,11 @@ router.get('/categories/refact/:id', async (ctx, next) => {
 })
 
 router.get('/articles/add', async (ctx, next) => {
-  function response(labels) {
-    return ctx.render('admin/article_edit', {
-        title: '添加文章',
-        avatar: ctx.session.avatar,
-        labels: JSON.stringify(labels),
-        content: "",
-        type: "add"
-      }
-    )
-  }
-  try {
-    var labels = await __labels.getNames()
-    await response(labels)
-  } catch (err) {
-    await response([])
-  }
+  await ctx.render('admin/article_edit', {
+    title: '添加文章',
+    avatar: ctx.session.avatar,
+    type: "add"
+  })
 });
 
 router.post('/articles/add', async (ctx, next) => {
@@ -107,38 +98,16 @@ router.post('/articles/add', async (ctx, next) => {
 })
 
 router.get('/articles/modify', async (ctx, next) => {
-  var id = Number(ctx.query.id);
-  function response(article, labels) {
-    return ctx.render('admin/article_edit', {
-        title: '修改文章',
-        avatar: ctx.session.avatar,
-        type: 'edit',
-        id: article.id,
-        content: article.content,
-        labels: JSON.stringify(labels),
-        current_labels: article.label
-      }
-    )
-  }
-  if (isNaN(id)) {
-    return ctx.redirect('/admin');
-  }
-  try {
-    var article = await __articles.getsingle({
-            id: id
-          })
-    try {
-      var labels = await __labels.getNames()
-      await response(article, labels)
-    } catch (err) {
-      await response(article, [])
-    }
-  } catch (err) {
-    ctx.redirect('/admin')
-  }
+  var id = Number(ctx.query.id)
+  await ctx.render('admin/article_edit', {
+    title: '修改文章',
+    avatar: ctx.session.avatar,
+    type: 'edit',
+    id: id
+  })
 })
 
-router.post('/articles/modify', async (ctx, next) => {
+router.post('/articles/modify', uploader, async (ctx, next) => {
   var request = ctx.request.body
   var content = request.md.trim()
   var descp = request.descp

@@ -4,6 +4,17 @@ export const urlEncode = (obj) => {
   return arr.join('&')
 }
 
+export const urlParamParser = () => {
+  var query = location.search.substring(1)
+  var parts = query.split('&')
+  var params = {}
+  parts.forEach((part) => {
+    var p = part.split('=')
+    params[p[0]] = p[1]
+  })
+  return params
+}
+
 export const debounce = function (func, delay) {
   var timeout
   return function () {
