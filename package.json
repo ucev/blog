@@ -84,6 +84,7 @@
     "request-promise": "^4.2.1",
     "rwlock": "^5.0.0",
     "sass-loader": "^6.0.6",
+    "simplemde-customize-for-blog": "0.0.2",
     "style-loader": "^0.18.2",
     "template_js": "^0.7.1",
     "webpack": "^3.6.0",

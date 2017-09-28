@@ -114,7 +114,6 @@ button#submit {
 }
 
 #choose-photo-div {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -145,7 +144,7 @@ button#submit {
 
 #choose-photo-div-groups {
   flex-shrink: 0;
-  width: 150px; 
+  width: 150px;
 }
 
 #choose-photo-div-right-div {

@@ -5,9 +5,37 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const merge = require('webpack-merge')
 const baseConfigs = require('./webpack.base.config')
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 var webpackConfig = []
 
 webpackConfig[0] = merge(baseConfigs[0], {
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            presets: ['es2015', 'react']
+          }
+        }]
+      },
+      {
+        test: /\.css$|\.scss$/,
+        use: ExtractTextPlugin.extract({
+          use: [{
+            loader: 'css-loader'
+          }, {
+            loader: 'sass-loader'
+          }]
+        })
+      }
+    ]
+  },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
       output: {
@@ -22,6 +50,9 @@ webpackConfig[0] = merge(baseConfigs[0], {
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       }
+    }),
+    new ExtractTextPlugin({
+      filename: 'css/[name].min.css'
     })
   ]
 })
@@ -29,6 +60,7 @@ webpackConfig[0] = merge(baseConfigs[0], {
 webpackConfig[1] = merge(baseConfigs[1])
 
 // 疑问
+
 webpackConfig[2] = Object.assign(baseConfigs[2], {
   module: {
     rules: [{

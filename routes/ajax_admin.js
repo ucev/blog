@@ -56,9 +56,10 @@ router.get('/articles/get', async (ctx, next) => {
   if (ctx.query.id != undefined) {
     try {
       const id = ctx.query.id;
+      const queryfields = ctx.query.modify ? ['content', 'label'] : ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
       var res = await __articles.getsingle({
                   id: id,
-                  queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
+                  queryfields: queryfields
                 })
       ctx.body = { code: 0, msg: '请求成功', data: res}
     } catch (err) {
@@ -273,12 +274,21 @@ router.get('/labels/get', async (ctx, next) => {
       asc: asc
     }
   }
-  try { 
+  try {
     var res = await __labels.get(queryData)
     ctx.body = { code: 0, msg: '获取成功', data: res }
   } catch (err) {
     console.log(err)
     ctx.body = { code: 1, msg: '获取失败' }
+  }
+})
+
+router.get('/labels/getnames', async (ctx, next) => {
+  try {
+    var labels = await __labels.getNames()
+    ctx.body = { code: 0, msg: '获取成功', data: labels }
+  } catch (err) {
+    ctx.body = { code: 1, msg: '获取失败', data: [] }
   }
 })
 
@@ -313,7 +323,7 @@ router.post('/photos/add', uploader, async (ctx, next) => {
             photogroup: gid,
             addtime: addtime,
             name: newname,
-            file: tempfile 
+            file: tempfile
           })
     ctx.body = { code: 0, msg: '添加成功', data: `/images/blog/${newname}` }
   } catch (err) {

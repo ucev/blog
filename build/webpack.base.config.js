@@ -9,28 +9,15 @@ function resolve (dir) {
 
 module.exports = [{
   entry: {
-    client_struct: path.resolve(__dirname, '../src/js/client-struct.js'),
-    my_struct: path.resolve(__dirname, '../src/js/my-struct.js')
+    client_struct: resolve('src/js/client-struct.js'),
+    my_struct: resolve('src/js/my-struct.js'),
+    article_edit: resolve('src/js/article-edit.js')
   },
   output: {
     library: 'MyStructs',
-    path: path.resolve(__dirname, '../public/js'),
-    publicPath: '/js',
-    filename: '[name].min.js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: ['es2015', 'react']
-          }
-        }]
-      }
-    ]
+    path: resolve('public'),
+    publicPath: '/',
+    filename: 'js/[name].min.js'
   },
   resolve: {
     alias: {
@@ -38,12 +25,12 @@ module.exports = [{
       '$components': resolve('src/js/components'),
       '$reducers': resolve('src/js/redux/reducers'),
       '$redux': resolve('src/js/redux'),
-      '$utils': resolve('src/js/redux/utils')
+      '$utils': resolve('src/js/redux/utils'),
+      '$css': resolve('src/css')
     }
   },
 }, {
   entry: {
-    article_edit: path.resolve(__dirname, '../src/js/article_edit.js'),
     admin: path.resolve(__dirname, '../src/js/admin.js'),
     base: path.resolve(__dirname, '../src/js/base.js')
   },
@@ -70,7 +57,6 @@ module.exports = [{
 }, {
   entry: {
     admin: path.resolve(__dirname, '../src/css/admin.scss'),
-    article_edit: path.resolve(__dirname, '../src/css/article_edit.scss'),
     base: path.resolve(__dirname, '../src/css/base.scss'),
     md: path.resolve(__dirname, '../src/css/md.scss')
   },

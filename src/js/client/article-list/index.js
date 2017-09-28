@@ -35,7 +35,6 @@ class ArticleDiv extends React.Component {
     }
     fetch(url, {credentials: 'include'}).then(res => res.json())
       .then(res => {
-        console.log(res)
         if (res.code !== 0) return
         var data = res.data
         var articles = that.state.articles
