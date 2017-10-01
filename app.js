@@ -8,8 +8,10 @@ const views = require('koa-views')
 const bodyparser = require('koa-bodyparser')
 const onerror = require('koa-onerror')
 const json = require('koa-json')
-const logger = require('koa-logger')
-const session = require('koa-session') 
+const log4js = require('./utils/log4js')
+//const logger = require('koa-logger')
+//const log4js = require('koa-log4')
+const session = require('koa-session')
 const koaConvert = require('koa-convert')
 
 const configs = require('./config/base.config')
@@ -28,18 +30,13 @@ const DEBUG_MODE = configs.website_info.debug
 
 const mail = require('./utils/mail')
 
-/*
-var logger = require('./utils/log4js');
-const __log = require('./utils/log');
-*/
-
 var app
 app = new Koa()
 
 onerror(app)
 
 app.keys = configs.session.keys
-app.use(logger())
+app.use(log4js.koaLogger(log4js.getLogger("normal"), { level: 'auto' }))
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
@@ -52,7 +49,6 @@ app.use(views(path.join(__dirname, 'views'), {
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
-//app.use(logger('dev'));
 
 // hmr
 if (process.env.NODE_ENV == 'DEV') {
