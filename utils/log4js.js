@@ -1,5 +1,5 @@
 var config = require('../config/base.config');
-const log4js = require('log4js');
+const log4js = require('koa-log4');
 
 if (config.website_info.debug) {
   log4js.configure({
@@ -10,7 +10,6 @@ if (config.website_info.debug) {
 } else {
   log4js.configure({
     appenders: [
-      //{ type: 'console' },
       {
         type: 'file',
         filename: './log/logfile.log',
@@ -22,7 +21,6 @@ if (config.website_info.debug) {
   });
 }
 
-var logger = log4js.getLogger('normal');
-logger.setLevel('info');
+module.exports = log4js
 
-module.exports = log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' });
+//module.exports = log4js.connectLogger(logger, { level: log4js.levels.INFO, format: ':method :url' });
