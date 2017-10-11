@@ -72,7 +72,7 @@ router.get('/articles/add', async (ctx, next) => {
   })
 });
 
-router.post('/articles/add', async (ctx, next) => {
+router.post('/articles/add', uploader, async (ctx, next) => {
   var request = ctx.request.body
   var content = request.md.trim()
   var descp = request.descp
