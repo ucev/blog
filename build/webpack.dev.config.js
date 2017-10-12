@@ -19,9 +19,12 @@ function convertToHotLoader(entry, name) {
   return newEntry
 }
 
+const configName0 = 'react_struct'
+const configName1 = 'plain_js'
+const configName2 = 'plain_css'
 webpackConfig[0] = merge(baseConfigs[0], {
-  name: 'react_struct',
-  entry: convertToHotLoader(baseConfigs[0].entry, this.name),
+  name: configName0,
+  entry: convertToHotLoader(baseConfigs[0].entry, configName0),
   devtool: 'inline-source-map',
   devServer: {
     contentBase: path.resolve(__dirname, '../public'),
@@ -71,11 +74,13 @@ webpackConfig[0] = merge(baseConfigs[0], {
   }
 })
 
-webpackConfig[1] = merge(baseConfigs[1])
+webpackConfig[1] = baseConfigs[1]
 
+// 更新失败
 webpackConfig[2] = merge(baseConfigs[2], {
-  name: '__css',
-  entry: convertToHotLoader(baseConfigs[2].entry, this.name),
+  name: configName2,
+  entry: convertToHotLoader(baseConfigs[2].entry, configName2),
+  devtool: 'inline-source-map'
 })
 
 module.exports = webpackConfig

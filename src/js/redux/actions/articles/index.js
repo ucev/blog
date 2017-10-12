@@ -113,7 +113,7 @@ export const fetchSingleArticle = (id) => {
 export const fetchArticles = dispatchDebounce((start, options) => {
   return (dispatch, getState) => {
     var state = getState()
-    start = start || state.start
+    start = start !== undefined ? start : state.start
     var data = Object.assign({}, options || state.filters)
     data.start = start
     var etag = Date.now()

@@ -31,8 +31,8 @@ module.exports = [{
   },
 }, {
   entry: {
-    admin: path.resolve(__dirname, '../src/js/admin.js'),
-    base: path.resolve(__dirname, '../src/js/base.js')
+    admin: resolve('src/js/admin.js'),
+    base: resolve('src/js/base.js')
   },
   output: {
     path: path.resolve(__dirname, '../public/js'),

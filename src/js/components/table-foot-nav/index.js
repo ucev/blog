@@ -29,27 +29,33 @@ class TableNavLink extends React.Component {
     }
     var lis = []
     if (page != 0) {
-      lis.push(<TableNavLinkLi
-        page = {page - 1}
-        current = {page}
-        title="上一页"
-        click = {this.handleClick} />
+      lis.push(
+        <TableNavLinkLi
+          key = {-1}
+          page = {page - 1}
+          current = {page}
+          title="上一页"
+          click = {this.handleClick} />
       )
     }
     for (let i = 1; i <= len; i++) {
-      lis.push(<TableNavLinkLi
-        page = {start + i - 1}
-        current = {page}
-        title= {start + i}
-        click = {this.handleClick} />
+      lis.push(
+        <TableNavLinkLi
+          key = {page}
+          page = {start + i - 1}
+          current = {page}
+          title= {start + i}
+          click = {this.handleClick} />
       )
     }
     if (page + 1 < total) {
-      lis.push(<TableNavLinkLi
-        page = {page + 1}
-        current = {page}
-        title = "下一页"
-        click = {this.handleClick} />
+      lis.push(
+        <TableNavLinkLi
+          key = {total}
+          page = {page + 1}
+          current = {page}
+          title = "下一页"
+          click = {this.handleClick} />
       )
     }
     return lis
