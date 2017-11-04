@@ -1,5 +1,5 @@
 extends base_layout
-  
+
 block banner-block
   include website_banner
 
@@ -11,9 +11,7 @@ block struct-main
 block append jsscript-block
   script(src='/jquery.min.js')
   script(src='/markdown-it.min.js')
-  script(src='/plugins/highlight-keywords/prism-highlight-keywords.min.js')
-  script(src='/plugins/line-numbers/prism-line-numbers.min.js')
-  script(src='/prism.js')
+  script(src='/js/prism.js')
   script.
     $('.extensible-fence').on('click', '.extensible-fence-btn', function(e) {
       if ($(this).hasClass('extensible-fence-btn-hidden')) {
@@ -24,6 +22,3 @@ block append jsscript-block
       $(this).toggleClass('extensible-fence-btn-hidden')
       e.stopPropagation()
     })
-
-block append stylesheet-block
-  link(rel='stylesheet' type='text/css' href='/plugins/line-numbers/prism-line-numbers.css')
