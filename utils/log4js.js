@@ -3,21 +3,33 @@ const log4js = require('koa-log4');
 
 if (config.website_info.debug) {
   log4js.configure({
-    appenders: [
-      { type: 'console' }
-    ]
+    appenders: {
+      out: { type: 'console' }
+    },
+    categories: {
+      default: {
+        appenders: ['out'],
+        level: 'debug'
+      }
+    }
   });
 } else {
   log4js.configure({
-    appenders: [
-      {
+    appenders: {
+      out: {
         type: 'file',
         filename: './log/logfile.log',
         maxLogSize: 1024000,
         backups: 3,
         category: 'normal'
       }
-    ]
+    },
+    categories: {
+      default: {
+        appenders: ['out'],
+        level: 'warn'
+      }
+    }
   });
 }
 
