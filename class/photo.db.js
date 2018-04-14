@@ -1,8 +1,8 @@
 const mysql = require('promise-mysql');
 const configs = require('../config/base.config.js');
-const fs = require('fs');
+const fs = require('then-fs');
 const path = require('path');
-const uploadPhotoDir = path.join(__dirname, '../public/images/blog');
+const uploadPhotoDir = path.resolve(__dirname, '../public/images/blog');
 
 const RECOUNT_PHOTO_GROUP_SQL = `
              update photogroups as pg 
@@ -26,6 +26,12 @@ class Photos {
       var name = datas.name
       var addtime = datas.addtime
       var photogroup = datas.photogroup || 1
+      try {
+        await fs.access(uploadPhotoDir)
+      } catch(err) {
+        await fs.mkdir(uploadPhotoDir)
+      }
+      console.log("here")
       var newpath = path.join(uploadPhotoDir, name)
       await this.savePhoto(file, newpath)
       var conn = await mysql.createConnection(this.dbconfig)
@@ -128,14 +134,7 @@ class Photos {
   }
 
   async savePhoto(fdata, fpath) {
-    return new Promise((resolve, reject) => {
-      fs.rename(fdata, fpath, (err) => {
-        if (err) {
-          reject(err)
-        }
-        resolve()
-      })
-    })
+    await fs.rename(fdata, fpath)
   }
 }
 

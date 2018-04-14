@@ -55,16 +55,33 @@ block append jsscript-block
         $progressingLayer.show();
         var es = new EventSource('/es/outputArticle?token=' + token);
         es.onmessage = function(e) {
-          es.close();
-          $progressingLayer.hide();
-          if (e.data == 'succ') {
-            $('#download-form').submit();
-          } else {
-            showMessageDialog('导出失败', 'alert');
+          console.log(e)
+          switch (e.data) {
+            case 'succ':
+              console.log("succ")
+              $progressingLayer.hide()
+              $('#download-form').submit()
+              break
+            case 'wait':
+              console.log('wait to pack')
+              break
+            case 'close':
+              console.log('close')
+              es.close()
+              break
+            case 'fail':
+              $progressingLayer.hide()
+              showMessageDialog('导出失败', 'alert');
+              es.close()
+              break
+            default:
+              console.log(e.data)
           }
         }
-        es.onerror = function() {
+        es.onerror = function(e) {
           //
+          $progressingLayer.hide()
+          console.log(e)
           es.close();
           showMessageDialog('导出失败', 'alert');
         }

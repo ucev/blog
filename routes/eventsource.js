@@ -1,88 +1,112 @@
 const router = new require('koa-router')()
 const __log = require('../utils/log');
-const fs = require('fs');
+const fs = require('then-fs');
 const ReadWriteLock = require('rwlock');
 const __lock = new ReadWriteLock();
 const path = require('path');
 const archiver = require('archiver');
 const moment = require('moment');
 const busboy = require('koa-busboy')
+const send = require('koa-send')
 const uploader = busboy()
+
+const Readable = require('stream').Readable;
 
 const __root_dir = '../public/docs';
 
 const Articles = require('../class/article.db');
 const __articles = new Articles();
 
-function dirExists(dirpath) {
-  return new Promise((resolve, reject) => {
-    fs.exists(dirpath, (exists) => {
-      if (!exists) {
-        fs.mkdir(dirpath, (err) => {
-          if (err) {
-            reject();
-          } else {
-            resolve(true);
-          }
-        })
-      } else {
-        resolve(true);
-      }
-    })
-  })
+class EventSourceStream extends Readable {
+  constructor() {
+    super(arguments)
+  }
+  _read(data){}
+}
+
+const sse = (stream, event, data) => {
+  return stream.push(`event:${event}\ndata:${data}\n\n`)
+}
+
+async function dirExists(dirpath) {
+  pathComp = dirpath.split(path.sep)
+  currpath = dirpath[0] === '/' ? '/' : ''
+  for (let c of pathComp) {
+    currpath = path.join(currpath, c)
+    try {
+      await fs.access(currpath)
+    } catch (err) {
+      await fs.mkdir(currpath)
+    }
+  }
+  return true
 }
 
 router.post('/outputArticle/download', async (ctx, next) => {
-  var request = ctx.request.body
-  var token = request.token
-  var date = moment().format('YYYYMMDD')
-  var filepath = path.join(__dirname, __root_dir, date, token + '.zip')
-  return ctx.attachment(filepath)
+  const request = ctx.request.body
+  const token = request.token
+  const date = moment().format('YYYYMMDD')
+  const filename = `${token}.zip`
+  const rootdir = path.resolve(__dirname, __root_dir, date)
+  const filepath = path.join(rootdir, filename)
+  ctx.attachment(filepath)
+  await send(ctx, token + '.zip', {root: rootdir})
 })
 
 router.get('/outputArticle', async (ctx, next) => {
+  ctx.set({
+    'Content-Type':'text/event-stream',
+    'Cache-Control':'no-cache',
+    'Connection': 'keep-alive'
+  })
+  const stream = new EventSourceStream()
+  ctx.body = stream
   try {
-    var token = ctx.query.token
-    var openid = ctx.session.openid
-    res.type = 'text/event-stream'
-    var date = moment().format('YYYYMMDD')
-    var targetDir = path.join(__dirname, __root_dir, date);
-    var pdir = await dirExists(targetDir)
-    var targetZip = fs.createWriteStream(path.join(targetDir, token + '.zip'));
-    var archive = archiver('zip', {
+    const token = ctx.query.token
+    const openid = ctx.session.openid
+    const date = moment().format('YYYYMMDD')
+    const targetDir = path.join(__dirname, __root_dir, date);
+    const pdir = await dirExists(targetDir)
+    const targetZip = fs.createWriteStream(path.join(targetDir, token + '.zip'));
+    const archive = archiver('zip', {
       zlib: { level: 9 }
     })
     targetZip.on('close', function () {
-      return ctx.body = 'data:succ\n\n'
+      sse(stream, 'message', 'succ')
+      sse(stream, 'message', 'close')
     })
     archive.pipe(targetZip);
-    var arts = await __articles.getall()
-    var lockKey = 'dump article';
-    var len = arts.length;
-    for (var i = 0; i < len; i++) {
+    const arts = await __articles.getall()
+    const lockKey = 'dump article';
+    const len = arts.length;
+    for (let i = 0; i < len; i++) {
       (function (pos) {
-        var art = arts[pos];
+        const art = arts[pos];
         //__lock.writeLock(lockKey, function(cb) {
         archive.append(art.content, { name: art.title + '.md' });
         //cb();
         if (pos == len - 1) {
           archive.finalize();
+          sse(stream, 'message', 'wait')
         }
         //});
       })(i);
     }
   } catch (err) {
-    ctx.body = 'data:fail\n\n'
+    console.log(err)
+    sse(stream, 'message', 'fail')
+    sse(stream, 'message', 'close')
   }
 });
 
 router.post('/importArticle', uploader, async (ctx, next) => {
   try {
     var files = ctx.request.files
+    console.log(files)
     var addtime = Math.floor(new Date().getTime() / 1000);
     var ps = files.map((f) => {
       return (function (f) {
-        var fname = f.originalFilename;
+        var fname = f.filename;
         var title = fname.substr(0, fname.indexOf('.md'));
         var fpath = f.path;
         return new Promise((resolve, reject) => {
@@ -104,7 +128,8 @@ router.post('/importArticle', uploader, async (ctx, next) => {
                     add: true
             }).then(() => {
               resolve({ 'tp': 'succ', 'title': fname });
-            }).catch(() => {
+            }).catch((err) => {
+              console.log(err)
               resolve({ 'tp': 'fail', 'title': fname });
             })
           })
@@ -113,6 +138,7 @@ router.post('/importArticle', uploader, async (ctx, next) => {
     })
     var datas = await Promise.all(ps);
     __log.debug(datas);
+    console.log(datas)
     var succ = [];
     var allSucc = true;
     for (var dt of datas) {
@@ -129,6 +155,7 @@ router.post('/importArticle', uploader, async (ctx, next) => {
       ctx.body = { code: 1, msg: '导入失败', data: succ }
     }
   } catch (err) {
+    console.log(err)
     ctx.body = { code: 1, msg: '添加失败', data: [] }
   }
 })

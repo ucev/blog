@@ -16,14 +16,14 @@ LabelNavLink.propTypes = {
 }
 
 const mapStateToProps = state => ({
-    current: state.current,
-    total: state.total
+  current: state.current,
+  total: state.total
 })
 
 const mapDispatchToProps = dispatch => ({
-    pagechange: page => {
-      dispatch(pageChange(page))
-    }
+  pagechange: page => {
+    dispatch(pageChange(page))
+  }
 })
 
 const _LabelNavLink = connect(

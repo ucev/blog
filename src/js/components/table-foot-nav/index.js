@@ -31,7 +31,7 @@ class TableNavLink extends React.Component {
     if (page != 0) {
       lis.push(
         <TableNavLinkLi
-          key = {-1}
+          key = {0}
           page = {page - 1}
           current = {page}
           title="上一页"
@@ -41,7 +41,7 @@ class TableNavLink extends React.Component {
     for (let i = 1; i <= len; i++) {
       lis.push(
         <TableNavLinkLi
-          key = {page}
+          key = {i}
           page = {start + i - 1}
           current = {page}
           title= {start + i}
@@ -51,7 +51,7 @@ class TableNavLink extends React.Component {
     if (page + 1 < total) {
       lis.push(
         <TableNavLinkLi
-          key = {total}
+          key = {total + 1}
           page = {page + 1}
           current = {page}
           title = "下一页"
