@@ -1,6 +1,7 @@
 const mysql = require('promise-mysql');
 const configs = require('../config/base.config.js');
 const fs = require('then-fs');
+const move = require('move-concurrently')
 const path = require('path');
 const uploadPhotoDir = path.resolve(__dirname, '../public/images/blog');
 
@@ -58,6 +59,10 @@ class Photos {
     }
   }
 
+  /**
+   * 此处没有把储存的图片删掉
+   * 可单独写一个脚本进行
+   */
   async delete(ids) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
@@ -134,7 +139,11 @@ class Photos {
   }
 
   async savePhoto(fdata, fpath) {
-    await fs.rename(fdata, fpath)
+    await move(fdata, fpath).then(() => {
+      return Promise.resolve()
+    }).catch(() => {
+      return Promise.reject()
+    })
   }
 }
 
