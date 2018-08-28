@@ -11,7 +11,7 @@ mixin categoryListCategoryItem(data, depth)
   li.category-tree-category-li
     div.category-tree-category-title-div
       span.category-tree-category-title
-        a(href = '/articles/category/' + cid + '/' + data.preface style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
+        a(href = '/articles/category/' + cid + '/' style = {'padding-left': (depth * 20 + 20) + 'px'}) #{data.title}
     ul.category-tree-category-ul
       each item in data.childs
         if item.type == 'dir'

@@ -68,7 +68,7 @@ router.get('/category/:cid/:id', async (ctx, next) => {
   function response(tree, article) {
     var content = __markdown.render(article && article.content ? article.content : '');
     return ctx.render('category', {
-            title: 'ab',
+            title: article.title,
             websiteInfo: configs.website_info,
             tree: tree,
             content: content,

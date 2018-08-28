@@ -148,7 +148,8 @@ class Categories {
 
   async getTree(id) {
     try {
-      var idGets = new Set(), prefaces = new Set()
+      var idGets = new Set()
+      var prefaces = new Set()
       var conn = await mysql.createConnection(this.dbconfig)
       var results = await conn.query(`select * from ${this.dbname} where id = ?`, [id])
       var dir = results[0];
