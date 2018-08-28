@@ -2,14 +2,8 @@ const mysql = require('promise-mysql');
 const configs = require('../config/base.config.js');
 const ReadWriteLock = require('rwlock');
 const __log = require('../utils/log');
+const Categories = require('./category.db');
 
-const RECOUNT_ARTICLE_GROUP_SQL = `
-            update categories as ct
-            left join
-            (select category, count(*) as cnt from articles group by category) as cp
-            on ct.id = cp.category
-            set ct.articlecnt = if(isnull(cp.cnt), 0, cp.cnt)
-`;
 
 class Articles {
   constructor() {
@@ -137,18 +131,10 @@ class Articles {
 
   async move(ids, gid) {
     try {
-      var conn = await mysql.createConnection(this.dbconfig)
-      await conn.beginTransaction()
-      await conn.query(`update ${this.dbname} set category = ? where id in ?`, [gid, [ids]])
-      await conn.query(RECOUNT_ARTICLE_GROUP_SQL)
-      await conn.commit()
-      conn.end()
+      const categories = new Categories()
+      await categories.moveArticles(ids, gid)
       return Promise.resolve()
     } catch (err) {
-      if (conn) {
-        await conn.rollback()
-        conn.end()
-      }
       return Promise.reject(err)
     }
   }

@@ -4,6 +4,29 @@ const __log = require('../utils/log');
 
 // articlecnt is not set
 
+const RECOUNT_ARTICLE_GROUP_SQL = `
+            update categories as ct
+            left join
+            (select category, count(*) as cnt from articles group by category) as cp
+            on ct.id = cp.category
+            set ct.articlecnt = if(isnull(cp.cnt), 0, cp.cnt)
+`;
+// 有article确没有preface的category，将它的category设置为第一篇article
+const SET_ARTICLE_GROUP_WITH_NO_PRFACE_TO_FIRST_ARTICLE = `
+          update categories as ct
+          left join
+          (select category, min(id) as id from articles group by category) as cp
+          on ct.id = cp.category
+          set ct.preface = ifnull(cp.id, 0)
+          where ct.preface = 0
+`;
+// 将文章数为0的category的preface设为0
+const SET_CATEGORY_PREFACE_TO_ZERO_IF_NO_ARTICLE = `
+        update categories
+        set preface = 0
+        where articlecnt = 0
+`;
+
 class Categories {
   constructor() {
     this.dbname = 'categories';
@@ -222,6 +245,27 @@ class Categories {
         conn.end()
       }
       return Promise.reject(err)
+    }
+  }
+
+  async moveArticles(articleIds, gid) {
+    let conn;
+    try {
+      conn = await mysql.createConnection(this.dbconfig)
+      await conn.beginTransaction()
+      await conn.query(`update ${this.tb_article} set category = ? where id in ?`, [gid, [articleIds]])
+      await conn.query(RECOUNT_ARTICLE_GROUP_SQL)
+      await conn.query(SET_ARTICLE_GROUP_WITH_NO_PRFACE_TO_FIRST_ARTICLE)
+      await conn.query(SET_CATEGORY_PREFACE_TO_ZERO_IF_NO_ARTICLE)
+      await conn.commit()
+      conn.end()
+      return Promise.resolve()
+    } catch (err) {
+      if (conn) {
+        await conn.rollback()
+        conn.end()
+      }
+      return Promise.reject(err);
     }
   }
 }
