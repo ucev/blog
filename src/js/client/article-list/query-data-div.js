@@ -1,5 +1,7 @@
 import React from 'react'
 
+import './query-data-div.style.scss'
+
 class QueryDataDiv extends React.Component {
   constructor (props) {
     super(props)

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import ArticleList from './client/article-list'
 
-import '$css/base.scss'
+import '$css/client.scss'
 
 export function initArticleList () {
   ReactDOM.render(

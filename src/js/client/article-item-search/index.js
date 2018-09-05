@@ -3,6 +3,8 @@ import moment from 'moment'
 
 import SearchLabels from './search-labels'
 
+import '../article-item/article-item.style.scss'
+
 class ArticleItem extends React.Component {
   constructor (props) {
     super(props)

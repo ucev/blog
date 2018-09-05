@@ -1,0 +1,6 @@
+@media screen and (min-width: 800px) {
+    @import "./styles/search-labels.website.style.scss";
+  }
+  @media screen and (max-width: 800px) {
+    @import "./styles/search-labels.mobile.style.scss";
+  }

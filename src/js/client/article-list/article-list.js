@@ -3,6 +3,8 @@ import React from 'react'
 import ArticleItemSearch from '../article-item-search'
 import ArticleItem from '../article-item'
 
+import './article-list.style.scss';
+
 class ArticleList extends React.Component {
   constructor (props) {
     super(props)

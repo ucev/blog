@@ -1,6 +1,8 @@
 import React from 'react'
 import moment from 'moment'
 
+import './article-item.style.scss'
+
 class ArticleItem extends React.Component {
   constructor (props) {
     super(props)

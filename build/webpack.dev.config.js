@@ -73,6 +73,9 @@ webpackConfig[0] = merge(baseConfigs[0], {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       }
     }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].min.css'
+    }),
   ],
   resolve: {
     extensions: ['.js']

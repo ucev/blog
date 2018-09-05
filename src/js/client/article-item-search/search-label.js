@@ -1,5 +1,7 @@
 import React from 'react'
 
+import './search-label.style.scss';
+
 class SearchLabel extends React.Component {
   render () {
     var label = this.props.label
