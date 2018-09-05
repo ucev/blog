@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import { addCategoryDivStateChange } from '$actions/categories'
 
 class OperationBar extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.addNewCategory = this.addNewCategory.bind(this)
   }
-  addNewCategory() {
+  addNewCategory () {
     this.props.add()
   }
-  render() {
+  render () {
     return (
       <div className="table-operation-bar table-operation-bar-top">
         <button

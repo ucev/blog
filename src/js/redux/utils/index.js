@@ -17,24 +17,24 @@ export const urlParamParser = () => {
   return params
 }
 
-export const debounce = function(func, delay) {
+export const debounce = function (func, delay) {
   var timeout
-  return function() {
+  return function () {
     var args = arguments
     var that = this
     if (timeout) {
       clearTimeout(timeout)
       timeout = undefined
     }
-    timeout = setTimeout(function() {
+    timeout = setTimeout(function () {
       func.apply(that, args)
     }, delay)
   }
 }
 
-export const dispatchDebounce = function(func, delay) {
+export const dispatchDebounce = function (func, delay) {
   var timeout
-  return function() {
+  return function () {
     var args = arguments
     var that = this
     return dispatch => {
@@ -42,7 +42,7 @@ export const dispatchDebounce = function(func, delay) {
         clearTimeout(timeout)
         timeout = undefined
       }
-      timeout = setTimeout(function() {
+      timeout = setTimeout(function () {
         dispatch(func.apply(that, args))
       }, delay)
     }

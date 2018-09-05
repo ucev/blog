@@ -1,3 +1,4 @@
+/* global process, __dirname */
 const path = require('path')
 const webpack = require('webpack')
 // const ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -8,7 +9,7 @@ const baseConfigs = require('./webpack.base.config')
 
 var webpackConfig = []
 
-function convertToHotLoader(entry, name) {
+function convertToHotLoader (entry) {
   var newEntry = {}
   for (var k in entry) {
     newEntry[k] = [
@@ -20,7 +21,7 @@ function convertToHotLoader(entry, name) {
   return newEntry
 }
 
-function convertToArray(entry) {
+function convertToArray (entry) {
   let newEntry = {}
   for (let k in entry) {
     newEntry[k] = [entry[k]]

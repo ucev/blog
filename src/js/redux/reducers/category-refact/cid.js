@@ -1,4 +1,4 @@
-function defaultCid() {
+function defaultCid () {
   if (defaultCid.cid) {
     return defaultCid.cid
   }

@@ -4,13 +4,13 @@ const configs = require('../config/base.config')
 const FluxRecord = require('../class/fluxrecord')
 const __fluxrecord = new FluxRecord()
 
-function md5(str) {
+function md5 (str) {
   var md5sum = crypto.createHash('md5')
   md5sum.update(str)
   return md5sum.digest('hex')
 }
 
-function clearDateTime(date) {
+function clearDateTime (date) {
   date.setHours(0)
   date.setMinutes(0)
   date.setSeconds(0)
@@ -18,14 +18,14 @@ function clearDateTime(date) {
   return date
 }
 
-function getCookieExpire() {
+function getCookieExpire () {
   var d = new Date()
   d.setDate(d.getDate() + 1)
   d = clearDateTime(d)
   return d.getTime()
 }
 
-async function userControl(ctx, next) {
+async function userControl (ctx, next) {
   var ip = ctx.ip
   var usercookie = ctx.cookies.get('usercookie')
   if (!usercookie) {
@@ -43,11 +43,13 @@ async function userControl(ctx, next) {
       ip: ip,
       time: time,
     })
-  } catch (err) {}
+  } catch (err) {
+    // 错误处理
+  }
   return next()
 }
 
-async function adminControl(ctx, next) {
+async function adminControl (ctx, next) {
   var this_session = configs.website_info.debug
     ? configs.website_info.debug_session
     : configs.qqlogin.allowed_openid

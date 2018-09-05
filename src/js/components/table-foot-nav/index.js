@@ -3,17 +3,17 @@ import React from 'react'
 import TableNavLinkLi from './table-nav-link-li'
 
 class TableNavLink extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.getRenderData = this.getRenderData.bind(this)
     this.handleClick = this.handleClick.bind(this)
   }
 
-  handleClick(pg) {
+  handleClick (pg) {
     this.props.pagechange(pg)
   }
 
-  getRenderData() {
+  getRenderData () {
     const page = Number(this.props.page)
     const total = Number(this.props.total)
     var start = page < 5 ? 0 : page - 5
@@ -64,7 +64,7 @@ class TableNavLink extends React.Component {
     return lis
   }
 
-  render() {
+  render () {
     const lis = this.getRenderData()
     return (
       <ul id="table-nav-ul" className="table-nav-ul">

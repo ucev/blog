@@ -5,23 +5,23 @@ import OptionDialog from '$components/dialogs/option-dialog'
 import { photoMoveDialogVisible, photoMoveSingle } from '$actions/photos'
 
 class PhotoItemMoveGroupDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.hide = this.hide.bind(this)
     this.cancel = this.cancel.bind(this)
     this.confirm = this.confirm.bind(this)
   }
-  hide() {
+  hide () {
     this.props.hide(this.props.id)
   }
-  cancel() {
+  cancel () {
     this.hide()
   }
-  confirm(newgid) {
+  confirm (newgid) {
     this.props.move(this.props.id, newgid)
     this.hide()
   }
-  render() {
+  render () {
     return (
       <OptionDialog
         title="移动分组"

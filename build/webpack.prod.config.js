@@ -1,4 +1,4 @@
-const path = require('path')
+/* global process */
 const webpack = require('webpack')
 // const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')

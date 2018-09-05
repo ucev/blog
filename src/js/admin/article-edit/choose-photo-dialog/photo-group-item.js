@@ -5,14 +5,14 @@ import { photoGroupChange } from '$actions/article-edit'
 
 // const PhotoGroupItem = ({current, gid, name, count, choose}) => (
 class PhotoGroupItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.click = this.click.bind(this)
   }
-  click() {
+  click () {
     this.props.choose(this.props.gid)
   }
-  render() {
+  render () {
     var name = this.props.name
     var count = this.props.count
     var classes = 'choose-photo-div-photo-group-li'

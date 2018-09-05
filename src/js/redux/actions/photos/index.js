@@ -246,7 +246,7 @@ export const photoUpload = file => {
 }
 // photo flow stores end
 // photo item stores start
-function __deletePhotos(ids) {
+function __deletePhotos (ids) {
   return dispatch => {
     var params = {
       photos: ids,

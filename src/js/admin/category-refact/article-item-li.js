@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import { getRefactDetail } from '$actions/category-refact'
 
 class ArticleItemLi extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.onItemClicked = this.onItemClicked.bind(this)
   }
-  onItemClicked() {
+  onItemClicked () {
     this.props.getDetail(this.props.id, this.props.cid)
   }
-  render() {
+  render () {
     var depth = this.props.depth
     var styles = {
       paddingLeft: depth * 20 + 20 + 'px',

@@ -3,13 +3,13 @@ const configs = require('../config/base.config.js')
 // const __log = require('../utils/log')
 
 class Labels {
-  constructor() {
+  constructor () {
     this.dbname = 'labels'
     this.dbconfig = configs.database_config
     this.step = configs.query_config.step
   }
 
-  async get({ start, orderby = { lb: 'id', asc: 'asc' } }) {
+  async get ({ start, orderby = { lb: 'id', asc: 'asc' } }) {
     try {
       var returnData = {
         total: 0,
@@ -27,7 +27,7 @@ class Labels {
         orderby.lb
       )} ${this.__queryorder(orderby.asc)} limit ?, ?`
       var data = await conn.query(sql, [
-        /*orderby.lb, orderby.asc, */ start,
+        /* orderby.lb, orderby.asc, */ start,
         this.step,
       ])
       returnData.data = Array.from(data)
@@ -41,7 +41,7 @@ class Labels {
     }
   }
 
-  async getall({ orderby = { lb: 'id', asc: 'asc' }, queryfields = ['*'] }) {
+  async getall ({ orderby = { lb: 'id', asc: 'asc' }, queryfields = ['*'] }) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       var labels = await conn.query(
@@ -60,7 +60,7 @@ class Labels {
     }
   }
 
-  async getNames() {
+  async getNames () {
     try {
       var labels = await this.getall({})
       var lnames = labels.map(label => label.name)
@@ -70,7 +70,7 @@ class Labels {
     }
   }
 
-  __queryorder(asc) {
+  __queryorder (asc) {
     return ['asc', 'desc'].includes(asc) ? asc : 'asc'
   }
 }

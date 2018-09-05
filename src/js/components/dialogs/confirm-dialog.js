@@ -7,18 +7,18 @@ import DialogHeader from './dialog-header'
 import DialogFoot from './dialog-foot'
 
 class ConfirmDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.handleConfirmClick = this.handleConfirmClick.bind(this)
     this.handleCancelClick = this.handleCancelClick.bind(this)
   }
-  handleConfirmClick() {
+  handleConfirmClick () {
     this.props.confirm()
   }
-  handleCancelClick() {
+  handleCancelClick () {
     this.props.cancel()
   }
-  render() {
+  render () {
     return (
       <Dialog
         className="confirm-dialog"

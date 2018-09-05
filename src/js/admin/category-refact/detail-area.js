@@ -7,27 +7,27 @@ import {
 } from '$actions/category-refact'
 
 class DetailArea extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.handleOrderChange = this.handleOrderChange.bind(this)
     this.prefaceButtonClicked = this.prefaceButtonClicked.bind(this)
   }
-  prefaceButtonClicked(e) {
+  prefaceButtonClicked (e) {
     var type = e.target.getAttribute('data-type')
     var isSet = type == 'set'
     this.props.categoryPrefaceChange(this.props.id, isSet)
   }
-  handleKeyDown(e) {
+  handleKeyDown (e) {
     if (e.which == 13) {
       this.props.articleOrderChange(this.orderInput.value, true)
     }
   }
-  handleOrderChange(e) {
+  handleOrderChange (e) {
     this.props.articleOrderChange(this.orderInput.value, false)
     e.stopPropagation()
   }
-  render() {
+  render () {
     if (this.props.id) {
       var opeArea
       if (this.props.type == 'dir') {

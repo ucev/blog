@@ -4,7 +4,7 @@ import ArticleList from './article-list'
 import QueryDataDiv from './query-data-div'
 
 class ArticleDiv extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       total: 0,
@@ -14,10 +14,10 @@ class ArticleDiv extends React.Component {
     this.getArticleData = this.getArticleData.bind(this)
     this.loadMore = this.loadMore.bind(this)
   }
-  loadMore() {
+  loadMore () {
     this.getArticleData(false)
   }
-  componentDidMount() {
+  componentDidMount () {
     this.getArticleData()
   }
   /**
@@ -25,7 +25,7 @@ class ArticleDiv extends React.Component {
    * @param {*} replace
    * replace -- where replace `articles` state
    */
-  getArticleData(replace = false) {
+  getArticleData (replace = false) {
     var that = this
     var url
     if (this.props.isSearch === true) {
@@ -53,7 +53,7 @@ class ArticleDiv extends React.Component {
         })
       })
   }
-  render() {
+  render () {
     var addMoreVisible = this.state.total > this.state.current
     return (
       <div>

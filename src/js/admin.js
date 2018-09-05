@@ -1,6 +1,6 @@
 $(document).ready(() => {
-  ;(() => {
-    function f() {
+  (() => {
+    function f () {
       var w = $('#left-nav-div').width()
       if (w < 80) {
         $('#left-nav-div').width(100)
@@ -17,7 +17,7 @@ $(document).ready(() => {
     $('#avatar-img').click(() => {
       $('#admin-operation-ul').show()
     })
-    $('.admin-operation-li').click(function() {
+    $('.admin-operation-li').click(function () {
       $('#admin-operation-ul').hide()
       var type = $(this).attr('data-type')
       switch (type) {

@@ -13,14 +13,14 @@ import { fetchArticles, fetchCategories } from '$actions/articles'
 
 // 😢
 class ArticleLayout extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
-  componentDidMount() {
+  componentDidMount () {
     this.props.fetchArticles()
     this.props.fetchCategories()
   }
-  render() {
+  render () {
     var categories = {}
     this.props.categories.forEach(category => {
       categories[category.id] = category.name

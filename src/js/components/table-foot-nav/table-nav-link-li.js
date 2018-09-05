@@ -1,14 +1,14 @@
 import React from 'react'
 
 class TableNavLinkLi extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.click = this.click.bind(this)
   }
-  click() {
+  click () {
     this.props.click(this.props.page)
   }
-  render() {
+  render () {
     var classes = 'table-nav-ul-li'
     if (this.props.current == this.props.page)
       classes += ' table-nav-ul-li-current'

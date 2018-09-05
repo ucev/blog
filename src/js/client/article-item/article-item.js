@@ -4,10 +4,10 @@ import moment from 'moment'
 import './article-item.style.scss'
 
 class ArticleItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
-  render() {
+  render () {
     var article = this.props.article
     return (
       <li className="article-item-li" data-id={article.id}>

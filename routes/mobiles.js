@@ -6,7 +6,7 @@ const configs = require('../config/base.config')
 const Labels = require('../class/label.db')
 const __labels = new Labels()
 
-function searchPageResponse(ctx, data) {
+function searchPageResponse (ctx, data) {
   return ctx.render('mobiles/search', {
     title: '文章查找',
     websiteInfo: configs.website_info,
@@ -14,7 +14,7 @@ function searchPageResponse(ctx, data) {
   })
 }
 
-router.get('/search', async (ctx, next) => {
+router.get('/search', async ctx => {
   try {
     var labels = await __labels.getall({})
     await searchPageResponse(ctx, labels)

@@ -3,7 +3,7 @@ const router = new require('koa-router')()
 const Articles = require('../class/article.db')
 const __articles = new Articles()
 
-router.get('/articles/get', async (ctx, next) => {
+router.get('/articles/get', async ctx => {
   const start = ctx.query.start
   var where = {
     state: 'on',
@@ -21,7 +21,7 @@ router.get('/articles/get', async (ctx, next) => {
   }
 })
 
-router.get('/articles/search', async (ctx, next) => {
+router.get('/articles/search', async ctx => {
   var start = ctx.query.p ? ctx.query.p : 0
   // 查找的参数
   var args = ctx.query.args

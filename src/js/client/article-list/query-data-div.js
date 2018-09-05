@@ -3,14 +3,14 @@ import React from 'react'
 import './query-data-div.style.scss'
 
 class QueryDataDiv extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.loadMore = this.loadMore.bind(this)
   }
-  loadMore() {
+  loadMore () {
     this.props.more()
   }
-  render() {
+  render () {
     var visible = this.props.visible
     var styles = {}
     if (!visible) {

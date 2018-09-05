@@ -1,3 +1,4 @@
+/* global __dirname */
 const mysql = require('promise-mysql')
 const configs = require('../config/base.config.js')
 const fs = require('then-fs')
@@ -16,12 +17,12 @@ const RECOUNT_PHOTO_GROUP_SQL = `
 // articlecnt is not set
 
 class Photos {
-  constructor() {
+  constructor () {
     this.dbname = 'photos'
     this.dbconfig = configs.database_config
   }
 
-  async add(datas) {
+  async add (datas) {
     try {
       var file = datas.file
       var name = datas.name
@@ -48,7 +49,7 @@ class Photos {
         [photogroup]
       )
       var gcount = results[0].cnt
-      await conn.query(`update photogroups set count = ? where id = ?`, [
+      await conn.query('update photogroups set count = ? where id = ?', [
         gcount,
         photogroup,
       ])
@@ -60,8 +61,12 @@ class Photos {
         await conn.rollback()
         conn.end()
       }
-      fs.unlink(newpath, err => {})
-      return Promise.reject(err)
+      try {
+        await fs.unlink(newpath)
+        return Promise.reject(err)
+      } catch (uerr) {
+        return Promise.reject(uerr)
+      }
     }
   }
 
@@ -69,7 +74,7 @@ class Photos {
    * 此处没有把储存的图片删掉
    * 可单独写一个脚本进行
    */
-  async delete(ids) {
+  async delete (ids) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.beginTransaction()
@@ -87,7 +92,7 @@ class Photos {
     }
   }
 
-  async get({ where = {} } = {}) {
+  async get ({ where = {} } = {}) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       var whereSql = ''
@@ -111,7 +116,7 @@ class Photos {
     }
   }
 
-  async move(datas) {
+  async move (datas) {
     try {
       var ids = datas.ids
       var photogroup = datas.photogroup
@@ -134,7 +139,7 @@ class Photos {
     }
   }
 
-  async rename(datas) {
+  async rename (datas) {
     try {
       var id = datas.id
       var title = datas.title
@@ -153,7 +158,7 @@ class Photos {
     }
   }
 
-  async savePhoto(fdata, fpath) {
+  async savePhoto (fdata, fpath) {
     await move(fdata, fpath)
       .then(() => {
         return Promise.resolve()

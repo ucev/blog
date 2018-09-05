@@ -10,10 +10,10 @@ import { fetchCategoryData } from '$actions/categories'
 // import '$css/components/admin/category.scss';
 
 class CategoryLayout extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.getData()
   }
-  render() {
+  render () {
     return (
       <div>
         <OperationBar />

@@ -2,13 +2,13 @@ const mysql = require('promise-mysql')
 const configs = require('../config/base.config.js')
 
 class FluxRecord {
-  constructor() {
+  constructor () {
     this.today_tbname = 'uservisit'
     this.his_tbname = 'visithistory'
     this.dbconfig = configs.database_config
   }
 
-  async fluxOfToday(day) {
+  async fluxOfToday (day) {
     try {
       var fluxData, pvPerHour
       var conn = await mysql.createConnection(this.dbconfig)
@@ -44,11 +44,11 @@ class FluxRecord {
       )
       var querysql, querydata
       if (datacnt.length == 0) {
-        querysql = `insert into visithistory set ?`
+        querysql = 'insert into visithistory set ?'
         fluxData.date = day
         querydata = fluxData
       } else {
-        querysql = `update visithistory set ? where date = ?`
+        querysql = 'update visithistory set ? where date = ?'
         querydata = [fluxData, day]
       }
       await conn.query(querysql, querydata)
@@ -66,7 +66,7 @@ class FluxRecord {
     }
   }
 
-  async visit(datas) {
+  async visit (datas) {
     try {
       var usercookie = datas.usercookie
       var ip = datas.ip

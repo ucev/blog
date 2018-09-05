@@ -12,7 +12,7 @@ import {
 } from '$actions/photos'
 
 class PhotoGroupItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     // Dialog Visibility
     this.showInputDialog = this.showInputDialog.bind(this)
@@ -29,44 +29,44 @@ class PhotoGroupItem extends React.Component {
     this.handleDeleteGroup = this.handleDeleteGroup.bind(this)
     this.handleRenameGroup = this.handleRenameGroup.bind(this)
   }
-  showInputDialog() {
+  showInputDialog () {
     this.props.inputState(this.props.id, true)
   }
-  hideInputDialog() {
+  hideInputDialog () {
     this.props.inputState(this.props.id, false)
   }
-  showDelDialog() {
+  showDelDialog () {
     this.props.deleteState(this.props.id, true)
   }
-  hideDelDialog() {
+  hideDelDialog () {
     this.props.deleteState(this.props.id, false)
   }
-  handleInputConfirm(name) {
+  handleInputConfirm (name) {
     this.props.groupItemRename(this.props.id, name)
     this.hideInputDialog()
   }
-  handleInputCancel() {
+  handleInputCancel () {
     this.hideInputDialog()
   }
-  handleDelConfirm() {
+  handleDelConfirm () {
     this.props.groupItemDelete(this.props.id)
     this.hideDelDialog()
   }
-  handleDelCancel() {
+  handleDelCancel () {
     this.hideDelDialog()
   }
-  handleGroupItemClick(e) {
+  handleGroupItemClick (e) {
     this.props.groupItemClick(this.props.id)
     e.stopPropagation()
   }
-  handleDeleteGroup() {
+  handleDeleteGroup () {
     this.showDelDialog()
   }
-  handleRenameGroup(e) {
+  handleRenameGroup (e) {
     this.showInputDialog()
     e.stopPropagation()
   }
-  render() {
+  render () {
     var opeImgStyles = {}
     if (!this.props.opeImgVisible) {
       opeImgStyles.display = 'none'

@@ -10,12 +10,12 @@ const RECOUNT_PHOTO_GROUP_SQL = `
 `
 
 class PhotoGroups {
-  constructor() {
+  constructor () {
     this.dbname = 'photogroups'
     this.dbconfig = configs.database_config
   }
 
-  async add(datas) {
+  async add (datas) {
     try {
       var name = datas.name
       var addtime = datas.addtime
@@ -34,7 +34,7 @@ class PhotoGroups {
     }
   }
 
-  async delete(gid) {
+  async delete (gid) {
     if (gid < 2) {
       return Promise.reject(new Error('gid must >= 2'))
     }
@@ -42,7 +42,7 @@ class PhotoGroups {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.beginTransaction()
       await conn.query(
-        `update photos set photogroup = 1 where photogroup = ?`,
+        'update photos set photogroup = 1 where photogroup = ?',
         [gid]
       )
       await conn.query(`delete from ${this.dbname} where id = ?`, [gid])
@@ -59,7 +59,7 @@ class PhotoGroups {
     }
   }
 
-  async get() {
+  async get () {
     var queryfields = ['id', 'name', 'count']
     var allgroup = { id: -1, name: '全部分组', count: 0 }
     try {
@@ -80,7 +80,7 @@ class PhotoGroups {
     }
   }
 
-  async rename(datas) {
+  async rename (datas) {
     try {
       var id = datas.id
       var name = datas.name

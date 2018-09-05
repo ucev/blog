@@ -4,13 +4,13 @@ import React from 'react'
 import Dialog from './dialog'
 
 class AddCategoryDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.valueChange = this.valueChange.bind(this)
     this.addCategoryCancel = this.addCategoryCancel.bind(this)
     this.addCategoryConfirm = this.addCategoryConfirm.bind(this)
   }
-  valueChange(e) {
+  valueChange (e) {
     var title = e.target.getAttribute('data-title')
     var value = e.target.value
     var data = {
@@ -21,11 +21,11 @@ class AddCategoryDialog extends React.Component {
     data[title] = value
     this.props.valueChange(data)
   }
-  addCategoryCancel(e) {
+  addCategoryCancel (e) {
     this.props.cancel()
     e.preventDefault()
   }
-  addCategoryConfirm(e) {
+  addCategoryConfirm (e) {
     var name = this.nameInput.value
     var parent = this.parentSelect.value
     var descp = this.descpArea.value
@@ -37,7 +37,7 @@ class AddCategoryDialog extends React.Component {
     this.props.confirm(data)
     e.preventDefault()
   }
-  render() {
+  render () {
     var categoryItems = this.props.categories.map(category => {
       return (
         <option key={category.id} value={category.id}>

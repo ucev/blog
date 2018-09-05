@@ -5,15 +5,15 @@ import TableLabel from '$components/tables/table-label'
 import { allChecked } from '$actions/articles'
 
 class ArticleTableLabel extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.handleCheckStateChange = this.handleCheckStateChange.bind(this)
   }
-  handleCheckStateChange(e) {
+  handleCheckStateChange (e) {
     this.props.checkAll(e.target.checked)
     e.stopPropagation()
   }
-  render() {
+  render () {
     var checked = this.props.allCheckState == true ? 'checked' : ''
     var labels = [
       {

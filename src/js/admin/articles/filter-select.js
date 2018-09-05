@@ -4,16 +4,16 @@ import { connect } from 'react-redux'
 import { filterOptionChange } from '$actions/articles'
 
 class FilterSelect extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.change = this.change.bind(this)
   }
-  change() {
+  change () {
     var title = this.props.title
     var value = this.select.value
     this.props.change(title, value)
   }
-  render() {
+  render () {
     const options = this.props.options.map(opt => (
       <option value={opt.value} key={opt.value}>
         {opt.title}

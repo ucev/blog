@@ -5,7 +5,7 @@ import MarkdownIt from 'markdown-it'
 var markdownIt = new MarkdownIt()
 
 // 取 content 中第一个段落(<p></p>)中的内容
-function getContentDescription(content) {
+function getContentDescription (content) {
   if (!content) return ''
   content = markdownIt.render(content)
   var p = content.match(/(<p[\s\S]*?>)([\s\S]*?)(<\/p>)/)

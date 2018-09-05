@@ -10,7 +10,7 @@ import {
 } from '$actions/articles'
 
 class ArticleRow extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.article_state_label = {
       on: '已上线',
@@ -47,7 +47,7 @@ class ArticleRow extends React.Component {
       ),
     }
   }
-  handleStateClick(e) {
+  handleStateClick (e) {
     var id = this.props.id
     var type = e.target.getAttribute('data-type')
     if (type == 'on' || type == 'off') {
@@ -60,12 +60,12 @@ class ArticleRow extends React.Component {
       this.props.move(id)
     }
   }
-  handleCheckStateChange(e) {
+  handleCheckStateChange (e) {
     var id = this.props.id
     var checked = e.target.checked
     this.props.checkState(id, checked)
   }
-  render() {
+  render () {
     const url = '/articles/view/' + this.props.id
     const topStatus = this.props.top == 0 ? {} : { color: '#EF5350' }
     const articleState = this.article_state_label[this.props.state]

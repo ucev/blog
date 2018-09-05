@@ -4,19 +4,19 @@ import { connect } from 'react-redux'
 import { photoUpload } from '$actions/article-edit'
 
 class UploadImageDiv extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.chooseImage = this.chooseImage.bind(this)
     this.upload = this.upload.bind(this)
   }
-  chooseImage() {
+  chooseImage () {
     this.uploader.click()
   }
-  upload() {
+  upload () {
     var file = this.uploader.files[0]
     this.props.upload(file)
   }
-  render() {
+  render () {
     var style = { display: 'none' }
     return (
       <div id="choose-photo-div-upload-div">

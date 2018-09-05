@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import { deleteLabel } from '$actions/article-edit'
 
 class Label extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.delete = this.delete.bind(this)
   }
-  delete() {
+  delete () {
     this.props.delete(this.props.label)
   }
-  render() {
+  render () {
     var labelExist = this.props.labelExist
     var label = this.props.label
     var nclass = labelExist.indexOf(label) == -1 ? 'new' : 'existed'

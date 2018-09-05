@@ -14,7 +14,7 @@ import {
 } from '$actions/photos'
 
 class PhotoItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     // Dialog Visibility
     this.showRenameDialog = this.showRenameDialog.bind(this)
@@ -25,22 +25,22 @@ class PhotoItem extends React.Component {
     // DeleteDialog
     this.photoOnLoad = this.photoOnLoad.bind(this)
   }
-  showRenameDialog() {
+  showRenameDialog () {
     this.props.showRenameDialog(this.props.id)
   }
-  showMoveDialog() {
+  showMoveDialog () {
     this.props.showMoveDialog(this.props.id)
   }
-  showDeleteDialog() {
+  showDeleteDialog () {
     this.props.showDeleteDialog(this.props.id)
   }
-  handlePhotoCheck(e) {
+  handlePhotoCheck (e) {
     this.props.photoCheckStateChange(e.target.value, e.target.checked)
   }
-  photoOnLoad(e) {
+  photoOnLoad (e) {
     var img = e.target
     var a = new Image()
-    a.onload = function() {
+    a.onload = function () {
       var sw = a.width
       var sh = a.height
       var min = sw < sh ? sw : sh
@@ -52,7 +52,7 @@ class PhotoItem extends React.Component {
     }
     a.src = img.src
   }
-  render() {
+  render () {
     var photoSrc = '/images/blog/' + this.props.name
     var checked = this.props.checked ? 'checked' : ''
     return (

@@ -5,16 +5,17 @@ const ReadWriteLock = require('rwlock')
 const Categories = require('./category.db')
 
 class Articles {
-  constructor() {
+  constructor () {
     this.dbname = 'articles'
     this.dbconfig = configs.database_config
     this.step = configs.query_config.step
     this.lock = new ReadWriteLock()
   }
 
-  add(datas) {
+  add (datas) {
+    let dt
     if (datas.add) {
-      var dt = {
+      dt = {
         title: datas.title,
         content: datas.content,
         descp: datas.descp,
@@ -26,7 +27,7 @@ class Articles {
       return this.__add(dt)
     } else {
       var id = datas.id
-      var dt = {
+      dt = {
         content: datas.content,
         title: datas.title,
         descp: datas.descp,
@@ -37,7 +38,7 @@ class Articles {
     }
   }
 
-  async delete(ids) {
+  async delete (ids) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.beginTransaction()
@@ -55,7 +56,7 @@ class Articles {
     }
   }
 
-  async getsingle({ id = 0, queryfields } = {}) {
+  async getsingle ({ id = 0, queryfields } = {}) {
     try {
       queryfields = queryfields ? queryfields : ['*']
       var conn = await mysql.createConnection(this.dbconfig)
@@ -74,7 +75,7 @@ class Articles {
     }
   }
 
-  async getByCond({
+  async getByCond ({
     where = {},
     start = 0,
     client = true,
@@ -107,7 +108,7 @@ class Articles {
         }
       }
       if (client) {
-        whereSql += ` AND state = 'on' `
+        whereSql += ' AND state = \'on\' '
       }
       var results = await conn.query(
         `select count(*) as cnt from articles where 1 ${whereSql}`,
@@ -132,7 +133,7 @@ class Articles {
     }
   }
 
-  async getall() {
+  async getall () {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       var arts = await conn.query(
@@ -148,7 +149,7 @@ class Articles {
     }
   }
 
-  async move(ids, gid) {
+  async move (ids, gid) {
     try {
       const categories = new Categories()
       await categories.moveArticles(ids, gid)
@@ -158,7 +159,7 @@ class Articles {
     }
   }
 
-  async updateState(ids, state) {
+  async updateState (ids, state) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.query(`update ${this.dbname} set state = ? where id in ?`, [
@@ -175,9 +176,9 @@ class Articles {
     }
   }
 
-  async updateOrder({ id, ord }) {
+  async updateOrder ({ id, ord }) {
     if (Number(ord) < 0) {
-      return Promise.reject(new Error(`order must > 0`))
+      return Promise.reject(new Error('order must > 0'))
     }
     try {
       var conn = await mysql.createConnection(this.dbconfig)
@@ -195,7 +196,7 @@ class Articles {
     }
   }
 
-  async view(id) {
+  async view (id) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       var results = await conn.query(
@@ -221,7 +222,7 @@ class Articles {
     }
   }
 
-  async __add(datas) {
+  async __add (datas) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.beginTransaction()
@@ -243,7 +244,7 @@ class Articles {
     }
   }
 
-  async __modify(id, datas) {
+  async __modify (id, datas) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       var oldLabels = []
@@ -273,7 +274,7 @@ class Articles {
   }
 
   // update labels when deleting articles
-  async __updateLabelsOnDeleteArticle(conn, ids) {
+  async __updateLabelsOnDeleteArticle (conn, ids) {
     try {
       var results = await conn.query(
         `select label from ${this.dbname} where id in ?`,
@@ -292,7 +293,7 @@ class Articles {
       var ps = labels.map(label => {
         var data = labelObj[label]
         return conn.query(
-          `update labels set articles = if (articles - ? > 0, articles - ?, 0) where name = ?`,
+          'update labels set articles = if (articles - ? > 0, articles - ?, 0) where name = ?',
           [data, data, label]
         )
       })
@@ -303,7 +304,7 @@ class Articles {
   }
 
   // add no-existed labels when adding/modifying articles
-  async __insertNewLabels(conn, labels, sval) {
+  async __insertNewLabels (conn, labels, sval) {
     try {
       labels = labels.filter(label => {
         return label.trim() != ''
@@ -329,11 +330,11 @@ class Articles {
   }
 
   // add labels existed when modifying articles
-  async __increaseExistingLabels(conn, labels, sval) {
+  async __increaseExistingLabels (conn, labels, sval) {
     try {
       var ps = labels.map(label =>
         conn.query(
-          `update labels set articles = articles + 1, hotmark = hotmark + ? where name = ?`,
+          'update labels set articles = articles + 1, hotmark = hotmark + ? where name = ?',
           [sval, label]
         )
       )
@@ -344,11 +345,11 @@ class Articles {
   }
 
   // delete labels existed when modifying articles
-  async __decreaseExistingLabels(conn, labels) {
+  async __decreaseExistingLabels (conn, labels) {
     try {
       var ps = labels.map(label =>
         conn.query(
-          `update labels set articles = if (articles - 1 > 0, articles - 1, 0) where name = ?`,
+          'update labels set articles = if (articles - 1 > 0, articles - 1, 0) where name = ?',
           [label]
         )
       )
@@ -359,9 +360,9 @@ class Articles {
   }
 
   // update labels when adding/modifying articles
-  async __updateLabels(conn, labels, sval, oldLabels = []) {
+  async __updateLabels (conn, labels, sval, oldLabels = []) {
     try {
-      var results = await conn.query(`select name from labels`)
+      var results = await conn.query('select name from labels')
       var _eLabels = results.map(label => label.name)
       if (typeof labels == 'string') {
         labels = labels.split(',')
@@ -389,13 +390,13 @@ class Articles {
   }
 
   // update labels' hotmark when reading an article
-  async __updateLabelHotmark(conn, labels, sval) {
+  async __updateLabelHotmark (conn, labels, sval) {
     try {
       if (typeof labels === 'string') {
         labels = labels.split(',')
       }
       var ps = labels.map(label =>
-        conn.query(`update labels set hotmark = hotmark + ? where name = ?`, [
+        conn.query('update labels set hotmark = hotmark + ? where name = ?', [
           sval,
           label,
         ])
@@ -406,7 +407,7 @@ class Articles {
     }
   }
 
-  __increasePageView(conn, id) {
+  __increasePageView (conn, id) {
     return conn.query(
       `update ${this.dbname} set pageview = pageview + 1 where id = ?`,
       [id]

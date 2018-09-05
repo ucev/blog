@@ -76,7 +76,7 @@ export const getCategoryTree = () => {
           tree: root,
         })
         dispatch(
-          __getRefactDetail('dir', tid, function(dt1) {
+          __getRefactDetail('dir', tid, function (dt1) {
             var detail = dt1.code === 0 ? dt1.data : {}
             dispatch({
               type: CATEGORY_REFACT.GET_REFACT_DETAIL,
@@ -93,7 +93,7 @@ export const getRefactDetail = (type, id, cid) => {
   return dispatch => {
     cid = type === 'dir' ? id : cid
     dispatch(
-      __getRefactDetail(type, id, function(dt) {
+      __getRefactDetail(type, id, function (dt) {
         var detail = dt.code === 0 ? dt.data : {}
         var aid = type === 'art' && detail.id ? detail.id : -1
         dispatch({
@@ -107,7 +107,7 @@ export const getRefactDetail = (type, id, cid) => {
   }
 }
 
-function __getRefactDetail(type, id, cb) {
+function __getRefactDetail (type, id, cb) {
   /* eslint-disable no-unused-vars */
   return dispatch => {
     var params = {

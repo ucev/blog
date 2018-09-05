@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import { photoCheckStateChangeAll } from '$actions/photos'
 
 class PhotoGroupCheckAllCheckbox extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.change = this.change.bind(this)
   }
-  change() {
+  change () {
     this.props.change(this.input.checked)
   }
-  render() {
+  render () {
     return (
       <input
         type="checkbox"

@@ -3,10 +3,10 @@ import React from 'react'
 import TableLabel from '$components/tables/table-label'
 
 class CategoryLabel extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
-  render() {
+  render () {
     var labels = [
       { name: 'index', val: '序号1' },
       { name: 'name', val: '名称' },

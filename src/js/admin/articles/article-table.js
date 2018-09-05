@@ -31,7 +31,7 @@ const ArticleTable = ({ articles, checkState }) => {
   )
 }
 
-function getArticles(articles, categories) {
+function getArticles (articles, categories) {
   var cats = {}
   for (var c of categories) {
     cats[c.id] = c.name

@@ -8,26 +8,26 @@ import DialogBody from './dialog-body'
 import DialogFoot from './dialog-foot'
 
 class InputDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.handleConfirmClick = this.handleConfirmClick.bind(this)
     this.handleCancelClick = this.handleCancelClick.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
   }
-  handleConfirmClick() {
+  handleConfirmClick () {
     var val = this.textInput.value
     this.props.confirm(val)
     this.textInput.value = ''
   }
-  handleCancelClick() {
+  handleCancelClick () {
     this.props.cancel()
   }
-  handleKeyDown(e) {
+  handleKeyDown (e) {
     if (e.which == 13) {
       this.handleConfirmClick()
     }
   }
-  render() {
+  render () {
     return (
       <Dialog
         className="input-dialog"

@@ -2,11 +2,11 @@ import React from 'react'
 // import '$css/components/admin/dialog.scss'
 
 class Dialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
 
-  render() {
+  render () {
     var centerScreen = !(this.props.centerScreen === false)
     var classes = 'dialog-div ' + this.props.className
     if (centerScreen) {

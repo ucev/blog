@@ -6,10 +6,10 @@ import ArticleItem from '../article-item'
 import './article-list.style.scss'
 
 class ArticleList extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
   }
-  render() {
+  render () {
     var articles = this.props.articles.map(article => {
       if (this.props.isSearch) {
         return (

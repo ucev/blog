@@ -7,7 +7,7 @@ import DialogBody from './dialog-body'
 import DialogFoot from './dialog-foot'
 
 class OptionDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.handleConfirmClick = this.handleConfirmClick.bind(this)
     this.handleCancelClick = this.handleCancelClick.bind(this)
@@ -17,15 +17,15 @@ class OptionDialog extends React.Component {
     }
   }
 
-  handleConfirmClick() {
+  handleConfirmClick () {
     this.props.confirm(this.state.newgroup)
   }
 
-  handleCancelClick() {
+  handleCancelClick () {
     this.props.cancel()
   }
 
-  handleGroupChange(e) {
+  handleGroupChange (e) {
     var radio = e.target
     if (radio.checked) {
       this.setState({
@@ -34,7 +34,7 @@ class OptionDialog extends React.Component {
     }
   }
 
-  render() {
+  render () {
     var groupItems = this.props.optionItems.map(group => {
       if (group.id == -1) return ''
       return (

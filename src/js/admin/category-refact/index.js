@@ -6,11 +6,11 @@ import DetailArea from './detail-area'
 import { getCategoryTree } from '$actions/category-refact'
 
 class CategoryRefactArea extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.init()
   }
 
-  render() {
+  render () {
     return (
       <div id="refact-area">
         <CategoryTree />

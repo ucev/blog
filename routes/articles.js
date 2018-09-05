@@ -20,7 +20,7 @@ __markdown.use(require('markdown-it-extensible-fence'))
 
 const configs = require('../config/base.config')
 
-function __pager(current, total) {
+function __pager (current, total) {
   var start = current < 5 ? 0 : current - 5
   var len
   if (start + 10 <= total) {
@@ -45,11 +45,7 @@ function __pager(current, total) {
   return pagerParams
 }
 
-function __searchStyleTitle(title, args) {
-  return title.replace(new RegExp('(' + args + ')'), '<strong>$1</strong>')
-}
-
-router.get('/category/:cid', async (ctx, next) => {
+router.get('/category/:cid', async ctx => {
   var cid = ctx.params.cid
   try {
     var data = await __categories.getById({
@@ -62,10 +58,10 @@ router.get('/category/:cid', async (ctx, next) => {
   }
 })
 
-router.get('/category/:cid/:id', async (ctx, next) => {
+router.get('/category/:cid/:id', async ctx => {
   var cid = ctx.params.cid
   var aid = ctx.params.id
-  function response(tree, article) {
+  function response (tree, article) {
     var content = __markdown.render(
       article && article.content ? article.content : ''
     )
@@ -93,8 +89,8 @@ router.get('/category/:cid/:id', async (ctx, next) => {
   await response(tree, art)
 })
 
-router.get('/category', async (ctx, next) => {
-  function responde(cats) {
+router.get('/category', async ctx => {
+  function responde (cats) {
     return ctx.render('category_list', {
       title: '文章类别',
       websiteInfo: configs.website_info,
@@ -110,7 +106,7 @@ router.get('/category', async (ctx, next) => {
 })
 
 // 😢 for later
-router.get('/view/:id', enterControl.userControl, async (ctx, next) => {
+router.get('/view/:id', enterControl.userControl, async ctx => {
   var id = ctx.params.id
   try {
     var article = await __articles.view(id)
@@ -127,7 +123,7 @@ router.get('/view/:id', enterControl.userControl, async (ctx, next) => {
   }
 })
 
-router.get('/search', async (ctx, next) => {
+router.get('/search', async ctx => {
   var start = ctx.query.p ? ctx.query.p : 0
   // 查找的参数
   var args = ctx.query.args
@@ -157,9 +153,9 @@ router.get('/search', async (ctx, next) => {
 
 router.use('/data', clientAjax.routes(), clientAjax.allowedMethods())
 
-router.get('/', async (ctx, next) => {
+router.get('/', async ctx => {
   var start = ctx.query.p ? ctx.query.p : 0
-  function response(arts, cats) {
+  function response (arts, cats) {
     return ctx.render('article_list', {
       title: '文章列表',
       websiteInfo: configs.website_info,
@@ -178,7 +174,9 @@ router.get('/', async (ctx, next) => {
       start: start,
     })
     cats = await __categories.get()
-  } catch (err) {}
+  } catch (err) {
+    // 错误处理
+  }
   await response(arts, cats)
 })
 

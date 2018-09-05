@@ -22,49 +22,49 @@ const crypto = require('crypto')
 
 // const configs = require('../config/base.config')
 
-function genToken(key) {
+function genToken (key) {
   key = String(key)
   var md5sum = crypto.createHash('md5')
   md5sum.update(key)
   return md5sum.digest('hex')
 }
 
-router.get('/articles', async (ctx, next) => {
+router.get('/articles', async ctx => {
   await ctx.render('admin/articles', {
     title: '文章管理',
     avatar: ctx.session.avatar,
   })
 })
 
-router.get('/photos', async (ctx, next) => {
+router.get('/photos', async ctx => {
   await ctx.render('admin/photos', {
     title: '照片管理',
     avatar: ctx.session.avatar,
   })
 })
 
-router.get('/labels', async (ctx, next) => {
+router.get('/labels', async ctx => {
   await ctx.render('admin/labels', {
     title: '标签管理',
     avatar: ctx.session.avatar,
   })
 })
 
-router.get('/categories', async (ctx, next) => {
+router.get('/categories', async ctx => {
   await ctx.render('admin/categories', {
     title: '类别管理',
     avatar: ctx.session.avatar,
   })
 })
 
-router.get('/categories/refact/:id', async (ctx, next) => {
+router.get('/categories/refact/:id', async ctx => {
   await ctx.render('admin/category_refact', {
     title: '文档整理',
     avatar: ctx.session.avatar,
   })
 })
 
-router.get('/articles/add', async (ctx, next) => {
+router.get('/articles/add', async ctx => {
   await ctx.render('admin/article_edit', {
     title: '添加文章',
     avatar: ctx.session.avatar,
@@ -72,7 +72,7 @@ router.get('/articles/add', async (ctx, next) => {
   })
 })
 
-router.post('/articles/add', uploader, async (ctx, next) => {
+router.post('/articles/add', uploader, async ctx => {
   var request = ctx.request.body
   var content = request.md.trim()
   var descp = request.descp
@@ -100,7 +100,7 @@ router.post('/articles/add', uploader, async (ctx, next) => {
   }
 })
 
-router.get('/articles/modify', async (ctx, next) => {
+router.get('/articles/modify', async ctx => {
   var id = Number(ctx.query.id)
   await ctx.render('admin/article_edit', {
     title: '修改文章',
@@ -110,7 +110,7 @@ router.get('/articles/modify', async (ctx, next) => {
   })
 })
 
-router.post('/articles/modify', uploader, async (ctx, next) => {
+router.post('/articles/modify', uploader, async ctx => {
   var request = ctx.request.body
   var content = request.md.trim()
   var descp = request.descp
@@ -140,7 +140,7 @@ router.post('/articles/modify', uploader, async (ctx, next) => {
   }
 })
 
-router.get('/tools', async (ctx, next) => {
+router.get('/tools', async ctx => {
   var token = genToken(ctx.session.openid)
   await ctx.render('admin/tools', {
     title: '实用工具',
@@ -152,8 +152,8 @@ router.get('/tools', async (ctx, next) => {
 const ajax_request = require('./ajax_admin')
 router.use('/datas', ajax_request.routes(), ajax_request.allowedMethods())
 
-router.get('/', async (ctx, next) => {
-  function response(data) {
+router.get('/', async ctx => {
+  function response (data) {
     return ctx.render('admin/index', {
       title: '首页',
       avatar: ctx.session.avatar,
@@ -164,14 +164,16 @@ router.get('/', async (ctx, next) => {
   }
   var today = enterControl.clearDateTime(new Date())
   today = Math.floor(today.getTime() / 1000)
+  let data
   try {
-    var data = await __fluxrecord.fluxOfToday(today)
+    data = await __fluxrecord.fluxOfToday(today)
     await response(data)
   } catch (err) {
-    var data = {}
-    data.pv = 0
-    data.uv = 0
-    data.pvPerHour = []
+    data = {
+      pv: 0,
+      uv: 0,
+      pvPerHour: [],
+    }
     for (var i = 0; i < 24; i++) {
       data.pvPerHour.push(0)
     }

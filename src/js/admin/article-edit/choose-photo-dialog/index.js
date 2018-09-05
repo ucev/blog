@@ -8,10 +8,10 @@ import UploadImageDiv from './upload-image-div'
 import { fetchPhotoGroups, fetchGroupPhotos } from '$actions/article-edit'
 
 class ChoosePhotoDialog extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.init()
   }
-  render() {
+  render () {
     var styles = {}
     if (!this.props.visible) {
       styles.display = 'none'

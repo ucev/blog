@@ -16,7 +16,7 @@ import { urlParamParser } from '$utils'
 
 import '$css/article_edit.scss'
 
-export function init({ ele, type }) {
+export function init ({ ele, type }) {
   var params = urlParamParser()
   var id = params.id
   var store = createStore(articleEditApp, applyMiddleware(thunkMiddleware))

@@ -6,11 +6,11 @@ import SearchLabels from './search-labels'
 import '../article-item/article-item.style.scss'
 
 class ArticleItem extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.genTitle = this.genTitle.bind(this)
   }
-  genTitle(id, title, query) {
+  genTitle (id, title, query) {
     var searchExp = new RegExp(query, 'iu')
     var ele
     var pos = title.search(searchExp)
@@ -27,7 +27,7 @@ class ArticleItem extends React.Component {
     }
     return ele
   }
-  render() {
+  render () {
     var article = this.props.article
     var title = this.genTitle(article.id, article.title, this.props.query)
     return (

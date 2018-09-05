@@ -6,11 +6,11 @@ import PhotoGroupBar from './photo-group-bar'
 import { fetchGroupPhotos, fetchPhotoGroups } from '$actions/photos'
 
 class PhotoArea extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.fetchPhotoGroups()
     this.props.fetchGroupPhotos()
   }
-  render() {
+  render () {
     return (
       <div id="photo-div">
         <PhotoFlow />

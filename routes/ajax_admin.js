@@ -17,17 +17,17 @@ const __photogroups = new PhotoGroups()
 
 const __log = require('../utils/log')
 
-function strToNum(str) {
+function strToNum (str) {
   var a = Number(str)
   return isNaN(a) ? 0 : a
 }
 
-function emptyString(str) {
-  var str = str === null || str === undefined ? '' : str.trim()
+function emptyString (strval) {
+  let str = strval === null || strval === undefined ? '' : strval.trim()
   return str === '' || str === '-1' ? '' : str
 }
 
-async function getCategoryRefactItemDetail(ctx, id, type) {
+async function getCategoryRefactItemDetail (ctx, id, type) {
   try {
     var art = await __articles.getsingle({
       id: id,
@@ -40,7 +40,7 @@ async function getCategoryRefactItemDetail(ctx, id, type) {
   }
 }
 
-router.post('/articles/delete', uploader, async (ctx, next) => {
+router.post('/articles/delete', uploader, async ctx => {
   try {
     var request = ctx.request.body
     var ids = request.id
@@ -52,14 +52,14 @@ router.post('/articles/delete', uploader, async (ctx, next) => {
   }
 })
 
-router.get('/articles/get', async (ctx, next) => {
+router.get('/articles/get', async ctx => {
   if (ctx.query.id != undefined) {
     try {
       const id = ctx.query.id
       const queryfields = ctx.query.modify
         ? ['content', 'label']
         : ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
-      var res = await __articles.getsingle({
+      let res = await __articles.getsingle({
         id: id,
         queryfields: queryfields,
       })
@@ -70,7 +70,7 @@ router.get('/articles/get', async (ctx, next) => {
   } else {
     const start = strToNum(ctx.query.start)
     const state = emptyString(ctx.query.state)
-    var category = emptyString(ctx.query.category)
+    let category = emptyString(ctx.query.category)
     if (category) {
       if (parseInt(category).toString() !== category) {
         try {
@@ -83,7 +83,7 @@ router.get('/articles/get', async (ctx, next) => {
       }
     }
     const label = emptyString(ctx.query.label)
-    var where = {}
+    let where = {}
     if (state) {
       where.state = state
     }
@@ -94,7 +94,7 @@ router.get('/articles/get', async (ctx, next) => {
       where.label = label
     }
     try {
-      var res = await __articles.getByCond({
+      let res = await __articles.getByCond({
         where: where,
         start: start,
         client: false,
@@ -115,7 +115,7 @@ router.get('/articles/get', async (ctx, next) => {
   }
 })
 
-router.post('/articles/move', uploader, async (ctx, next) => {
+router.post('/articles/move', uploader, async ctx => {
   var request = ctx.request.body
   var ids = request.id
   __log.debug(ids)
@@ -129,7 +129,7 @@ router.post('/articles/move', uploader, async (ctx, next) => {
   }
 })
 
-router.post('/articles/order', uploader, async (ctx, next) => {
+router.post('/articles/order', uploader, async ctx => {
   var request = ctx.request.body
   var id = request.id
   var ord = request.order
@@ -144,19 +144,19 @@ router.post('/articles/order', uploader, async (ctx, next) => {
   }
 })
 
-router.get('/articles/state', async (ctx, next) => {
+router.get('/articles/state', async ctx => {
   var ids = ctx.query.id
   ids = ids.split(',')
   const state = ctx.query.state
   try {
     var res = await __articles.updateState(ids, state)
-    ctx.body = { code: 0, msg: '更新成功', data: r }
+    ctx.body = { code: 0, msg: '更新成功', data: res }
   } catch (err) {
     ctx.body = { code: 1, msg: '更新失败' }
   }
 })
 
-router.post('/categories/add', uploader, async (ctx, next) => {
+router.post('/categories/add', uploader, async ctx => {
   var request = ctx.request.body
   var name = request.name
   var parent = request.parent
@@ -176,7 +176,7 @@ router.post('/categories/add', uploader, async (ctx, next) => {
   }
 })
 
-router.post('/categories/delete', uploader, async (ctx, next) => {
+router.post('/categories/delete', uploader, async ctx => {
   var request = ctx.request.body
   var id = request.id
   if (id < 1) {
@@ -190,11 +190,10 @@ router.post('/categories/delete', uploader, async (ctx, next) => {
   }
 })
 
-router.post('/categories/modify', uploader, async (ctx, next) => {
+router.post('/categories/modify', uploader, async ctx => {
   var request = ctx.request.body
   var id = strToNum(request.id)
   var data = {}
-  var name = request.name
   if (request.name) {
     data.name = request.name
   }
@@ -219,7 +218,7 @@ router.post('/categories/modify', uploader, async (ctx, next) => {
   }
 })
 
-router.get('/categories/get', async (ctx, next) => {
+router.get('/categories/get', async ctx => {
   try {
     var res = await __categories.get()
     ctx.body = { code: 0, msg: '获取成功', data: res }
@@ -228,7 +227,7 @@ router.get('/categories/get', async (ctx, next) => {
   }
 })
 
-router.get('/categories/preface', async (ctx, next) => {
+router.get('/categories/preface', async ctx => {
   var category = ctx.query.category
   var preface = ctx.query.preface
   var isSet = ctx.query.isSet === 'true'
@@ -245,7 +244,7 @@ router.get('/categories/preface', async (ctx, next) => {
   }
 })
 
-router.get('/categories/refact/get', async (ctx, next) => {
+router.get('/categories/refact/get', async ctx => {
   var type = ctx.query.type
   var id = ctx.query.id
   if (type == 'dir') {
@@ -262,7 +261,7 @@ router.get('/categories/refact/get', async (ctx, next) => {
   }
 })
 
-router.get('/categories/tree', async (ctx, next) => {
+router.get('/categories/tree', async ctx => {
   var id = ctx.query.id
   try {
     var tree = await __categories.getTree(id)
@@ -272,7 +271,7 @@ router.get('/categories/tree', async (ctx, next) => {
   }
 })
 
-router.get('/labels/get', async (ctx, next) => {
+router.get('/labels/get', async ctx => {
   var queryData = {}
   var start = ctx.query.start ? ctx.query.start : 0
   queryData.start = start
@@ -293,7 +292,7 @@ router.get('/labels/get', async (ctx, next) => {
   }
 })
 
-router.get('/labels/getnames', async (ctx, next) => {
+router.get('/labels/getnames', async ctx => {
   try {
     var labels = await __labels.getNames()
     ctx.body = { code: 0, msg: '获取成功', data: labels }
@@ -302,7 +301,7 @@ router.get('/labels/getnames', async (ctx, next) => {
   }
 })
 
-router.get('/photos/get', async (ctx, next) => {
+router.get('/photos/get', async ctx => {
   var where = {}
   if (ctx.query.id != undefined) {
     where.id = strToNum(ctx.query.id)
@@ -321,7 +320,7 @@ router.get('/photos/get', async (ctx, next) => {
   }
 })
 
-router.post('/photos/add', uploader, async (ctx, next) => {
+router.post('/photos/add', uploader, async ctx => {
   var request = ctx.request.body
   const gid = request.gid < 1 ? 1 : request.gid
   const tempfile = ctx.request.files[0].path
@@ -342,7 +341,7 @@ router.post('/photos/add', uploader, async (ctx, next) => {
   }
 })
 
-router.get('/photos/delete', async (ctx, next) => {
+router.get('/photos/delete', async ctx => {
   var photos = ctx.query.photos
   photos = photos.split(',')
   photos = photos.map(i => strToNum(i))
@@ -355,7 +354,7 @@ router.get('/photos/delete', async (ctx, next) => {
   }
 })
 
-router.get('/photos/move', async (ctx, next) => {
+router.get('/photos/move', async ctx => {
   var photos = ctx.query.photos
   photos = photos.split(',')
   photos = photos.map(i => strToNum(i))
@@ -374,7 +373,7 @@ router.get('/photos/move', async (ctx, next) => {
   }
 })
 
-router.get('/photos/rename', async (ctx, next) => {
+router.get('/photos/rename', async ctx => {
   var id = strToNum(ctx.query.id)
   var title = ctx.query.title
   try {
@@ -388,7 +387,7 @@ router.get('/photos/rename', async (ctx, next) => {
   }
 })
 
-router.get('/photogroup/get', async (ctx, next) => {
+router.get('/photogroup/get', async ctx => {
   try {
     var res = await __photogroups.get()
     ctx.body = { code: 0, msg: '获取成功', data: res }
@@ -398,7 +397,7 @@ router.get('/photogroup/get', async (ctx, next) => {
   }
 })
 
-router.get('/photogroup/modify', async (ctx, next) => {
+router.get('/photogroup/modify', async ctx => {
   const groupname = ctx.query.groupname
   const addtime = Math.floor(new Date().getTime() / 1000)
   try {
@@ -414,7 +413,7 @@ router.get('/photogroup/modify', async (ctx, next) => {
   }
 })
 
-router.get('/photogroup/remove', async (ctx, next) => {
+router.get('/photogroup/remove', async ctx => {
   var gid = ctx.query.gid
   if (gid < 2) {
     return (ctx.body = { code: 0, msg: '删除成功' })
@@ -427,7 +426,7 @@ router.get('/photogroup/remove', async (ctx, next) => {
   }
 })
 
-router.post('/photogroup/rename', uploader, async (ctx, next) => {
+router.post('/photogroup/rename', uploader, async ctx => {
   var request = ctx.request.body
   var gid = Number(request.gid)
   if (gid < 1) {

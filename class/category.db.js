@@ -28,15 +28,15 @@ const SET_CATEGORY_PREFACE_TO_ZERO_IF_NO_ARTICLE = `
 `
 
 class Categories {
-  constructor() {
+  constructor () {
     this.dbname = 'categories'
     this.tb_article = 'articles'
     this.dbconfig = configs.database_config
   }
 
-  async add({ name, parent, descp, addtime } = {}) {
+  async add ({ name, parent, descp, addtime } = {}) {
     if (name.trim() == '') {
-      return Promise.reject(new Error(`name can't be empty`))
+      return Promise.reject(new Error('name can\'t be empty'))
     }
     try {
       var conn = await mysql.createConnection(this.dbconfig)
@@ -56,9 +56,9 @@ class Categories {
     }
   }
 
-  async delete(id) {
+  async delete (id) {
     if (id < 1) {
-      return Promise.reject(`id must > 0`)
+      return Promise.reject('id must > 0')
     }
     try {
       var conn = await mysql.createConnection(this.dbconfig)
@@ -69,7 +69,7 @@ class Categories {
         [id]
       )
       var del3 = conn.query(
-        `update articles set category = 0 where category = ?`,
+        'update articles set category = 0 where category = ?',
         [id]
       )
       await Promise.all([del1, del2, del3])
@@ -85,7 +85,7 @@ class Categories {
     }
   }
 
-  async get() {
+  async get () {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       var results = await conn.query(
@@ -101,7 +101,7 @@ class Categories {
     }
   }
 
-  async getById({ id, queryfields } = {}) {
+  async getById ({ id, queryfields } = {}) {
     try {
       queryfields = queryfields ? queryfields : ['*']
       var conn = await mysql.createConnection(this.dbconfig)
@@ -119,7 +119,7 @@ class Categories {
     }
   }
 
-  async getId(name) {
+  async getId (name) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       var results = await conn.query(
@@ -138,7 +138,7 @@ class Categories {
     }
   }
 
-  async __getTreeArticle(id, conn) {
+  async __getTreeArticle (id, conn) {
     try {
       var results = await conn.query(
         `select * from ${this.tb_article} where category = ? order by suborder`,
@@ -153,7 +153,7 @@ class Categories {
     }
   }
 
-  async __getTreeDir(id, conn) {
+  async __getTreeDir (id, conn) {
     try {
       var results = await conn.query(
         `select * from ${this.dbname} where parent = ?`,
@@ -174,7 +174,7 @@ class Categories {
     }
   }
 
-  async __getTree(dir, conn, ids, prefaces) {
+  async __getTree (dir, conn, ids, prefaces) {
     try {
       var that = this
       var dirs = await this.__getTreeDir(dir.id, conn)
@@ -183,7 +183,7 @@ class Categories {
       dir.childs = Array.from([...dirs, ...arts]).sort(
         (a, b) => a.suborder > b.suborder
       )
-      var subdirs = dirs.map(function(d) {
+      var subdirs = dirs.map(function (d) {
         var id = d.id
         prefaces.add(d.preface)
         if (!ids.has(id)) {
@@ -197,7 +197,7 @@ class Categories {
     }
   }
 
-  async getTree(id) {
+  async getTree (id) {
     try {
       var idGets = new Set()
       var prefaces = new Set()
@@ -227,7 +227,7 @@ class Categories {
     }
   }
 
-  async __setPreface(conn, id, preface) {
+  async __setPreface (conn, id, preface) {
     try {
       await conn.query(
         `update ${this.tb_article} left join (select preface from ${
@@ -247,11 +247,11 @@ class Categories {
       )
       return Promise.resolve()
     } catch (err) {
-      return Promise.reject(er)
+      return Promise.reject(err)
     }
   }
 
-  async __cancelPreface(conn, id) {
+  async __cancelPreface (conn, id) {
     try {
       await conn.query(
         `update ${this.tb_article} left join (select preface from ${
@@ -270,7 +270,7 @@ class Categories {
     }
   }
 
-  async setPreface({ id, preface, isSet }) {
+  async setPreface ({ id, preface, isSet }) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.beginTransaction()
@@ -291,7 +291,7 @@ class Categories {
     }
   }
 
-  async update({ id, data = {} } = {}) {
+  async update ({ id, data = {} } = {}) {
     try {
       var conn = await mysql.createConnection(this.dbconfig)
       await conn.query(`update ${this.dbname} set ? where id = ?`, [data, id])
@@ -305,7 +305,7 @@ class Categories {
     }
   }
 
-  async moveArticles(articleIds, gid) {
+  async moveArticles (articleIds, gid) {
     let conn
     try {
       conn = await mysql.createConnection(this.dbconfig)

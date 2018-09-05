@@ -5,23 +5,23 @@ import ConfirmDialog from '$components/dialogs/confirm-dialog'
 import { photoDeleteSingle, photoDeleteDialogVisible } from '$actions/photos'
 
 class PhotoItemDeleteDialog extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.hide = this.hide.bind(this)
     this.confirm = this.confirm.bind(this)
     this.cancel = this.cancel.bind(this)
   }
-  hide() {
+  hide () {
     this.props.hide(this.props.id)
   }
-  confirm() {
+  confirm () {
     this.props.delete(this.props.id)
     this.hide()
   }
-  cancel() {
+  cancel () {
     this.hide()
   }
-  render() {
+  render () {
     return (
       <ConfirmDialog
         title="确认删除?"

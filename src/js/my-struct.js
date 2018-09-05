@@ -31,22 +31,22 @@ const render = (Component, Reducer, ele) => {
    */
 }
 
-export function articles() {
+export function articles () {
   render(Articles, articlesApp, 'table-div')
 }
 
-export function categories() {
+export function categories () {
   render(Categories, categoriesApp, 'table-div')
 }
 
-export function categoriesRefact() {
+export function categoriesRefact () {
   render(CategoryRefact, categoryRefactApp, 'reform-area')
 }
 
-export function labels() {
+export function labels () {
   render(Labels, labelsApp, 'table-div')
 }
 
-export function photos() {
+export function photos () {
   render(Photos, photosApp, 'photos-target-div')
 }

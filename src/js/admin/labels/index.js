@@ -6,10 +6,10 @@ import TableNavLink from './table-nav-link'
 import { fetchLabelData } from '$actions/labels'
 
 class LabelLayout extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.init()
   }
-  render() {
+  render () {
     return (
       <div id="label-table-div">
         <LabelTable />

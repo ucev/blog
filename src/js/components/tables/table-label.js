@@ -1,7 +1,7 @@
 import React from 'react'
 
 class TableLabel extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.orderState = {
       asc: {
@@ -15,7 +15,7 @@ class TableLabel extends React.Component {
     }
     this.handleOrderImgClick = this.handleOrderImgClick.bind(this)
   }
-  handleOrderImgClick(e) {
+  handleOrderImgClick (e) {
     var orderby = e.target.getAttribute('data-label')
     var orderDirect =
       this.props.orderDirect == this.orderState.asc.label
@@ -23,7 +23,7 @@ class TableLabel extends React.Component {
         : this.orderState.asc.label
     this.props.orderChange(orderby, orderDirect)
   }
-  render() {
+  render () {
     var targetsrc, othersrc
     if (this.props.orderDirect == this.orderState.asc.label) {
       targetsrc = this.orderState.asc.imgsrc

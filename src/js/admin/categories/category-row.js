@@ -8,13 +8,13 @@ import {
 } from '$actions/categories'
 
 class CategoryRow extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.categoryOperationClick = this.categoryOperationClick.bind(this)
     this.categoryOrderChange = this.categoryOrderChange.bind(this)
     this.categoryOrderKeyDown = this.categoryOrderKeyDown.bind(this)
   }
-  categoryOperationClick(e) {
+  categoryOperationClick (e) {
     var type = e.target.getAttribute('data-type')
     var id = this.props.id
     if (type == 'modify') {
@@ -23,19 +23,19 @@ class CategoryRow extends React.Component {
       this.props.delete(id)
     }
   }
-  categoryOrderChange(e) {
+  categoryOrderChange (e) {
     var id = this.props.id
     var order = e.target.value
     this.props.orderChange(id, order)
   }
-  categoryOrderKeyDown(e) {
+  categoryOrderKeyDown (e) {
     if (e.which == 13) {
       var id = this.props.id
       var order = e.target.value
       this.props.orderChange(id, order)
     }
   }
-  render() {
+  render () {
     var operationUl = (
       <ul className="content-operation-ul">
         <li data-type="modify" onClick={this.categoryOperationClick}>

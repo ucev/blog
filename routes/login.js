@@ -9,7 +9,7 @@ const loginConfig = configs.qqlogin
 router.get('/redirect', async (ctx, next) => {
   try {
     var code = ctx.query.code
-    var state = ctx.query.state
+    // var state = ctx.query.state
     var url = `https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=${
       loginConfig.appid
     }&client_secret=${loginConfig.secret}&code=${code}&redirect_uri=${
@@ -18,8 +18,8 @@ router.get('/redirect', async (ctx, next) => {
     var res = await request(url)
     var params = res.split('&')
     var token = params[0].split('=')[1]
-    var expire = params[1].split('=')[1]
-    var refresh = params[2].split('=')[1]
+    // var expire = params[1].split('=')[1]
+    // var refresh = params[2].split('=')[1]
     url = 'https://graph.qq.com/oauth2.0/me?access_token=' + token
     res = await request(url)
     res = res.match(/{[\s\S]*?}/)[0]

@@ -20,20 +20,20 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class CategoryItemLi extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.expandChange = this.expandChange.bind(this)
     this.handleCategoryClick = this.handleCategoryClick.bind(this)
     this.getChildNodes = this.getChildNodes.bind(this)
   }
-  handleCategoryClick() {
+  handleCategoryClick () {
     this.props.getDetail(this.props.id)
   }
-  expandChange(e) {
+  expandChange (e) {
     this.props.toggleExpandState(this.props.id)
     e.stopPropagation()
   }
-  getChildNodes() {
+  getChildNodes () {
     var depth = this.props.depth
     var childs = this.props.childs
     var cstate = this.props.cstate
@@ -66,7 +66,7 @@ class CategoryItemLi extends React.Component {
     )
     return content
   }
-  render() {
+  render () {
     var depth = this.props.depth
     var styles = {
       paddingLeft: depth * 20 + 20 + 'px',

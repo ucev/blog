@@ -5,16 +5,16 @@ import PhotoGroupItem from './photo-group-item'
 
 // const PhotoGroupList = ({ groups }) => {
 class PhotoGroupList extends React.Component {
-  componentDidMount() {
+  componentDidMount () {
     this.list.addEventListener('scroll', this.listScroll)
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.list.removeEventListener('scroll', this.listScroll)
   }
-  listScroll(e) {
+  listScroll (e) {
     e.stopPropagation()
   }
-  render() {
+  render () {
     var gps = this.props.groups.map(g => (
       <PhotoGroupItem key={g.id} gid={g.id} name={g.name} count={g.count} />
     ))
