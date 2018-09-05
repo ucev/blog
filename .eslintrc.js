@@ -19,7 +19,7 @@ module.exports = {
   },
   "plugins": [
     "react",
-    "jsx-a11y"
+    "jsx-a11y",
   ],
   "rules": {
     "arrow-spacing": "error",

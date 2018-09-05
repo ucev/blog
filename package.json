@@ -9,6 +9,7 @@
     "createdb": "mysql-creator ./config/database.config.yaml",
     "dev": "bash ./script/delete_build_file.sh && NODE_ENV=DEV node ./app.js",
     "lint": "eslint --fix --ext .js src",
+    "prettier": "npm run prettiercss;npm run prettierjs",
     "prettiercss": "prettier --write **/*.scss",
     "prettierjs": "prettier --write \"{build,class,config,routes,src/js}/**/*.js\" ",
     "start": "supervisor ./class ./routes ./views ./app.js ./app.js",
