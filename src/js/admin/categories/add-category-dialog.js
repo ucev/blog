@@ -8,6 +8,8 @@ import {
   addCategoryValueChange
 } from '$actions/categories'
 
+// import '$css/components/admin/add_category_dialog.scss';
+
 const ADD_TITLE = {
   add: '添加类别',
   modify: '修改类别'

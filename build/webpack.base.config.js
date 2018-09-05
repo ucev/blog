@@ -1,7 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -52,34 +52,6 @@ module.exports = [{
   plugins: [
     new ExtractTextPlugin({
       filename: '[name].js'
-    })
-  ]
-}, {
-  entry: {
-    admin: path.resolve(__dirname, '../src/css/admin.scss'),
-    base: path.resolve(__dirname, '../src/css/base.scss'),
-    md: path.resolve(__dirname, '../src/css/md.scss')
-  },
-  output: {
-    path: path.resolve(__dirname, '../public/css'),
-    publicPath: '/css',
-    filename: '[name].css'
-  },
-  module: {
-    rules: [{
-      test: /\.scss$/,
-      use: ExtractTextPlugin.extract({
-        use: [{
-          loader: 'css-loader'
-        }, {
-          loader: 'sass-loader'
-        }]
-      })
-    }]
-  },
-  plugins: [
-    new ExtractTextPlugin({
-      filename: '[name].css'
     })
   ]
 }]

@@ -8,6 +8,8 @@ import Table from '$components/tables/table'
 import TableBody from '$components/tables/table-body'
 import TableFoot from '$components/tables/table-foot'
 
+// import '$css/components/admin/label_table.scss';
+
 const LabelTable = ({labels = []}) => {
   labels = Array.from(labels)
   const labelRows = labels.map(label => (
@@ -56,4 +58,4 @@ const _LabelTable = connect(
   mapDispatchToProps
 )(LabelTable)
 
-module.exports = _LabelTable
+export default _LabelTable

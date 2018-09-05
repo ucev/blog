@@ -7,6 +7,8 @@ import Table from '$components/tables/table'
 import TableBody from '$components/tables/table-body'
 import TableFoot from '$components/tables/table-foot'
 
+// import '$css/components/admin/category_table.scss';
+
 const CategoryTable = ({ categories }) => {
   var cats = categories.map((category) => (
     <CategoryRow

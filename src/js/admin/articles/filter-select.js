@@ -15,7 +15,7 @@ class FilterSelect extends React.Component {
   }
   render () {
     const options = this.props.options.map((opt) => (
-      <option value = {opt.value}>{opt.title}</option>
+      <option value = {opt.value} key = {opt.value}>{opt.title}</option>
     ))
     return (
       <div className = "table-filter-item">

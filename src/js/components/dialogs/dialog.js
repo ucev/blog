@@ -1,4 +1,5 @@
 import React from 'react'
+// import '$css/components/admin/dialog.scss'
 
 class Dialog extends React.Component {
   constructor (props) {
@@ -11,7 +12,7 @@ class Dialog extends React.Component {
     if (centerScreen) {
       classes += ' dialog-div-center-screen'
     }
-    var styles = this.props.styles
+    var styles = Object.assign({}, this.props.styles)
     if (!this.props.visible)
       styles.display = 'none'
     else

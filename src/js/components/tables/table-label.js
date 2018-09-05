@@ -28,15 +28,22 @@ class TableLabel extends React.Component {
       targetsrc = this.orderState.desc.imgsrc
     }
     othersrc = this.orderState.asc.imgsrc
-    var labels = this.props.labels.map((label) => {
+    var labels = this.props.labels.map((label, index) => {
       var classes = `content-row-${label.name}-label ${this.props.type}-row-${label.name}-label`
       if (label.sorted === true) {
         return (
-          <th className = {classes}>{label.val}<img className = "label-row-hotmark-order-img" src = {this.props.orderby == label.sortname ? targetsrc : othersrc} data-label = {label.sortname} onClick =  {this.handleOrderImgClick} ></img></th>
+          <th className = {classes} key = {index}>
+            {label.val}
+            <img
+              className = "label-row-hotmark-order-img"
+              src = {this.props.orderby == label.sortname ? targetsrc : othersrc}
+              data-label = {label.sortname}
+              onClick =  {this.handleOrderImgClick} ></img>
+          </th>
         )
       } else {
         return (
-          <th className = {classes}>{label.val}</th>
+          <th className = {classes} key = {index}>{label.val}</th>
         )
       }
     })

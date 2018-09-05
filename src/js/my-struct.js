@@ -16,6 +16,8 @@ import CategoryRefact from './admin/category-refact'
 import Labels from './admin/labels'
 import Photos from './admin/photos'
 
+import '$css/admin.scss'
+
 const render = (Component, Reducer, ele) => {
   var store = createStore(
     Reducer,

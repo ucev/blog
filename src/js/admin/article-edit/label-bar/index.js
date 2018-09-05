@@ -74,4 +74,4 @@ const _LabelBar = connect(
   mapDispatchToProps
 )(LabelBar)
 
-module.exports = _LabelBar
+export default _LabelBar

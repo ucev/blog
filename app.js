@@ -12,7 +12,6 @@ const log4js = require('./utils/log4js')
 //const logger = require('koa-logger')
 //const log4js = require('koa-log4')
 const session = require('koa-session')
-const koaConvert = require('koa-convert')
 
 const configs = require('./config/base.config')
 
@@ -53,19 +52,28 @@ app.use(views(path.join(__dirname, 'views'), {
 // hmr
 if (process.env.NODE_ENV == 'DEV') {
   const koaWebpack = require('koa-webpack')
+  const Webpack = require('webpack')
   const wp_config = require('./build/webpack.dev.config')
-  app.use(koaWebpack({
-    config: wp_config,
-    dev: {
-      publicPath: '/',
+  koaWebpack({
+    compiler: Webpack(wp_config),
+    devMiddleware: {
+      lazy: false,
+      publicPath: wp_config[0].devServer.publicPath,
       stats: {
-        color: true
-      }
+        color: true,
+      },
     },
-    hot: {
-      reload: true
-    }
-  }))
+    hotClient: {
+      hmr: true,
+      reload: true,
+      autoConfigure: true,
+      allEntries: true,
+    },
+  }).then((middleware) => {
+    app.use(middleware);
+  }).catch((err) => {
+    console.log(err)
+  })
 }
 
 // static files

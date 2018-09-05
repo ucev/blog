@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import 'simplemde-customize-for-blog/src/css/simplemde.css'
+// import 'simplemde-customize-for-blog/src/css/simplemde.css'
 import '$css/article_edit.scss'
 
 import Editor from './editor'

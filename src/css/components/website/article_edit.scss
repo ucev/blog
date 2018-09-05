@@ -37,19 +37,21 @@
   display: block;
 }
 
-.CodeMirror {
-  height: 100%;
-}
+#edit-area {
+  .CodeMirror {
+    height: 100%;
+  }
 
-.editor-toolbar.fullscreen,
-.editor-preview-active-side,
-.CodeMirror-fullscreen {
-  z-index: 1000;
-}
+  .editor-toolbar.fullscreen,
+  .editor-preview-active-side,
+  .CodeMirror-fullscreen {
+    z-index: 1000;
+  }
 
-.editor-preview,
-.editor-preview-side {
-  background-color: white;
+  .editor-preview,
+  .editor-preview-side {
+    background-color: white;
+  }
 }
 
 .op-bar {
