@@ -5,20 +5,18 @@ import AddCategoryDialog from './add-category-dialog'
 import ConfirmDialog from './confirm-dialog'
 import OperationBar from './operation-bar'
 import CategoryTable from './category-table'
-import {
-  fetchCategoryData
-} from '$actions/categories'
+import { fetchCategoryData } from '$actions/categories'
 
 // import '$css/components/admin/category.scss';
 
 class CategoryLayout extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.getData()
   }
-  render () {
+  render() {
     return (
       <div>
-        <OperationBar/>
+        <OperationBar />
         <CategoryTable />
         <AddCategoryDialog />
         <ConfirmDialog />
@@ -28,10 +26,10 @@ class CategoryLayout extends React.Component {
 }
 
 const mapStateToProps = () => ({})
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   getData: () => {
     dispatch(fetchCategoryData())
-  }
+  },
 })
 
 const _CategoryLayout = connect(

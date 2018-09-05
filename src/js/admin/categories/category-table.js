@@ -10,30 +10,28 @@ import TableFoot from '$components/tables/table-foot'
 // import '$css/components/admin/category_table.scss';
 
 const CategoryTable = ({ categories }) => {
-  var cats = categories.map((category) => (
+  var cats = categories.map(category => (
     <CategoryRow
-      key = {category.id}
-      id = {category.id}
-      name = {category.name}
-      parent = {category.parent}
-      descp = {category.descp}
-      mainorder = {category.mainorder}
-      articlecnt = {category.articlecnt}
+      key={category.id}
+      id={category.id}
+      name={category.name}
+      parent={category.parent}
+      descp={category.descp}
+      mainorder={category.mainorder}
+      articlecnt={category.articlecnt}
     />
   ))
   return (
-    <Table type = "category">
+    <Table type="category">
       <CategoryLabel />
-      <TableBody>
-        {cats}
-      </TableBody>
+      <TableBody>{cats}</TableBody>
       <TableFoot />
     </Table>
   )
 }
 
-const mapStateToProps = (state) => ({
-  categories: state.categories
+const mapStateToProps = state => ({
+  categories: state.categories,
 })
 const mapDispatchToProps = () => ({})
 

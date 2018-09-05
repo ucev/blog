@@ -1,9 +1,9 @@
 const path = require('path')
 const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const merge = require('webpack-merge')
 const baseConfigs = require('./webpack.base.config')
 
@@ -16,12 +16,14 @@ webpackConfig[0] = merge(baseConfigs[0], {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [ '@babel/react', '@babel/env']
-          }
-        }]
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/react', '@babel/env'],
+            },
+          },
+        ],
       },
       {
         test: /\.css$|\.scss/,
@@ -29,20 +31,20 @@ webpackConfig[0] = merge(baseConfigs[0], {
           MiniCssExtractPlugin.loader,
           'css-loader?-minimize',
           'sass-loader?outputStyle=uncompressed',
-        ]
+        ],
       },
-    ]
+    ],
   },
   plugins: [
     new webpack.NamedModulesPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-      }
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].min.css'
-    })
+      filename: 'css/[name].min.css',
+    }),
   ],
   optimization: {
     minimize: true,
@@ -50,17 +52,17 @@ webpackConfig[0] = merge(baseConfigs[0], {
       new UglifyJsPlugin({
         cache: true,
         parallel: true,
-        sourceMap: true // set to true if you want JS source maps
+        sourceMap: true, // set to true if you want JS source maps
       }),
-      new OptimizeCSSAssetsPlugin({})
-    ]
-  }
-});
+      new OptimizeCSSAssetsPlugin({}),
+    ],
+  },
+})
 
 webpackConfig[1] = merge(baseConfigs[1], {
   optimization: {
     minimize: false,
-  }
+  },
 })
 
 module.exports = webpackConfig

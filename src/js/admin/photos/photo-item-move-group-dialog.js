@@ -2,29 +2,26 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import OptionDialog from '$components/dialogs/option-dialog'
-import {
-  photoMoveDialogVisible,
-  photoMoveSingle
-} from '$actions/photos'
+import { photoMoveDialogVisible, photoMoveSingle } from '$actions/photos'
 
 class PhotoItemMoveGroupDialog extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.hide = this.hide.bind(this)
     this.cancel = this.cancel.bind(this)
     this.confirm = this.confirm.bind(this)
   }
-  hide () {
+  hide() {
     this.props.hide(this.props.id)
   }
-  cancel () {
+  cancel() {
     this.hide()
   }
-  confirm (newgid) {
+  confirm(newgid) {
     this.props.move(this.props.id, newgid)
     this.hide()
   }
-  render () {
+  render() {
     return (
       <OptionDialog
         title="移动分组"
@@ -32,17 +29,18 @@ class PhotoItemMoveGroupDialog extends React.Component {
         confirm={this.confirm}
         cancel={this.cancel}
         visible={this.props.visible}
-        centerScreen={false} />
+        centerScreen={false}
+      />
     )
   }
 }
 
-const mapStateToProps = (state) => ({
-  groups: state.groups
+const mapStateToProps = state => ({
+  groups: state.groups,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  hide: (id) => {
+const mapDispatchToProps = dispatch => ({
+  hide: id => {
     dispatch(photoMoveDialogVisible(id, false))
   },
   move: (id, gid) => {

@@ -1,7 +1,7 @@
-const key = (state = (Date.now()), action) => {
+const key = (state = Date.now(), action) => {
   switch (action.type) {
-  default:
-    return state
+    default:
+      return state
   }
 }
 

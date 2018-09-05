@@ -1,4 +1,4 @@
-function defaultCid () {
+function defaultCid() {
   if (defaultCid.cid) {
     return defaultCid.cid
   }
@@ -10,8 +10,8 @@ function defaultCid () {
 
 const cid = (state = defaultCid(), action) => {
   switch (action.type) {
-  default:
-    return state
+    default:
+      return state
   }
 }
 

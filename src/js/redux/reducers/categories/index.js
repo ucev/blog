@@ -15,7 +15,7 @@ var categoriesApp = combineReducers({
   categories,
   delCategoryId,
   delVisible,
-  modifyId
+  modifyId,
 })
 
 export default categoriesApp

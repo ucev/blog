@@ -3,17 +3,17 @@ import React from 'react'
 import TableNavLinkLi from './table-nav-link-li'
 
 class TableNavLink extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.getRenderData = this.getRenderData.bind(this)
     this.handleClick = this.handleClick.bind(this)
   }
 
-  handleClick (pg) {
+  handleClick(pg) {
     this.props.pagechange(pg)
   }
 
-  getRenderData () {
+  getRenderData() {
     const page = Number(this.props.page)
     const total = Number(this.props.total)
     var start = page < 5 ? 0 : page - 5
@@ -31,40 +31,43 @@ class TableNavLink extends React.Component {
     if (page != 0) {
       lis.push(
         <TableNavLinkLi
-          key = {0}
-          page = {page - 1}
-          current = {page}
+          key={0}
+          page={page - 1}
+          current={page}
           title="上一页"
-          click = {this.handleClick} />
+          click={this.handleClick}
+        />
       )
     }
     for (let i = 1; i <= len; i++) {
       lis.push(
         <TableNavLinkLi
-          key = {i}
-          page = {start + i - 1}
-          current = {page}
-          title= {start + i}
-          click = {this.handleClick} />
+          key={i}
+          page={start + i - 1}
+          current={page}
+          title={start + i}
+          click={this.handleClick}
+        />
       )
     }
     if (page + 1 < total) {
       lis.push(
         <TableNavLinkLi
-          key = {total + 1}
-          page = {page + 1}
-          current = {page}
-          title = "下一页"
-          click = {this.handleClick} />
+          key={total + 1}
+          page={page + 1}
+          current={page}
+          title="下一页"
+          click={this.handleClick}
+        />
       )
     }
     return lis
   }
 
-  render () {
+  render() {
     const lis = this.getRenderData()
     return (
-      <ul id = "table-nav-ul" className = "table-nav-ul">
+      <ul id="table-nav-ul" className="table-nav-ul">
         {lis}
       </ul>
     )

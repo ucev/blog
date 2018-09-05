@@ -5,34 +5,33 @@ import PhotoItem from './photo-item'
 
 // const PhotoItemList = ({ photos, confirm }) => {
 class PhotoItemList extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.list.addEventListener('scroll', this.listScroll)
   }
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.list.removeEventListener('scroll', this.listScroll)
   }
-  listScroll (e) {
+  listScroll(e) {
     e.stopPropagation()
   }
-  render () {
+  render() {
     var ps = this.props.photos.map(p => (
-      <PhotoItem
-        key = {p.id}
-        imgsrc = {p.name}
-        confirm = {this.props.confirm} />
+      <PhotoItem key={p.id} imgsrc={p.name} confirm={this.props.confirm} />
     ))
     return (
       <ul
         id="choose-photo-div-photo-list-ul"
-        ref = {(list) => {this.list = list}}>
+        ref={list => {
+          this.list = list
+        }}>
         {ps}
       </ul>
     )
   }
 }
 
-const mapStateToProps = (state) => ({
-  photos: state.photos
+const mapStateToProps = state => ({
+  photos: state.photos,
 })
 
 const mapDispatchToProps = () => ({})

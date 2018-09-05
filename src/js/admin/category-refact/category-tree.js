@@ -19,9 +19,9 @@ const CategoryTree = ({ cstate, tree }) => {
   )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   cstate: state.cstate,
-  tree: state.tree
+  tree: state.tree,
 })
 
 const mapDispatchToProps = () => ({})

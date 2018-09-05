@@ -3,16 +3,14 @@ import { connect } from 'react-redux'
 
 import CategoryTree from './category-tree'
 import DetailArea from './detail-area'
-import {
-  getCategoryTree
-} from '$actions/category-refact'
+import { getCategoryTree } from '$actions/category-refact'
 
 class CategoryRefactArea extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.init()
   }
 
-  render () {
+  render() {
     return (
       <div id="refact-area">
         <CategoryTree />
@@ -24,10 +22,10 @@ class CategoryRefactArea extends React.Component {
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   init: () => {
     dispatch(getCategoryTree())
-  }
+  },
 })
 
 const _CategoryRefactArea = connect(

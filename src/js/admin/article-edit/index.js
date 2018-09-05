@@ -7,15 +7,13 @@ import '$css/article_edit.scss'
 import Editor from './editor'
 import OperationDiv from './operation-div'
 
-import {
-  init
-} from '$actions/article-edit'
+import { init } from '$actions/article-edit'
 
 class ArticleEdit extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.init(this.props.type, this.props.id)
   }
-  render () {
+  render() {
     return (
       <div>
         <Editor />
@@ -27,10 +25,10 @@ class ArticleEdit extends React.Component {
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   init: (type, id) => {
     dispatch(init(type, id))
-  }
+  },
 })
 
 const _ArticleEdit = connect(

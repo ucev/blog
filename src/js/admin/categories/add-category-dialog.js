@@ -5,34 +5,44 @@ import Dialog from '$components/dialogs/add-category-dialog'
 import {
   addCategoryConfirm,
   addCategoryCancel,
-  addCategoryValueChange
+  addCategoryValueChange,
 } from '$actions/categories'
 
 // import '$css/components/admin/add_category_dialog.scss';
 
 const ADD_TITLE = {
   add: '添加类别',
-  modify: '修改类别'
+  modify: '修改类别',
 }
 
-const AddCategoryDialog = ({ categories, name, parent, descp, type, visible, confirm, cancel, change}) => {
+const AddCategoryDialog = ({
+  categories,
+  name,
+  parent,
+  descp,
+  type,
+  visible,
+  confirm,
+  cancel,
+  change,
+}) => {
   return (
     <Dialog
-      type = {type}
-      title = {ADD_TITLE[type]}
-      name = {name || ''}
-      parent = {parent || ''}
-      descp = {descp || ''}
-      categories = {categories}
-      visible = {visible}
-      confirm = {confirm}
-      cancel = {cancel}
-      valueChange = {change}
+      type={type}
+      title={ADD_TITLE[type]}
+      name={name || ''}
+      parent={parent || ''}
+      descp={descp || ''}
+      categories={categories}
+      visible={visible}
+      confirm={confirm}
+      cancel={cancel}
+      valueChange={change}
     />
   )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   categories: state.categories,
   name: state.addData.name || '',
   parent: state.addData.parent || '',
@@ -41,16 +51,16 @@ const mapStateToProps = (state) => ({
   visible: state.addVisible,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   confirm: () => {
     dispatch(addCategoryConfirm())
   },
   cancel: () => {
     dispatch(addCategoryCancel())
   },
-  change: (data) => {
+  change: data => {
     dispatch(addCategoryValueChange(data))
-  }
+  },
 })
 
 const _AddCategoryDialog = connect(

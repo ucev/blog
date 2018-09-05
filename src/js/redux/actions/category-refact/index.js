@@ -12,12 +12,14 @@ export const articleOrderChange = (newOrder, update = false) => {
       return fetch(url, {
         credentials: 'include',
         method: 'POST',
-        body: fd
-      }).then(res => res.json())
-        .then((res) => {
+        body: fd,
+      })
+        .then(res => res.json())
+        .then(res => {
           if (res.code !== 0) return
           dispatch(getCategoryTree())
-        }).catch(err => {
+        })
+        .catch(err => {
           console.log(err)
         })
     } else {
@@ -25,15 +27,15 @@ export const articleOrderChange = (newOrder, update = false) => {
       detail.suborder = newOrder
       dispatch({
         type: CATEGORY_REFACT.ARTICLE_ORDER_CHANGE,
-        detail: detail
+        detail: detail,
       })
     }
   }
 }
 
-export const categoryExpandChange = (id) => ({
+export const categoryExpandChange = id => ({
   type: CATEGORY_REFACT.CATEGORY_EXPAND_CHANGE,
-  id: id
+  id: id,
 })
 
 export const categoryPrefaceChange = (id, isSet = true) => {
@@ -42,14 +44,16 @@ export const categoryPrefaceChange = (id, isSet = true) => {
     var data = {
       category: state.category,
       preface: id,
-      isSet: isSet
+      isSet: isSet,
     }
     var url = '/admin/datas/categories/preface?' + urlEncode(data)
-    return fetch(url, { credentials: 'include' }).then(res => res.json())
-      .then((res) => {
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(res => {
         if (res.code !== 0) return
         dispatch(getCategoryTree())
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -61,63 +65,62 @@ export const getCategoryTree = () => {
     var cid = state.cid
     var params = { id: cid }
     var url = '/admin/datas/categories/tree?' + urlEncode(params)
-    return fetch(url, { credentials: 'include' }).then(res => res.json())
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
       .then(res => {
         if (res.code !== 0) return
         var root = res.data
         var tid = state.category === -1 ? root.id : state.category
         dispatch({
           type: CATEGORY_REFACT.GET_CATEGORY_TREE,
-          tree: root
+          tree: root,
         })
-        dispatch(__getRefactDetail(
-          'dir',
-          tid,
-          function (dt1) {
+        dispatch(
+          __getRefactDetail('dir', tid, function(dt1) {
             var detail = dt1.code === 0 ? dt1.data : {}
             dispatch({
               type: CATEGORY_REFACT.GET_REFACT_DETAIL,
               detail: detail,
-              category: tid
+              category: tid,
             })
-          }
-        ))
+          })
+        )
       })
   }
 }
 
 export const getRefactDetail = (type, id, cid) => {
-  return (dispatch) => {
+  return dispatch => {
     cid = type === 'dir' ? id : cid
-    dispatch(__getRefactDetail(
-      type,
-      id,
-      function (dt) {
+    dispatch(
+      __getRefactDetail(type, id, function(dt) {
         var detail = dt.code === 0 ? dt.data : {}
-        var aid = (type === 'art' && detail.id) ? detail.id : -1
+        var aid = type === 'art' && detail.id ? detail.id : -1
         dispatch({
           type: CATEGORY_REFACT.GET_REFACT_DETAIL,
           detail: detail,
           category: cid,
-          article: aid
+          article: aid,
         })
-      }
-    ))
+      })
+    )
   }
 }
 
-function __getRefactDetail (type, id, cb) {
+function __getRefactDetail(type, id, cb) {
   /* eslint-disable no-unused-vars */
-  return (dispatch) => {
+  return dispatch => {
     var params = {
       type: type,
-      id: id
+      id: id,
     }
     var url = '/admin/datas/categories/refact/get?' + urlEncode(params)
-    return fetch(url, { credentials: 'include' }).then(res => res.json())
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
       .then(res => {
         cb(res)
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }

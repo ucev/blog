@@ -1,39 +1,43 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import {
-  photoUpload
-} from '$actions/photos'
+import { photoUpload } from '$actions/photos'
 
 class PhotoUploadDiv extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.click = this.click.bind(this)
     this.change = this.change.bind(this)
   }
-  click () {
+  click() {
     this.uploadInput.click()
   }
-  change () {
+  change() {
     var file = this.uploadInput.files[0]
     this.props.photoUpload(file)
   }
-  render () {
+  render() {
     var uploadInputStyles = {
-      display: 'none'
+      display: 'none',
     }
     return (
       <div className="photo-operation-bar" id="photo-operation-bar-first">
         <button
           id="upload-image-button"
           className="operation-button"
-          onClick={this.click} >上传图片</button>
+          onClick={this.click}>
+          上传图片
+        </button>
         <input
           id="upload-image-input"
-          type="file" accept="image/*"
+          type="file"
+          accept="image/*"
           style={uploadInputStyles}
           onChange={this.change}
-          ref={(input) => { this.uploadInput = input }} />
+          ref={input => {
+            this.uploadInput = input
+          }}
+        />
       </div>
     )
   }
@@ -41,10 +45,10 @@ class PhotoUploadDiv extends React.Component {
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch) => ({
-  photoUpload: (file) => {
+const mapDispatchToProps = dispatch => ({
+  photoUpload: file => {
     dispatch(photoUpload(file))
-  }
+  },
 })
 
 const _PhotoUploadDiv = connect(

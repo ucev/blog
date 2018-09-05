@@ -1,8 +1,8 @@
-function isMobile () {
+function isMobile() {
   return !($('body').width() > 800)
 }
-$(document).ready(function () {
-  (function () {
+$(document).ready(function() {
+  ;(function() {
     const searchInput = $('#website-search-input')
     const searchInputDiv = $('#website-search-input-div')
     const hideInputImg = $('#website-hide-input-img')
@@ -12,22 +12,24 @@ $(document).ready(function () {
     const categoryUl = $('#article-categories-ul')
     const categoryTitle = $('#article-category-title-span')
 
-    function hideSearchInput () {
+    function hideSearchInput() {
       $(searchInput).val('')
       $(searchInputDiv).width(0)
       $(hideInputImg).fadeOut('slow')
     }
-    function showSearchInput () {
+    function showSearchInput() {
       $(searchInputDiv).width(300)
       $(hideInputImg).fadeIn('slow')
     }
-    function showImg (src) {
-      $(`<div class='img-cover'><img class='img-cover-img' src=${src}><a class='img-cover-show-origin' href='${src}' target="_blank" >查看原图</a></div>`).appendTo($('body'))
-      $('.img-cover').on('click', 'img', function () {
+    function showImg(src) {
+      $(
+        `<div class='img-cover'><img class='img-cover-img' src=${src}><a class='img-cover-show-origin' href='${src}' target="_blank" >查看原图</a></div>`
+      ).appendTo($('body'))
+      $('.img-cover').on('click', 'img', function() {
         $('.img-cover').remove()
       })
     }
-    $(showInputImg).click(function () {
+    $(showInputImg).click(function() {
       if (isMobile()) {
         location.href = '/mobiles/search'
       } else {
@@ -36,21 +38,22 @@ $(document).ready(function () {
         }
       }
     })
-    $(hideInputImg).click(function () {
+    $(hideInputImg).click(function() {
       hideSearchInput()
     })
-    $(searchInput).keydown(function (e) {
+    $(searchInput).keydown(function(e) {
       if (e.which == 13) {
         var searchParam = $(searchInput).val()
-        location.href = '/articles/search?args=' + encodeURIComponent(searchParam)
+        location.href =
+          '/articles/search?args=' + encodeURIComponent(searchParam)
       }
     })
-    $('#mobile-search-input-img').click(function () {
+    $('#mobile-search-input-img').click(function() {
       var searchParam = $('#mobile-search-input').val()
       location.href = '/articles/search?args=' + encodeURIComponent(searchParam)
     })
 
-    $(categoryImg).click(function () {
+    $(categoryImg).click(function() {
       var state = $(this).data('state')
       if (state == 'hide') {
         $(this).data('state', 'show')
@@ -68,18 +71,18 @@ $(document).ready(function () {
     })
 
     // code area
-    $('pre').click(function () {
+    $('pre').click(function() {
       $(this).attr({ contenteditable: true })
     })
-    $('pre').dblclick(function () {
+    $('pre').dblclick(function() {
       $(this).attr({ contenteditable: true })
       document.execCommand('selectAll')
-    })/*
+    }) /*
     $("pre").blur(function(e) {
       $(".code-editable").removeClass("code-editable");
     })*/
     // article img resize
-    $('.markdown-display').on('click', 'img', function () {
+    $('.markdown-display').on('click', 'img', function() {
       showImg($(this).attr('src'))
     })
   })()

@@ -5,99 +5,104 @@ import MarkdownIt from 'markdown-it'
 var markdownIt = new MarkdownIt()
 
 // 取 content 中第一个段落(<p></p>)中的内容
-function getContentDescription (content) {
+function getContentDescription(content) {
   if (!content) return ''
   content = markdownIt.render(content)
   var p = content.match(/(<p[\s\S]*?>)([\s\S]*?)(<\/p>)/)
   return p ? p[2] : ''
 }
 
-export const addLabel = (label) => ({
+export const addLabel = label => ({
   type: ARTICLE_EDIT.ADD_LABEL,
-  label: label.split(',')
+  label: label.split(','),
 })
 
-export const articleChange = (article) => ({
+export const articleChange = article => ({
   type: ARTICLE_EDIT.ARTICLE_CURRENT,
-  article: article
+  article: article,
 })
 
-export const deleteLabel = (label) => ({
+export const deleteLabel = label => ({
   type: ARTICLE_EDIT.DELETE_LABEL,
-  label: label
+  label: label,
 })
 
 // ?
-export const fetchGroupPhotos = (gid) => {
+export const fetchGroupPhotos = gid => {
   return (dispatch, getState) => {
     var state = getState()
     var params = {
-      gid: gid || state.gid
+      gid: gid || state.gid,
     }
     var url = '/admin/datas/photos/get?' + urlEncode(params)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
       .then(res => {
         if (res.code !== 0) return
         var photos = res.data
         dispatch({
           type: ARTICLE_EDIT.PHOTOS,
-          photos: photos
+          photos: photos,
         })
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
 }
 
 export const fetchPhotoGroups = () => {
-  return (dispatch) => {
+  return dispatch => {
     var url = '/admin/datas/photogroup/get'
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
       .then(res => {
         if (res.code !== 0) return
         var groups = res.data
         dispatch({
           type: ARTICLE_EDIT.PHOTO_GROUPS,
-          groups: groups
+          groups: groups,
         })
       })
   }
 }
 
-export const getImageUrl = (name) => {
+export const getImageUrl = name => {
   return `/images/blog/${name}`
 }
 
 export const init = (type, id) => {
-  return (dispatch) => {
+  return dispatch => {
     dispatch({
       type: ARTICLE_EDIT.INIT,
       data: {
         type,
-        id
-      }
+        id,
+      },
     })
     var url = '/admin/datas/labels/getnames'
-    fetch(url, {credentials: 'include'}).then(res => res.json())
-      .then((res) => {
+    fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(res => {
         if (res.code !== 0) return
         dispatch({
           type: ARTICLE_EDIT.LABEL_EXIST,
-          labels: res.data
+          labels: res.data,
         })
       })
     if (type == 'modify' && id !== undefined) {
-      url = '/admin/datas/articles/get?' + urlEncode({id: id, modify: 1})
-      fetch(url, {credentials: 'include'}).then(res => res.json())
-        .then((res) => {
+      url = '/admin/datas/articles/get?' + urlEncode({ id: id, modify: 1 })
+      fetch(url, { credentials: 'include' })
+        .then(res => res.json())
+        .then(res => {
           if (res.code !== 0) return
           dispatch({
             type: ARTICLE_EDIT.ARTICLE_INITIAL,
-            article: res.data.content
+            article: res.data.content,
           })
           dispatch({
             type: ARTICLE_EDIT.ADD_LABEL,
-            label: res.data.label.split(',')
+            label: res.data.label.split(','),
           })
         })
     }
@@ -105,24 +110,24 @@ export const init = (type, id) => {
 }
 
 // 这种方法不完美
-export const labelTypingChange = (label) => ({
+export const labelTypingChange = label => ({
   type: ARTICLE_EDIT.LABEL_TYPING,
-  label: label
+  label: label,
 })
 
-export const photoGroupChange = (gid) => {
-  return (dispatch) => {
+export const photoGroupChange = gid => {
+  return dispatch => {
     dispatch({
       type: ARTICLE_EDIT.PHOTO_GROUP_CHANGE,
-      gid: gid
+      gid: gid,
     })
     dispatch(fetchGroupPhotos(gid))
   }
 }
 
-export const photoVisibleStateChange = (visible) => ({
+export const photoVisibleStateChange = visible => ({
   type: ARTICLE_EDIT.PHOTO_VISIBLE_STATE,
-  visible: visible
+  visible: visible,
 })
 
 var isPublishing = false
@@ -136,7 +141,8 @@ export const publishArticle = () => {
     var article = state.articleCurrent
     var label = state.labelCurrent
     var type = state.type
-    var url = type.type == 'add' ? '/admin/articles/add' : '/admin/articles/modify'
+    var url =
+      type.type == 'add' ? '/admin/articles/add' : '/admin/articles/modify'
     var fd = new FormData()
     fd.append('md', article)
     fd.append('descp', getContentDescription(article))
@@ -147,16 +153,18 @@ export const publishArticle = () => {
     return fetch(url, {
       credentials: 'include',
       method: 'POST',
-      body: fd
-    }).then(res => res.json())
-      .then((res) => {
+      body: fd,
+    })
+      .then(res => res.json())
+      .then(res => {
         isPublishing = false
         if (res.code === 0) {
           location.href = '/admin/articles'
         } else {
           alert(res.msg)
         }
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
         isPublishing = false
       })
@@ -164,7 +172,7 @@ export const publishArticle = () => {
 }
 
 // 上传图片 ?
-export const photoUpload = (file) => {
+export const photoUpload = file => {
   return (dispatch, getState) => {
     var state = getState()
     var fd = new FormData()
@@ -174,20 +182,22 @@ export const photoUpload = (file) => {
     return fetch(url, {
       credentials: 'include',
       method: 'POST',
-      body: fd
-    }).then(res => res.json())
+      body: fd,
+    })
+      .then(res => res.json())
       .then(res => {
         if (res.code !== 0) return
         dispatch(fetchPhotoGroups())
         dispatch(fetchGroupPhotos())
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
 }
 
 //
-export const photoUploadReturnName = (file) => {
+export const photoUploadReturnName = file => {
   var fd = new FormData()
   fd.append('file', file)
   fd.append('gid', -1)
@@ -195,20 +205,21 @@ export const photoUploadReturnName = (file) => {
   return fetch(url, {
     credentials: 'include',
     method: 'POST',
-    body: fd
-  }).then(res => res.json())
+    body: fd,
+  })
+    .then(res => res.json())
     .then(res => {
       if (res.code !== 0) {
         return Promise.reject()
       }
       return Promise.resolve(res.data)
-    }).catch((err) => {
+    })
+    .catch(err => {
       console.log(err)
     })
 }
 
-export const insertUrlVisibleStateChange = (visible) => ({
+export const insertUrlVisibleStateChange = visible => ({
   type: ARTICLE_EDIT.URL_VISIBLE_STATE,
-  visible: visible
+  visible: visible,
 })
-

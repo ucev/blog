@@ -2,24 +2,22 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import ConfirmDialog from '$components/dialogs/confirm-dialog'
-import {
-  deleteArticleCancel,
-  deleteArticleConfirm
-} from '$actions/articles'
+import { deleteArticleCancel, deleteArticleConfirm } from '$actions/articles'
 
 const ArticleDeleteDialog = ({ visible, deleteConfirm, deleteCancel }) => (
   <ConfirmDialog
-    title = "确认删除?"
-    confirm = {deleteConfirm}
-    cancel = {deleteCancel}
-    visible = {visible} />
+    title="确认删除?"
+    confirm={deleteConfirm}
+    cancel={deleteCancel}
+    visible={visible}
+  />
 )
 
-const mapStateToProps = (state) => ({
-  visible: state.delVisible
+const mapStateToProps = state => ({
+  visible: state.delVisible,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   deleteCancel: () => {
     dispatch(deleteArticleCancel())
   },

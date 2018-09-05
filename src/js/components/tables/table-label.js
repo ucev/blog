@@ -1,26 +1,29 @@
 import React from 'react'
 
 class TableLabel extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.orderState = {
       asc: {
         label: 'asc',
-        imgsrc: '/images/icons/ic_arrow_drop_down_white_24dp_2x.png'
+        imgsrc: '/images/icons/ic_arrow_drop_down_white_24dp_2x.png',
       },
       desc: {
         label: 'desc',
-        imgsrc: '/images/icons/ic_arrow_drop_up_white_24dp_2x.png'
-      }
+        imgsrc: '/images/icons/ic_arrow_drop_up_white_24dp_2x.png',
+      },
     }
     this.handleOrderImgClick = this.handleOrderImgClick.bind(this)
   }
-  handleOrderImgClick (e) {
+  handleOrderImgClick(e) {
     var orderby = e.target.getAttribute('data-label')
-    var orderDirect = this.props.orderDirect == this.orderState.asc.label ? this.orderState.desc.label : this.orderState.asc.label
+    var orderDirect =
+      this.props.orderDirect == this.orderState.asc.label
+        ? this.orderState.desc.label
+        : this.orderState.asc.label
     this.props.orderChange(orderby, orderDirect)
   }
-  render () {
+  render() {
     var targetsrc, othersrc
     if (this.props.orderDirect == this.orderState.asc.label) {
       targetsrc = this.orderState.asc.imgsrc
@@ -29,29 +32,32 @@ class TableLabel extends React.Component {
     }
     othersrc = this.orderState.asc.imgsrc
     var labels = this.props.labels.map((label, index) => {
-      var classes = `content-row-${label.name}-label ${this.props.type}-row-${label.name}-label`
+      var classes = `content-row-${label.name}-label ${this.props.type}-row-${
+        label.name
+      }-label`
       if (label.sorted === true) {
         return (
-          <th className = {classes} key = {index}>
+          <th className={classes} key={index}>
             {label.val}
             <img
-              className = "label-row-hotmark-order-img"
-              src = {this.props.orderby == label.sortname ? targetsrc : othersrc}
-              data-label = {label.sortname}
-              onClick =  {this.handleOrderImgClick} ></img>
+              className="label-row-hotmark-order-img"
+              src={this.props.orderby == label.sortname ? targetsrc : othersrc}
+              data-label={label.sortname}
+              onClick={this.handleOrderImgClick}
+            />
           </th>
         )
       } else {
         return (
-          <th className = {classes} key = {index}>{label.val}</th>
+          <th className={classes} key={index}>
+            {label.val}
+          </th>
         )
       }
     })
     return (
       <thead>
-        <tr className = "content-row-label">
-          {labels}
-        </tr>
+        <tr className="content-row-label">{labels}</tr>
       </thead>
     )
   }

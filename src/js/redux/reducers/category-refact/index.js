@@ -13,7 +13,7 @@ const categoryRefactApp = combineReducers({
   cid,
   cstate,
   detail,
-  tree
+  tree,
 })
 
 export default categoryRefactApp

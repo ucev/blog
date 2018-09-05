@@ -2,30 +2,33 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import OptionDialog from '$components/dialogs/option-dialog'
-import {
-  moveCategoryCancel,
-  moveCategoryConfirm
-} from '$actions/articles'
+import { moveCategoryCancel, moveCategoryConfirm } from '$actions/articles'
 
-const ArticleMoveDialog = ({ categories, visible, moveConfirm, moveCancel }) => (
+const ArticleMoveDialog = ({
+  categories,
+  visible,
+  moveConfirm,
+  moveCancel,
+}) => (
   <OptionDialog
-    title = "移动文章分组"
-    optionItems = {categories}
-    visible = {visible}
-    confirm = {moveConfirm}
-    cancel = {moveCancel} />
+    title="移动文章分组"
+    optionItems={categories}
+    visible={visible}
+    confirm={moveConfirm}
+    cancel={moveCancel}
+  />
 )
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   visible: state.moveVisible,
-  categories: state.categories
+  categories: state.categories,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   moveCancel: () => {
     dispatch(moveCategoryCancel())
   },
-  moveConfirm: (gid) => {
+  moveConfirm: gid => {
     dispatch(moveCategoryConfirm(gid))
   },
 })
@@ -35,4 +38,3 @@ const _ArticleMoveDialog = connect(
   mapDispatchToProps
 )(ArticleMoveDialog)
 export default _ArticleMoveDialog
-

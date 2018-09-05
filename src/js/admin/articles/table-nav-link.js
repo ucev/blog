@@ -6,21 +6,18 @@ import { handlePageChange } from '$actions/articles'
 import TableNavLink from '$components/table-foot-nav'
 
 const ArticleTableNavLink = ({ page, total, pageChange }) => (
-  <TableNavLink
-    page = {page}
-    total = {total}
-    pagechange = {pageChange} />
+  <TableNavLink page={page} total={total} pagechange={pageChange} />
 )
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   page: state.current,
-  total: state.total
+  total: state.total,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  pageChange: (page) => {
+const mapDispatchToProps = dispatch => ({
+  pageChange: page => {
     dispatch(handlePageChange(page))
-  }
+  },
 })
 
 const _ArticleTableNavLink = connect(

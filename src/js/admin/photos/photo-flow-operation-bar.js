@@ -9,7 +9,8 @@ const PhotoFlowOperationBar = () => (
   <div>
     <PhotoUploadDiv />
     <div className="photo-operation-bar" id="photo-operation-bar-second">
-      <PhotoGroupCheckallCheckbox /><label>全选</label>
+      <PhotoGroupCheckallCheckbox />
+      <label>全选</label>
       <PhotoGroupMoveDiv />
       <PhotoGroupDeleteDiv />
     </div>

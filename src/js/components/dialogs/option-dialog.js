@@ -7,53 +7,59 @@ import DialogBody from './dialog-body'
 import DialogFoot from './dialog-foot'
 
 class OptionDialog extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.handleConfirmClick = this.handleConfirmClick.bind(this)
     this.handleCancelClick = this.handleCancelClick.bind(this)
     this.handleGroupChange = this.handleGroupChange.bind(this)
     this.state = {
-      newgroup : -1
+      newgroup: -1,
     }
   }
 
-  handleConfirmClick () {
+  handleConfirmClick() {
     this.props.confirm(this.state.newgroup)
   }
 
-  handleCancelClick () {
+  handleCancelClick() {
     this.props.cancel()
   }
 
-  handleGroupChange (e) {
+  handleGroupChange(e) {
     var radio = e.target
     if (radio.checked) {
       this.setState({
-        newgroup: radio.value
+        newgroup: radio.value,
       })
     }
   }
 
-  render () {
-    var groupItems = this.props.optionItems.map((group) => {
+  render() {
+    var groupItems = this.props.optionItems.map(group => {
       if (group.id == -1) return ''
       return (
-        <li className = "option-dialog-option-li" key = {group.id}>
-          <input type = "radio" name = "photogroup" value = {group.id} onChange = {this.handleGroupChange}/>
+        <li className="option-dialog-option-li" key={group.id}>
+          <input
+            type="radio"
+            name="photogroup"
+            value={group.id}
+            onChange={this.handleGroupChange}
+          />
           <label>{group.name}</label>
         </li>
       )
     })
     return (
-      <Dialog className = "option-dialog" centerScreen = {this.props.centerScreen} visible = {this.props.visible}>
+      <Dialog
+        className="option-dialog"
+        centerScreen={this.props.centerScreen}
+        visible={this.props.visible}>
         <DialogBody>
-          <ul className = "option-dialog-option-ul">
-            {groupItems}
-          </ul>
+          <ul className="option-dialog-option-ul">{groupItems}</ul>
         </DialogBody>
         <DialogFoot>
-          <ConfirmButton title = "确定" click = {this.handleConfirmClick} />
-          <CancelButton title = "取消" click = {this.handleCancelClick} />
+          <ConfirmButton title="确定" click={this.handleConfirmClick} />
+          <CancelButton title="取消" click={this.handleCancelClick} />
         </DialogFoot>
       </Dialog>
     )

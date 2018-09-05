@@ -9,23 +9,20 @@ import TableNavLink from './table-nav-link'
 import TopFilterBar from './filter-bar-top'
 import BottomFilterBar from './filter-bar-bottom'
 
-import {
-  fetchArticles,
-  fetchCategories
-} from '$actions/articles'
+import { fetchArticles, fetchCategories } from '$actions/articles'
 
 // 😢
 class ArticleLayout extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
   }
-  componentDidMount () {
+  componentDidMount() {
     this.props.fetchArticles()
     this.props.fetchCategories()
   }
-  render () {
+  render() {
     var categories = {}
-    this.props.categories.forEach((category) => {
+    this.props.categories.forEach(category => {
       categories[category.id] = category.name
     })
     return (
@@ -41,17 +38,17 @@ class ArticleLayout extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   categories: state.categories,
-  checkState: state.checkState
+  checkState: state.checkState,
 })
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   fetchArticles: () => {
     dispatch(fetchArticles())
   },
   fetchCategories: () => {
     dispatch(fetchCategories())
-  }
+  },
 })
 
 const _ArticleLayout = connect(

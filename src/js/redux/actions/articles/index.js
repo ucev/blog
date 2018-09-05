@@ -5,25 +5,27 @@ export const addArticle = () => {
   location.href = '/admin/articles/add'
 }
 
-export const modifyArticle = (id) => {
+export const modifyArticle = id => {
   location.href = `/admin/articles/modify?id=${id}`
 }
 
 export const articleStateChange = (id, type, isgroup = false) => {
-  return (dispatch) => {
+  return dispatch => {
     var data = {
       id: id,
-      state: type
+      state: type,
     }
     var url = '/admin/datas/articles/state?' + urlEncode(data)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
       .then(() => {
         if (isgroup) {
           return dispatch(fetchArticles())
         } else {
           return dispatch(fetchSingleArticle(id))
         }
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -38,9 +40,10 @@ export const articleGroupChange = (id, gid) => {
     return fetch(url, {
       credentials: 'include',
       method: 'POST',
-      body: fd
-    }).then(res => res.json())
-      .then((res) => {
+      body: fd,
+    })
+      .then(res => res.json())
+      .then(res => {
         if (res.code != 0) return
         var state = getState()
         if (state.isgroup) {
@@ -49,7 +52,7 @@ export const articleGroupChange = (id, gid) => {
               type: ARTICLES.MOVE_CATEGORY_STATE,
               moveVisible: false,
               moveArticleId: -1,
-              isgroup: false
+              isgroup: false,
             })
           })
         } else {
@@ -57,11 +60,12 @@ export const articleGroupChange = (id, gid) => {
             dispatch({
               type: ARTICLES.MOVE_CATEGORY_STATE,
               moveVisible: false,
-              moveArticleId: -1
+              moveArticleId: -1,
             })
           })
         }
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -72,10 +76,10 @@ export const checkStateChange = (id, checked) => ({
   id: id,
   checked: checked,
   //
-  groupOpe: -1
+  groupOpe: -1,
 })
 
-export const allChecked = (checked) => {
+export const allChecked = checked => {
   return (dispatch, getState) => {
     var state = getState()
     var articles = state.articles
@@ -84,27 +88,29 @@ export const allChecked = (checked) => {
       type: ARTICLES.CHECK_STATE_CHANGE,
       id: ids,
       checked: checked,
-      groupOpe: -1
+      groupOpe: -1,
     })
   }
 }
 
-export const fetchSingleArticle = (id) => {
-  return (dispatch) => {
+export const fetchSingleArticle = id => {
+  return dispatch => {
     var data = {
-      id: id
+      id: id,
     }
     var url = '/admin/datas/articles/get?' + urlEncode(data)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
-      .then((res) => {
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(res => {
         if (res.code != 0) return
         var s = {
           type: ARTICLES.FETCH_SINGLE_ARTICLE,
           id: id,
-          article: res.data
+          article: res.data,
         }
         dispatch(s)
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -118,8 +124,9 @@ export const fetchArticles = dispatchDebounce((start, options) => {
     data.start = start
     var etag = Date.now()
     var url = '/admin/datas/articles/get?' + urlEncode(data)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
-      .then((res) => {
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(res => {
         if (res.code !== 0) return
         state = getState()
         if (state.etag > etag) return
@@ -131,33 +138,36 @@ export const fetchArticles = dispatchDebounce((start, options) => {
           total: res.total,
           checkState: {},
           start: start,
-          etag: etag
+          etag: etag,
         }
         dispatch(s)
-      }).catch((err) => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
 }, 500)
 
 export const fetchCategories = () => {
-  return (dispatch) => {
+  return dispatch => {
     var url = '/admin/datas/categories/get'
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
-      .then((res) => {
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(res => {
         if (res.code != 0) return
         dispatch({
           type: ARTICLES.FETCH_CATEGORIES,
-          categories: res.data
+          categories: res.data,
         })
-      }).catch((err) => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
 }
 
-export const handlePageChange = (start) => {
-  return (dispatch) => {
+export const handlePageChange = start => {
+  return dispatch => {
     return dispatch(fetchArticles(start))
   }
 }
@@ -168,7 +178,7 @@ export const handleFilterChange = (label, value) => {
     dispatch({
       type: ARTICLES.FILTER_OPTION_CHANGE,
       label: label,
-      value: value
+      value: value,
     })
     var s = state.filters
     s[label] = value
@@ -176,11 +186,11 @@ export const handleFilterChange = (label, value) => {
   }
 }
 
-export const handleDeleteArticle = (id) => ({
+export const handleDeleteArticle = id => ({
   type: ARTICLES.DELETE_ARTICLE_STATE,
   delVisible: true,
   delArticleId: id,
-  isgroup: false
+  isgroup: false,
 })
 
 export const deleteArticleConfirm = () => {
@@ -192,17 +202,19 @@ export const deleteArticleConfirm = () => {
     return fetch(url, {
       credentials: 'include',
       method: 'POST',
-      body: fd
-    }).then(res => res.json())
-      .then((res) => {
+      body: fd,
+    })
+      .then(res => res.json())
+      .then(res => {
         if (res.code != 0) return
         dispatch({
           type: ARTICLES.DELETE_ARTICLE_STATE,
           delVisible: false,
-          delArticleId: -1
+          delArticleId: -1,
         })
         dispatch(fetchArticles())
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -210,7 +222,7 @@ export const deleteArticleConfirm = () => {
 
 export const deleteArticleCancel = () => ({
   type: ARTICLES.DELETE_ARTICLE_STATE,
-  delVisible: false
+  delVisible: false,
 })
 
 export const filterOptionChange = (title, value) => {
@@ -230,31 +242,31 @@ export const groupOpeChange = (title, value) => {
     }
     ids = ids.join(',')
     switch (value) {
-    case 'on':
-    case 'off':
-      return dispatch(articleStateChange(ids, value, true))
-    case 'move':
-      return dispatch({
-        type: ARTICLES.MOVE_CATEGORY_STATE,
-        moveArticleId: ids,
-        isgroup: true,
-        moveVisible: true
-      })
-    case 'del':
-      return dispatch({
-        type: ARTICLES.DELETE_ARTICLE_STATE,
-        delArticleId: ids,
-        isgroup: true,
-        delVisible: true
-      })
-    default:
-      break
+      case 'on':
+      case 'off':
+        return dispatch(articleStateChange(ids, value, true))
+      case 'move':
+        return dispatch({
+          type: ARTICLES.MOVE_CATEGORY_STATE,
+          moveArticleId: ids,
+          isgroup: true,
+          moveVisible: true,
+        })
+      case 'del':
+        return dispatch({
+          type: ARTICLES.DELETE_ARTICLE_STATE,
+          delArticleId: ids,
+          isgroup: true,
+          delVisible: true,
+        })
+      default:
+        break
     }
   }
 }
 
 // category
-export const moveCategoryConfirm = (gid) => {
+export const moveCategoryConfirm = gid => {
   return (dispatch, getState) => {
     var state = getState()
     var moveArticleId = state.moveArticleId
@@ -265,12 +277,12 @@ export const moveCategoryConfirm = (gid) => {
 
 export const moveCategoryCancel = () => ({
   type: ARTICLES.MOVE_CATEGORY_STATE,
-  moveVisible: false
+  moveVisible: false,
 })
 
-export const handleMoveCategory = (id) => ({
+export const handleMoveCategory = id => ({
   type: ARTICLES.MOVE_CATEGORY_STATE,
   moveArticleId: id,
   isgroup: false,
-  moveVisible: true
+  moveVisible: true,
 })

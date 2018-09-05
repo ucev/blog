@@ -5,13 +5,13 @@ import CategoryFilter from './category-filter'
 import LabelFilter from './label-filter'
 import StateFilter from './state-filter'
 
-import {
-  addArticle
-} from '$actions/articles'
+import { addArticle } from '$actions/articles'
 
 const FilterBar = ({ add }) => (
-  <div className = "table-filter-bar table-filter-bar-top">
-    <button className = "operation-button" onClick = {add}>添加文章</button>
+  <div className="table-filter-bar table-filter-bar-top">
+    <button className="operation-button" onClick={add}>
+      添加文章
+    </button>
     <LabelFilter />
     <CategoryFilter />
     <StateFilter />
@@ -20,10 +20,10 @@ const FilterBar = ({ add }) => (
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   add: () => {
     dispatch(addArticle())
-  }
+  },
 })
 
 const _FilterBar = connect(

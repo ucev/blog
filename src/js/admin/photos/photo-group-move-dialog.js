@@ -2,34 +2,32 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import OptionDialog from '$components/dialogs/option-dialog'
-import {
-  pfobMoveDialogVisible,
-  photoMoveByGroup,
-} from '$actions/photos'
+import { pfobMoveDialogVisible, photoMoveByGroup } from '$actions/photos'
 
-const PhotoGroupMoveDialog = ({ groups, visible, confirm, cancel}) => (
+const PhotoGroupMoveDialog = ({ groups, visible, confirm, cancel }) => (
   <OptionDialog
     title="移动分组"
     optionItems={groups}
     centerScreen={false}
     visible={visible}
     confirm={confirm}
-    cancel={cancel} />
+    cancel={cancel}
+  />
 )
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   groups: state.groups,
-  visible: state.pfobMoveVisible
+  visible: state.pfobMoveVisible,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   cancel: () => {
     dispatch(pfobMoveDialogVisible(false))
   },
-  confirm: (newgid) => {
+  confirm: newgid => {
     dispatch(photoMoveByGroup(newgid))
     dispatch(pfobMoveDialogVisible(false))
-  }
+  },
 })
 
 const _PhotoGroupMoveDialog = connect(

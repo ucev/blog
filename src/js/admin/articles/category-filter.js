@@ -4,14 +4,11 @@ import { connect } from 'react-redux'
 import FilterInput from './filter-input'
 
 const CategoryFilter = ({ value }) => (
-  <FilterInput
-    title = "分类"
-    label = "category"
-    value = {value} />
+  <FilterInput title="分类" label="category" value={value} />
 )
 
-const mapStateToProps = (state) => ({
-  value: state.filters.category || ''
+const mapStateToProps = state => ({
+  value: state.filters.category || '',
 })
 
 const mapDispatchToProps = () => ({})

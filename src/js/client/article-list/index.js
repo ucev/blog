@@ -4,20 +4,20 @@ import ArticleList from './article-list'
 import QueryDataDiv from './query-data-div'
 
 class ArticleDiv extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       total: 0,
       current: 0,
-      articles: []
+      articles: [],
     }
     this.getArticleData = this.getArticleData.bind(this)
     this.loadMore = this.loadMore.bind(this)
   }
-  loadMore () {
+  loadMore() {
     this.getArticleData(false)
   }
-  componentDidMount () {
+  componentDidMount() {
     this.getArticleData()
   }
   /**
@@ -25,15 +25,18 @@ class ArticleDiv extends React.Component {
    * @param {*} replace
    * replace -- where replace `articles` state
    */
-  getArticleData (replace = false) {
+  getArticleData(replace = false) {
     var that = this
     var url
-    if (this.props.isSearch  === true) {
-      url = `/articles/data/articles/search?start=${that.state.current}&args=${that.props.query}`
+    if (this.props.isSearch === true) {
+      url = `/articles/data/articles/search?start=${that.state.current}&args=${
+        that.props.query
+      }`
     } else {
       url = '/articles/data/articles/get?start=' + that.state.current
     }
-    fetch(url, {credentials: 'include'}).then(res => res.json())
+    fetch(url, { credentials: 'include' })
+      .then(res => res.json())
       .then(res => {
         if (res.code !== 0) return
         var data = res.data
@@ -46,16 +49,25 @@ class ArticleDiv extends React.Component {
         that.setState({
           total: Number(data.total),
           current: Number(data.current) + 1,
-          articles: articles
+          articles: articles,
         })
       })
   }
-  render () {
+  render() {
     var addMoreVisible = this.state.total > this.state.current
     return (
       <div>
-        <ArticleList key = {1} articles = {this.state.articles} isSearch = {this.props.isSearch} query = {this.props.query} />
-        <QueryDataDiv key = "more" visible = {addMoreVisible} more = {this.loadMore} />
+        <ArticleList
+          key={1}
+          articles={this.state.articles}
+          isSearch={this.props.isSearch}
+          query={this.props.query}
+        />
+        <QueryDataDiv
+          key="more"
+          visible={addMoreVisible}
+          more={this.loadMore}
+        />
       </div>
     )
   }

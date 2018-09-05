@@ -1,23 +1,20 @@
 import React from 'react'
 
-import {
-  getImageUrl,
-
-} from '$actions/article-edit'
+import { getImageUrl } from '$actions/article-edit'
 
 class PhotoItem extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.choose = this.choose.bind(this)
   }
-  choose () {
+  choose() {
     this.props.confirm(getImageUrl(this.props.imgsrc))
   }
-  imgOnLoad (e) {
+  imgOnLoad(e) {
     var img = e
     var src = e.src
     var newimg = new Image()
-    newimg.onload = function () {
+    newimg.onload = function() {
       var w = newimg.width
       var h = newimg.height
       var small = w < h ? w : h
@@ -29,7 +26,7 @@ class PhotoItem extends React.Component {
     }
     newimg.src = src
   }
-  render () {
+  render() {
     var imgUrl = getImageUrl(this.props.imgsrc)
     return (
       <li className="choose-photo-div-photo-item-li" onClick={this.choose}>
@@ -39,7 +36,8 @@ class PhotoItem extends React.Component {
           height="150"
           src={imgUrl}
           alt="图片"
-          onLoad={this.imgOnLoad} />
+          onLoad={this.imgOnLoad}
+        />
       </li>
     )
   }

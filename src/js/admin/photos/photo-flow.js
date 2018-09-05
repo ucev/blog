@@ -5,7 +5,7 @@ import PhotoFlowOperationBar from './photo-flow-operation-bar'
 import PhotoItem from './photo-item'
 
 const PhotoFlow = ({ photos }) => {
-  const items = photos.map(photo =>
+  const items = photos.map(photo => (
     <PhotoItem
       key={photo.id}
       photo={photo}
@@ -17,19 +17,17 @@ const PhotoFlow = ({ photos }) => {
       moveVisible={photo.moveVisible}
       delVisible={photo.delVisible}
     />
-  )
+  ))
   return (
     <div id="photo-flow-div">
       <PhotoFlowOperationBar />
-      <ul id="photo-flow-items-ul">
-        {items}
-      </ul>
+      <ul id="photo-flow-items-ul">{items}</ul>
     </div>
   )
 }
 
-const mapStateToProps = (state) => ({
-  photos: state.photos
+const mapStateToProps = state => ({
+  photos: state.photos,
 })
 
 const mapDispatchToProps = () => ({})

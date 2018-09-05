@@ -12,7 +12,7 @@ import {
 } from '$actions/photos'
 
 class PhotoGroupItem extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     // Dialog Visibility
     this.showInputDialog = this.showInputDialog.bind(this)
@@ -29,44 +29,44 @@ class PhotoGroupItem extends React.Component {
     this.handleDeleteGroup = this.handleDeleteGroup.bind(this)
     this.handleRenameGroup = this.handleRenameGroup.bind(this)
   }
-  showInputDialog () {
+  showInputDialog() {
     this.props.inputState(this.props.id, true)
   }
-  hideInputDialog () {
+  hideInputDialog() {
     this.props.inputState(this.props.id, false)
   }
-  showDelDialog () {
+  showDelDialog() {
     this.props.deleteState(this.props.id, true)
   }
-  hideDelDialog () {
+  hideDelDialog() {
     this.props.deleteState(this.props.id, false)
   }
-  handleInputConfirm (name) {
+  handleInputConfirm(name) {
     this.props.groupItemRename(this.props.id, name)
     this.hideInputDialog()
   }
-  handleInputCancel () {
+  handleInputCancel() {
     this.hideInputDialog()
   }
-  handleDelConfirm () {
+  handleDelConfirm() {
     this.props.groupItemDelete(this.props.id)
     this.hideDelDialog()
   }
-  handleDelCancel () {
+  handleDelCancel() {
     this.hideDelDialog()
   }
-  handleGroupItemClick (e) {
+  handleGroupItemClick(e) {
     this.props.groupItemClick(this.props.id)
     e.stopPropagation()
   }
-  handleDeleteGroup () {
+  handleDeleteGroup() {
     this.showDelDialog()
   }
-  handleRenameGroup (e) {
+  handleRenameGroup(e) {
     this.showInputDialog()
     e.stopPropagation()
   }
-  render () {
+  render() {
     var opeImgStyles = {}
     if (!this.props.opeImgVisible) {
       opeImgStyles.display = 'none'
@@ -77,17 +77,48 @@ class PhotoGroupItem extends React.Component {
     if (gid < 1) {
       return (
         <li className={classes}>
-          <span className="photo-group-item-li-title-span" data-gid={this.props.id} onClick={this.handleGroupItemClick}>{this.props.name}({this.props.count})</span>
+          <span
+            className="photo-group-item-li-title-span"
+            data-gid={this.props.id}
+            onClick={this.handleGroupItemClick}>
+            {this.props.name}({this.props.count})
+          </span>
         </li>
       )
     }
     return (
       <li className={classes}>
-        <span className="photo-group-item-li-title-span" onClick={this.handleGroupItemClick}>{this.props.name}({this.props.count})</span>
-        <img className="photo-group-item-li-ope-img" src="/images/icons/ic_mode_edit_black_24dp_2x.png" style={opeImgStyles} onClick={this.handleRenameGroup} />
-        <img className="photo-group-item-li-ope-img" src="/images/icons/ic_close_black_24dp_2x.png" style={opeImgStyles} onClick={this.handleDeleteGroup} />
-        <InputDialog title="编辑名称" centerScreen={false} confirm={this.handleInputConfirm} cancel={this.handleInputCancel} visible={this.props.inputVisible} />
-        <ConfirmDialog title="确认删除?" centerScreen={false} confirm={this.handleDelConfirm} cancel={this.handleDelCancel} visible={this.props.delVisible} />
+        <span
+          className="photo-group-item-li-title-span"
+          onClick={this.handleGroupItemClick}>
+          {this.props.name}({this.props.count})
+        </span>
+        <img
+          className="photo-group-item-li-ope-img"
+          src="/images/icons/ic_mode_edit_black_24dp_2x.png"
+          style={opeImgStyles}
+          onClick={this.handleRenameGroup}
+        />
+        <img
+          className="photo-group-item-li-ope-img"
+          src="/images/icons/ic_close_black_24dp_2x.png"
+          style={opeImgStyles}
+          onClick={this.handleDeleteGroup}
+        />
+        <InputDialog
+          title="编辑名称"
+          centerScreen={false}
+          confirm={this.handleInputConfirm}
+          cancel={this.handleInputCancel}
+          visible={this.props.inputVisible}
+        />
+        <ConfirmDialog
+          title="确认删除?"
+          centerScreen={false}
+          confirm={this.handleDelConfirm}
+          cancel={this.handleDelCancel}
+          visible={this.props.delVisible}
+        />
       </li>
     )
   }
@@ -95,11 +126,11 @@ class PhotoGroupItem extends React.Component {
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch) => ({
-  groupItemClick: (gid) => {
+const mapDispatchToProps = dispatch => ({
+  groupItemClick: gid => {
     dispatch(groupItemClick(gid))
   },
-  groupItemDelete: (gid) => {
+  groupItemDelete: gid => {
     dispatch(groupItemDelete(gid))
   },
   groupItemRename: (gid, name) => {
@@ -110,7 +141,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
   deleteState: (gid, visible) => {
     dispatch(groupItemDeleteState(gid, visible))
-  }
+  },
 })
 
 const _PhotoGroupItem = connect(

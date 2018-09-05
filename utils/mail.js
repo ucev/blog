@@ -1,32 +1,32 @@
-const nodemailer = require('nodemailer');
-const util = require('util');
-const mailconfig = require('../config/base.config').mail_config;
+const nodemailer = require('nodemailer')
+const util = require('util')
+const mailconfig = require('../config/base.config').mail_config
 
-var lastErrorTime = -1;
-var errorCnt = 0;
+var lastErrorTime = -1
+var errorCnt = 0
 
 function error_report(url, msg) {
-  var now = Date.now();
+  var now = Date.now()
   if (now - lastErrorTime < 60 * 10 * 1000) {
-    return;
+    return
   }
-  var preTime = lastErrorTime;
-  lastErrorTime = now;
-  var transport = nodemailer.createTransport(mailconfig.connect);
+  var preTime = lastErrorTime
+  lastErrorTime = now
+  var transport = nodemailer.createTransport(mailconfig.connect)
   var mailOptions = {
     from: mailconfig.admin,
     to: mailconfig.admin,
     subject: 'Error Report',
     text: 'ERROR REPORT',
-    html: util.format(error_tpl, url, msg)
-  };
+    html: util.format(error_tpl, url, msg),
+  }
   transport.sendMail(mailOptions, (err, info) => {
     if (err) {
       //
-      lastErrorTime = preTime;
-      console.log("error");
+      lastErrorTime = preTime
+      console.log('error')
     } else {
-      console.log(`mail sent: ${info.response}`);
+      console.log(`mail sent: ${info.response}`)
     }
   })
 }
@@ -55,7 +55,7 @@ const error_tpl = `
     </table>
   </body>
 </html>
-`;
+`
 
-exports.error_report = error_report;
-exports.error_tpl = error_tpl;
+exports.error_report = error_report
+exports.error_tpl = error_tpl

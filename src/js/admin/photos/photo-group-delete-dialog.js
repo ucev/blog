@@ -2,10 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import ConfirmDialog from '$components/dialogs/confirm-dialog'
-import {
-  pfobDeleteDialogVisible,
-  photoDeleteByGroup
-} from '$actions/photos'
+import { pfobDeleteDialogVisible, photoDeleteByGroup } from '$actions/photos'
 
 const PhotoGroupDeleteDialog = ({ visible, confirm, cancel }) => (
   <ConfirmDialog
@@ -13,21 +10,22 @@ const PhotoGroupDeleteDialog = ({ visible, confirm, cancel }) => (
     centerScreen={false}
     visible={visible}
     confirm={confirm}
-    cancel={cancel} />
+    cancel={cancel}
+  />
 )
 
-const mapStateToProps = (state) => ({
-  visible: state.pfobDelVisible
+const mapStateToProps = state => ({
+  visible: state.pfobDelVisible,
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   confirm: () => {
     dispatch(photoDeleteByGroup())
     dispatch(pfobDeleteDialogVisible(false))
   },
   cancel: () => {
     dispatch(pfobDeleteDialogVisible(false))
-  }
+  },
 })
 
 const _PhotoGroupDeleteDialog = connect(

@@ -1,39 +1,39 @@
 const router = new require('koa-router')()
-const path = require('path');
+const path = require('path')
 const busboy = require('koa-busboy')
 
 const uploader = busboy()
 
-const Articles = require('../class/article.db');
-const __articles = new Articles();
-const Categories = require('../class/category.db');
-const __categories = new Categories();
-const Labels = require('../class/label.db');
-const __labels = new Labels();
-const Photos = require('../class/photo.db');
-const __photos = new Photos();
-const PhotoGroups = require('../class/photogroup.db');
-const __photogroups = new PhotoGroups();
+const Articles = require('../class/article.db')
+const __articles = new Articles()
+const Categories = require('../class/category.db')
+const __categories = new Categories()
+const Labels = require('../class/label.db')
+const __labels = new Labels()
+const Photos = require('../class/photo.db')
+const __photos = new Photos()
+const PhotoGroups = require('../class/photogroup.db')
+const __photogroups = new PhotoGroups()
 
-const __log = require('../utils/log');
+const __log = require('../utils/log')
 
 function strToNum(str) {
-  var a = Number(str);
-  return isNaN(a) ? 0 : a;
+  var a = Number(str)
+  return isNaN(a) ? 0 : a
 }
 
 function emptyString(str) {
-  var str = (str === null || str === undefined) ? '' : str.trim();
-  return (str === '' || str === '-1') ? '' : str;
+  var str = str === null || str === undefined ? '' : str.trim()
+  return str === '' || str === '-1' ? '' : str
 }
 
 async function getCategoryRefactItemDetail(ctx, id, type) {
   try {
     var art = await __articles.getsingle({
-            id: id,
-            queryfields: ['id', 'title', 'descp', 'suborder']
-          })
-    art.type = type;
+      id: id,
+      queryfields: ['id', 'title', 'descp', 'suborder'],
+    })
+    art.type = type
     ctx.body = { code: 0, msg: '请求成功', data: art }
   } catch (err) {
     ctx.body = { code: 1, msg: '请求失败' }
@@ -55,19 +55,21 @@ router.post('/articles/delete', uploader, async (ctx, next) => {
 router.get('/articles/get', async (ctx, next) => {
   if (ctx.query.id != undefined) {
     try {
-      const id = ctx.query.id;
-      const queryfields = ctx.query.modify ? ['content', 'label'] : ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
+      const id = ctx.query.id
+      const queryfields = ctx.query.modify
+        ? ['content', 'label']
+        : ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
       var res = await __articles.getsingle({
-                  id: id,
-                  queryfields: queryfields
-                })
-      ctx.body = { code: 0, msg: '请求成功', data: res}
+        id: id,
+        queryfields: queryfields,
+      })
+      ctx.body = { code: 0, msg: '请求成功', data: res }
     } catch (err) {
       ctx.body = { code: 1, msg: '请求失败' }
     }
   } else {
-    const start = strToNum(ctx.query.start);
-    const state = emptyString(ctx.query.state);
+    const start = strToNum(ctx.query.start)
+    const state = emptyString(ctx.query.state)
     var category = emptyString(ctx.query.category)
     if (category) {
       if (parseInt(category).toString() !== category) {
@@ -80,25 +82,33 @@ router.get('/articles/get', async (ctx, next) => {
         category = strToNum(category)
       }
     }
-    const label = emptyString(ctx.query.label);
-    var where = {};
+    const label = emptyString(ctx.query.label)
+    var where = {}
     if (state) {
-      where.state = state;
+      where.state = state
     }
     if (category) {
-      where.category = category;
+      where.category = category
     }
     if (label) {
-      where.label = label;
+      where.label = label
     }
     try {
       var res = await __articles.getByCond({
-                  where: where,
-                  start: start,
-                  client: false,
-                  queryfields: ['id', 'title', 'category', 'label', 'state', 'top', 'pageview']
-                })
-      ctx.body = { code: 0, msg: '获取成功', data: res}
+        where: where,
+        start: start,
+        client: false,
+        queryfields: [
+          'id',
+          'title',
+          'category',
+          'label',
+          'state',
+          'top',
+          'pageview',
+        ],
+      })
+      ctx.body = { code: 0, msg: '获取成功', data: res }
     } catch (err) {
       ctx.body = { code: 1, msg: '获取失败' }
     }
@@ -107,10 +117,10 @@ router.get('/articles/get', async (ctx, next) => {
 
 router.post('/articles/move', uploader, async (ctx, next) => {
   var request = ctx.request.body
-  var ids = request.id;
-  __log.debug(ids);
-  ids = ids.split(',');
-  var gid = request.gid;
+  var ids = request.id
+  __log.debug(ids)
+  ids = ids.split(',')
+  var gid = request.gid
   try {
     await __articles.move(ids, gid)
     ctx.body = { code: 0, msg: '更新成功' }
@@ -121,13 +131,13 @@ router.post('/articles/move', uploader, async (ctx, next) => {
 
 router.post('/articles/order', uploader, async (ctx, next) => {
   var request = ctx.request.body
-  var id = request.id;
-  var ord = request.order;
+  var id = request.id
+  var ord = request.order
   try {
     await __articles.updateOrder({
-            id: id,
-            ord: ord
-          })
+      id: id,
+      ord: ord,
+    })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
     ctx.body = { code: 1, msg: '更新失败' }
@@ -135,9 +145,9 @@ router.post('/articles/order', uploader, async (ctx, next) => {
 })
 
 router.get('/articles/state', async (ctx, next) => {
-  var ids = ctx.query.id;
-  ids = ids.split(',');
-  const state = ctx.query.state;
+  var ids = ctx.query.id
+  ids = ids.split(',')
+  const state = ctx.query.state
   try {
     var res = await __articles.updateState(ids, state)
     ctx.body = { code: 0, msg: '更新成功', data: r }
@@ -155,11 +165,11 @@ router.post('/categories/add', uploader, async (ctx, next) => {
   var addtime = Math.floor(new Date().getTime() / 1000)
   try {
     await __categories.add({
-            name: name,
-            parent: parent,
-            descp: descp,
-            addtime: addtime
-          })
+      name: name,
+      parent: parent,
+      descp: descp,
+      addtime: addtime,
+    })
     ctx.body = { code: 0, msg: '添加成功' }
   } catch (err) {
     ctx.body = { code: 1, msg: '添加失败' }
@@ -170,7 +180,7 @@ router.post('/categories/delete', uploader, async (ctx, next) => {
   var request = ctx.request.body
   var id = request.id
   if (id < 1) {
-    return ctx.body = { code: 1, msg: '更新失败' }
+    return (ctx.body = { code: 1, msg: '更新失败' })
   }
   try {
     await __categories.delete(id)
@@ -186,23 +196,23 @@ router.post('/categories/modify', uploader, async (ctx, next) => {
   var data = {}
   var name = request.name
   if (request.name) {
-    data.name = request.name;
+    data.name = request.name
   }
   // 错误检查
   if (request.parent) {
-    data.parent = request.parent;
+    data.parent = request.parent
   }
   if (request.descp) {
-    data.descp = request.descp;
+    data.descp = request.descp
   }
   if (request.order) {
-    data.mainorder = request.order;
+    data.mainorder = request.order
   }
   try {
     await __categories.update({
-            id: id,
-            data: data
-          })
+      id: id,
+      data: data,
+    })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
     ctx.body = { code: 1, msg: '更新失败' }
@@ -212,7 +222,7 @@ router.post('/categories/modify', uploader, async (ctx, next) => {
 router.get('/categories/get', async (ctx, next) => {
   try {
     var res = await __categories.get()
-    ctx.body = { code: 0, msg: '获取成功', data: res}
+    ctx.body = { code: 0, msg: '获取成功', data: res }
   } catch (err) {
     ctx.body = { code: 0, msg: '获取成功', data: [] }
   }
@@ -225,10 +235,10 @@ router.get('/categories/preface', async (ctx, next) => {
   __log.debug(ctx.query)
   try {
     await __categories.setPreface({
-            id: category,
-            preface: preface,
-            isSet: isSet
-          })
+      id: category,
+      preface: preface,
+      isSet: isSet,
+    })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
     ctx.body = { code: 1, msg: '更新失败' }
@@ -236,24 +246,24 @@ router.get('/categories/preface', async (ctx, next) => {
 })
 
 router.get('/categories/refact/get', async (ctx, next) => {
-  var type = ctx.query.type;
-  var id = ctx.query.id;
+  var type = ctx.query.type
+  var id = ctx.query.id
   if (type == 'dir') {
     try {
       var cat = await __categories.getById({
-              id: id
-            })
-      await getCategoryRefactItemDetail(ctx, cat.preface, type);
+        id: id,
+      })
+      await getCategoryRefactItemDetail(ctx, cat.preface, type)
     } catch (err) {
       ctx.body = { code: 1, msg: '获取失败' }
     }
   } else {
-    await getCategoryRefactItemDetail(ctx, id, type);
+    await getCategoryRefactItemDetail(ctx, id, type)
   }
 })
 
 router.get('/categories/tree', async (ctx, next) => {
-  var id = ctx.query.id;
+  var id = ctx.query.id
   try {
     var tree = await __categories.getTree(id)
     ctx.body = { code: 0, msg: '获取成功', data: tree }
@@ -264,14 +274,14 @@ router.get('/categories/tree', async (ctx, next) => {
 
 router.get('/labels/get', async (ctx, next) => {
   var queryData = {}
-  var start = ctx.query.start ? ctx.query.start : 0;
-  queryData.start = start;
+  var start = ctx.query.start ? ctx.query.start : 0
+  queryData.start = start
   if (ctx.query.orderby) {
-    var lb = ctx.query.orderby;
-    var asc = ctx.query.asc ? ctx.query.asc : 'asc';
+    var lb = ctx.query.orderby
+    var asc = ctx.query.asc ? ctx.query.asc : 'asc'
     queryData['orderby'] = {
       lb: lb,
-      asc: asc
+      asc: asc,
     }
   }
   try {
@@ -293,18 +303,18 @@ router.get('/labels/getnames', async (ctx, next) => {
 })
 
 router.get('/photos/get', async (ctx, next) => {
-  var where = {};
+  var where = {}
   if (ctx.query.id != undefined) {
-    where.id = strToNum(ctx.query.id);
+    where.id = strToNum(ctx.query.id)
   } else {
     if (ctx.query.gid != -1) {
-      where.photogroup = strToNum(ctx.query.gid);
+      where.photogroup = strToNum(ctx.query.gid)
     }
   }
   try {
     var res = await __photos.get({
-            where: where
-          })
+      where: where,
+    })
     ctx.body = { code: 0, msg: '请求成功', data: res }
   } catch (err) {
     ctx.body = { code: 1, msg: '请求失败' }
@@ -315,16 +325,16 @@ router.post('/photos/add', uploader, async (ctx, next) => {
   var request = ctx.request.body
   const gid = request.gid < 1 ? 1 : request.gid
   const tempfile = ctx.request.files[0].path
-  var dt = new Date();
-  const addtime = Math.floor((dt.getTime() / 1000));
-  const newname = dt.getFullYear() + dt.getTime() + path.extname(tempfile);
+  var dt = new Date()
+  const addtime = Math.floor(dt.getTime() / 1000)
+  const newname = dt.getFullYear() + dt.getTime() + path.extname(tempfile)
   try {
     await __photos.add({
-            photogroup: gid,
-            addtime: addtime,
-            name: newname,
-            file: tempfile
-          })
+      photogroup: gid,
+      addtime: addtime,
+      name: newname,
+      file: tempfile,
+    })
     ctx.body = { code: 0, msg: '添加成功', data: `/images/blog/${newname}` }
   } catch (err) {
     console.log(err)
@@ -335,7 +345,7 @@ router.post('/photos/add', uploader, async (ctx, next) => {
 router.get('/photos/delete', async (ctx, next) => {
   var photos = ctx.query.photos
   photos = photos.split(',')
-  photos = photos.map((i) => (strToNum(i)))
+  photos = photos.map(i => strToNum(i))
   try {
     await __photos.delete(photos)
     ctx.body = { code: 0, msg: '操作成功' }
@@ -348,14 +358,14 @@ router.get('/photos/delete', async (ctx, next) => {
 router.get('/photos/move', async (ctx, next) => {
   var photos = ctx.query.photos
   photos = photos.split(',')
-  photos = photos.map((i) => (strToNum(i)))
+  photos = photos.map(i => strToNum(i))
   var gid = strToNum(ctx.query.gid)
-  gid = gid < 1 ? 1 : gid;
+  gid = gid < 1 ? 1 : gid
   try {
     await __photos.move({
-            ids: photos,
-            photogroup: gid
-          })
+      ids: photos,
+      photogroup: gid,
+    })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
     console.log(err)
@@ -369,8 +379,9 @@ router.get('/photos/rename', async (ctx, next) => {
   var title = ctx.query.title
   try {
     await __photos.rename({
-            id: id, title: title
-          })
+      id: id,
+      title: title,
+    })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
     ctx.body = { code: 1, msg: '更新失败' }
@@ -389,12 +400,12 @@ router.get('/photogroup/get', async (ctx, next) => {
 
 router.get('/photogroup/modify', async (ctx, next) => {
   const groupname = ctx.query.groupname
-  const addtime = Math.floor((new Date().getTime()) / 1000)
+  const addtime = Math.floor(new Date().getTime() / 1000)
   try {
     await __photogroups.add({
-            name: groupname,
-            addtime: addtime
-          })
+      name: groupname,
+      addtime: addtime,
+    })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
     console.log(err)
@@ -404,9 +415,9 @@ router.get('/photogroup/modify', async (ctx, next) => {
 })
 
 router.get('/photogroup/remove', async (ctx, next) => {
-  var gid = ctx.query.gid;
+  var gid = ctx.query.gid
   if (gid < 2) {
-    return ctx.body = { code: 0, msg: '删除成功' }
+    return (ctx.body = { code: 0, msg: '删除成功' })
   }
   try {
     await __photogroups.delete(gid)
@@ -420,14 +431,14 @@ router.post('/photogroup/rename', uploader, async (ctx, next) => {
   var request = ctx.request.body
   var gid = Number(request.gid)
   if (gid < 1) {
-    return ctx.body = { code: 1, msg: '更新失败' }
+    return (ctx.body = { code: 1, msg: '更新失败' })
   }
-  var name = request.name;
+  var name = request.name
   try {
     await __photogroups.rename({
-            id: gid,
-            name: name
-          })
+      id: gid,
+      name: name,
+    })
     ctx.body = { code: 0, msg: '更新成功' }
   } catch (err) {
     console.log(err)
@@ -435,4 +446,4 @@ router.post('/photogroup/rename', uploader, async (ctx, next) => {
   }
 })
 
-module.exports = router;
+module.exports = router

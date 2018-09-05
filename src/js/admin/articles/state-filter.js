@@ -3,24 +3,24 @@ import { connect } from 'react-redux'
 
 import FilterSelect from './filter-select'
 
-
 const STATE_OPTIONS = [
-  {value: '-1', title: '全部'},
-  {value: 'on', title: '已上线'},
-  {value: 'off', title: '已下线'}
+  { value: '-1', title: '全部' },
+  { value: 'on', title: '已上线' },
+  { value: 'off', title: '已下线' },
 ]
 
 const StateFilter = ({ value }) => (
   <FilterSelect
-    key = "state"
-    title = "state"
-    label = "状态"
-    value = {value}
-    options = {STATE_OPTIONS}/>
+    key="state"
+    title="state"
+    label="状态"
+    value={value}
+    options={STATE_OPTIONS}
+  />
 )
 
-const mapStateToProps = (state) => ({
-  value: state.filters.state
+const mapStateToProps = state => ({
+  value: state.filters.state,
 })
 
 const mapDispatchToProps = () => ({})

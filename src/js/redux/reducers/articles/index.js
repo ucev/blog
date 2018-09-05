@@ -29,7 +29,7 @@ const articlesApp = combineReducers({
   moveArticleId,
   moveVisible,
   start,
-  total
+  total,
 })
 
 export default articlesApp

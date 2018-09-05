@@ -3,7 +3,7 @@ import { CATEGORIES } from '$redux/action-types'
 /* eslint-disable no-unused-vars */
 const addTitle = {
   add: '添加类别',
-  modify: '修改类别'
+  modify: '修改类别',
 }
 
 export const addCategoryDivStateChange = (visible, type, id) => {
@@ -14,7 +14,7 @@ export const addCategoryDivStateChange = (visible, type, id) => {
       type: CATEGORIES.ADD_CATEGORY_DIV_STATE_CHANGE,
       addVisible: visible,
       addType: type,
-      modifyId: type === 'add' || !visible ? -1 : id
+      modifyId: type === 'add' || !visible ? -1 : id,
     }
     if (type === 'modify') {
       var cats = state.categories
@@ -23,7 +23,7 @@ export const addCategoryDivStateChange = (visible, type, id) => {
           var d = {
             name: c.name,
             parent: c.parent,
-            descp: c.descp
+            descp: c.descp,
           }
           s.addData = d
         }
@@ -53,13 +53,15 @@ export const addCategoryConfirm = () => {
     return fetch(url, {
       credentials: 'include',
       method: 'post',
-      body: fd
-    }).then(res => res.json())
-      .then((res) => {
+      body: fd,
+    })
+      .then(res => res.json())
+      .then(res => {
         if (res.code !== 0) return
         dispatch(addCategoryDivStateChange(false))
         dispatch(fetchCategoryData())
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -69,9 +71,9 @@ export const addCategoryCancel = () => {
   return addCategoryDivStateChange(false)
 }
 
-export const addCategoryValueChange = (data) => ({
+export const addCategoryValueChange = data => ({
   type: CATEGORIES.ADD_CATEGORY_VALUE_CHANGE,
-  addData: data
+  addData: data,
 })
 
 export const deleteCategoryConfirm = () => {
@@ -83,17 +85,19 @@ export const deleteCategoryConfirm = () => {
     return fetch(url, {
       credentials: 'include',
       method: 'post',
-      body: fd
-    }).then(res => res.json())
-      .then((res) => {
+      body: fd,
+    })
+      .then(res => res.json())
+      .then(res => {
         if (res.code !== 0) return
         dispatch({
           type: CATEGORIES.DELETE_CATEGORY_STATE,
           delVisible: false,
-          delCategoryId: -1
+          delCategoryId: -1,
         })
         dispatch(fetchCategoryData())
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -101,23 +105,23 @@ export const deleteCategoryConfirm = () => {
 
 export const deleteCategoryCancel = () => ({
   type: CATEGORIES.DELETE_CATEGORY_STATE,
-  delVisible: false
+  delVisible: false,
 })
 
-export const deleteCategoryHandle = (id) => ({
+export const deleteCategoryHandle = id => ({
   type: CATEGORIES.DELETE_CATEGORY_STATE,
   delVisible: true,
-  delCategoryId: id
+  delCategoryId: id,
 })
 
 export const handleCategoryOrderChange = (id, order) => ({
   type: CATEGORIES.CATEGORY_ORDER_CHANGE,
   id: id,
-  order: order
+  order: order,
 })
 
 export const updateCategoryOrder = (id, order) => {
-  return (dispatch) => {
+  return dispatch => {
     var url = '/admin/datas/categories/modify'
     var fd = new FormData()
     fd.append('id', id)
@@ -125,9 +129,10 @@ export const updateCategoryOrder = (id, order) => {
     return fetch(url, {
       credentials: 'include',
       method: 'post',
-      body: fd
-    }).then(res => res.json())
-      .then((res) => {
+      body: fd,
+    })
+      .then(res => res.json())
+      .then(res => {
         if (res.code !== 0) return
         dispatch(fetchCategoryData())
       })
@@ -135,16 +140,18 @@ export const updateCategoryOrder = (id, order) => {
 }
 
 export const fetchCategoryData = () => {
-  return (dispatch) => {
+  return dispatch => {
     var url = '/admin/datas/categories/get'
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
-      .then((res) => {
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(res => {
         if (res.code !== 0) return
         dispatch({
           type: CATEGORIES.FETCH_CATEGORY_DATA,
-          categories: res.data
+          categories: res.data,
         })
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }

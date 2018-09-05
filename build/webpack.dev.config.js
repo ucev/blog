@@ -1,6 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const port = require('../config/base.config').website_info.port
 const merge = require('webpack-merge')
@@ -14,7 +14,7 @@ function convertToHotLoader(entry, name) {
     newEntry[k] = [
       'react-hot-loader/patch',
       `webpack-hot-middleware/client?path=/__webpack_hmr&timeout=2000&reload=true&name=${k}`,
-      entry[k]
+      entry[k],
     ]
   }
   return newEntry
@@ -23,9 +23,7 @@ function convertToHotLoader(entry, name) {
 function convertToArray(entry) {
   let newEntry = {}
   for (let k in entry) {
-    newEntry[k] = [
-      entry[k],
-    ]
+    newEntry[k] = [entry[k]]
   }
   return newEntry
 }
@@ -42,47 +40,45 @@ webpackConfig[0] = merge(baseConfigs[0], {
     hot: true,
     port: port,
     publicPath: '/',
-    historyApiFallback: true
+    historyApiFallback: true,
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [ '@babel/react', '@babel/env']
-          }
-        }]
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/react', '@babel/env'],
+            },
+          },
+        ],
       },
       {
         test: /\.css$|\.scss/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader',
-        ]
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
-    ]
+    ],
   },
   plugins: [
     new webpack.NamedModulesPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify(process.env.NODE_ENV)
-      }
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
     }),
     new MiniCssExtractPlugin({
-      filename: 'css/[name].min.css'
+      filename: 'css/[name].min.css',
     }),
   ],
   resolve: {
-    extensions: ['.js']
+    extensions: ['.js'],
   },
   optimization: {
     minimize: false,
-  }
+  },
 })
 
 webpackConfig[1] = merge(baseConfigs[1], {
@@ -91,7 +87,7 @@ webpackConfig[1] = merge(baseConfigs[1], {
   mode: 'development',
   optimization: {
     minimize: false,
-  }
+  },
 })
 
 module.exports = webpackConfig

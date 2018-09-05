@@ -6,12 +6,12 @@ import TableNavLink from './table-nav-link'
 import { fetchLabelData } from '$actions/labels'
 
 class LabelLayout extends React.Component {
-  componentDidMount () {
+  componentDidMount() {
     this.props.init()
   }
-  render () {
+  render() {
     return (
-      <div id = "label-table-div">
+      <div id="label-table-div">
         <LabelTable />
         <TableNavLink />
       </div>
@@ -20,10 +20,10 @@ class LabelLayout extends React.Component {
 }
 
 const mapStateToProps = () => ({})
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   init: () => {
     dispatch(fetchLabelData())
-  }
+  },
 })
 
 const _LabelLayout = connect(
