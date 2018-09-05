@@ -1,3 +1,4 @@
+/* global __dirname */
 const Koa = require('koa')
 const path = require('path')
 const process = require('process')
@@ -9,8 +10,8 @@ const bodyparser = require('koa-bodyparser')
 const onerror = require('koa-onerror')
 const json = require('koa-json')
 const log4js = require('./utils/log4js')
-//const logger = require('koa-logger')
-//const log4js = require('koa-log4')
+// const logger = require('koa-logger')
+// const log4js = require('koa-log4')
 const session = require('koa-session')
 
 const configs = require('./config/base.config')
@@ -35,7 +36,7 @@ app = new Koa()
 onerror(app)
 
 app.keys = configs.session.keys
-app.use(log4js.koaLogger(log4js.getLogger("normal"), { level: 'auto' }))
+app.use(log4js.koaLogger(log4js.getLogger('normal'), { level: 'auto' }))
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
@@ -47,7 +48,7 @@ app.use(views(path.join(__dirname, 'views'), {
 }))
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
+// app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
 
 // hmr
 if (process.env.NODE_ENV == 'DEV') {
@@ -70,24 +71,24 @@ if (process.env.NODE_ENV == 'DEV') {
       allEntries: true,
     },
   }).then((middleware) => {
-    app.use(middleware);
+    app.use(middleware)
   }).catch((err) => {
     console.log(err)
   })
 }
 
 // static files
-app.use(koaStatic(path.join(__dirname, 'public')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/chart.js/dist')));
+app.use(koaStatic(path.join(__dirname, 'public')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/chart.js/dist')))
 app.use(koaStatic(path.join(__dirname, 'node_modules/prismjs')))
-app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it-classy/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/react/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/react-dom/dist')));
-//app.use(koaStatic(path.join(__dirname, 'node_modules/simplemde')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it-classy/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/react/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/react-dom/dist')))
+// app.use(koaStatic(path.join(__dirname, 'node_modules/simplemde')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')))
 
 // 404/ 500...
 app.use(async (ctx, next) => {
@@ -104,6 +105,8 @@ app.use(async (ctx, next) => {
       try {
         mail.error_report(ctx.originalUrl, error.message)
       } catch (err) {
+        // 错误处理
+        console.log(err)
       }
     }
     await ctx.render('error', {debug: DEBUG_MODE, error: error})
@@ -123,4 +126,4 @@ app.use(index.routes(), index.allowedMethods())
 
 app.listen(configs.website_info.port)
 
-module.exports = app;
+module.exports = app
