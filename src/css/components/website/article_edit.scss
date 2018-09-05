@@ -87,16 +87,16 @@
 }
 
 .label-div-label-existed {
-  background-color: #5D4037;
+  background-color: #5d4037;
   opacity: 0.75;
 }
 
 .label-div-label-new {
-  background-color: #00E676;
+  background-color: #00e676;
   opacity: 0.75;
 }
 
-.label-div>* {
+.label-div > * {
   display: inline-block;
   vertical-align: middle;
 }
@@ -125,7 +125,7 @@ button#submit {
   margin-left: calc((100% - 800px) / 2);
   margin-top: 100px;
   background-color: white;
-  border: 1px solid #BDBDBD;
+  border: 1px solid #bdbdbd;
 }
 
 #choose-photo-div-title {
@@ -133,8 +133,8 @@ button#submit {
   line-height: 50px;
   padding-left: 20px;
   font-size: 16px;
-  background-color: #E0E0E0;
-  border-bottom: 1px solid #BDBDBD;
+  background-color: #e0e0e0;
+  border-bottom: 1px solid #bdbdbd;
 }
 
 #choose-photo-div-main-div {
@@ -152,7 +152,7 @@ button#submit {
 #choose-photo-div-right-div {
   flex-grow: 1;
   flex-shrink: 1;
-  border-left: 1px solid #BDBDBD;
+  border-left: 1px solid #bdbdbd;
 }
 
 #choose-photo-div-upload-div {
@@ -161,7 +161,7 @@ button#submit {
   padding-top: 9px;
   padding-right: 20px;
   margin: 0;
-  border-bottom: 1px solid #BDBDBD;
+  border-bottom: 1px solid #bdbdbd;
   text-align: right;
 }
 
@@ -192,12 +192,12 @@ button#submit {
   height: 40px;
   line-height: 40px;
   padding-left: 20px;
-  border-bottom: 1px solid #BDBDBD;
+  border-bottom: 1px solid #bdbdbd;
   cursor: pointer;
 }
 
 .choose-photo-div-photo-group-li-current {
-  background-color: #EEE;
+  background-color: #eee;
 }
 
 .choose-photo-div-photo-item-li {
@@ -205,7 +205,7 @@ button#submit {
   vertical-align: middle;
   width: 150px;
   height: 150px;
-  margin-left: calc( (100% - 600px) / 5);
+  margin-left: calc((100% - 600px) / 5);
   margin-top: 10px;
   overflow: hidden;
 }
@@ -222,7 +222,7 @@ button#submit {
   margin-top: 200px;
   padding: 20px;
   background-color: whitesmoke;
-  border: 1px solid #BDBDBD;
+  border: 1px solid #bdbdbd;
 }
 
 #insert-url-div-title {
@@ -270,5 +270,5 @@ button#submit {
 }
 
 .label-hint-item:hover {
-  background-color: #E0E0E0;
+  background-color: #e0e0e0;
 }
