@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import OperationConfirmButton from '$components/buttons/operation-confirm-button'
+
 import {
   categoryPrefaceChange,
   articleOrderChange,
@@ -33,25 +35,23 @@ class DetailArea extends React.Component {
       if (this.props.type == 'dir') {
         opeArea = (
           <div id="refact-detail-ope-area">
-            <button
+            <OperationConfirmButton
               id="refact-detail-ope-button"
-              className="operation-button operation-button-confirm"
-              data-type="cancel"
-              onClick={this.prefaceButtonClicked}>
-              取消序言
-            </button>
+              dataType="cancel"
+              title="取消序言"
+              onClick={this.prefaceButtonClicked}
+            />
           </div>
         )
       } else {
         opeArea = (
           <div id="refact-detail-ope-area">
-            <button
+            <OperationConfirmButton
               id="refact-detail-ope-button"
-              className="operation-button operation-button-confirm"
-              data-type="set"
-              onClick={this.prefaceButtonClicked}>
-              设为序言
-            </button>
+              title="设为序言"
+              dataType="set"
+              onClick={this.prefaceButtonClicked}
+            />
             <label id="refact-detail-ope-order-label">展示顺序</label>
             <input
               id="refact-detail-ope-order-input"

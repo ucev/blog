@@ -2,16 +2,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import PhotoGroupMoveDialog from './photo-group-move-dialog'
+import OperationConfirmButton from '$components/buttons/operation-confirm-button'
+
 import { pfobMoveDialogVisible } from '$actions/photos'
 
 const PhotoGroupMoveDiv = ({ show }) => (
   <div id="photo-flow-opebar-move-div">
-    <button
-      className="operation-button operation-button-confirm"
+    <OperationConfirmButton
       id="photo-flow-opebar-move-button"
-      onClick={show}>
-      移动分组
-    </button>
+      title="移动分组"
+      onClick={show}
+    />
     <PhotoGroupMoveDialog />
   </div>
 )

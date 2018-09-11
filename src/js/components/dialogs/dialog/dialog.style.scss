@@ -1,0 +1,16 @@
+.dialog-div {
+    position: absolute;
+    left: calc((100% - 300px) / 2);
+    z-index: 40;
+    min-width: 300px;
+    padding: 30px;
+    background: white;
+    border: 1px solid #bdbdbd;
+    box-shadow: 3px 3px 3px #e0e0e0;
+  }
+
+
+  .dialog-div-center-screen {
+    top: 200px;
+  }
+  

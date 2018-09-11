@@ -22,7 +22,9 @@ $(document).ready(function () {
       $(hideInputImg).fadeIn('slow')
     }
     function showImg (src) {
-      $(`<div class='img-cover'><img class='img-cover-img' src=${src}><a class='img-cover-show-origin' href='${src}' target="_blank" >查看原图</a></div>`).appendTo($('body'))
+      $(
+        `<div class='img-cover'><img class='img-cover-img' src=${src}><a class='img-cover-show-origin' href='${src}' target="_blank" >查看原图</a></div>`
+      ).appendTo($('body'))
       $('.img-cover').on('click', 'img', function () {
         $('.img-cover').remove()
       })
@@ -42,7 +44,8 @@ $(document).ready(function () {
     $(searchInput).keydown(function (e) {
       if (e.which == 13) {
         var searchParam = $(searchInput).val()
-        location.href = '/articles/search?args=' + encodeURIComponent(searchParam)
+        location.href =
+          '/articles/search?args=' + encodeURIComponent(searchParam)
       }
     })
     $('#mobile-search-input-img').click(function () {
@@ -74,7 +77,7 @@ $(document).ready(function () {
     $('pre').dblclick(function () {
       $(this).attr({ contenteditable: true })
       document.execCommand('selectAll')
-    })/*
+    }) /*
     $("pre").blur(function(e) {
       $(".code-editable").removeClass("code-editable");
     })*/

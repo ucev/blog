@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import OperationButton from '$components/buttons/operation-button'
+
 import { photoUpload } from '$actions/photos'
 
 class PhotoUploadDiv extends React.Component {
@@ -22,12 +24,11 @@ class PhotoUploadDiv extends React.Component {
     }
     return (
       <div className="photo-operation-bar" id="photo-operation-bar-first">
-        <button
+        <OperationButton
           id="upload-image-button"
-          className="operation-button"
-          onClick={this.click}>
-          上传图片
-        </button>
+          title="上传图片"
+          onClick={this.click}
+        />
         <input
           id="upload-image-input"
           type="file"

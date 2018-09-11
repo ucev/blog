@@ -1,57 +1,7 @@
-.content-table {
-  width: 80%;
-  margin-left: 10%;
-}
-
 .content-row-label {
   height: 50px;
   color: white;
   background-color: #795548;
-}
-
-.content-row-data {
-  height: 40px;
-  text-align: center;
-}
-
-.content-row-data:nth-of-type(even) {
-  background-color: #efebe9;
-}
-
-.content-row-check-label {
-  width: 30px;
-}
-
-.content-row-index-label {
-  width: 30px;
-}
-
-.content-row-title-label {
-  width: 100px;
-  padding-left: 20px;
-  text-align: left;
-}
-
-.content-row-category-label {
-  width: 60px;
-}
-
-.content-row-label-label {
-  width: 100px;
-  padding-left: 20px;
-  text-align: left;
-}
-
-.content-row-status-label {
-  width: 50px;
-}
-
-.content-row-pageview-label {
-  width: 50px;
-}
-
-.content-row-operation-label {
-  width: 60px;
 }
 
 .content-row-checkbox-data {
@@ -95,27 +45,7 @@
   text-align: left;
 }
 
-.table-nav-ul {
-  width: 80%;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  margin-left: 10%;
-  line-height: 20px;
-  font-size: 16px;
-  color: #757575;
-  padding-left: 0;
-}
 
-.table-nav-ul-li {
-  display: inline-block;
-  margin-left: 20px;
-  vertical-align: middle;
-  cursor: pointer;
-}
-
-.table-nav-ul-li-current {
-  color: #4caf50;
-}
 
 .table-filter-bar,
 .table-operation-bar {
@@ -134,9 +64,6 @@
 
 .table-filter-bar-bottom {
   text-align: left;
-}
-
-.table-filter-bar .operation-button {
 }
 
 .table-filter-item {
