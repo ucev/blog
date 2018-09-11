@@ -1,7 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import ArticleItemLi from './article-item-li'
+// import ArticleItemLi from '../article-item-li'
+import CategoryItemList from '../category-item-list'
 import { categoryExpandChange, getRefactDetail } from '$actions/category-refact'
 
 const mapStateToProps = state => ({
@@ -33,45 +34,11 @@ class CategoryItemLi extends React.Component {
     this.props.toggleExpandState(this.props.id)
     e.stopPropagation()
   }
-  getChildNodes () {
-    var depth = this.props.depth
-    var childs = this.props.childs
-    var cstate = this.props.cstate
-    if (!childs) return
-    var __CLI = connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(CategoryItemLi)
-    var content = childs.map(
-      child =>
-        child.type == 'dir' ? (
-          <__CLI
-            key={`categoroy_${child.id}`}
-            id={child.id}
-            title={child.title}
-            childs={child.childs}
-            expanded={cstate[child.id] !== false}
-            depth={depth + 1}
-          />
-        ) : (
-          <ArticleItemLi
-            key={`article_${child.id}`}
-            id={child.id}
-            title={child.title}
-            article={child}
-            cid={this.props.id}
-            depth={depth + 1}
-          />
-        )
-    )
-    return content
-  }
   render () {
-    var depth = this.props.depth
+    let depth = this.props.depth
     var styles = {
       paddingLeft: depth * 20 + 20 + 'px',
     }
-    var content = this.getChildNodes()
     var titleClass = 'category-tree-category-title'
     if (this.props.id == this.props.currCategory) {
       titleClass += ' category-tree-category-title-current'
@@ -97,9 +64,7 @@ class CategoryItemLi extends React.Component {
             onClick={this.expandChange}
           />
         </div>
-        <ul className="category-tree-category-ul" style={articlesUlStyle}>
-          {content}
-        </ul>
+        <CategoryItemList childs={this.props.childs} style={articlesUlStyle} />
       </li>
     )
   }

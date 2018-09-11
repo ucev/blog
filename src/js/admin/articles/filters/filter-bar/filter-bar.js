@@ -14,9 +14,5 @@ export default ({ type = '', children = undefined }) => {
     default:
       break
   }
-  return (
-    <div className = {className}>
-      {children}
-    </div>
-  )
+  return <div className={className}>{children}</div>
 }

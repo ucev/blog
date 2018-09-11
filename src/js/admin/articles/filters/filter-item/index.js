@@ -4,8 +4,4 @@ import FilterItemLabel from './filter-item-label'
 import FilterItemSelect from './filter-item-select'
 
 export default FilterItem
-export {
-  FilterItemInput,
-  FilterItemLabel,
-  FilterItemSelect,
-}
+export { FilterItemInput, FilterItemLabel, FilterItemSelect }

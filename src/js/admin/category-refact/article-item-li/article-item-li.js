@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 
 import { getRefactDetail } from '$actions/category-refact'
 
+import './article-item-li.style.scss'
+
 class ArticleItemLi extends React.Component {
   constructor (props) {
     super(props)
@@ -12,11 +14,11 @@ class ArticleItemLi extends React.Component {
     this.props.getDetail(this.props.id, this.props.cid)
   }
   render () {
-    var depth = this.props.depth
-    var styles = {
+    let depth = this.props.depth
+    let styles = {
       paddingLeft: depth * 20 + 20 + 'px',
     }
-    var articleClass = 'category-tree-article-li'
+    let articleClass = 'category-tree-article-li'
     if (this.props.id == this.props.currArticle) {
       articleClass += ' category-tree-article-li-current'
     }
@@ -37,8 +39,7 @@ const mapDispatchToProps = dispatch => ({
   },
 })
 
-const _ArticleItemLi = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ArticleItemLi)
-export default _ArticleItemLi

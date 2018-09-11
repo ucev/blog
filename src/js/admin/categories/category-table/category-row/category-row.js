@@ -45,12 +45,18 @@ class CategoryRow extends React.Component {
   render () {
     return (
       <TableRow subtype="category">
-        <TableRowData type="index" subtype="category">{this.props.id}</TableRowData>
+        <TableRowData type="index" subtype="category">
+          {this.props.id}
+        </TableRowData>
         <TableRowData type="name" subtype="category">
           <a href={'/articles/category/' + this.props.id}>{this.props.name}</a>
         </TableRowData>
-        <TableRowData type="parent" subtype="category">{this.props.parent}</TableRowData>
-        <TableRowData type="descp" subtype="category">{this.props.descp}</TableRowData>
+        <TableRowData type="parent" subtype="category">
+          {this.props.parent}
+        </TableRowData>
+        <TableRowData type="descp" subtype="category">
+          {this.props.descp}
+        </TableRowData>
         <TableRowData type="order" subtype="category">
           <input
             type="number"

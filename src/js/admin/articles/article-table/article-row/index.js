@@ -1,3 +1,3 @@
-import TableRow from './table-row'
+import TableRow from './article-row'
 
 export default TableRow

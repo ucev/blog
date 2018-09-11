@@ -1,13 +1,12 @@
 .choose-photo-div-photo-group-li {
-    display: block;
-    height: 40px;
-    line-height: 40px;
-    padding-left: 20px;
-    border-bottom: 1px solid #bdbdbd;
-    cursor: pointer;
-  }
-  
-  .choose-photo-div-photo-group-li-current {
-    background-color: #eee;
-  }
-  
+  display: block;
+  height: 40px;
+  line-height: 40px;
+  padding-left: 20px;
+  border-bottom: 1px solid #bdbdbd;
+  cursor: pointer;
+}
+
+.choose-photo-div-photo-group-li-current {
+  background-color: #eee;
+}

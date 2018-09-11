@@ -1,7 +1,5 @@
 import React from 'react'
 
-const TableFoot = () => (
-  <tfoot />
-)
+const TableFoot = () => <tfoot />
 
 export default TableFoot

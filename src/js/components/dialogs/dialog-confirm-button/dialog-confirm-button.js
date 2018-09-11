@@ -1,8 +1,6 @@
 import React from 'react'
 import DialogButton from '../dialog-operation-button'
 
-var DialogConfirmButton = props => {
-  return <DialogButton type="confirm" title={props.title} click={props.click} />
-}
-
-export default DialogConfirmButton
+export default ({ title = '', click = () => {} }) => (
+  <DialogButton buttonType="confirm" title={title} click={click} />
+)

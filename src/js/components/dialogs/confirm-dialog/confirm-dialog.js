@@ -28,9 +28,7 @@ class ConfirmDialog extends React.Component {
         centerScreen={this.props.centerScreen}
         visible={this.props.visible}>
         <DialogHeader>
-          <DialogTitleDiv
-            title={this.props.title}
-          />
+          <DialogTitleDiv title={this.props.title} />
         </DialogHeader>
         <DialogFoot>
           <ConfirmButton title="确定" click={this.handleConfirmClick} />

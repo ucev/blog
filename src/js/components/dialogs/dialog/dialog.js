@@ -8,19 +8,24 @@ class Dialog extends React.Component {
   }
 
   render () {
-    var centerScreen = !(this.props.centerScreen === false)
-    var classes = 'dialog-div ' + this.props.className
+    let centerScreen = !(this.props.centerScreen === false)
+    let className = 'dialog-div ' + this.props.className
     if (centerScreen) {
-      classes += ' dialog-div-center-screen'
+      className += ' dialog-div-center-screen'
     }
-    var styles = Object.assign({}, this.props.styles)
-    if (!this.props.visible) {
-      styles.display = 'none'
-    } else {
-      styles.display = 'block'
-    }
+    let styles = Object.assign(
+      {},
+      this.props.styles,
+      !this.props.visible
+        ? {
+          display: 'none',
+        }
+        : {
+          display: 'block',
+        }
+    )
     return (
-      <div className={classes} style={styles}>
+      <div className={className} style={styles}>
         {this.props.children}
       </div>
     )

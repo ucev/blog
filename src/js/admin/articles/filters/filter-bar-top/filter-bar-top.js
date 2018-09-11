@@ -9,12 +9,9 @@ import FilterBar from '../filter-bar'
 
 import { addArticle } from '$actions/articles'
 
-const FilterBar = ({ add }) => (
+const FilterBarTop = ({ add }) => (
   <FilterBar type="top">
-    <OperationButton
-      title="添加文章"
-      onClick={add}
-    />
+    <OperationButton title="添加文章" onClick={add} />
     <LabelFilter />
     <CategoryFilter />
     <StateFilter />
@@ -32,4 +29,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(FilterBar)
+)(FilterBarTop)

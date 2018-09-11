@@ -2,13 +2,14 @@ import React from 'react'
 
 import './dialog-operation-button.style.scss'
 
-const DialogOperationButton = props => {
-  const classes = `dialog-operation-button dialog-${props.type}-button`
+export default ({ buttonType = '', title = '', click = () => {} }) => {
+  let className = 'dialog-operation-button'
+  if (buttonType) {
+    className += ` dialog-${buttonType}-button`
+  }
   return (
-    <button className={classes} onClick={props.click}>
-      {props.title}
+    <button className={className} onClick={click}>
+      {title}
     </button>
   )
 }
-
-export default DialogOperationButton

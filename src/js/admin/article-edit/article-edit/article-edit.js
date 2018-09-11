@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 // import 'simplemde-customize-for-blog/src/css/simplemde.css'
-import './article_edit.style.scss'
+import './article-edit.style.scss'
 
 import Editor from '../editor'
 import OperationDiv from '../operation-div'

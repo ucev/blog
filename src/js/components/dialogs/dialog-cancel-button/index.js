@@ -1,3 +1,3 @@
-const DialogCancelButton = require('./dialog-cancel-button')
+import DialogCancelButton from './dialog-cancel-button'
 
 export default DialogCancelButton

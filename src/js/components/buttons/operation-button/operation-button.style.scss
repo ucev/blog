@@ -1,20 +1,19 @@
 .operation-button {
-    display: inline-block;
-    padding: 5px 20px;
-    min-width: 100px;
-    color: white;
-    font-size: 14px;
-    border: none;
-    background: none;
-    background-color: #009688;
-    cursor: pointer;
-  }
-  
-  .operation-button-confirm {
-    background-color: #009688;
-  }
-  
-  .operation-button-cancel {
-    background-color: #78909c;
-  }
-  
+  display: inline-block;
+  padding: 5px 20px;
+  min-width: 100px;
+  color: white;
+  font-size: 14px;
+  border: none;
+  background: none;
+  background-color: #009688;
+  cursor: pointer;
+}
+
+.operation-button-confirm {
+  background-color: #009688;
+}
+
+.operation-button-cancel {
+  background-color: #78909c;
+}

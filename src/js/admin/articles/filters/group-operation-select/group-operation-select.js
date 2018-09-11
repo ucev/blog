@@ -20,7 +20,7 @@ const GroupOperationSelect = ({ value }) => {
 const mapStateToProps = state => ({
   value: state.groupOpe,
 })
-``
+
 const mapDispatchToProps = () => ({})
 
 const _GroupOperationSelect = connect(

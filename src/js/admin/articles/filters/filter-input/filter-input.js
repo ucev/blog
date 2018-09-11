@@ -1,10 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import FilterItem, {
-  FilterItemInput,
-  FilterItemLabel,
-} from '../filter-item'
+import FilterItem, { FilterItemInput, FilterItemLabel } from '../filter-item'
 
 import { filterOptionChange } from '$actions/articles'
 
@@ -12,24 +9,20 @@ class FilterInput extends React.Component {
   constructor (props) {
     super(props)
     this.change = this.change.bind(this)
+    this.refHandle = this.refHandle.bind(this)
   }
-  change () {
+  change (value) {
     var label = this.props.label
-    var value = this.input.value
     this.props.change(label, value)
   }
-  _ref = (e) => {
+  refHandle (e) {
     this.input = e
   }
   render () {
     return (
       <FilterItem>
-        <FilterItemLabel title = {this.props.title} />
-        <FilterItemInput
-          value={this.props.value}
-          onChange={this.change}
-          ref={_ref}
-        />
+        <FilterItemLabel title={this.props.title} />
+        <FilterItemInput value={this.props.value} change={this.change} />
       </FilterItem>
     )
   }

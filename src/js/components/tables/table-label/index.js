@@ -1,3 +1,3 @@
-import TableLabel from './tabel-label'
+import TableLabel from './table-label'
 
 export default TableLabel

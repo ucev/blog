@@ -37,9 +37,7 @@ class InputDialog extends React.Component {
         centerScreen={this.props.centerScreen}
         visible={this.props.visible}>
         <DialogHeader>
-          <DialogTitleDiv
-            title={this.props.title}
-          />
+          <DialogTitleDiv title={this.props.title} />
         </DialogHeader>
         <DialogBody>
           <input

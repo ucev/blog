@@ -1,10 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import FilterItem, {
-  FilterItemLabel,
-  FilterItemSelect,
-} from '../filter-item'
+import FilterItem, { FilterItemLabel, FilterItemSelect } from '../filter-item'
 
 import { filterOptionChange } from '$actions/articles'
 
@@ -13,12 +10,11 @@ class FilterSelect extends React.Component {
     super(props)
     this.change = this.change.bind(this)
   }
-  change () {
+  change (value) {
     var title = this.props.title
-    var value = this.select.value
     this.props.change(title, value)
   }
-  _ref = (e) => {
+  refHandle (e) {
     this.select = e
   }
   render () {
@@ -29,11 +25,8 @@ class FilterSelect extends React.Component {
     ))
     return (
       <FilterItem>
-        <FilterItemLabel title = {this.props.label} />
-        <FilterItemSelect
-          value={this.props.value}
-          onChange={this.change}
-          ref={_ref}>
+        <FilterItemLabel title={this.props.label} />
+        <FilterItemSelect value={this.props.value} change={this.change}>
           {options}
         </FilterItemSelect>
       </FilterItem>
