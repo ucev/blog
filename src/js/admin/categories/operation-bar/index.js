@@ -1,3 +1,3 @@
-const OperationBar = require('./operation-bar')
+import OperationBar from './operation-bar'
 
 export default OperationBar

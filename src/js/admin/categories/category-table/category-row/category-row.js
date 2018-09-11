@@ -1,11 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import TableRow, {
+  TableRowData,
+  TableRowDataOperationList,
+} from '$components/tables/table-row'
+
 import {
   addCategoryDivStateChange,
   deleteCategoryHandle,
   updateCategoryOrder,
 } from '$actions/categories'
+
+import './category-row.style.scss'
 
 class CategoryRow extends React.Component {
   constructor (props) {
@@ -36,40 +43,39 @@ class CategoryRow extends React.Component {
     }
   }
   render () {
-    var operationUl = (
-      <ul className="content-operation-ul">
-        <li data-type="modify" onClick={this.categoryOperationClick}>
-          修改
-        </li>
-        <li data-type="delete" onClick={this.categoryOperationClick}>
-          删除
-        </li>
-        <li data-type="refact">
-          <a href={'/admin/categories/refact/' + this.props.id}>重构</a>
-        </li>
-      </ul>
-    )
     return (
-      <tr className="content-row-data category-row-data">
-        <td className="category-row-index-data">{this.props.id}</td>
-        <td className="category-row-name-data">
+      <TableRow subtype="category">
+        <TableRowData type="index" subtype="category">{this.props.id}</TableRowData>
+        <TableRowData type="name" subtype="category">
           <a href={'/articles/category/' + this.props.id}>{this.props.name}</a>
-        </td>
-        <td className="category-row-parent-data">{this.props.parent}</td>
-        <td className="category-row-descp-data">{this.props.descp}</td>
-        <td className="category-row-order-data">
+        </TableRowData>
+        <TableRowData type="parent" subtype="category">{this.props.parent}</TableRowData>
+        <TableRowData type="descp" subtype="category">{this.props.descp}</TableRowData>
+        <TableRowData type="order" subtype="category">
           <input
             type="number"
             value={this.props.mainorder}
             onChange={this.categoryOrderChange}
             onKeyDown={this.categoryOrderKeyDown}
           />
-        </td>
-        <td className="category-row-articlecnt-data">
+        </TableRowData>
+        <TableRowData type="articlecnt" subtype="category">
           {this.props.articlecnt}
-        </td>
-        <td className="content-row-operation-data">{operationUl}</td>
-      </tr>
+        </TableRowData>
+        <TableRowData type="operation" subtype="category">
+          <TableRowDataOperationList>
+            <li data-type="modify" onClick={this.categoryOperationClick}>
+              修改
+            </li>
+            <li data-type="delete" onClick={this.categoryOperationClick}>
+              删除
+            </li>
+            <li data-type="refact">
+              <a href={'/admin/categories/refact/' + this.props.id}>重构</a>
+            </li>
+          </TableRowDataOperationList>
+        </TableRowData>
+      </TableRow>
     )
   }
 }

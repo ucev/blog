@@ -2,6 +2,8 @@ import React from 'react'
 
 import TableLabel from '$components/tables/table-label'
 
+import './category-label.style.scss'
+
 class CategoryLabel extends React.Component {
   constructor (props) {
     super(props)
