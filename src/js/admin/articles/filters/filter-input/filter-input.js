@@ -1,6 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import FilterItem, {
+  FilterItemInput,
+  FilterItemLabel,
+} from '../filter-item'
+
 import { filterOptionChange } from '$actions/articles'
 
 class FilterInput extends React.Component {
@@ -13,19 +18,19 @@ class FilterInput extends React.Component {
     var value = this.input.value
     this.props.change(label, value)
   }
+  _ref = (e) => {
+    this.input = e
+  }
   render () {
     return (
-      <div className="table-filter-item">
-        <label className="table-filter-item-label">{this.props.title}</label>
-        <input
-          className="table-filter-item-input"
+      <FilterItem>
+        <FilterItemLabel title = {this.props.title} />
+        <FilterItemInput
           value={this.props.value}
           onChange={this.change}
-          ref={input => {
-            this.input = input
-          }}
+          ref={_ref}
         />
-      </div>
+      </FilterItem>
     )
   }
 }
@@ -37,8 +42,7 @@ const mapDispatchToProps = dispatch => ({
   },
 })
 
-const _FilterInput = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(FilterInput)
-export default _FilterInput

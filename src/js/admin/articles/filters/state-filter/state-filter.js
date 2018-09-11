@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import FilterSelect from './filter-select'
+import FilterSelect from '../filter-select'
 
 const STATE_OPTIONS = [
   { value: '-1', title: '全部' },

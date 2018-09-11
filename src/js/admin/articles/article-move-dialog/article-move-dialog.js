@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import OptionDialog from '$components/dialogs/option-dialog'
+
 import { moveCategoryCancel, moveCategoryConfirm } from '$actions/articles'
 
 const ArticleMoveDialog = ({

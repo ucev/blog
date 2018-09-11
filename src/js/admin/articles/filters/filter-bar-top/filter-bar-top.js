@@ -1,21 +1,24 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import CategoryFilter from './category-filter'
-import LabelFilter from './label-filter'
-import StateFilter from './state-filter'
+import OperationButton from '$components/buttons/operation-button'
+import CategoryFilter from '../category-filter'
+import LabelFilter from '../label-filter'
+import StateFilter from '../state-filter'
+import FilterBar from '../filter-bar'
 
 import { addArticle } from '$actions/articles'
 
 const FilterBar = ({ add }) => (
-  <div className="table-filter-bar table-filter-bar-top">
-    <button className="operation-button" onClick={add}>
-      添加文章
-    </button>
+  <FilterBar type="top">
+    <OperationButton
+      title="添加文章"
+      onClick={add}
+    />
     <LabelFilter />
     <CategoryFilter />
     <StateFilter />
-  </div>
+  </FilterBar>
 )
 
 const mapStateToProps = () => ({})
@@ -26,8 +29,7 @@ const mapDispatchToProps = dispatch => ({
   },
 })
 
-const _FilterBar = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(FilterBar)
-export default _FilterBar

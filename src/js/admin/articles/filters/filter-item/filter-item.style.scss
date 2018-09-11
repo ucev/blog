@@ -1,0 +1,27 @@
+.table-filter-item {
+    display: inline-block;
+    height: 20px;
+  }
+
+  .table-filter-item-label {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 14px;
+    color: #757575;
+  }
+
+.table-filter-item-input,
+.table-filter-item-select {
+  width: 100px;
+  height: 20px;
+}
+
+.table-filter-item-input {
+  outline: none;
+  border: 1px solid #bdbdbd;
+}
+
+.table-filter-item-input:focus {
+  outline: none;
+  border: 1px solid #bdbdbd;
+}

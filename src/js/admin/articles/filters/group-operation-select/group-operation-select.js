@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import FilterSelect from './filter-select'
+import FilterSelect from '../filter-select'
 
 const OPERATION_OPTIONS = [
   { value: '-1', title: '--选择操作--' },
@@ -20,7 +20,7 @@ const GroupOperationSelect = ({ value }) => {
 const mapStateToProps = state => ({
   value: state.groupOpe,
 })
-
+``
 const mapDispatchToProps = () => ({})
 
 const _GroupOperationSelect = connect(

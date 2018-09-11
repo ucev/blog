@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import FilterInput from './filter-input'
+import FilterInput from '../filter-input'
 
 const CategoryFilter = ({ value }) => (
   <FilterInput title="分类" label="category" value={value} />

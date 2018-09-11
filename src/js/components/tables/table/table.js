@@ -2,9 +2,16 @@ import React from 'react'
 
 // import '$css/components/admin/content_table.scss';
 
-const Table = props => {
-  var classes = `content-table ${props.type}-content-table`
-  return <table className={classes}>{props.children}</table>
+const Table = ({type = '', children = undefined}) => {
+  let className = 'content-table'
+  if (type) {
+    className += ` ${type}-content-table`
+  }
+  return (
+    <table className={className}>
+      {children}
+    </table>
+  )
 }
 
 export default Table

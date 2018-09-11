@@ -1,6 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import TableRow, {
+  TableRowData,
+  TableRowDataOperationList,
+} from '$components/tables/table-row'
+
 import {
   articleStateChange,
   handleMoveCategory,
@@ -20,17 +25,17 @@ class ArticleRow extends React.Component {
     this.handleCheckStateChange = this.handleCheckStateChange.bind(this)
     this.article_operation = {
       on: (
-        <ul className="content-operation-ul">
+        <TableRowDataOperationList>
           <li data-type="off" onClick={this.handleStateClick}>
             下线
           </li>
           <li data-type="check" onClick={this.handleStateClick}>
             核查
           </li>
-        </ul>
+        </TableRowDataOperationList>
       ),
       off: (
-        <ul className="content-operation-ul">
+        <TableRowDataOperationList>
           <li data-type="on" onClick={this.handleStateClick}>
             上线
           </li>
@@ -43,7 +48,7 @@ class ArticleRow extends React.Component {
           <li data-type="del" onClick={this.handleStateClick}>
             删除
           </li>
-        </ul>
+        </TableRowDataOperationList>
       ),
     }
   }
@@ -72,26 +77,26 @@ class ArticleRow extends React.Component {
     const operation = this.article_operation[this.props.state]
     const checked = this.props.checked === true ? 'checked' : ''
     return (
-      <tr className="content-row-data">
-        <td className="content-row-checkbox-data">
+      <TableRow>
+        <TableRowData type="checkbox">
           <input
             type="checkbox"
             checked={checked}
             onChange={this.handleCheckStateChange}
           />
-        </td>
-        <td className="content-row-index-data" onClick={this.handleIndexClick}>
+        </TableRowData>
+        <TableRowData type="index" onClick={this.handleIndexClick}>
           {this.props.index + 1}
-        </td>
-        <td className="content-row-title-data" style={topStatus}>
+        </TableRowData>
+        <TableRowData type="title" style={topStatus}>
           <a href={url}>{this.props.title}</a>
-        </td>
-        <td className="content-row-category-data">{this.props.categoryname}</td>
-        <td className="content-row-label-data">{this.props.label}</td>
-        <td className="content-row-status-data">{articleState}</td>
-        <td className="content-row-pageview-data">{this.props.pageview}</td>
-        <td className="content-row-operation-data">{operation}</td>
-      </tr>
+        </TableRowData>
+        <TableRowData type="category">{this.props.categoryname}</TableRowData>
+        <TableRowData type="label">{this.props.label}</TableRowData>
+        <TableRowData type="status">{articleState}</TableRowData>
+        <TableRowData type="pageview">{this.props.pageview}</TableRowData>
+        <TableRowData type="operation">{operation}</TableRowData>
+      </TableRow>
     )
   }
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import ConfirmDialog from '$components/dialogs/confirm-dialog'
+
 import { deleteArticleCancel, deleteArticleConfirm } from '$actions/articles'
 
 const ArticleDeleteDialog = ({ visible, deleteConfirm, deleteCancel }) => (
@@ -26,8 +27,7 @@ const mapDispatchToProps = dispatch => ({
   },
 })
 
-const _ArticleDeleteDialog = connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ArticleDeleteDialog)
-export default _ArticleDeleteDialog
