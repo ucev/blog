@@ -1,0 +1,13 @@
+#photo-flow-div {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  flex-grow: 1;
+  background-color: #a1887f;
+}
+
+#photo-flow-items-ul {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style-type: none;
+}

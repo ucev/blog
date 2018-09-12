@@ -5,6 +5,8 @@ import OperationButton from '$components/buttons/operation-button'
 
 import { photoUpload } from '$actions/photos'
 
+import './photo-upload-div.style.scss'
+
 class PhotoUploadDiv extends React.Component {
   constructor (props) {
     super(props)

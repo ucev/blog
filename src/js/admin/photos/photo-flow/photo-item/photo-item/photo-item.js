@@ -3,15 +3,18 @@ import { connect } from 'react-redux'
 
 import LazyLoader from 'react-lazyload'
 
-import DeleteDialog from './photo-item-delete-dialog'
-import MoveGroupDialog from './photo-item-move-group-dialog'
-import RenameDialog from './photo-item-rename-dialog'
+import DeleteDialog from '../photo-item-delete-dialog'
+import MoveGroupDialog from '../photo-item-move-group-dialog'
+import RenameDialog from '../photo-item-rename-dialog'
+
 import {
   photoCheckStateChange,
   photoDeleteDialogVisible,
   photoInputDialogVisible,
   photoMoveDialogVisible,
 } from '$actions/photos'
+
+import './photo-item.style.scss'
 
 class PhotoItem extends React.Component {
   constructor (props) {

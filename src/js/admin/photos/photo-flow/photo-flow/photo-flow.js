@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import PhotoFlowOperationBar from './photo-flow-operation-bar'
-import PhotoItem from './photo-item'
+import PhotoFlowOperationBar from '../photo-flow-operation-bar'
+import PhotoItem from '../photo-item'
+
+import './photo-flow.style.scss'
 
 const PhotoFlow = ({ photos }) => {
   const items = photos.map(photo => (

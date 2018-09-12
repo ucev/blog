@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import PhotoGroupDeleteDialog from './photo-group-delete-dialog'
+import PhotoGroupDeleteDialog from '../photo-group-delete-dialog'
 import OperationCancelButton from '$components/buttons/operation-cancel-button'
 
 import { pfobDeleteDialogVisible } from '$actions/photos'
+
+import './photo-group-delete-div.style.scss'
 
 const PhotoGroupDeleteDiv = ({ show }) => (
   <div id="photo-flow-opebar-del-div">

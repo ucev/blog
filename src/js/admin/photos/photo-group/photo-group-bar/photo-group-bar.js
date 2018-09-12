@@ -2,13 +2,16 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import InputDialog from '$components/dialogs/input-dialog'
-import PhotoGroupItem from './photo-group-item'
+import PhotoGroupItem from '../photo-group-item'
+
 import {
   groupAddCancel,
   groupAddConfirm,
   groupOpeImgStateToggle,
   groupShowAddDialog,
 } from '$actions/photos'
+
+import './photo-group-bar.style.scss'
 
 const PhotoGroupBar = ({
   addVisible,

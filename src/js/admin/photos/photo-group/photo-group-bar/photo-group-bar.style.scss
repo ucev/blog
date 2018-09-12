@@ -1,0 +1,48 @@
+#photo-group-div {
+  position: relative;
+  width: 150px;
+  background-color: white;
+  border: 1px solid #bdbdbd;
+  overflow: visible;
+}
+
+.photo-group-operation-bar {
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid #6d4c41;
+}
+
+#add-new-photo-group-div {
+  width: 100%;
+  height: 100%;
+  line-height: 50px;
+  padding-left: 20px;
+  margin: 0;
+  cursor: pointer;
+}
+
+#photo-group-opebar-title-div,
+#photo-group-opebar-img {
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#photo-group-opebar-title-div {
+  width: calc(100% - 40px);
+  height: 50px;
+  padding-left: 20px;
+  line-height: 50px;
+}
+
+#photo-group-opebar-img {
+  width: 20px;
+  cursor: pointer;
+}
+
+#photo-group-items-ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
