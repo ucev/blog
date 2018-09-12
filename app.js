@@ -24,11 +24,8 @@ const users = require('./routes/users')
 const login = require('./routes/login')
 const es = require('./routes/eventsource')
 
-var enterControl = require('./routes/entercontrol')
-
-const DEBUG_MODE = configs.website_info.debug
-
-const mail = require('./utils/mail')
+const enterControl = require('./routes/entercontrol')
+const errorHandler = require('./routes/errorhandler')
 
 var app
 app = new Koa()
@@ -91,27 +88,7 @@ app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')))
 app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')))
 
 // 404/ 500...
-app.use(async (ctx, next) => {
-  try {
-    await next()
-    if (parseInt(ctx.status) == 404) {
-      ctx.throw('Not Found', 404)
-    }
-  } catch (error) {
-    console.log(error)
-    error.status = error.status || 500
-    error.url = ctx.originalUrl
-    if (error.status != 404 && !DEBUG_MODE) {
-      try {
-        mail.error_report(ctx.originalUrl, error.message)
-      } catch (err) {
-        // 错误处理
-        console.log(err)
-      }
-    }
-    await ctx.render('error', {debug: DEBUG_MODE, error: error})
-  }
-})
+app.use(errorHandler.errorHandler)
 
 const router = new Router()
 router.use('/articles', articles.routes(), articles.allowedMethods())
