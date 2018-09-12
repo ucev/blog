@@ -82,7 +82,7 @@ class DetailArea extends React.Component {
     }
   }
 }
- 
+
 const mapStateToProps = state => ({
   id: state.detail.id,
   order: state.detail.suborder,

@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import TableLabel from '$components/tables/table-label'
 import { orderChange } from '$actions/labels'
 
+import './table-label.style.scss'
+
 const LabelTableLabel = ({
   orderby = 'id',
   orderDirect = 'asc',

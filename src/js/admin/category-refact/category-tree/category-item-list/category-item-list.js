@@ -7,7 +7,7 @@ import CategoryItemLi from '../category-item-li'
 import './category-item-list.style.scss'
 
 class CategoryItemList extends React.PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.getChildren = this.getChildren.bind(this)
   }

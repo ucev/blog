@@ -2,13 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import LabelRow from './table-row'
-import LabelTableLabel from './table-label'
+import LabelRow from '../label-row'
+import LabelTableLabel from '../table-label'
 import Table from '$components/tables/table'
 import TableBody from '$components/tables/table-body'
 import TableFoot from '$components/tables/table-foot'
 
-// import '$css/components/admin/label_table.scss';
+import './label-table.style.scss'
 
 const LabelTable = ({ labels = [] }) => {
   labels = Array.from(labels)

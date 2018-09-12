@@ -75,16 +75,17 @@ export const getCategoryTree = () => {
           type: CATEGORY_REFACT.GET_CATEGORY_TREE,
           tree: root,
         })
-          __getRefactDetail('dir', tid)
-          .then((dt1) => {
+        __getRefactDetail('dir', tid)
+          .then(dt1 => {
             var detail = dt1.code === 0 ? dt1.data : {}
             dispatch({
               type: CATEGORY_REFACT.GET_REFACT_DETAIL,
               detail: detail,
               category: tid,
             })
-          }).catch(err => {
-
+          })
+          .catch(err => {
+            console.log(err)
           })
       })
   }
@@ -93,8 +94,8 @@ export const getCategoryTree = () => {
 export const getRefactDetail = (type, id, cid) => {
   return _dispatch => {
     cid = type === 'dir' ? id : cid
-      __getRefactDetail(type, id)
-      .then((dt) => {
+    __getRefactDetail(type, id)
+      .then(dt => {
         let detail = dt.code === 0 ? dt.data : {}
         let aid = type === 'art' && detail.id ? detail.id : -1
         _dispatch({
@@ -103,22 +104,23 @@ export const getRefactDetail = (type, id, cid) => {
           category: cid,
           article: aid,
         })
-      }).catch(err => {
-
-      }) 
+      })
+      .catch(err => {
+        console.log(err)
+      })
   }
 }
 
 function __getRefactDetail (type, id) {
   /* eslint-disable no-unused-vars */
-    let params = {
-      type: type,
-      id: id,
-    }
-    let url = '/admin/datas/categories/refact/get?' + urlEncode(params)
-    return fetch(url, { credentials: 'include' })
-      .then(res => res.json())
-      .then(res => {
-        return res
-      })
+  let params = {
+    type: type,
+    id: id,
+  }
+  let url = '/admin/datas/categories/refact/get?' + urlEncode(params)
+  return fetch(url, { credentials: 'include' })
+    .then(res => res.json())
+    .then(res => {
+      return res
+    })
 }
