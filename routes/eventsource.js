@@ -105,7 +105,6 @@ router.get('/outputArticle', async ctx => {
 router.post('/importArticle', uploader, async ctx => {
   try {
     var files = ctx.request.files
-    console.log(files)
     var addtime = Math.floor(new Date().getTime() / 1000)
     var ps = files.map(f => {
       return (function (f) {
@@ -143,7 +142,6 @@ router.post('/importArticle', uploader, async ctx => {
     })
     var datas = await Promise.all(ps)
     __log.debug(datas)
-    console.log(datas)
     var succ = []
     var allSucc = true
     for (var dt of datas) {

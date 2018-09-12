@@ -25,14 +25,13 @@ async function errroHandler (ctx, next) {
     await next()
     if (parseInt(ctx.status) == 404) {
       const originalUrl = ctx.originalUrl
-      if (originalUrl.endsWith('css')) {
-        console.log('---- css')
+      if (originalUrl.match(/css$/i)) {
         ctx.body = cssError(originalUrl)
-      } else if (originalUrl.endsWith('js')) {
-        console.log('--- js')
+      } else if (originalUrl.match(/js$/i)) {
         ctx.body = jsError(originalUrl)
+      } else if (originalUrl.match(/jpg$|jpeg$|png$|gif$/i)) {
+        ctx.redirect('/images/not_found.png')
       } else {
-        console.error('--- not found')
         ctx.throw('Not Found', 404)
       }
     }
