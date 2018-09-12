@@ -8,6 +8,5 @@ database can be created by command `npm run createdb`
 
 ## To Do
 * error handler 需要调整
-* css 整合入相应的 js 文件中
-* webpack 的配置文件需要整合
-* 加上 ReactRouter
+* css 整合入相应的 js 文件中(react部分完成)
+<!-- * 加上 ReactRouter -->
