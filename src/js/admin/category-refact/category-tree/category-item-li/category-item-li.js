@@ -3,29 +3,16 @@ import { connect } from 'react-redux'
 
 // import ArticleItemLi from '../article-item-li'
 import CategoryItemList from '../category-item-list'
+
 import { categoryExpandChange, getRefactDetail } from '$actions/category-refact'
 
-const mapStateToProps = state => ({
-  currCategory: state.category,
-  currArticle: state.article,
-  cstate: state.cstate,
-})
-
-const mapDispatchToProps = dispatch => ({
-  getDetail: cid => {
-    dispatch(getRefactDetail('dir', cid, cid))
-  },
-  toggleExpandState: cid => {
-    dispatch(categoryExpandChange(cid))
-  },
-})
+import './category-item-li.style.scss'
 
 class CategoryItemLi extends React.Component {
   constructor (props) {
     super(props)
     this.expandChange = this.expandChange.bind(this)
     this.handleCategoryClick = this.handleCategoryClick.bind(this)
-    this.getChildNodes = this.getChildNodes.bind(this)
   }
   handleCategoryClick () {
     this.props.getDetail(this.props.id)
@@ -64,15 +51,33 @@ class CategoryItemLi extends React.Component {
             onClick={this.expandChange}
           />
         </div>
-        <CategoryItemList childs={this.props.childs} style={articlesUlStyle} />
+        <CategoryItemList
+          depth={this.props.depth + 1}
+          childs={this.props.childs}
+          style={articlesUlStyle}
+          cid={this.props.id}
+        />
       </li>
     )
   }
 }
 
-const _CategoryItemLi = connect(
+const mapStateToProps = state => ({
+  currCategory: state.category,
+  currArticle: state.article,
+  cstate: state.cstate,
+})
+
+const mapDispatchToProps = dispatch => ({
+  getDetail: cid => {
+    dispatch(getRefactDetail('dir', cid, cid))
+  },
+  toggleExpandState: cid => {
+    dispatch(categoryExpandChange(cid))
+  },
+})
+
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CategoryItemLi)
-
-export default _CategoryItemLi

@@ -7,6 +7,10 @@ import CategoryItemLi from '../category-item-li'
 import './category-item-list.style.scss'
 
 class CategoryItemList extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.getChildren = this.getChildren.bind(this)
+  }
   getChildren () {
     var depth = this.props.depth ? this.props.depth : 0
     var childs = this.props.childs
@@ -21,7 +25,7 @@ class CategoryItemList extends React.PureComponent {
             title={child.title}
             childs={child.childs}
             expanded={cstate[child.id] !== false}
-            depth={depth + 1}
+            depth={depth}
           />
         ) : (
           <ArticleItemLi
@@ -29,8 +33,8 @@ class CategoryItemList extends React.PureComponent {
             id={child.id}
             title={child.title}
             article={child}
-            cid={this.props.id}
-            depth={depth + 1}
+            cid={this.props.cid}
+            depth={depth}
           />
         )
     )
@@ -50,7 +54,7 @@ const mapStateToProps = state => ({
   cstate: state.cstate,
 })
 
-const mapDispatchToProps = () => {}
+const mapDispatchToProps = () => ({})
 
 export default connect(
   mapStateToProps,

@@ -1,20 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import CategoryItemLi from './category-item-li'
+import CategoryItemList from '../category-item-list'
 
 const CategoryTree = ({ cstate, tree }) => {
   return (
     <div id="refact-tree-area">
-      <ul className="category-tree-category-ul">
-        <CategoryItemLi
-          id={tree.id}
-          title={tree.title}
-          childs={tree.childs}
-          expanded={cstate[tree.id] !== false}
-          depth={0}
-        />
-      </ul>
+      <CategoryItemList
+        depth={0}
+        childs={[tree]}
+        cid={0}
+      />
     </div>
   )
 }

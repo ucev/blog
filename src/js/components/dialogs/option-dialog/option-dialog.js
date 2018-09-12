@@ -42,6 +42,7 @@ class OptionDialog extends React.Component {
       if (group.id == -1) return ''
       return (
         <OptionDialogOptionItem
+          key={group.id}
           id={group.id}
           name={group.name}
           handleGroupChange={this.handleGroupChange}

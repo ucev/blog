@@ -8,6 +8,8 @@ import {
   articleOrderChange,
 } from '$actions/category-refact'
 
+import './detail-area.style.scss'
+
 class DetailArea extends React.Component {
   constructor (props) {
     super(props)
@@ -31,7 +33,7 @@ class DetailArea extends React.Component {
   }
   render () {
     if (this.props.id) {
-      var opeArea
+      let opeArea
       if (this.props.type == 'dir') {
         opeArea = (
           <div id="refact-detail-ope-area">
@@ -80,7 +82,7 @@ class DetailArea extends React.Component {
     }
   }
 }
-
+ 
 const mapStateToProps = state => ({
   id: state.detail.id,
   order: state.detail.suborder,

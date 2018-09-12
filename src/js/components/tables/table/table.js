@@ -1,6 +1,6 @@
 import React from 'react'
 
-// import '$css/components/admin/content_table.scss';
+import './table.style.scss'
 
 const Table = ({ type = '', children = undefined }) => {
   let className = 'content-table'
