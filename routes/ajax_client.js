@@ -21,6 +21,17 @@ router.get('/articles/get', async ctx => {
   }
 })
 
+router.get('/articles/view', async ctx => {
+  var id = ctx.query.id
+  try {
+    var res = await __articles.view(id)
+    ctx.body = { code: 0, msg: '获取成功', data: res }
+  } catch (err) {
+    console.log(err)
+    ctx.body = { code: 1, msg: '获取失败'}
+  }
+})
+
 router.get('/articles/search', async ctx => {
   var start = ctx.query.p ? ctx.query.p : 0
   // 查找的参数
