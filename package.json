@@ -99,7 +99,7 @@
     "move-concurrently": "^1.0.1",
     "nodemailer": "^4.6.8",
     "promise-mysql": "^3.3.1",
-    "pug": "^2.0.0-rc.3",
+    "pug": "^3.0.1",
     "request-promise": "^4.2.1",
     "rwlock": "^5.0.0",
     "simplemde-customize-for-blog": "0.0.2",
