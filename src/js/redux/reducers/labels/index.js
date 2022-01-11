@@ -13,7 +13,7 @@ const labelsApp = combineReducers({
   orderby,
   orderDirect,
   start,
-  total
+  total,
 })
 
 export default labelsApp

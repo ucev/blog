@@ -1,0 +1,37 @@
+#edit-body {
+  width: 80%;
+  margin-left: 10%;
+  display: flex;
+  flex-direction: row;
+  height: 500px;
+  border: 1px solid black;
+}
+
+#edit-area {
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 50%;
+  height: 100%;
+  overflow: scroll;
+}
+
+#edit-area {
+  .CodeMirror {
+    height: 100%;
+  }
+
+  .editor-toolbar.fullscreen,
+  .editor-preview-active-side,
+  .CodeMirror-fullscreen {
+    z-index: 1000;
+  }
+
+  .editor-preview,
+  .editor-preview-side {
+    background-color: white;
+  }
+}
+
+#md-editor {
+  display: block;
+}

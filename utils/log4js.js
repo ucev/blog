@@ -1,18 +1,18 @@
-var config = require('../config/base.config');
-const log4js = require('koa-log4');
+var config = require('../config/base.config')
+const log4js = require('koa-log4')
 
 if (config.website_info.debug) {
   log4js.configure({
     appenders: {
-      out: { type: 'console' }
+      out: { type: 'console' },
     },
     categories: {
       default: {
         appenders: ['out'],
-        level: 'debug'
-      }
-    }
-  });
+        level: 'debug',
+      },
+    },
+  })
 } else {
   log4js.configure({
     appenders: {
@@ -21,16 +21,16 @@ if (config.website_info.debug) {
         filename: './log/logfile.log',
         maxLogSize: 1024000,
         backups: 3,
-        category: 'normal'
-      }
+        category: 'normal',
+      },
     },
     categories: {
       default: {
         appenders: ['out'],
-        level: 'warn'
-      }
-    }
-  });
+        level: 'warn',
+      },
+    },
+  })
 }
 
 module.exports = log4js

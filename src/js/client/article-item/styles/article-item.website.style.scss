@@ -1,0 +1,52 @@
+.article-item-li {
+  padding: 10px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.article-item-li-title {
+  padding: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.article-item-li-title > * {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.article-item-li-title a {
+  max-width: 80%;
+  color: black;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  overflow: none;
+}
+
+.article-item-li-title mark {
+  color: red;
+  background-color: inherit;
+}
+
+.article-item-li-content {
+  max-height: 100px;
+  overflow: hidden;
+  font-size: 0.75rem;
+  color: #424242;
+}
+
+.article-item-li-bottom-info {
+  height: 30px;
+  text-align: right;
+}
+
+.article-item-li-bottom-info > span {
+  display: inline-block;
+  height: 30px;
+  padding-left: 5px;
+  padding-right: 5px;
+  line-height: 30px;
+  font-size: 0.6rem;
+  color: #424242;
+}

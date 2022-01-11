@@ -1,11 +1,11 @@
 // configs for connecting to a database
 const mysql_database_config = {
-  host: "",
-  user: "",
-  password: "",
-  database: "",
-  charset: 'utf8mb4'
-};
+  host: '',
+  user: '',
+  password: '',
+  database: '',
+  charset: 'utf8mb4',
+}
 
 // configs for config 'koa-session and built-in cookie'
 const session = {
@@ -17,14 +17,14 @@ const session = {
   overwrite: true,
   httpOnly: true,
   signed: true,
-  rolling: false
-};
+  rolling: false,
+}
 // base info of the website
 const website_info = {
   // website's name
-  title: "",
+  title: '',
   // website's main url
-  url: "",
+  url: '',
   // website front page's default background picture
   default_front_pic: '',
   // hostname of the website
@@ -36,21 +36,21 @@ const website_info = {
   log_level: '',
   // session used when in debug mode
   debug_session: 1,
-  debug_avatar: '/images/avatar.jpeg'
+  debug_avatar: '/images/avatar.jpeg',
 }
 
 // config regulation for label's hotmark
 const label_hotmark_rule = {
   add: 5,
   view: 3,
-  // no action now 😢 
-  query: 2
+  // no action now 😢
+  query: 2,
 }
 
 const query_config = {
   // items to get when query a database
-  step: 10
-};
+  step: 10,
+}
 
 // config info for qq login
 const qqlogin = {
@@ -58,21 +58,21 @@ const qqlogin = {
   secret: '',
   redirect_url: website_info.default_front_pic + '',
   state: 1,
-  allowed_openid: ''
-};
+  allowed_openid: '',
+}
 
 const mail_config = {
   connect: {
     // see nodemailer
     // https://nodemailer.com/about/
   },
-  admin: ""
-};
+  admin: '',
+}
 
-exports.database_config = mysql_database_config;
-exports.website_info = website_info;
-exports.label_hotmark_rule = label_hotmark_rule;
-exports.query_config = query_config;
-exports.qqlogin = qqlogin;
-exports.session = session;
-exports.mail_config = mail_config;
+exports.database_config = mysql_database_config
+exports.website_info = website_info
+exports.label_hotmark_rule = label_hotmark_rule
+exports.query_config = query_config
+exports.qqlogin = qqlogin
+exports.session = session
+exports.mail_config = mail_config

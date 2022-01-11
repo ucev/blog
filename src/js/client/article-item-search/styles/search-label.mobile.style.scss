@@ -1,0 +1,20 @@
+.article-item-li-label-li {
+  display: inline-block;
+  vertical-align: middle;
+  height: 20px;
+  line-height: 20px;
+  margin-left: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 14px;
+  font-style: normal;
+  color: white;
+  background-color: green;
+  border: none;
+  border-radius: 5px;
+}
+
+.article-item-li-label-li-selected {
+  color: white;
+  background-color: red;
+}

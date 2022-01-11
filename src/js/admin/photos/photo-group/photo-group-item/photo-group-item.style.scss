@@ -1,0 +1,33 @@
+.photo-group-item-li {
+  height: 40px;
+  line-height: 40px;
+  padding-left: 10px;
+  color: #424242;
+  background-color: white;
+  border-bottom: 1px solid #bdbdbd;
+  cursor: pointer;
+}
+
+.photo-group-item-li:hover,
+.photo-group-item-li-current {
+  background-color: #a1887f;
+}
+
+.photo-group-item-li-title-span,
+.photo-group-item-li-ope-img {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+.photo-group-item-li-title-span {
+  width: calc(100% - 40px);
+}
+
+.photo-group-item-li-ope-img {
+  width: 20px;
+}
+
+.photo-group-item-li-ope-img:hover {
+  background: white;
+}

@@ -2,10 +2,10 @@ import { CATEGORY_REFACT } from '$redux/action-types'
 
 const article = (state = -1, action) => {
   switch (action.type) {
-  case CATEGORY_REFACT.GET_REFACT_DETAIL:
-    return action.article !== undefined ? action.article : state
-  default:
-    return state
+    case CATEGORY_REFACT.GET_REFACT_DETAIL:
+      return action.article !== undefined ? action.article : state
+    default:
+      return state
   }
 }
 

@@ -2,10 +2,10 @@ import { ARTICLES } from '$redux/action-types'
 
 const categories = (state = [], action) => {
   switch (action.type) {
-  case ARTICLES.FETCH_CATEGORIES:
-    return action.categories
-  default:
-    return state
+    case ARTICLES.FETCH_CATEGORIES:
+      return action.categories
+    default:
+      return state
   }
 }
 

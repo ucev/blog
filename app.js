@@ -1,3 +1,4 @@
+/* global __dirname */
 const Koa = require('koa')
 const path = require('path')
 const process = require('process')
@@ -9,10 +10,9 @@ const bodyparser = require('koa-bodyparser')
 const onerror = require('koa-onerror')
 const json = require('koa-json')
 const log4js = require('./utils/log4js')
-//const logger = require('koa-logger')
-//const log4js = require('koa-log4')
+// const logger = require('koa-logger')
+// const log4js = require('koa-log4')
 const session = require('koa-session')
-const koaConvert = require('koa-convert')
 
 const configs = require('./config/base.config')
 
@@ -24,11 +24,8 @@ const users = require('./routes/users')
 const login = require('./routes/login')
 const es = require('./routes/eventsource')
 
-var enterControl = require('./routes/entercontrol')
-
-const DEBUG_MODE = configs.website_info.debug
-
-const mail = require('./utils/mail')
+const enterControl = require('./routes/entercontrol')
+const errorHandler = require('./routes/errorhandler')
 
 var app
 app = new Koa()
@@ -36,7 +33,7 @@ app = new Koa()
 onerror(app)
 
 app.keys = configs.session.keys
-app.use(log4js.koaLogger(log4js.getLogger("normal"), { level: 'auto' }))
+app.use(log4js.koaLogger(log4js.getLogger('normal'), { level: 'auto' }))
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
@@ -48,59 +45,50 @@ app.use(views(path.join(__dirname, 'views'), {
 }))
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
+// app.use(favicon(path.join(__dirname, 'public/images', 'logo.png')));
 
 // hmr
 if (process.env.NODE_ENV == 'DEV') {
   const koaWebpack = require('koa-webpack')
+  const Webpack = require('webpack')
   const wp_config = require('./build/webpack.dev.config')
-  app.use(koaWebpack({
-    config: wp_config,
-    dev: {
-      publicPath: '/',
+  koaWebpack({
+    compiler: Webpack(wp_config),
+    devMiddleware: {
+      lazy: false,
+      publicPath: wp_config[0].devServer.publicPath,
       stats: {
-        color: true
-      }
+        color: true,
+      },
     },
-    hot: {
-      reload: true
-    }
-  }))
+    hotClient: {
+      hmr: true,
+      reload: true,
+      autoConfigure: true,
+      allEntries: true,
+    },
+  }).then((middleware) => {
+    app.use(middleware)
+  }).catch((err) => {
+    console.log(err)
+  })
 }
 
 // static files
-app.use(koaStatic(path.join(__dirname, 'public')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/chart.js/dist')));
+app.use(koaStatic(path.join(__dirname, 'public')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/chart.js/dist')))
 app.use(koaStatic(path.join(__dirname, 'node_modules/prismjs')))
-app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it-classy/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/react/dist')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/react-dom/dist')));
-//app.use(koaStatic(path.join(__dirname, 'node_modules/simplemde')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')));
-app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/markdown-it-classy/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/react/dist')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/react-dom/dist')))
+// app.use(koaStatic(path.join(__dirname, 'node_modules/simplemde')));
+app.use(koaStatic(path.join(__dirname, 'node_modules/template_js')))
+app.use(koaStatic(path.join(__dirname, 'node_modules/jquery/dist')))
 
 // 404/ 500...
-app.use(async (ctx, next) => {
-  try {
-    await next()
-    if (parseInt(ctx.status) == 404) {
-      ctx.throw('Not Found', 404)
-    }
-  } catch (error) {
-    console.log(error)
-    error.status = error.status || 500
-    error.url = ctx.originalUrl
-    if (error.status != 404 && !DEBUG_MODE) {
-      try {
-        mail.error_report(ctx.originalUrl, error.message)
-      } catch (err) {
-      }
-    }
-    await ctx.render('error', {debug: DEBUG_MODE, error: error})
-  }
-})
+app.use(errorHandler.errorHandler)
 
 const router = new Router()
 router.use('/articles', articles.routes(), articles.allowedMethods())
@@ -115,4 +103,4 @@ app.use(index.routes(), index.allowedMethods())
 
 app.listen(configs.website_info.port)
 
-module.exports = app;
+module.exports = app

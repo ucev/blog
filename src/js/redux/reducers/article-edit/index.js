@@ -23,7 +23,7 @@ const articleEditApp = combineReducers({
   photoVisible,
   photos,
   type,
-  urlVisible
+  urlVisible,
 })
 
 export default articleEditApp

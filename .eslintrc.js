@@ -11,6 +11,7 @@ module.exports = {
     "ReactDOM": true
   },
   "parserOptions": {
+    "ecmaVersion": 7,
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "jsx": true
@@ -19,13 +20,16 @@ module.exports = {
   },
   "plugins": [
     "react",
-    "jsx-a11y"
+    "jsx-a11y",
+    "prettier",
   ],
   "rules": {
     "arrow-spacing": "error",
     "indent": [
       "error",
-      2
+      2, {
+        "SwitchCase": 1
+      }
     ],
     "jsx-quotes": [
       "error",

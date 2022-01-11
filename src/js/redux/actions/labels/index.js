@@ -1,16 +1,17 @@
 import { LABELS } from '$redux/action-types'
 import { urlEncode } from '$utils'
 
-const __fetchData = (dispatch) => {
+const __fetchData = dispatch => {
   return (orderby, orderDirect, start) => {
     var params = {
       orderby: orderby,
       asc: orderDirect,
-      start: start
+      start: start,
     }
     var url = '/admin/datas/labels/get?' + urlEncode(params)
-    return fetch(url, {credentials: 'include'}).then(res => res.json())
-      .then((res) => {
+    return fetch(url, { credentials: 'include' })
+      .then(res => res.json())
+      .then(res => {
         res = res.data
         var data = {
           type: LABELS.FETCH_LABEL_DATA,
@@ -19,10 +20,11 @@ const __fetchData = (dispatch) => {
           orderby: orderby,
           orderDirect: orderDirect,
           labels: res.data,
-          start: start
+          start: start,
         }
         dispatch(data)
-      }).catch((err) => {
+      })
+      .catch(err => {
         console.log(err)
       })
   }
@@ -31,7 +33,11 @@ const __fetchData = (dispatch) => {
 export const fetchLabelData = (orderby, orderDirect) => {
   return (dispatch, getState) => {
     var state = getState()
-    __fetchData(dispatch, getState)(orderby || state.orderby, orderDirect || state.orderDirect, state.start)
+    __fetchData(dispatch, getState)(
+      orderby || state.orderby,
+      orderDirect || state.orderDirect,
+      state.start
+    )
   }
 }
 
@@ -42,9 +48,13 @@ export const orderChange = (orderby, orderDirect) => {
   }
 }
 
-export const pageChange = (page) => {
+export const pageChange = page => {
   return (dispatch, getState) => {
     var state = getState()
-    return __fetchData(dispatch, getState)(state.orderby, state.orderDirect, page)
+    return __fetchData(dispatch, getState)(
+      state.orderby,
+      state.orderDirect,
+      page
+    )
   }
 }

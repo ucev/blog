@@ -1,5 +1,7 @@
 import React from 'react'
 
+import './query-data-div.style.scss'
+
 class QueryDataDiv extends React.Component {
   constructor (props) {
     super(props)
@@ -16,7 +18,9 @@ class QueryDataDiv extends React.Component {
     }
     return (
       <div>
-        <div className = "load-more-div" style = {styles} onClick = {this.loadMore}>继续加载</div>
+        <div className="load-more-div" style={styles} onClick={this.loadMore}>
+          继续加载
+        </div>
       </div>
     )
   }

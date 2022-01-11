@@ -17,15 +17,10 @@ import { urlParamParser } from '$utils'
 export function init ({ ele, type }) {
   var params = urlParamParser()
   var id = params.id
-  var store = createStore(
-    articleEditApp,
-    applyMiddleware(
-      thunkMiddleware
-    )
-  )
+  var store = createStore(articleEditApp, applyMiddleware(thunkMiddleware))
   ReactDOM.render(
-    <Provider store = {store}>
-      <ArticleEdit type = {type} id = {id} />
+    <Provider store={store}>
+      <ArticleEdit type={type} id={id} />
     </Provider>,
     ele
   )

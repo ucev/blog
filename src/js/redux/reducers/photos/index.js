@@ -17,7 +17,7 @@ const photosApp = combineReducers({
   key,
   pfobDelVisible,
   pfobMoveVisible,
-  photos
+  photos,
 })
 
 export default photosApp

@@ -21,11 +21,11 @@ $(document).ready(() => {
       $('#admin-operation-ul').hide()
       var type = $(this).attr('data-type')
       switch (type) {
-      case 'logout':
-        location.href = '/login/logout'
-        break
-      default:
-        break
+        case 'logout':
+          location.href = '/login/logout'
+          break
+        default:
+          break
       }
     })
   })()

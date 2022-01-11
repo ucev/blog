@@ -1,0 +1,30 @@
+.label-row-index-label {
+  position: relative;
+  width: 10%;
+}
+
+.label-row-title-label {
+  width: 10%;
+  text-align: center;
+}
+
+.label-row-articlecnt-label {
+  position: relative;
+  width: 10%;
+}
+
+.label-row-hotmark-label {
+  position: relative;
+  width: 10%;
+}
+
+.label-row-hotmark-order-img {
+  position: absolute;
+  top: calc((100% - 24px) / 2);
+  right: 24px;
+  width: 24px;
+}
+
+.label-row-addtime-label {
+  width: 10%;
+}

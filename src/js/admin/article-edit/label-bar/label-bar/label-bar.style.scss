@@ -1,0 +1,24 @@
+#article-labels {
+  position: relative;
+}
+
+#label-label,
+#label-input-area,
+#labels-area {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#label-label {
+  width: 100px;
+  text-align: center;
+  color: white;
+}
+
+#label-input-area {
+  height: 25px;
+  color: white;
+  background-color: inherit;
+  outline: none;
+  border: none;
+}

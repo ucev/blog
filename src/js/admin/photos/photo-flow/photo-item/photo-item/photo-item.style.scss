@@ -1,0 +1,72 @@
+.photo-flow-item-li {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  height: 260px;
+  padding: 0;
+  margin-left: calc((100% - 200px * 4) / 8);
+  margin-right: calc((100% - 200px * 4) / 8);
+  margin-top: 5px;
+  background-color: #4caf50;
+  //opacity: 0.6;
+}
+
+.photo-flow-item-li-img-div {
+  height: 200px;
+  overflow: hidden;
+}
+
+.photo-flow-item-li-img {
+  //height: 200px;
+  display: block;
+}
+
+.photo-flow-item-name-div {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  background-color: white;
+}
+
+.photo-flow-item-li-ope-bar {
+  width: 100%;
+  height: 30px;
+  padding-left: 22.75px;
+  background-color: #eeeeee; /*
+    opacity: 0;
+    transition: opacity 1s linear;*/
+}
+
+.photo-flow-item-ope-img {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin-right: 27.5px;
+  background-size: 30px 30px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+.photo-flow-item-mode-edit {
+  background-image: url(/images/icons/ic_mode_edit_grey_24dp_2x.png);
+}
+
+.photo-flow-item-mode-edit:hover {
+  background-image: url(/images/icons/ic_mode_edit_black_24dp_2x.png);
+}
+
+.photo-flow-item-mode-swap {
+  background-image: url(/images/icons/ic_swap_horiz_grey_24dp_2x.png);
+}
+
+.photo-flow-item-mode-swap:hover {
+  background-image: url(/images/icons/ic_swap_horiz_black_24dp_2x.png);
+}
+
+.photo-flow-item-mode-del {
+  background-image: url(/images/icons/ic_delete_grey_24dp_2x.png);
+}
+
+.photo-flow-item-mode-del:hover {
+  background-image: url(/images/icons/ic_delete_black_24dp_2x.png);
+}

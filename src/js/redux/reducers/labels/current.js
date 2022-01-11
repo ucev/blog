@@ -2,10 +2,10 @@ import { LABELS } from '$redux/action-types'
 
 const current = (state = 0, action) => {
   switch (action.type) {
-  case LABELS.FETCH_LABEL_DATA:
-    return action.current
-  default:
-    return state
+    case LABELS.FETCH_LABEL_DATA:
+      return action.current
+    default:
+      return state
   }
 }
 
