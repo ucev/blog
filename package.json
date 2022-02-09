@@ -51,7 +51,7 @@
     "mini-css-extract-plugin": "^0.4.2",
     "module": "^1.2.5",
     "mysql-creator": "^0.3.11",
-    "node-sass": "^4.9.3",
+    "node-sass": "^7.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "ora": "^3.0.0",
     "prettier": "^1.14.2",
